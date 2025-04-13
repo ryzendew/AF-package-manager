@@ -2,6 +2,82 @@
 
 A modern GUI frontend for the Arch Linux package manager (pacman) built with Qt6.
 
+## Current Features
+
+### Package Management
+- Search and browse available packages
+- Install, update, and remove packages with a clean user interface
+- View detailed package information
+- Batch install multiple packages at once
+- Password authentication for sudo operations
+- Real-time terminal output display for system updates
+
+### User Interface
+- Modern Qt6-based interface
+- Dark and light theme support
+- Multi-selection with checkboxes for batch operations
+- Progress tracking for long-running operations
+- Package overwrite options for resolving conflicts
+- Confirmation dialogs for critical operations
+
+### System Operations
+- System-wide updates with detailed progress
+- Package database synchronization
+- Update checking with package listing
+- Clean error handling and reporting
+
+## Installation and Usage
+
+### Building from Source
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/PacmanGui.git
+cd PacmanGui
+```
+
+2. Create a build directory and run CMake:
+```bash
+mkdir -p build && cd build
+cmake ..
+```
+
+3. Build the application:
+```bash
+make -j$(nproc)
+```
+
+4. Run the application:
+```bash
+./pacmangui
+```
+
+### Usage Guide
+
+#### Basic Operations
+- **Search**: Enter package names in the search box and press Enter or click Search
+- **Install**: Select a package and click the Install button, or check multiple packages and click "Install Selected Packages"
+- **Remove**: Select an installed package and click the Remove button
+- **Update**: Select a package and click the Update button
+
+#### System Update
+1. Go to the "System Update" tab
+2. Click "Check for Updates" to see available updates
+3. Click "Update System" to perform a full system update
+4. Enter your password when prompted
+5. Monitor the update progress in real-time
+
+#### Batch Installation
+1. Search for packages
+2. Check the checkboxes next to packages you want to install
+3. The "Install Selected Packages" button will show how many packages are selected
+4. Click this button to install all selected packages at once
+5. Enter your password when prompted
+
+#### Package Options
+- Use the "Use --overwrite '*'" checkbox when installing packages that have file conflicts
+- This option forces installation but may overwrite files from other packages
+
 ## Basic Rules to Follow
 
 1. We don't remove things but we refactor them to reduce breaking functionality
@@ -138,11 +214,45 @@ git submodule update --init --recursive
 - [x] Main window layout
 - [x] Package list view
 - [x] Search functionality
-- [ ] Basic package operations UI
-- [ ] Progress indicators
-- [ ] Error message display
+- [x] Basic package operations UI
+- [x] Progress indicators
+- [x] Error message display
+- [x] Batch package installation
+- [x] Password authentication for sudo operations
+- [x] Package overwrite options
+- [x] Multi-package selection with checkboxes
+- [x] Real-time terminal output display
 
 #### Detailed Implementation Plan
+- [x] Basic Operations
+  - [x] Package installation
+  - [x] Package removal
+  - [x] Package updates
+  - [x] System synchronization
+  - [x] System update
+  - [x] Batch installation support
+
+- [x] Authentication System
+  - [x] Secure password handling for sudo operations
+  - [x] Password dialog integration
+  - [x] Authentication error handling
+  - [x] Session-based authentication
+
+- [x] Advanced Package Management
+  - [x] Package overwrite options (`--overwrite "*"`)
+  - [x] Multi-package selection and operations
+  - [x] Batch installation with progress tracking
+  - [x] Package operation status reporting
+
+- [x] User Interface Improvements
+  - [x] Dark and light theme support
+  - [x] Checkbox-based package selection
+  - [x] Real-time terminal output display
+  - [x] Progress dialogs for long operations
+  - [x] Status bar updates
+  - [x] Confirmation dialogs
+  - [x] Error handling and display
+
 - [ ] Display Management
   - [ ] Wayland Support
     - [ ] Native Wayland backend
