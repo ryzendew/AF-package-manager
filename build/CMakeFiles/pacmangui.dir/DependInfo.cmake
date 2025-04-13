@@ -9,11 +9,13 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "" "pacmangui_autogen/timestamp" "custom" "pacmangui_autogen/deps"
+  "/home/matt/PacmanGui-new/build/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp" "CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o" "gcc" "CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o.d"
   "/home/matt/PacmanGui-new/build/pacmangui_autogen/mocs_compilation.cpp" "CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o" "gcc" "CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o.d"
   "/home/matt/PacmanGui-new/src/core/package.cpp" "CMakeFiles/pacmangui.dir/src/core/package.cpp.o" "gcc" "CMakeFiles/pacmangui.dir/src/core/package.cpp.o.d"
   "/home/matt/PacmanGui-new/src/core/packagemanager.cpp" "CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o" "gcc" "CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o.d"
   "/home/matt/PacmanGui-new/src/core/repository.cpp" "CMakeFiles/pacmangui.dir/src/core/repository.cpp.o" "gcc" "CMakeFiles/pacmangui.dir/src/core/repository.cpp.o.d"
   "/home/matt/PacmanGui-new/src/core/transaction.cpp" "CMakeFiles/pacmangui.dir/src/core/transaction.cpp.o" "gcc" "CMakeFiles/pacmangui.dir/src/core/transaction.cpp.o.d"
+  "/home/matt/PacmanGui-new/src/gui/mainwindow.cpp" "CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o" "gcc" "CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o.d"
   "/home/matt/PacmanGui-new/src/main.cpp" "CMakeFiles/pacmangui.dir/src/main.cpp.o" "gcc" "CMakeFiles/pacmangui.dir/src/main.cpp.o.d"
   "" "pacmangui" "gcc" "CMakeFiles/pacmangui.dir/link.d"
   )

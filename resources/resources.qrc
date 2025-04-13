@@ -1,11 +1,9 @@
-<RCC>
-    <qresource prefix="/">
-        <file>icons/pacman.png</file>
-        <file>icons/refresh.png</file>
-        <file>icons/install.png</file>
-        <file>icons/remove.png</file>
-        <file>icons/update.png</file>
-        <file>icons/search.png</file>
-        <file>icons/info.png</file>
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/icons">
+        <!-- Icons will be added here later -->
+    </qresource>
+    <qresource prefix="/styles">
+        <!-- Style sheets will be added here later -->
     </qresource>
 </RCC> 

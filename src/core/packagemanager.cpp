@@ -6,6 +6,11 @@
 #include <sys/stat.h>
 #include <algorithm>
 #include <cstdlib>  // For system()
+#include <array>
+#include <memory>
+#include <atomic>
+#include <thread>
+#include <functional>
 
 namespace pacmangui {
 namespace core {
@@ -20,12 +25,27 @@ bool execute_with_sudo(const std::string& command) {
 
 // Helper function to execute commands with sudo and password
 bool execute_with_sudo(const std::string& command, const std::string& password) {
-    // Create command with sudo -S which reads password from stdin
-    std::string sudo_cmd = "echo " + password + " | sudo -S " + command;
-    std::cout << "Executing sudo command with password" << std::endl;
+    // Use expect-like behavior to handle sudo password prompt more reliably
+    std::string quoted_password = "'";
+    for (char c : password) {
+        if (c == '\'') {
+            quoted_password += "'\\''"; // Escape single quotes in the password
+        } else {
+            quoted_password += c;
+        }
+    }
+    quoted_password += "'";
+    
+    // Create a command that:
+    // 1. Uses 'script' to simulate a terminal (sudo sometimes requires a TTY)
+    // 2. Pipes the password directly to sudo
+    // 3. Ensures the password isn't visible in process listings
+    std::string full_cmd = "script -qec 'echo " + quoted_password + " | sudo -S " + command + "' /dev/null";
+    
+    std::cout << "Executing sudo command with password authentication" << std::endl;
     
     // Execute the command
-    int result = system(sudo_cmd.c_str());
+    int result = system(full_cmd.c_str());
     return result == 0;
 }
 
@@ -177,7 +197,7 @@ std::vector<Package> PackageManager::search_by_name(const std::string& name) con
                         [](unsigned char c){ return std::tolower(c); });
             
             if (pkg_name.find(search_term) != std::string::npos) {
-                results.push_back(pkg);
+            results.push_back(pkg);
             }
         }
         
@@ -275,7 +295,7 @@ bool PackageManager::install_package(const std::string& package_name)
     }
 }
 
-bool PackageManager::install_package(const std::string& package_name, const std::string& password)
+bool PackageManager::install_package(const std::string& package_name, const std::string& password, bool use_overwrite)
 {
     if (package_name.empty()) {
         set_last_error("Invalid package name");
@@ -285,7 +305,14 @@ bool PackageManager::install_package(const std::string& package_name, const std:
     std::cout << "PackageManager: Installing package with authentication: " << package_name << std::endl;
     
     // Use pacman directly with sudo and password
-    std::string command = "pacman -S --noconfirm " + package_name;
+    std::string command = "pacman -S --noconfirm ";
+    
+    // Add overwrite option if requested
+    if (use_overwrite) {
+        command += "--overwrite \"*\" ";
+    }
+    
+    command += package_name;
     bool success = execute_with_sudo(command, password);
     
     if (success) {
@@ -363,7 +390,7 @@ bool PackageManager::update_package(const std::string& package_name)
     }
 }
 
-bool PackageManager::update_package(const std::string& package_name, const std::string& password)
+bool PackageManager::update_package(const std::string& package_name, const std::string& password, bool use_overwrite)
 {
     if (package_name.empty()) {
         set_last_error("Invalid package name");
@@ -373,7 +400,14 @@ bool PackageManager::update_package(const std::string& package_name, const std::
     std::cout << "PackageManager: Updating package with authentication: " << package_name << std::endl;
     
     // Use pacman directly with sudo and password
-    std::string command = "pacman -S --noconfirm " + package_name;
+    std::string command = "pacman -S --noconfirm ";
+    
+    // Add overwrite option if requested
+    if (use_overwrite) {
+        command += "--overwrite \"*\" ";
+    }
+    
+    command += package_name;
     bool success = execute_with_sudo(command, password);
     
     if (success) {
@@ -570,6 +604,151 @@ bool PackageManager::register_sync_databases()
         std::cerr << "PackageManager: No sync databases registered successfully" << std::endl;
         return false;
     }
+}
+
+bool PackageManager::update_system(const std::string& password, std::function<void(const std::string&)> output_callback, bool use_overwrite)
+{
+    std::cout << "PackageManager: Performing full system update" << std::endl;
+    
+    if (output_callback) {
+        output_callback("Starting system update...\n");
+    }
+    
+    // Create a temporary file to capture output
+    std::string temp_output_file = "/tmp/pacmangui_update_output.txt";
+    
+    // Run pacman -Syu with --noconfirm to avoid interactive prompts
+    // Redirect output to the temporary file
+    std::string command = "pacman -Syu --noconfirm ";
+    
+    // Add overwrite option if requested
+    if (use_overwrite) {
+        command += "--overwrite \"*\" ";
+        
+        if (output_callback) {
+            output_callback("Using --overwrite=\"*\" option. This may overwrite conflicting files.\n");
+        }
+    }
+    
+    command += "| tee " + temp_output_file;
+    
+    // Start a background thread to monitor the output file and send updates
+    std::atomic<bool> running(true);
+    std::thread output_thread;
+    
+    if (output_callback) {
+        output_thread = std::thread([temp_output_file, &output_callback, &running]() {
+            std::ifstream output_file(temp_output_file);
+            if (!output_file.is_open()) {
+                return;
+            }
+            
+            std::string line;
+            while (running) {
+                if (std::getline(output_file, line)) {
+                    output_callback(line + "\n");
+                } else {
+                    // Wait a bit before checking for more output
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                }
+            }
+            
+            // Read any remaining output
+            while (std::getline(output_file, line)) {
+                output_callback(line + "\n");
+            }
+            
+            output_file.close();
+        });
+    }
+    
+    // Execute the command
+    bool success = execute_with_sudo(command, password);
+    
+    // Stop the output thread and wait for it to finish
+    if (output_callback) {
+        running = false;
+        if (output_thread.joinable()) {
+            output_thread.join();
+        }
+    }
+    
+    // Clean up the temporary file
+    std::remove(temp_output_file.c_str());
+    
+    if (success) {
+        std::cout << "PackageManager: System update completed successfully" << std::endl;
+        
+        if (output_callback) {
+            output_callback("System update completed successfully.\n");
+        }
+        
+        // Re-initialize to get updated package information
+        m_repo_manager->initialize();
+        
+        return true;
+    } else {
+        std::string error_message = "Failed to update system. Authentication may have failed.";
+        set_last_error(error_message);
+        
+        if (output_callback) {
+            output_callback("ERROR: " + error_message + "\n");
+        }
+        
+        return false;
+    }
+}
+
+// Overloaded method for backward compatibility
+bool PackageManager::update_system(const std::string& password, bool use_overwrite)
+{
+    return update_system(password, nullptr, use_overwrite);
+}
+
+std::vector<std::pair<std::string, std::string>> PackageManager::check_updates() const
+{
+    std::vector<std::pair<std::string, std::string>> updates;
+    
+    std::cout << "PackageManager: Checking for available updates" << std::endl;
+    
+    // Run pacman -Qu to check for updates
+    FILE* pipe = popen("pacman -Qu", "r");
+    if (!pipe) {
+        std::cerr << "PackageManager: Error running pacman -Qu" << std::endl;
+        return updates;
+    }
+    
+    char buffer[256];
+    while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
+        std::string line(buffer);
+        
+        // Parse output line (format: package_name old_version -> new_version)
+        size_t first_space = line.find(' ');
+        if (first_space != std::string::npos) {
+            std::string package_name = line.substr(0, first_space);
+            
+            // Find the arrow separator
+            size_t arrow_pos = line.find("->");
+            if (arrow_pos != std::string::npos) {
+                // Extract new version (skip spaces after arrow)
+                size_t version_start = arrow_pos + 2;
+                while (version_start < line.size() && isspace(line[version_start])) {
+                    version_start++;
+                }
+                
+                std::string new_version = line.substr(version_start);
+                // Trim trailing whitespace/newline
+                new_version.erase(new_version.find_last_not_of(" \n\r\t") + 1);
+                
+                updates.push_back(std::make_pair(package_name, new_version));
+            }
+        }
+    }
+    
+    pclose(pipe);
+    
+    std::cout << "PackageManager: Found " << updates.size() << " available updates" << std::endl;
+    return updates;
 }
 
 } // namespace core

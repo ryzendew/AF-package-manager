@@ -7,6 +7,7 @@
 #include "core/package.hpp"
 #include "core/repository.hpp"
 #include "core/transaction.hpp"
+#include <functional>
 
 namespace pacmangui {
 namespace core {
@@ -86,9 +87,10 @@ public:
      * 
      * @param package_name Name of the package to install
      * @param password The password to use for sudo authentication
+     * @param use_overwrite Whether to use the --overwrite="*" option
      * @return bool True if installation successful
      */
-    bool install_package(const std::string& package_name, const std::string& password);
+    bool install_package(const std::string& package_name, const std::string& password, bool use_overwrite = false);
     
     /**
      * @brief Remove a package
@@ -120,9 +122,10 @@ public:
      * 
      * @param package_name Name of the package to update
      * @param password The password to use for sudo authentication
+     * @param use_overwrite Whether to use the --overwrite="*" option
      * @return bool True if update successful
      */
-    bool update_package(const std::string& package_name, const std::string& password);
+    bool update_package(const std::string& package_name, const std::string& password, bool use_overwrite = false);
     
     /**
      * @brief Synchronize all packages (update all)
@@ -160,6 +163,32 @@ public:
      * @return std::string The last error message
      */
     std::string get_last_error() const;
+    
+    /**
+     * @brief Perform full system update (pacman -Syu)
+     * 
+     * @param password The password to use for sudo authentication
+     * @param use_overwrite Whether to use the --overwrite="*" option
+     * @return bool True if update successful
+     */
+    bool update_system(const std::string& password, bool use_overwrite = false);
+    
+    /**
+     * @brief Perform full system update (pacman -Syu) with real-time output
+     * 
+     * @param password The password to use for sudo authentication
+     * @param output_callback Callback function to receive real-time output from pacman
+     * @param use_overwrite Whether to use the --overwrite="*" option
+     * @return bool True if update successful
+     */
+    bool update_system(const std::string& password, std::function<void(const std::string&)> output_callback, bool use_overwrite = false);
+    
+    /**
+     * @brief Check for available system updates (without installing)
+     * 
+     * @return std::vector<std::pair<std::string, std::string>> List of packages with updates (name, new_version)
+     */
+    std::vector<std::pair<std::string, std::string>> check_updates() const;
 
 private:
     alpm_handle_t* m_handle;                          ///< ALPM handle

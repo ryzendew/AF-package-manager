@@ -1,0 +1,22 @@
+{
+	"BUILD_DIR" : "/home/matt/PacmanGui-new/build/pacmangui_autogen",
+	"CMAKE_BINARY_DIR" : "/home/matt/PacmanGui-new/build",
+	"CMAKE_CURRENT_BINARY_DIR" : "/home/matt/PacmanGui-new/build",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/home/matt/PacmanGui-new",
+	"CMAKE_SOURCE_DIR" : "/home/matt/PacmanGui-new",
+	"CROSS_CONFIG" : false,
+	"GENERATOR" : "Unix Makefiles",
+	"INCLUDE_DIR" : "/home/matt/PacmanGui-new/build/pacmangui_autogen/include",
+	"INPUTS" : [],
+	"LOCK_FILE" : "/home/matt/PacmanGui-new/build/CMakeFiles/pacmangui_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "-name", "resources" ],
+	"OUTPUT_CHECKSUM" : "3YJK5W5UP7",
+	"OUTPUT_NAME" : "qrc_resources.cpp",
+	"RCC_EXECUTABLE" : "/usr/lib/qt6/rcc",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "/home/matt/PacmanGui-new/build/CMakeFiles/pacmangui_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Used.txt",
+	"SOURCE" : "/home/matt/PacmanGui-new/resources/resources.qrc",
+	"USE_BETTER_GRAPH" : true,
+	"VERBOSITY" : 0
+}

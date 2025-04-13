@@ -1,13 +1,15 @@
 #include <iostream>
-#include <string>
-#include <vector>
+#include <QApplication>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
+#include "gui/mainwindow.hpp"
 #include "core/packagemanager.hpp"
-#include "core/package.hpp"
 
 using namespace pacmangui::core;
+using namespace pacmangui::gui;
 
 void print_help() {
-    std::cout << "PacmanGui CLI - Package Manager\n";
+    std::cout << "PacmanGui - Package Manager\n";
     std::cout << "Available commands:\n";
     std::cout << "  search <term>   - Search for packages by name in repositories\n";
     std::cout << "  info <package>  - Show detailed information about a package\n";
@@ -20,6 +22,17 @@ void print_help() {
     std::cout << "  quit            - Exit the program\n";
     std::cout << "  help            - Show this help message\n";
     std::cout << "\nNote: AUR support will be added in Phase 3\n";
+}
+
+void show_common_commands() {
+    std::cout << "\nCommon commands:\n";
+    std::cout << "  search <term>   - Search for packages by name in repositories\n";
+    std::cout << "  info <pkg>      - Show detailed information about a package\n";
+    std::cout << "  install <pkg>   - Install a package\n";
+    std::cout << "  remove <pkg>    - Remove a package\n";
+    std::cout << "  update <pkg>    - Update a package\n";
+    std::cout << "  refresh         - Refresh package databases\n";
+    std::cout << "  help            - Show all available commands\n";
 }
 
 void print_package_details(const Package& pkg) {
@@ -36,20 +49,7 @@ void print_package_list(const std::vector<Package>& packages) {
     std::cout << "Total: " << packages.size() << " packages\n";
 }
 
-// Add a new function for showing common commands
-void show_common_commands() {
-    std::cout << "\nCommon commands:\n";
-    std::cout << "  search <term>   - Search for packages by name in repositories\n";
-    std::cout << "  info <pkg>      - Show detailed information about a package\n";
-    std::cout << "  install <pkg>   - Install a package\n";
-    std::cout << "  remove <pkg>    - Remove a package\n";
-    std::cout << "  update <pkg>    - Update a package\n";
-    std::cout << "  refresh         - Refresh package databases\n";
-    std::cout << "  help            - Show all available commands\n";
-}
-
-int main(int argc, char *argv[])
-{
+int startCli(int argc, char *argv[]) {
     // Initialize package manager
     PackageManager pm;
     
@@ -180,4 +180,37 @@ int main(int argc, char *argv[])
     
     std::cout << "Exiting PacmanGui CLI.\n";
     return 0;
+}
+
+int main(int argc, char *argv[])
+{
+    // Parse command line arguments
+    bool useCliMode = false;
+    
+    if (argc > 1 && std::string(argv[1]) == "--cli") {
+        useCliMode = true;
+    }
+    
+    if (useCliMode) {
+        return startCli(argc, argv);
+    } else {
+        // Initialize Qt application
+        QApplication app(argc, argv);
+        
+        // Set application information
+        app.setApplicationName("PacmanGUI");
+        app.setApplicationVersion("0.1.0");
+        app.setOrganizationName("PacmanGUI");
+        app.setOrganizationDomain("pacmangui.org");
+        
+        // Set application style
+        app.setStyle("Fusion");
+        
+        // Create main window
+        MainWindow mainWindow;
+        mainWindow.show();
+        
+        // Run the application
+        return app.exec();
+    }
 } 

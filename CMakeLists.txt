@@ -3,6 +3,8 @@ project(PacmanGui VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Ensure Qt Meta-Object Compiler is run
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
@@ -26,7 +28,7 @@ include_directories(
     ${ALPM_INCLUDE_DIRS}
 )
 
-# Source files - core components only for now
+# Source files - core components
 set(CORE_SOURCES
     src/core/package.cpp
     src/core/repository.cpp
@@ -34,15 +36,33 @@ set(CORE_SOURCES
     src/core/packagemanager.cpp
 )
 
+# Source files - GUI components
+set(GUI_SOURCES
+    src/gui/mainwindow.cpp
+)
+
+# Headers with Q_OBJECT macro that need to be processed by MOC
+set(MOC_HEADERS
+    include/gui/mainwindow.hpp
+)
+
 # Main source
 set(MAIN_SOURCE
     src/main.cpp
+)
+
+# Resource files
+set(RESOURCE_FILES
+    resources/resources.qrc
 )
 
 # Add executable
 add_executable(pacmangui 
     ${MAIN_SOURCE}
     ${CORE_SOURCES}
+    ${GUI_SOURCES}
+    ${MOC_HEADERS}
+    ${RESOURCE_FILES}
 )
 
 # Link libraries

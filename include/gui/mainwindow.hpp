@@ -1,17 +1,25 @@
 #pragma once
 
 #include <QMainWindow>
-#include <QTableView>
+#include <QTabWidget>
 #include <QLineEdit>
-#include <QAction>
-#include <QMenu>
-#include <QToolBar>
-#include <QStatusBar>
-#include <QLabel>
+#include <QPushButton>
+#include <QStackedWidget>
 #include <QVBoxLayout>
-#include <QComboBox>
+#include <QHBoxLayout>
+#include <QTableView>
+#include <QLabel>
+#include <QAction>
+#include <QToolBar>
+#include <QMenu>
+#include <QStatusBar>
+#include <QSplitter>
+#include <QListView>
+#include <QStandardItemModel>
+#include <QTextEdit>
+#include <QCheckBox>
+#include <QSet>
 #include "core/packagemanager.hpp"
-#include "gui/packageview.hpp"
 
 namespace pacmangui {
 namespace gui {
@@ -26,11 +34,9 @@ class MainWindow : public QMainWindow
 public:
     /**
      * @brief Constructor
-     * 
      * @param parent Parent widget
-     * @param package_manager Pointer to package manager
      */
-    explicit MainWindow(QWidget *parent, core::PackageManager *package_manager);
+    explicit MainWindow(QWidget* parent = nullptr);
     
     /**
      * @brief Destructor
@@ -46,111 +52,80 @@ protected:
     void closeEvent(QCloseEvent *event) override;
 
 private slots:
-    /**
-     * @brief Handle package install
-     */
+    // Navigation
+    void onTabChanged(int index);
+    
+    // Search
+    void onSearchTextChanged(const QString& text);
+    void onSearchClicked();
+    
+    // Package operations
     void onInstallPackage();
-    
-    /**
-     * @brief Handle package remove
-     */
     void onRemovePackage();
-    
-    /**
-     * @brief Handle package update
-     */
     void onUpdatePackage();
-    
-    /**
-     * @brief Handle sync all packages
-     */
     void onSyncAll();
+    void onBatchInstall();
     
-    /**
-     * @brief Handle package search
-     */
-    void onSearch();
+    // System update
+    void onSystemUpdate();
+    void onCheckForUpdates();
     
-    /**
-     * @brief Handle repository selection change
-     * 
-     * @param index Index of selected repository
-     */
-    void onRepositoryChanged(int index);
-    
-    /**
-     * @brief Handle about action
-     */
-    void onAbout();
+    // Theme
+    void toggleTheme();
 
 private:
-    /**
-     * @brief Create actions for menus and toolbars
-     */
-    void createActions();
-    
-    /**
-     * @brief Create menu bar
-     */
-    void createMenus();
-    
-    /**
-     * @brief Create tool bar
-     */
-    void createToolBars();
-    
-    /**
-     * @brief Create status bar
-     */
-    void createStatusBar();
-    
-    /**
-     * @brief Load settings from config
-     */
+    void setupUi();
+    void setupActions();
+    void setupMenus();
+    void setupConnections();
     void loadSettings();
-    
-    /**
-     * @brief Save settings to config
-     */
     void saveSettings();
-    
-    /**
-     * @brief Refresh package list
-     */
-    void refreshPackageList();
-    
-    /**
-     * @brief Show error message
-     * 
-     * @param title Error title
-     * @param message Error message
-     */
-    void showError(const QString &title, const QString &message);
-
-    core::PackageManager *m_package_manager;  ///< Pointer to package manager
+    void applyTheme(bool isDark);
+    void searchPackages(const QString& searchTerm);
+    void refreshInstalledPackages();
+    void refreshUpdatesList();
+    void updateBatchInstallButton();
     
     // UI components
-    PackageView *m_package_view;              ///< Package view widget
-    QLineEdit *m_search_edit;                 ///< Search input field
-    QComboBox *m_repo_combo;                  ///< Repository selection dropdown
-    QLabel *m_status_label;                   ///< Status information label
+    QTabWidget* m_tabWidget;
+    QLineEdit* m_searchBox;
+    QPushButton* m_searchButton;
     
-    // Actions
-    QAction *m_install_action;                ///< Install package action
-    QAction *m_remove_action;                 ///< Remove package action
-    QAction *m_update_action;                 ///< Update package action
-    QAction *m_sync_action;                   ///< Sync packages action
-    QAction *m_search_action;                 ///< Search packages action
-    QAction *m_exit_action;                   ///< Exit application action
-    QAction *m_about_action;                  ///< Show about dialog action
+    // Package listing views
+    QTableView* m_packagesView;
+    QTableView* m_installedView;
     
-    // Menus
-    QMenu *m_file_menu;                       ///< File menu
-    QMenu *m_packages_menu;                   ///< Packages menu
-    QMenu *m_help_menu;                       ///< Help menu
+    // Batch installation
+    QPushButton* m_batchInstallButton;
+    QSet<QString> m_selectedPackages;
     
-    // Toolbars
-    QToolBar *m_main_toolbar;                 ///< Main toolbar
+    // System update tab
+    QWidget* m_systemUpdateTab;
+    QLabel* m_systemUpdateInfoLabel;
+    QPushButton* m_systemUpdateButton;
+    QPushButton* m_checkUpdatesButton;
+    QTextEdit* m_systemUpdateLogView;
+    QTableView* m_systemUpdatesView;
+    QStandardItemModel* m_systemUpdatesModel;
+    QCheckBox* m_systemUpdateOverwriteCheckbox;
+    
+    // Package detail view
+    QWidget* m_detailsWidget;
+    QLabel* m_packageNameLabel;
+    QLabel* m_packageVersionLabel;
+    QLabel* m_packageDescLabel;
+    QPushButton* m_actionButton;
+    QCheckBox* m_packageOverwriteCheckbox;
+    
+    // Models for tables
+    QStandardItemModel* m_packagesModel;
+    QStandardItemModel* m_installedModel;
+    
+    // Core functionality
+    core::PackageManager m_packageManager;
+    
+    // Theme settings
+    bool m_darkTheme;
 };
 
 } // namespace gui

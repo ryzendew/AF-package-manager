@@ -200,6 +200,30 @@ pacmangui_autogen/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui_autogen.dir/build.make CMakeFiles/pacmangui_autogen.dir/build
 .PHONY : pacmangui_autogen/fast
 
+pacmangui_autogen/3YJK5W5UP7/qrc_resources.o: pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o
+.PHONY : pacmangui_autogen/3YJK5W5UP7/qrc_resources.o
+
+# target to build an object file
+pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o
+.PHONY : pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o
+
+pacmangui_autogen/3YJK5W5UP7/qrc_resources.i: pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.i
+.PHONY : pacmangui_autogen/3YJK5W5UP7/qrc_resources.i
+
+# target to preprocess a source file
+pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.i
+.PHONY : pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.i
+
+pacmangui_autogen/3YJK5W5UP7/qrc_resources.s: pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.s
+.PHONY : pacmangui_autogen/3YJK5W5UP7/qrc_resources.s
+
+# target to generate assembly for a file
+pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.s
+.PHONY : pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.s
+
 pacmangui_autogen/mocs_compilation.o: pacmangui_autogen/mocs_compilation.cpp.o
 .PHONY : pacmangui_autogen/mocs_compilation.o
 
@@ -320,6 +344,30 @@ src/core/transaction.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/core/transaction.cpp.s
 .PHONY : src/core/transaction.cpp.s
 
+src/gui/mainwindow.o: src/gui/mainwindow.cpp.o
+.PHONY : src/gui/mainwindow.o
+
+# target to build an object file
+src/gui/mainwindow.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o
+.PHONY : src/gui/mainwindow.cpp.o
+
+src/gui/mainwindow.i: src/gui/mainwindow.cpp.i
+.PHONY : src/gui/mainwindow.i
+
+# target to preprocess a source file
+src/gui/mainwindow.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.i
+.PHONY : src/gui/mainwindow.cpp.i
+
+src/gui/mainwindow.s: src/gui/mainwindow.cpp.s
+.PHONY : src/gui/mainwindow.s
+
+# target to generate assembly for a file
+src/gui/mainwindow.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.s
+.PHONY : src/gui/mainwindow.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -359,6 +407,9 @@ help:
 	@echo "... pacmangui_autogen"
 	@echo "... pacmangui_autogen_timestamp_deps"
 	@echo "... pacmangui"
+	@echo "... pacmangui_autogen/3YJK5W5UP7/qrc_resources.o"
+	@echo "... pacmangui_autogen/3YJK5W5UP7/qrc_resources.i"
+	@echo "... pacmangui_autogen/3YJK5W5UP7/qrc_resources.s"
 	@echo "... pacmangui_autogen/mocs_compilation.o"
 	@echo "... pacmangui_autogen/mocs_compilation.i"
 	@echo "... pacmangui_autogen/mocs_compilation.s"
@@ -374,6 +425,9 @@ help:
 	@echo "... src/core/transaction.o"
 	@echo "... src/core/transaction.i"
 	@echo "... src/core/transaction.s"
+	@echo "... src/gui/mainwindow.o"
+	@echo "... src/gui/mainwindow.i"
+	@echo "... src/gui/mainwindow.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

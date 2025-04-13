@@ -4,13 +4,532 @@
 pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
   CMakeFiles/4.0.0/CMakeCXXCompiler.cmake \
   CMakeFiles/4.0.0/CMakeSystem.cmake \
+  pacmangui_autogen/moc_predefs.h \
   /home/matt/PacmanGui-new/cmake/modules/FindALPM.cmake \
+  /home/matt/PacmanGui-new/include/core/package.hpp \
+  /home/matt/PacmanGui-new/include/core/packagemanager.hpp \
+  /home/matt/PacmanGui-new/include/core/repository.hpp \
+  /home/matt/PacmanGui-new/include/core/transaction.hpp \
+  /home/matt/PacmanGui-new/include/gui/mainwindow.hpp \
+  /home/matt/PacmanGui-new/resources/resources.qrc \
   /home/matt/PacmanGui-new/src/core/package.cpp \
   /home/matt/PacmanGui-new/src/core/packagemanager.cpp \
   /home/matt/PacmanGui-new/src/core/repository.cpp \
   /home/matt/PacmanGui-new/src/core/transaction.cpp \
+  /home/matt/PacmanGui-new/src/gui/mainwindow.cpp \
   /home/matt/PacmanGui-new/src/main.cpp \
   /usr/bin/cmake \
+  /usr/include/alloca.h \
+  /usr/include/alpm.h \
+  /usr/include/alpm_list.h \
+  /usr/include/archive.h \
+  /usr/include/archive_entry.h \
+  /usr/include/asm-generic/bitsperlong.h \
+  /usr/include/asm-generic/errno-base.h \
+  /usr/include/asm-generic/errno.h \
+  /usr/include/asm-generic/int-ll64.h \
+  /usr/include/asm-generic/posix_types.h \
+  /usr/include/asm-generic/types.h \
+  /usr/include/asm/bitsperlong.h \
+  /usr/include/asm/errno.h \
+  /usr/include/asm/posix_types.h \
+  /usr/include/asm/posix_types_64.h \
+  /usr/include/asm/types.h \
+  /usr/include/assert.h \
+  /usr/include/bits/atomic_wide_counter.h \
+  /usr/include/bits/byteswap.h \
+  /usr/include/bits/confname.h \
+  /usr/include/bits/cpu-set.h \
+  /usr/include/bits/endian.h \
+  /usr/include/bits/endianness.h \
+  /usr/include/bits/environments.h \
+  /usr/include/bits/errno.h \
+  /usr/include/bits/floatn-common.h \
+  /usr/include/bits/floatn.h \
+  /usr/include/bits/getopt_core.h \
+  /usr/include/bits/getopt_posix.h \
+  /usr/include/bits/libc-header-start.h \
+  /usr/include/bits/local_lim.h \
+  /usr/include/bits/locale.h \
+  /usr/include/bits/long-double.h \
+  /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/posix2_lim.h \
+  /usr/include/bits/posix_opt.h \
+  /usr/include/bits/pthread_stack_min-dynamic.h \
+  /usr/include/bits/pthreadtypes-arch.h \
+  /usr/include/bits/pthreadtypes.h \
+  /usr/include/bits/sched.h \
+  /usr/include/bits/select.h \
+  /usr/include/bits/setjmp.h \
+  /usr/include/bits/stat.h \
+  /usr/include/bits/statx-generic.h \
+  /usr/include/bits/statx.h \
+  /usr/include/bits/stdint-intn.h \
+  /usr/include/bits/stdint-least.h \
+  /usr/include/bits/stdint-uintn.h \
+  /usr/include/bits/stdio_lim.h \
+  /usr/include/bits/stdlib-float.h \
+  /usr/include/bits/struct_mutex.h \
+  /usr/include/bits/struct_rwlock.h \
+  /usr/include/bits/struct_stat.h \
+  /usr/include/bits/thread-shared-types.h \
+  /usr/include/bits/time.h \
+  /usr/include/bits/time64.h \
+  /usr/include/bits/timesize.h \
+  /usr/include/bits/timex.h \
+  /usr/include/bits/types.h \
+  /usr/include/bits/types/FILE.h \
+  /usr/include/bits/types/__FILE.h \
+  /usr/include/bits/types/__fpos64_t.h \
+  /usr/include/bits/types/__fpos_t.h \
+  /usr/include/bits/types/__locale_t.h \
+  /usr/include/bits/types/__mbstate_t.h \
+  /usr/include/bits/types/__sigset_t.h \
+  /usr/include/bits/types/clock_t.h \
+  /usr/include/bits/types/clockid_t.h \
+  /usr/include/bits/types/cookie_io_functions_t.h \
+  /usr/include/bits/types/error_t.h \
+  /usr/include/bits/types/locale_t.h \
+  /usr/include/bits/types/mbstate_t.h \
+  /usr/include/bits/types/sigset_t.h \
+  /usr/include/bits/types/struct_FILE.h \
+  /usr/include/bits/types/struct___jmp_buf_tag.h \
+  /usr/include/bits/types/struct_itimerspec.h \
+  /usr/include/bits/types/struct_sched_param.h \
+  /usr/include/bits/types/struct_statx.h \
+  /usr/include/bits/types/struct_statx_timestamp.h \
+  /usr/include/bits/types/struct_timespec.h \
+  /usr/include/bits/types/struct_timeval.h \
+  /usr/include/bits/types/struct_tm.h \
+  /usr/include/bits/types/time_t.h \
+  /usr/include/bits/types/timer_t.h \
+  /usr/include/bits/types/wint_t.h \
+  /usr/include/bits/typesizes.h \
+  /usr/include/bits/uintn-identity.h \
+  /usr/include/bits/uio_lim.h \
+  /usr/include/bits/unistd_ext.h \
+  /usr/include/bits/waitflags.h \
+  /usr/include/bits/waitstatus.h \
+  /usr/include/bits/wchar.h \
+  /usr/include/bits/wordsize.h \
+  /usr/include/bits/xopen_lim.h \
+  /usr/include/c++/14.2.1/algorithm \
+  /usr/include/c++/14.2.1/array \
+  /usr/include/c++/14.2.1/atomic \
+  /usr/include/c++/14.2.1/backward/auto_ptr.h \
+  /usr/include/c++/14.2.1/backward/binders.h \
+  /usr/include/c++/14.2.1/bit \
+  /usr/include/c++/14.2.1/bits/algorithmfwd.h \
+  /usr/include/c++/14.2.1/bits/align.h \
+  /usr/include/c++/14.2.1/bits/alloc_traits.h \
+  /usr/include/c++/14.2.1/bits/allocated_ptr.h \
+  /usr/include/c++/14.2.1/bits/allocator.h \
+  /usr/include/c++/14.2.1/bits/atomic_base.h \
+  /usr/include/c++/14.2.1/bits/atomic_lockfree_defines.h \
+  /usr/include/c++/14.2.1/bits/basic_string.h \
+  /usr/include/c++/14.2.1/bits/basic_string.tcc \
+  /usr/include/c++/14.2.1/bits/char_traits.h \
+  /usr/include/c++/14.2.1/bits/charconv.h \
+  /usr/include/c++/14.2.1/bits/chrono.h \
+  /usr/include/c++/14.2.1/bits/concept_check.h \
+  /usr/include/c++/14.2.1/bits/cpp_type_traits.h \
+  /usr/include/c++/14.2.1/bits/cxxabi_forced.h \
+  /usr/include/c++/14.2.1/bits/cxxabi_init_exception.h \
+  /usr/include/c++/14.2.1/bits/enable_special_members.h \
+  /usr/include/c++/14.2.1/bits/erase_if.h \
+  /usr/include/c++/14.2.1/bits/exception.h \
+  /usr/include/c++/14.2.1/bits/exception_defines.h \
+  /usr/include/c++/14.2.1/bits/exception_ptr.h \
+  /usr/include/c++/14.2.1/bits/functexcept.h \
+  /usr/include/c++/14.2.1/bits/functional_hash.h \
+  /usr/include/c++/14.2.1/bits/hash_bytes.h \
+  /usr/include/c++/14.2.1/bits/hashtable.h \
+  /usr/include/c++/14.2.1/bits/hashtable_policy.h \
+  /usr/include/c++/14.2.1/bits/invoke.h \
+  /usr/include/c++/14.2.1/bits/ios_base.h \
+  /usr/include/c++/14.2.1/bits/list.tcc \
+  /usr/include/c++/14.2.1/bits/locale_classes.h \
+  /usr/include/c++/14.2.1/bits/locale_classes.tcc \
+  /usr/include/c++/14.2.1/bits/localefwd.h \
+  /usr/include/c++/14.2.1/bits/memory_resource.h \
+  /usr/include/c++/14.2.1/bits/memoryfwd.h \
+  /usr/include/c++/14.2.1/bits/move.h \
+  /usr/include/c++/14.2.1/bits/nested_exception.h \
+  /usr/include/c++/14.2.1/bits/new_allocator.h \
+  /usr/include/c++/14.2.1/bits/node_handle.h \
+  /usr/include/c++/14.2.1/bits/ostream_insert.h \
+  /usr/include/c++/14.2.1/bits/parse_numbers.h \
+  /usr/include/c++/14.2.1/bits/postypes.h \
+  /usr/include/c++/14.2.1/bits/predefined_ops.h \
+  /usr/include/c++/14.2.1/bits/ptr_traits.h \
+  /usr/include/c++/14.2.1/bits/range_access.h \
+  /usr/include/c++/14.2.1/bits/refwrap.h \
+  /usr/include/c++/14.2.1/bits/requires_hosted.h \
+  /usr/include/c++/14.2.1/bits/shared_ptr.h \
+  /usr/include/c++/14.2.1/bits/shared_ptr_atomic.h \
+  /usr/include/c++/14.2.1/bits/shared_ptr_base.h \
+  /usr/include/c++/14.2.1/bits/specfun.h \
+  /usr/include/c++/14.2.1/bits/std_abs.h \
+  /usr/include/c++/14.2.1/bits/std_function.h \
+  /usr/include/c++/14.2.1/bits/stl_algo.h \
+  /usr/include/c++/14.2.1/bits/stl_algobase.h \
+  /usr/include/c++/14.2.1/bits/stl_bvector.h \
+  /usr/include/c++/14.2.1/bits/stl_construct.h \
+  /usr/include/c++/14.2.1/bits/stl_function.h \
+  /usr/include/c++/14.2.1/bits/stl_heap.h \
+  /usr/include/c++/14.2.1/bits/stl_iterator.h \
+  /usr/include/c++/14.2.1/bits/stl_iterator_base_funcs.h \
+  /usr/include/c++/14.2.1/bits/stl_iterator_base_types.h \
+  /usr/include/c++/14.2.1/bits/stl_list.h \
+  /usr/include/c++/14.2.1/bits/stl_map.h \
+  /usr/include/c++/14.2.1/bits/stl_multimap.h \
+  /usr/include/c++/14.2.1/bits/stl_multiset.h \
+  /usr/include/c++/14.2.1/bits/stl_numeric.h \
+  /usr/include/c++/14.2.1/bits/stl_pair.h \
+  /usr/include/c++/14.2.1/bits/stl_raw_storage_iter.h \
+  /usr/include/c++/14.2.1/bits/stl_relops.h \
+  /usr/include/c++/14.2.1/bits/stl_set.h \
+  /usr/include/c++/14.2.1/bits/stl_tempbuf.h \
+  /usr/include/c++/14.2.1/bits/stl_tree.h \
+  /usr/include/c++/14.2.1/bits/stl_uninitialized.h \
+  /usr/include/c++/14.2.1/bits/stl_vector.h \
+  /usr/include/c++/14.2.1/bits/stream_iterator.h \
+  /usr/include/c++/14.2.1/bits/streambuf.tcc \
+  /usr/include/c++/14.2.1/bits/streambuf_iterator.h \
+  /usr/include/c++/14.2.1/bits/string_view.tcc \
+  /usr/include/c++/14.2.1/bits/stringfwd.h \
+  /usr/include/c++/14.2.1/bits/uniform_int_dist.h \
+  /usr/include/c++/14.2.1/bits/unique_ptr.h \
+  /usr/include/c++/14.2.1/bits/unordered_map.h \
+  /usr/include/c++/14.2.1/bits/unordered_set.h \
+  /usr/include/c++/14.2.1/bits/uses_allocator.h \
+  /usr/include/c++/14.2.1/bits/uses_allocator_args.h \
+  /usr/include/c++/14.2.1/bits/utility.h \
+  /usr/include/c++/14.2.1/bits/vector.tcc \
+  /usr/include/c++/14.2.1/bits/version.h \
+  /usr/include/c++/14.2.1/cassert \
+  /usr/include/c++/14.2.1/cctype \
+  /usr/include/c++/14.2.1/cerrno \
+  /usr/include/c++/14.2.1/chrono \
+  /usr/include/c++/14.2.1/climits \
+  /usr/include/c++/14.2.1/clocale \
+  /usr/include/c++/14.2.1/cmath \
+  /usr/include/c++/14.2.1/compare \
+  /usr/include/c++/14.2.1/concepts \
+  /usr/include/c++/14.2.1/cstddef \
+  /usr/include/c++/14.2.1/cstdint \
+  /usr/include/c++/14.2.1/cstdio \
+  /usr/include/c++/14.2.1/cstdlib \
+  /usr/include/c++/14.2.1/cstring \
+  /usr/include/c++/14.2.1/ctime \
+  /usr/include/c++/14.2.1/cwchar \
+  /usr/include/c++/14.2.1/debug/assertions.h \
+  /usr/include/c++/14.2.1/debug/debug.h \
+  /usr/include/c++/14.2.1/exception \
+  /usr/include/c++/14.2.1/ext/aligned_buffer.h \
+  /usr/include/c++/14.2.1/ext/alloc_traits.h \
+  /usr/include/c++/14.2.1/ext/atomicity.h \
+  /usr/include/c++/14.2.1/ext/concurrence.h \
+  /usr/include/c++/14.2.1/ext/numeric_traits.h \
+  /usr/include/c++/14.2.1/ext/string_conversions.h \
+  /usr/include/c++/14.2.1/ext/type_traits.h \
+  /usr/include/c++/14.2.1/functional \
+  /usr/include/c++/14.2.1/initializer_list \
+  /usr/include/c++/14.2.1/iosfwd \
+  /usr/include/c++/14.2.1/iterator \
+  /usr/include/c++/14.2.1/limits \
+  /usr/include/c++/14.2.1/list \
+  /usr/include/c++/14.2.1/map \
+  /usr/include/c++/14.2.1/memory \
+  /usr/include/c++/14.2.1/new \
+  /usr/include/c++/14.2.1/numeric \
+  /usr/include/c++/14.2.1/optional \
+  /usr/include/c++/14.2.1/pstl/execution_defs.h \
+  /usr/include/c++/14.2.1/pstl/glue_numeric_defs.h \
+  /usr/include/c++/14.2.1/ratio \
+  /usr/include/c++/14.2.1/set \
+  /usr/include/c++/14.2.1/stdexcept \
+  /usr/include/c++/14.2.1/streambuf \
+  /usr/include/c++/14.2.1/string \
+  /usr/include/c++/14.2.1/string_view \
+  /usr/include/c++/14.2.1/system_error \
+  /usr/include/c++/14.2.1/tr1/bessel_function.tcc \
+  /usr/include/c++/14.2.1/tr1/beta_function.tcc \
+  /usr/include/c++/14.2.1/tr1/ell_integral.tcc \
+  /usr/include/c++/14.2.1/tr1/exp_integral.tcc \
+  /usr/include/c++/14.2.1/tr1/gamma.tcc \
+  /usr/include/c++/14.2.1/tr1/hypergeometric.tcc \
+  /usr/include/c++/14.2.1/tr1/legendre_function.tcc \
+  /usr/include/c++/14.2.1/tr1/modified_bessel_func.tcc \
+  /usr/include/c++/14.2.1/tr1/poly_hermite.tcc \
+  /usr/include/c++/14.2.1/tr1/poly_laguerre.tcc \
+  /usr/include/c++/14.2.1/tr1/riemann_zeta.tcc \
+  /usr/include/c++/14.2.1/tr1/special_function_util.h \
+  /usr/include/c++/14.2.1/tuple \
+  /usr/include/c++/14.2.1/type_traits \
+  /usr/include/c++/14.2.1/typeinfo \
+  /usr/include/c++/14.2.1/unordered_map \
+  /usr/include/c++/14.2.1/unordered_set \
+  /usr/include/c++/14.2.1/utility \
+  /usr/include/c++/14.2.1/variant \
+  /usr/include/c++/14.2.1/vector \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++locale.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/error_constants.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/gthr-default.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/gthr.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/os_defines.h \
+  /usr/include/ctype.h \
+  /usr/include/endian.h \
+  /usr/include/errno.h \
+  /usr/include/features-time64.h \
+  /usr/include/features.h \
+  /usr/include/gnu/stubs-64.h \
+  /usr/include/gnu/stubs.h \
+  /usr/include/inttypes.h \
+  /usr/include/limits.h \
+  /usr/include/linux/errno.h \
+  /usr/include/linux/limits.h \
+  /usr/include/linux/posix_types.h \
+  /usr/include/linux/stddef.h \
+  /usr/include/linux/types.h \
+  /usr/include/locale.h \
+  /usr/include/pthread.h \
+  /usr/include/qt6/QtCore/QSet \
+  /usr/include/qt6/QtCore/q17memory.h \
+  /usr/include/qt6/QtCore/q20functional.h \
+  /usr/include/qt6/QtCore/q20iterator.h \
+  /usr/include/qt6/QtCore/q20memory.h \
+  /usr/include/qt6/QtCore/q20type_traits.h \
+  /usr/include/qt6/QtCore/q20utility.h \
+  /usr/include/qt6/QtCore/q23utility.h \
+  /usr/include/qt6/QtCore/qabstractitemmodel.h \
+  /usr/include/qt6/QtCore/qalgorithms.h \
+  /usr/include/qt6/QtCore/qanystringview.h \
+  /usr/include/qt6/QtCore/qarraydata.h \
+  /usr/include/qt6/QtCore/qarraydataops.h \
+  /usr/include/qt6/QtCore/qarraydatapointer.h \
+  /usr/include/qt6/QtCore/qassert.h \
+  /usr/include/qt6/QtCore/qatomic.h \
+  /usr/include/qt6/QtCore/qatomic_cxx11.h \
+  /usr/include/qt6/QtCore/qbasicatomic.h \
+  /usr/include/qt6/QtCore/qbindingstorage.h \
+  /usr/include/qt6/QtCore/qbytearray.h \
+  /usr/include/qt6/QtCore/qbytearrayalgorithms.h \
+  /usr/include/qt6/QtCore/qbytearraylist.h \
+  /usr/include/qt6/QtCore/qbytearrayview.h \
+  /usr/include/qt6/QtCore/qchar.h \
+  /usr/include/qt6/QtCore/qcompare.h \
+  /usr/include/qt6/QtCore/qcompare_impl.h \
+  /usr/include/qt6/QtCore/qcomparehelpers.h \
+  /usr/include/qt6/QtCore/qcompilerdetection.h \
+  /usr/include/qt6/QtCore/qconfig.h \
+  /usr/include/qt6/QtCore/qconstructormacros.h \
+  /usr/include/qt6/QtCore/qcontainerfwd.h \
+  /usr/include/qt6/QtCore/qcontainerinfo.h \
+  /usr/include/qt6/QtCore/qcontainertools_impl.h \
+  /usr/include/qt6/QtCore/qcontiguouscache.h \
+  /usr/include/qt6/QtCore/qdarwinhelpers.h \
+  /usr/include/qt6/QtCore/qdatastream.h \
+  /usr/include/qt6/QtCore/qdebug.h \
+  /usr/include/qt6/QtCore/qendian.h \
+  /usr/include/qt6/QtCore/qexceptionhandling.h \
+  /usr/include/qt6/QtCore/qflags.h \
+  /usr/include/qt6/QtCore/qfloat16.h \
+  /usr/include/qt6/QtCore/qforeach.h \
+  /usr/include/qt6/QtCore/qfunctionaltools_impl.h \
+  /usr/include/qt6/QtCore/qfunctionpointer.h \
+  /usr/include/qt6/QtCore/qgenericatomic.h \
+  /usr/include/qt6/QtCore/qglobal.h \
+  /usr/include/qt6/QtCore/qglobalstatic.h \
+  /usr/include/qt6/QtCore/qhash.h \
+  /usr/include/qt6/QtCore/qhashfunctions.h \
+  /usr/include/qt6/QtCore/qiodevice.h \
+  /usr/include/qt6/QtCore/qiodevicebase.h \
+  /usr/include/qt6/QtCore/qitemselectionmodel.h \
+  /usr/include/qt6/QtCore/qiterable.h \
+  /usr/include/qt6/QtCore/qiterator.h \
+  /usr/include/qt6/QtCore/qlatin1stringview.h \
+  /usr/include/qt6/QtCore/qline.h \
+  /usr/include/qt6/QtCore/qlist.h \
+  /usr/include/qt6/QtCore/qlocale.h \
+  /usr/include/qt6/QtCore/qlogging.h \
+  /usr/include/qt6/QtCore/qmalloc.h \
+  /usr/include/qt6/QtCore/qmap.h \
+  /usr/include/qt6/QtCore/qmargins.h \
+  /usr/include/qt6/QtCore/qmath.h \
+  /usr/include/qt6/QtCore/qmetacontainer.h \
+  /usr/include/qt6/QtCore/qmetatype.h \
+  /usr/include/qt6/QtCore/qminmax.h \
+  /usr/include/qt6/QtCore/qnamespace.h \
+  /usr/include/qt6/QtCore/qnumeric.h \
+  /usr/include/qt6/QtCore/qobject.h \
+  /usr/include/qt6/QtCore/qobject_impl.h \
+  /usr/include/qt6/QtCore/qobjectdefs.h \
+  /usr/include/qt6/QtCore/qobjectdefs_impl.h \
+  /usr/include/qt6/QtCore/qoverload.h \
+  /usr/include/qt6/QtCore/qpair.h \
+  /usr/include/qt6/QtCore/qpoint.h \
+  /usr/include/qt6/QtCore/qprocessordetection.h \
+  /usr/include/qt6/QtCore/qrect.h \
+  /usr/include/qt6/QtCore/qrefcount.h \
+  /usr/include/qt6/QtCore/qregularexpression.h \
+  /usr/include/qt6/QtCore/qscopedpointer.h \
+  /usr/include/qt6/QtCore/qscopeguard.h \
+  /usr/include/qt6/QtCore/qset.h \
+  /usr/include/qt6/QtCore/qshareddata.h \
+  /usr/include/qt6/QtCore/qshareddata_impl.h \
+  /usr/include/qt6/QtCore/qsharedpointer.h \
+  /usr/include/qt6/QtCore/qsharedpointer_impl.h \
+  /usr/include/qt6/QtCore/qsize.h \
+  /usr/include/qt6/QtCore/qspan.h \
+  /usr/include/qt6/QtCore/qstdlibdetection.h \
+  /usr/include/qt6/QtCore/qstring.h \
+  /usr/include/qt6/QtCore/qstringalgorithms.h \
+  /usr/include/qt6/QtCore/qstringbuilder.h \
+  /usr/include/qt6/QtCore/qstringconverter.h \
+  /usr/include/qt6/QtCore/qstringconverter_base.h \
+  /usr/include/qt6/QtCore/qstringfwd.h \
+  /usr/include/qt6/QtCore/qstringlist.h \
+  /usr/include/qt6/QtCore/qstringliteral.h \
+  /usr/include/qt6/QtCore/qstringmatcher.h \
+  /usr/include/qt6/QtCore/qstringtokenizer.h \
+  /usr/include/qt6/QtCore/qstringview.h \
+  /usr/include/qt6/QtCore/qswap.h \
+  /usr/include/qt6/QtCore/qsysinfo.h \
+  /usr/include/qt6/QtCore/qsystemdetection.h \
+  /usr/include/qt6/QtCore/qtaggedpointer.h \
+  /usr/include/qt6/QtCore/qtclasshelpermacros.h \
+  /usr/include/qt6/QtCore/qtconfiginclude.h \
+  /usr/include/qt6/QtCore/qtconfigmacros.h \
+  /usr/include/qt6/QtCore/qtcore-config.h \
+  /usr/include/qt6/QtCore/qtcoreexports.h \
+  /usr/include/qt6/QtCore/qtcoreglobal.h \
+  /usr/include/qt6/QtCore/qtdeprecationdefinitions.h \
+  /usr/include/qt6/QtCore/qtdeprecationmarkers.h \
+  /usr/include/qt6/QtCore/qtenvironmentvariables.h \
+  /usr/include/qt6/QtCore/qtextstream.h \
+  /usr/include/qt6/QtCore/qtformat_impl.h \
+  /usr/include/qt6/QtCore/qtmetamacros.h \
+  /usr/include/qt6/QtCore/qtnoop.h \
+  /usr/include/qt6/QtCore/qtpreprocessorsupport.h \
+  /usr/include/qt6/QtCore/qtresource.h \
+  /usr/include/qt6/QtCore/qttranslation.h \
+  /usr/include/qt6/QtCore/qttypetraits.h \
+  /usr/include/qt6/QtCore/qtversion.h \
+  /usr/include/qt6/QtCore/qtversionchecks.h \
+  /usr/include/qt6/QtCore/qtypeinfo.h \
+  /usr/include/qt6/QtCore/qtypes.h \
+  /usr/include/qt6/QtCore/qurl.h \
+  /usr/include/qt6/QtCore/qutf8stringview.h \
+  /usr/include/qt6/QtCore/qvariant.h \
+  /usr/include/qt6/QtCore/qvarlengtharray.h \
+  /usr/include/qt6/QtCore/qversiontagging.h \
+  /usr/include/qt6/QtCore/qxptype_traits.h \
+  /usr/include/qt6/QtCore/qyieldcpu.h \
+  /usr/include/qt6/QtGui/QAction \
+  /usr/include/qt6/QtGui/QStandardItemModel \
+  /usr/include/qt6/QtGui/qaction.h \
+  /usr/include/qt6/QtGui/qbitmap.h \
+  /usr/include/qt6/QtGui/qbrush.h \
+  /usr/include/qt6/QtGui/qcolor.h \
+  /usr/include/qt6/QtGui/qcursor.h \
+  /usr/include/qt6/QtGui/qfont.h \
+  /usr/include/qt6/QtGui/qfontinfo.h \
+  /usr/include/qt6/QtGui/qfontmetrics.h \
+  /usr/include/qt6/QtGui/qfontvariableaxis.h \
+  /usr/include/qt6/QtGui/qicon.h \
+  /usr/include/qt6/QtGui/qimage.h \
+  /usr/include/qt6/QtGui/qkeysequence.h \
+  /usr/include/qt6/QtGui/qpaintdevice.h \
+  /usr/include/qt6/QtGui/qpalette.h \
+  /usr/include/qt6/QtGui/qpen.h \
+  /usr/include/qt6/QtGui/qpicture.h \
+  /usr/include/qt6/QtGui/qpixelformat.h \
+  /usr/include/qt6/QtGui/qpixmap.h \
+  /usr/include/qt6/QtGui/qpolygon.h \
+  /usr/include/qt6/QtGui/qregion.h \
+  /usr/include/qt6/QtGui/qrgb.h \
+  /usr/include/qt6/QtGui/qrgba64.h \
+  /usr/include/qt6/QtGui/qstandarditemmodel.h \
+  /usr/include/qt6/QtGui/qtextcursor.h \
+  /usr/include/qt6/QtGui/qtextdocument.h \
+  /usr/include/qt6/QtGui/qtextformat.h \
+  /usr/include/qt6/QtGui/qtextoption.h \
+  /usr/include/qt6/QtGui/qtgui-config.h \
+  /usr/include/qt6/QtGui/qtguiexports.h \
+  /usr/include/qt6/QtGui/qtguiglobal.h \
+  /usr/include/qt6/QtGui/qtransform.h \
+  /usr/include/qt6/QtGui/qvalidator.h \
+  /usr/include/qt6/QtGui/qwindowdefs.h \
+  /usr/include/qt6/QtWidgets/QCheckBox \
+  /usr/include/qt6/QtWidgets/QHBoxLayout \
+  /usr/include/qt6/QtWidgets/QLabel \
+  /usr/include/qt6/QtWidgets/QLineEdit \
+  /usr/include/qt6/QtWidgets/QListView \
+  /usr/include/qt6/QtWidgets/QMainWindow \
+  /usr/include/qt6/QtWidgets/QMenu \
+  /usr/include/qt6/QtWidgets/QPushButton \
+  /usr/include/qt6/QtWidgets/QSplitter \
+  /usr/include/qt6/QtWidgets/QStackedWidget \
+  /usr/include/qt6/QtWidgets/QStatusBar \
+  /usr/include/qt6/QtWidgets/QTabWidget \
+  /usr/include/qt6/QtWidgets/QTableView \
+  /usr/include/qt6/QtWidgets/QTextEdit \
+  /usr/include/qt6/QtWidgets/QToolBar \
+  /usr/include/qt6/QtWidgets/QVBoxLayout \
+  /usr/include/qt6/QtWidgets/qabstractbutton.h \
+  /usr/include/qt6/QtWidgets/qabstractitemdelegate.h \
+  /usr/include/qt6/QtWidgets/qabstractitemview.h \
+  /usr/include/qt6/QtWidgets/qabstractscrollarea.h \
+  /usr/include/qt6/QtWidgets/qabstractslider.h \
+  /usr/include/qt6/QtWidgets/qabstractspinbox.h \
+  /usr/include/qt6/QtWidgets/qboxlayout.h \
+  /usr/include/qt6/QtWidgets/qcheckbox.h \
+  /usr/include/qt6/QtWidgets/qframe.h \
+  /usr/include/qt6/QtWidgets/qgridlayout.h \
+  /usr/include/qt6/QtWidgets/qlabel.h \
+  /usr/include/qt6/QtWidgets/qlayout.h \
+  /usr/include/qt6/QtWidgets/qlayoutitem.h \
+  /usr/include/qt6/QtWidgets/qlineedit.h \
+  /usr/include/qt6/QtWidgets/qlistview.h \
+  /usr/include/qt6/QtWidgets/qmainwindow.h \
+  /usr/include/qt6/QtWidgets/qmenu.h \
+  /usr/include/qt6/QtWidgets/qpushbutton.h \
+  /usr/include/qt6/QtWidgets/qrubberband.h \
+  /usr/include/qt6/QtWidgets/qsizepolicy.h \
+  /usr/include/qt6/QtWidgets/qslider.h \
+  /usr/include/qt6/QtWidgets/qsplitter.h \
+  /usr/include/qt6/QtWidgets/qstackedwidget.h \
+  /usr/include/qt6/QtWidgets/qstatusbar.h \
+  /usr/include/qt6/QtWidgets/qstyle.h \
+  /usr/include/qt6/QtWidgets/qstyleoption.h \
+  /usr/include/qt6/QtWidgets/qtabbar.h \
+  /usr/include/qt6/QtWidgets/qtableview.h \
+  /usr/include/qt6/QtWidgets/qtabwidget.h \
+  /usr/include/qt6/QtWidgets/qtextedit.h \
+  /usr/include/qt6/QtWidgets/qtoolbar.h \
+  /usr/include/qt6/QtWidgets/qtwidgets-config.h \
+  /usr/include/qt6/QtWidgets/qtwidgetsexports.h \
+  /usr/include/qt6/QtWidgets/qtwidgetsglobal.h \
+  /usr/include/qt6/QtWidgets/qwidget.h \
+  /usr/include/sched.h \
+  /usr/include/stdc-predef.h \
+  /usr/include/stdint.h \
+  /usr/include/stdio.h \
+  /usr/include/stdlib.h \
+  /usr/include/string.h \
+  /usr/include/strings.h \
+  /usr/include/sys/cdefs.h \
+  /usr/include/sys/select.h \
+  /usr/include/sys/stat.h \
+  /usr/include/sys/types.h \
+  /usr/include/time.h \
+  /usr/include/unistd.h \
+  /usr/include/wchar.h \
   /usr/lib/cmake/Qt6/3rdparty/kwin/FindXKB.cmake \
   /usr/lib/cmake/Qt6/FindWrapAtomic.cmake \
   /usr/lib/cmake/Qt6/FindWrapOpenGL.cmake \
@@ -315,22 +834,82 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
   /usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsTargets-relwithdebinfo.cmake \
   /usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsTargets.cmake \
   /usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsVersionlessTargets.cmake \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdarg.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdbool.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stddef.h \
+  /usr/share/cmake/Modules/CMakeCXXCompiler.cmake.in \
+  /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp \
   /usr/share/cmake/Modules/CMakeCXXInformation.cmake \
   /usr/share/cmake/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake \
   /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake \
+  /usr/share/cmake/Modules/CMakeCompilerIdDetection.cmake \
+  /usr/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake \
+  /usr/share/cmake/Modules/CMakeDetermineCompiler.cmake \
+  /usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake \
+  /usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake \
+  /usr/share/cmake/Modules/CMakeDetermineCompilerSupport.cmake \
+  /usr/share/cmake/Modules/CMakeDetermineSystem.cmake \
+  /usr/share/cmake/Modules/CMakeFindBinUtils.cmake \
   /usr/share/cmake/Modules/CMakeFindDependencyMacro.cmake \
   /usr/share/cmake/Modules/CMakeGenericSystem.cmake \
   /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake \
   /usr/share/cmake/Modules/CMakeLanguageInformation.cmake \
+  /usr/share/cmake/Modules/CMakeParseImplicitIncludeInfo.cmake \
+  /usr/share/cmake/Modules/CMakeParseImplicitLinkInfo.cmake \
+  /usr/share/cmake/Modules/CMakeParseLibraryArchitecture.cmake \
+  /usr/share/cmake/Modules/CMakeSystem.cmake.in \
   /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake \
   /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake \
+  /usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake \
+  /usr/share/cmake/Modules/CMakeTestCompilerCommon.cmake \
+  /usr/share/cmake/Modules/CMakeUnixFindMake.cmake \
   /usr/share/cmake/Modules/CheckCXXCompilerFlag.cmake \
   /usr/share/cmake/Modules/CheckCXXSourceCompiles.cmake \
   /usr/share/cmake/Modules/CheckIncludeFileCXX.cmake \
   /usr/share/cmake/Modules/CheckLibraryExists.cmake \
+  /usr/share/cmake/Modules/Compiler/ADSP-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/ARMCC-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/ARMClang-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/AppleClang-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/Borland-DetermineCompiler.cmake \
   /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake \
+  /usr/share/cmake/Modules/Compiler/Clang-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/Clang-DetermineCompilerInternal.cmake \
+  /usr/share/cmake/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/Cray-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/CrayClang-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/Embarcadero-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/Fujitsu-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/GHS-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake \
   /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake \
+  /usr/share/cmake/Modules/Compiler/GNU-FindBinUtils.cmake \
   /usr/share/cmake/Modules/Compiler/GNU.cmake \
+  /usr/share/cmake/Modules/Compiler/HP-CXX-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/IAR-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake \
+  /usr/share/cmake/Modules/Compiler/IBMClang-CXX-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/Intel-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/LCC-CXX-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/MSVC-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/NVHPC-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/NVIDIA-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/OrangeC-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/PGI-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/PathScale-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/SCO-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/TI-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/TIClang-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/Tasking-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/Watcom-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/XL-CXX-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake \
+  /usr/share/cmake/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake \
   /usr/share/cmake/Modules/FeatureSummary.cmake \
   /usr/share/cmake/Modules/FindOpenGL.cmake \
   /usr/share/cmake/Modules/FindPackageHandleStandardArgs.cmake \
@@ -341,23 +920,576 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
   /usr/share/cmake/Modules/GNUInstallDirs.cmake \
   /usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake \
   /usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake \
+  /usr/share/cmake/Modules/Internal/CMakeDetermineLinkerId.cmake \
+  /usr/share/cmake/Modules/Internal/CMakeInspectCXXLinker.cmake \
   /usr/share/cmake/Modules/Internal/CheckCompilerFlag.cmake \
   /usr/share/cmake/Modules/Internal/CheckFlagCommonConfig.cmake \
   /usr/share/cmake/Modules/Internal/CheckSourceCompiles.cmake \
+  /usr/share/cmake/Modules/Internal/FeatureTesting.cmake \
   /usr/share/cmake/Modules/Linker/GNU-CXX.cmake \
   /usr/share/cmake/Modules/Linker/GNU.cmake \
   /usr/share/cmake/Modules/MacroAddFileDependencies.cmake \
   /usr/share/cmake/Modules/Platform/Linker/GNU.cmake \
   /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake \
   /usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake \
+  /usr/share/cmake/Modules/Platform/Linux-Determine-CXX.cmake \
   /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake \
   /usr/share/cmake/Modules/Platform/Linux-GNU.cmake \
   /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake \
   /usr/share/cmake/Modules/Platform/Linux.cmake \
   /usr/share/cmake/Modules/Platform/UnixPaths.cmake
 
-CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o: pacmangui_autogen/mocs_compilation.cpp \
+CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o: pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp \
   /usr/include/stdc-predef.h
+
+CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o: pacmangui_autogen/mocs_compilation.cpp \
+  /home/matt/PacmanGui-new/include/gui/mainwindow.hpp \
+  pacmangui_autogen/BMPI5EA7AM/moc_mainwindow.cpp \
+  /home/matt/PacmanGui-new/include/core/package.hpp \
+  /home/matt/PacmanGui-new/include/core/packagemanager.hpp \
+  /home/matt/PacmanGui-new/include/core/repository.hpp \
+  /home/matt/PacmanGui-new/include/core/transaction.hpp \
+  /usr/include/alloca.h \
+  /usr/include/alpm.h \
+  /usr/include/alpm_list.h \
+  /usr/include/archive.h \
+  /usr/include/archive_entry.h \
+  /usr/include/asm-generic/bitsperlong.h \
+  /usr/include/asm-generic/errno-base.h \
+  /usr/include/asm-generic/errno.h \
+  /usr/include/asm-generic/int-ll64.h \
+  /usr/include/asm-generic/posix_types.h \
+  /usr/include/asm-generic/types.h \
+  /usr/include/asm/bitsperlong.h \
+  /usr/include/asm/errno.h \
+  /usr/include/asm/posix_types.h \
+  /usr/include/asm/posix_types_64.h \
+  /usr/include/asm/types.h \
+  /usr/include/assert.h \
+  /usr/include/bits/atomic_wide_counter.h \
+  /usr/include/bits/byteswap.h \
+  /usr/include/bits/confname.h \
+  /usr/include/bits/cpu-set.h \
+  /usr/include/bits/endian.h \
+  /usr/include/bits/endianness.h \
+  /usr/include/bits/environments.h \
+  /usr/include/bits/errno.h \
+  /usr/include/bits/floatn-common.h \
+  /usr/include/bits/floatn.h \
+  /usr/include/bits/flt-eval-method.h \
+  /usr/include/bits/fp-fast.h \
+  /usr/include/bits/fp-logb.h \
+  /usr/include/bits/getopt_core.h \
+  /usr/include/bits/getopt_posix.h \
+  /usr/include/bits/iscanonical.h \
+  /usr/include/bits/libc-header-start.h \
+  /usr/include/bits/libm-simd-decl-stubs.h \
+  /usr/include/bits/local_lim.h \
+  /usr/include/bits/locale.h \
+  /usr/include/bits/long-double.h \
+  /usr/include/bits/math-vector.h \
+  /usr/include/bits/mathcalls-helper-functions.h \
+  /usr/include/bits/mathcalls-macros.h \
+  /usr/include/bits/mathcalls-narrow.h \
+  /usr/include/bits/mathcalls.h \
+  /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/posix2_lim.h \
+  /usr/include/bits/posix_opt.h \
+  /usr/include/bits/pthread_stack_min-dynamic.h \
+  /usr/include/bits/pthreadtypes-arch.h \
+  /usr/include/bits/pthreadtypes.h \
+  /usr/include/bits/sched.h \
+  /usr/include/bits/select.h \
+  /usr/include/bits/setjmp.h \
+  /usr/include/bits/stat.h \
+  /usr/include/bits/statx-generic.h \
+  /usr/include/bits/statx.h \
+  /usr/include/bits/stdint-intn.h \
+  /usr/include/bits/stdint-least.h \
+  /usr/include/bits/stdint-uintn.h \
+  /usr/include/bits/stdio_lim.h \
+  /usr/include/bits/stdlib-float.h \
+  /usr/include/bits/struct_mutex.h \
+  /usr/include/bits/struct_rwlock.h \
+  /usr/include/bits/struct_stat.h \
+  /usr/include/bits/thread-shared-types.h \
+  /usr/include/bits/time.h \
+  /usr/include/bits/time64.h \
+  /usr/include/bits/timesize.h \
+  /usr/include/bits/timex.h \
+  /usr/include/bits/types.h \
+  /usr/include/bits/types/FILE.h \
+  /usr/include/bits/types/__FILE.h \
+  /usr/include/bits/types/__fpos64_t.h \
+  /usr/include/bits/types/__fpos_t.h \
+  /usr/include/bits/types/__locale_t.h \
+  /usr/include/bits/types/__mbstate_t.h \
+  /usr/include/bits/types/__sigset_t.h \
+  /usr/include/bits/types/clock_t.h \
+  /usr/include/bits/types/clockid_t.h \
+  /usr/include/bits/types/cookie_io_functions_t.h \
+  /usr/include/bits/types/error_t.h \
+  /usr/include/bits/types/locale_t.h \
+  /usr/include/bits/types/mbstate_t.h \
+  /usr/include/bits/types/sigset_t.h \
+  /usr/include/bits/types/struct_FILE.h \
+  /usr/include/bits/types/struct___jmp_buf_tag.h \
+  /usr/include/bits/types/struct_itimerspec.h \
+  /usr/include/bits/types/struct_sched_param.h \
+  /usr/include/bits/types/struct_statx.h \
+  /usr/include/bits/types/struct_statx_timestamp.h \
+  /usr/include/bits/types/struct_timespec.h \
+  /usr/include/bits/types/struct_timeval.h \
+  /usr/include/bits/types/struct_tm.h \
+  /usr/include/bits/types/time_t.h \
+  /usr/include/bits/types/timer_t.h \
+  /usr/include/bits/types/wint_t.h \
+  /usr/include/bits/typesizes.h \
+  /usr/include/bits/uintn-identity.h \
+  /usr/include/bits/uio_lim.h \
+  /usr/include/bits/unistd_ext.h \
+  /usr/include/bits/waitflags.h \
+  /usr/include/bits/waitstatus.h \
+  /usr/include/bits/wchar.h \
+  /usr/include/bits/wordsize.h \
+  /usr/include/bits/xopen_lim.h \
+  /usr/include/c++/14.2.1/algorithm \
+  /usr/include/c++/14.2.1/array \
+  /usr/include/c++/14.2.1/atomic \
+  /usr/include/c++/14.2.1/backward/auto_ptr.h \
+  /usr/include/c++/14.2.1/backward/binders.h \
+  /usr/include/c++/14.2.1/bit \
+  /usr/include/c++/14.2.1/bits/algorithmfwd.h \
+  /usr/include/c++/14.2.1/bits/align.h \
+  /usr/include/c++/14.2.1/bits/alloc_traits.h \
+  /usr/include/c++/14.2.1/bits/allocated_ptr.h \
+  /usr/include/c++/14.2.1/bits/allocator.h \
+  /usr/include/c++/14.2.1/bits/atomic_base.h \
+  /usr/include/c++/14.2.1/bits/atomic_lockfree_defines.h \
+  /usr/include/c++/14.2.1/bits/basic_string.h \
+  /usr/include/c++/14.2.1/bits/basic_string.tcc \
+  /usr/include/c++/14.2.1/bits/char_traits.h \
+  /usr/include/c++/14.2.1/bits/charconv.h \
+  /usr/include/c++/14.2.1/bits/chrono.h \
+  /usr/include/c++/14.2.1/bits/concept_check.h \
+  /usr/include/c++/14.2.1/bits/cpp_type_traits.h \
+  /usr/include/c++/14.2.1/bits/cxxabi_forced.h \
+  /usr/include/c++/14.2.1/bits/cxxabi_init_exception.h \
+  /usr/include/c++/14.2.1/bits/enable_special_members.h \
+  /usr/include/c++/14.2.1/bits/erase_if.h \
+  /usr/include/c++/14.2.1/bits/exception.h \
+  /usr/include/c++/14.2.1/bits/exception_defines.h \
+  /usr/include/c++/14.2.1/bits/exception_ptr.h \
+  /usr/include/c++/14.2.1/bits/functexcept.h \
+  /usr/include/c++/14.2.1/bits/functional_hash.h \
+  /usr/include/c++/14.2.1/bits/hash_bytes.h \
+  /usr/include/c++/14.2.1/bits/hashtable.h \
+  /usr/include/c++/14.2.1/bits/hashtable_policy.h \
+  /usr/include/c++/14.2.1/bits/invoke.h \
+  /usr/include/c++/14.2.1/bits/ios_base.h \
+  /usr/include/c++/14.2.1/bits/list.tcc \
+  /usr/include/c++/14.2.1/bits/locale_classes.h \
+  /usr/include/c++/14.2.1/bits/locale_classes.tcc \
+  /usr/include/c++/14.2.1/bits/localefwd.h \
+  /usr/include/c++/14.2.1/bits/memory_resource.h \
+  /usr/include/c++/14.2.1/bits/memoryfwd.h \
+  /usr/include/c++/14.2.1/bits/move.h \
+  /usr/include/c++/14.2.1/bits/nested_exception.h \
+  /usr/include/c++/14.2.1/bits/new_allocator.h \
+  /usr/include/c++/14.2.1/bits/node_handle.h \
+  /usr/include/c++/14.2.1/bits/ostream_insert.h \
+  /usr/include/c++/14.2.1/bits/parse_numbers.h \
+  /usr/include/c++/14.2.1/bits/postypes.h \
+  /usr/include/c++/14.2.1/bits/predefined_ops.h \
+  /usr/include/c++/14.2.1/bits/ptr_traits.h \
+  /usr/include/c++/14.2.1/bits/range_access.h \
+  /usr/include/c++/14.2.1/bits/refwrap.h \
+  /usr/include/c++/14.2.1/bits/requires_hosted.h \
+  /usr/include/c++/14.2.1/bits/shared_ptr.h \
+  /usr/include/c++/14.2.1/bits/shared_ptr_atomic.h \
+  /usr/include/c++/14.2.1/bits/shared_ptr_base.h \
+  /usr/include/c++/14.2.1/bits/specfun.h \
+  /usr/include/c++/14.2.1/bits/std_abs.h \
+  /usr/include/c++/14.2.1/bits/std_function.h \
+  /usr/include/c++/14.2.1/bits/stl_algo.h \
+  /usr/include/c++/14.2.1/bits/stl_algobase.h \
+  /usr/include/c++/14.2.1/bits/stl_bvector.h \
+  /usr/include/c++/14.2.1/bits/stl_construct.h \
+  /usr/include/c++/14.2.1/bits/stl_function.h \
+  /usr/include/c++/14.2.1/bits/stl_heap.h \
+  /usr/include/c++/14.2.1/bits/stl_iterator.h \
+  /usr/include/c++/14.2.1/bits/stl_iterator_base_funcs.h \
+  /usr/include/c++/14.2.1/bits/stl_iterator_base_types.h \
+  /usr/include/c++/14.2.1/bits/stl_list.h \
+  /usr/include/c++/14.2.1/bits/stl_map.h \
+  /usr/include/c++/14.2.1/bits/stl_multimap.h \
+  /usr/include/c++/14.2.1/bits/stl_multiset.h \
+  /usr/include/c++/14.2.1/bits/stl_numeric.h \
+  /usr/include/c++/14.2.1/bits/stl_pair.h \
+  /usr/include/c++/14.2.1/bits/stl_raw_storage_iter.h \
+  /usr/include/c++/14.2.1/bits/stl_relops.h \
+  /usr/include/c++/14.2.1/bits/stl_set.h \
+  /usr/include/c++/14.2.1/bits/stl_tempbuf.h \
+  /usr/include/c++/14.2.1/bits/stl_tree.h \
+  /usr/include/c++/14.2.1/bits/stl_uninitialized.h \
+  /usr/include/c++/14.2.1/bits/stl_vector.h \
+  /usr/include/c++/14.2.1/bits/stream_iterator.h \
+  /usr/include/c++/14.2.1/bits/streambuf.tcc \
+  /usr/include/c++/14.2.1/bits/streambuf_iterator.h \
+  /usr/include/c++/14.2.1/bits/string_view.tcc \
+  /usr/include/c++/14.2.1/bits/stringfwd.h \
+  /usr/include/c++/14.2.1/bits/uniform_int_dist.h \
+  /usr/include/c++/14.2.1/bits/unique_ptr.h \
+  /usr/include/c++/14.2.1/bits/unordered_map.h \
+  /usr/include/c++/14.2.1/bits/unordered_set.h \
+  /usr/include/c++/14.2.1/bits/uses_allocator.h \
+  /usr/include/c++/14.2.1/bits/uses_allocator_args.h \
+  /usr/include/c++/14.2.1/bits/utility.h \
+  /usr/include/c++/14.2.1/bits/vector.tcc \
+  /usr/include/c++/14.2.1/bits/version.h \
+  /usr/include/c++/14.2.1/cassert \
+  /usr/include/c++/14.2.1/cctype \
+  /usr/include/c++/14.2.1/cerrno \
+  /usr/include/c++/14.2.1/chrono \
+  /usr/include/c++/14.2.1/climits \
+  /usr/include/c++/14.2.1/clocale \
+  /usr/include/c++/14.2.1/cmath \
+  /usr/include/c++/14.2.1/compare \
+  /usr/include/c++/14.2.1/concepts \
+  /usr/include/c++/14.2.1/cstddef \
+  /usr/include/c++/14.2.1/cstdint \
+  /usr/include/c++/14.2.1/cstdio \
+  /usr/include/c++/14.2.1/cstdlib \
+  /usr/include/c++/14.2.1/cstring \
+  /usr/include/c++/14.2.1/ctime \
+  /usr/include/c++/14.2.1/cwchar \
+  /usr/include/c++/14.2.1/debug/assertions.h \
+  /usr/include/c++/14.2.1/debug/debug.h \
+  /usr/include/c++/14.2.1/exception \
+  /usr/include/c++/14.2.1/ext/aligned_buffer.h \
+  /usr/include/c++/14.2.1/ext/alloc_traits.h \
+  /usr/include/c++/14.2.1/ext/atomicity.h \
+  /usr/include/c++/14.2.1/ext/concurrence.h \
+  /usr/include/c++/14.2.1/ext/numeric_traits.h \
+  /usr/include/c++/14.2.1/ext/string_conversions.h \
+  /usr/include/c++/14.2.1/ext/type_traits.h \
+  /usr/include/c++/14.2.1/functional \
+  /usr/include/c++/14.2.1/initializer_list \
+  /usr/include/c++/14.2.1/iosfwd \
+  /usr/include/c++/14.2.1/iterator \
+  /usr/include/c++/14.2.1/limits \
+  /usr/include/c++/14.2.1/list \
+  /usr/include/c++/14.2.1/map \
+  /usr/include/c++/14.2.1/memory \
+  /usr/include/c++/14.2.1/new \
+  /usr/include/c++/14.2.1/numeric \
+  /usr/include/c++/14.2.1/optional \
+  /usr/include/c++/14.2.1/pstl/execution_defs.h \
+  /usr/include/c++/14.2.1/pstl/glue_algorithm_defs.h \
+  /usr/include/c++/14.2.1/pstl/glue_memory_defs.h \
+  /usr/include/c++/14.2.1/pstl/glue_numeric_defs.h \
+  /usr/include/c++/14.2.1/pstl/pstl_config.h \
+  /usr/include/c++/14.2.1/ratio \
+  /usr/include/c++/14.2.1/set \
+  /usr/include/c++/14.2.1/stdexcept \
+  /usr/include/c++/14.2.1/stdlib.h \
+  /usr/include/c++/14.2.1/streambuf \
+  /usr/include/c++/14.2.1/string \
+  /usr/include/c++/14.2.1/string_view \
+  /usr/include/c++/14.2.1/system_error \
+  /usr/include/c++/14.2.1/tr1/bessel_function.tcc \
+  /usr/include/c++/14.2.1/tr1/beta_function.tcc \
+  /usr/include/c++/14.2.1/tr1/ell_integral.tcc \
+  /usr/include/c++/14.2.1/tr1/exp_integral.tcc \
+  /usr/include/c++/14.2.1/tr1/gamma.tcc \
+  /usr/include/c++/14.2.1/tr1/hypergeometric.tcc \
+  /usr/include/c++/14.2.1/tr1/legendre_function.tcc \
+  /usr/include/c++/14.2.1/tr1/modified_bessel_func.tcc \
+  /usr/include/c++/14.2.1/tr1/poly_hermite.tcc \
+  /usr/include/c++/14.2.1/tr1/poly_laguerre.tcc \
+  /usr/include/c++/14.2.1/tr1/riemann_zeta.tcc \
+  /usr/include/c++/14.2.1/tr1/special_function_util.h \
+  /usr/include/c++/14.2.1/tuple \
+  /usr/include/c++/14.2.1/type_traits \
+  /usr/include/c++/14.2.1/typeinfo \
+  /usr/include/c++/14.2.1/unordered_map \
+  /usr/include/c++/14.2.1/unordered_set \
+  /usr/include/c++/14.2.1/utility \
+  /usr/include/c++/14.2.1/variant \
+  /usr/include/c++/14.2.1/vector \
+  /usr/include/c++/14.2.1/version \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++locale.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/error_constants.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/gthr-default.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/gthr.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/os_defines.h \
+  /usr/include/ctype.h \
+  /usr/include/endian.h \
+  /usr/include/errno.h \
+  /usr/include/features-time64.h \
+  /usr/include/features.h \
+  /usr/include/gnu/stubs-64.h \
+  /usr/include/gnu/stubs.h \
+  /usr/include/inttypes.h \
+  /usr/include/limits.h \
+  /usr/include/linux/close_range.h \
+  /usr/include/linux/errno.h \
+  /usr/include/linux/limits.h \
+  /usr/include/linux/posix_types.h \
+  /usr/include/linux/sched/types.h \
+  /usr/include/linux/stat.h \
+  /usr/include/linux/stddef.h \
+  /usr/include/linux/types.h \
+  /usr/include/locale.h \
+  /usr/include/math.h \
+  /usr/include/pthread.h \
+  /usr/include/qt6/QtCore/QSet \
+  /usr/include/qt6/QtCore/q17memory.h \
+  /usr/include/qt6/QtCore/q20algorithm.h \
+  /usr/include/qt6/QtCore/q20functional.h \
+  /usr/include/qt6/QtCore/q20iterator.h \
+  /usr/include/qt6/QtCore/q20memory.h \
+  /usr/include/qt6/QtCore/q20type_traits.h \
+  /usr/include/qt6/QtCore/q20utility.h \
+  /usr/include/qt6/QtCore/q23type_traits.h \
+  /usr/include/qt6/QtCore/q23utility.h \
+  /usr/include/qt6/QtCore/qabstractitemmodel.h \
+  /usr/include/qt6/QtCore/qalgorithms.h \
+  /usr/include/qt6/QtCore/qanystringview.h \
+  /usr/include/qt6/QtCore/qarraydata.h \
+  /usr/include/qt6/QtCore/qarraydataops.h \
+  /usr/include/qt6/QtCore/qarraydatapointer.h \
+  /usr/include/qt6/QtCore/qassert.h \
+  /usr/include/qt6/QtCore/qatomic.h \
+  /usr/include/qt6/QtCore/qatomic_cxx11.h \
+  /usr/include/qt6/QtCore/qbasicatomic.h \
+  /usr/include/qt6/QtCore/qbindingstorage.h \
+  /usr/include/qt6/QtCore/qbytearray.h \
+  /usr/include/qt6/QtCore/qbytearrayalgorithms.h \
+  /usr/include/qt6/QtCore/qbytearraylist.h \
+  /usr/include/qt6/QtCore/qbytearrayview.h \
+  /usr/include/qt6/QtCore/qchar.h \
+  /usr/include/qt6/QtCore/qcompare.h \
+  /usr/include/qt6/QtCore/qcompare_impl.h \
+  /usr/include/qt6/QtCore/qcomparehelpers.h \
+  /usr/include/qt6/QtCore/qcompilerdetection.h \
+  /usr/include/qt6/QtCore/qconfig.h \
+  /usr/include/qt6/QtCore/qconstructormacros.h \
+  /usr/include/qt6/QtCore/qcontainerfwd.h \
+  /usr/include/qt6/QtCore/qcontainerinfo.h \
+  /usr/include/qt6/QtCore/qcontainertools_impl.h \
+  /usr/include/qt6/QtCore/qcontiguouscache.h \
+  /usr/include/qt6/QtCore/qdarwinhelpers.h \
+  /usr/include/qt6/QtCore/qdatastream.h \
+  /usr/include/qt6/QtCore/qdebug.h \
+  /usr/include/qt6/QtCore/qendian.h \
+  /usr/include/qt6/QtCore/qexceptionhandling.h \
+  /usr/include/qt6/QtCore/qflags.h \
+  /usr/include/qt6/QtCore/qfloat16.h \
+  /usr/include/qt6/QtCore/qforeach.h \
+  /usr/include/qt6/QtCore/qfunctionaltools_impl.h \
+  /usr/include/qt6/QtCore/qfunctionpointer.h \
+  /usr/include/qt6/QtCore/qgenericatomic.h \
+  /usr/include/qt6/QtCore/qglobal.h \
+  /usr/include/qt6/QtCore/qglobalstatic.h \
+  /usr/include/qt6/QtCore/qhash.h \
+  /usr/include/qt6/QtCore/qhashfunctions.h \
+  /usr/include/qt6/QtCore/qiodevice.h \
+  /usr/include/qt6/QtCore/qiodevicebase.h \
+  /usr/include/qt6/QtCore/qitemselectionmodel.h \
+  /usr/include/qt6/QtCore/qiterable.h \
+  /usr/include/qt6/QtCore/qiterator.h \
+  /usr/include/qt6/QtCore/qlatin1stringview.h \
+  /usr/include/qt6/QtCore/qline.h \
+  /usr/include/qt6/QtCore/qlist.h \
+  /usr/include/qt6/QtCore/qlocale.h \
+  /usr/include/qt6/QtCore/qlogging.h \
+  /usr/include/qt6/QtCore/qmalloc.h \
+  /usr/include/qt6/QtCore/qmap.h \
+  /usr/include/qt6/QtCore/qmargins.h \
+  /usr/include/qt6/QtCore/qmath.h \
+  /usr/include/qt6/QtCore/qmetacontainer.h \
+  /usr/include/qt6/QtCore/qmetatype.h \
+  /usr/include/qt6/QtCore/qminmax.h \
+  /usr/include/qt6/QtCore/qnamespace.h \
+  /usr/include/qt6/QtCore/qnumeric.h \
+  /usr/include/qt6/QtCore/qobject.h \
+  /usr/include/qt6/QtCore/qobject_impl.h \
+  /usr/include/qt6/QtCore/qobjectdefs.h \
+  /usr/include/qt6/QtCore/qobjectdefs_impl.h \
+  /usr/include/qt6/QtCore/qoverload.h \
+  /usr/include/qt6/QtCore/qpair.h \
+  /usr/include/qt6/QtCore/qpoint.h \
+  /usr/include/qt6/QtCore/qprocessordetection.h \
+  /usr/include/qt6/QtCore/qrect.h \
+  /usr/include/qt6/QtCore/qrefcount.h \
+  /usr/include/qt6/QtCore/qregularexpression.h \
+  /usr/include/qt6/QtCore/qscopedpointer.h \
+  /usr/include/qt6/QtCore/qscopeguard.h \
+  /usr/include/qt6/QtCore/qset.h \
+  /usr/include/qt6/QtCore/qshareddata.h \
+  /usr/include/qt6/QtCore/qshareddata_impl.h \
+  /usr/include/qt6/QtCore/qsharedpointer.h \
+  /usr/include/qt6/QtCore/qsharedpointer_impl.h \
+  /usr/include/qt6/QtCore/qsize.h \
+  /usr/include/qt6/QtCore/qspan.h \
+  /usr/include/qt6/QtCore/qstdlibdetection.h \
+  /usr/include/qt6/QtCore/qstring.h \
+  /usr/include/qt6/QtCore/qstringalgorithms.h \
+  /usr/include/qt6/QtCore/qstringbuilder.h \
+  /usr/include/qt6/QtCore/qstringconverter.h \
+  /usr/include/qt6/QtCore/qstringconverter_base.h \
+  /usr/include/qt6/QtCore/qstringfwd.h \
+  /usr/include/qt6/QtCore/qstringlist.h \
+  /usr/include/qt6/QtCore/qstringliteral.h \
+  /usr/include/qt6/QtCore/qstringmatcher.h \
+  /usr/include/qt6/QtCore/qstringtokenizer.h \
+  /usr/include/qt6/QtCore/qstringview.h \
+  /usr/include/qt6/QtCore/qswap.h \
+  /usr/include/qt6/QtCore/qsysinfo.h \
+  /usr/include/qt6/QtCore/qsystemdetection.h \
+  /usr/include/qt6/QtCore/qtaggedpointer.h \
+  /usr/include/qt6/QtCore/qtclasshelpermacros.h \
+  /usr/include/qt6/QtCore/qtconfiginclude.h \
+  /usr/include/qt6/QtCore/qtconfigmacros.h \
+  /usr/include/qt6/QtCore/qtcore-config.h \
+  /usr/include/qt6/QtCore/qtcoreexports.h \
+  /usr/include/qt6/QtCore/qtcoreglobal.h \
+  /usr/include/qt6/QtCore/qtdeprecationdefinitions.h \
+  /usr/include/qt6/QtCore/qtdeprecationmarkers.h \
+  /usr/include/qt6/QtCore/qtenvironmentvariables.h \
+  /usr/include/qt6/QtCore/qtextstream.h \
+  /usr/include/qt6/QtCore/qtformat_impl.h \
+  /usr/include/qt6/QtCore/qtmetamacros.h \
+  /usr/include/qt6/QtCore/qtmocconstants.h \
+  /usr/include/qt6/QtCore/qtmochelpers.h \
+  /usr/include/qt6/QtCore/qtnoop.h \
+  /usr/include/qt6/QtCore/qtpreprocessorsupport.h \
+  /usr/include/qt6/QtCore/qtresource.h \
+  /usr/include/qt6/QtCore/qttranslation.h \
+  /usr/include/qt6/QtCore/qttypetraits.h \
+  /usr/include/qt6/QtCore/qtversion.h \
+  /usr/include/qt6/QtCore/qtversionchecks.h \
+  /usr/include/qt6/QtCore/qtypeinfo.h \
+  /usr/include/qt6/QtCore/qtypes.h \
+  /usr/include/qt6/QtCore/qurl.h \
+  /usr/include/qt6/QtCore/qutf8stringview.h \
+  /usr/include/qt6/QtCore/qvariant.h \
+  /usr/include/qt6/QtCore/qvarlengtharray.h \
+  /usr/include/qt6/QtCore/qversiontagging.h \
+  /usr/include/qt6/QtCore/qxptype_traits.h \
+  /usr/include/qt6/QtCore/qyieldcpu.h \
+  /usr/include/qt6/QtGui/QAction \
+  /usr/include/qt6/QtGui/QStandardItemModel \
+  /usr/include/qt6/QtGui/qaction.h \
+  /usr/include/qt6/QtGui/qbitmap.h \
+  /usr/include/qt6/QtGui/qbrush.h \
+  /usr/include/qt6/QtGui/qcolor.h \
+  /usr/include/qt6/QtGui/qcursor.h \
+  /usr/include/qt6/QtGui/qfont.h \
+  /usr/include/qt6/QtGui/qfontinfo.h \
+  /usr/include/qt6/QtGui/qfontmetrics.h \
+  /usr/include/qt6/QtGui/qfontvariableaxis.h \
+  /usr/include/qt6/QtGui/qicon.h \
+  /usr/include/qt6/QtGui/qimage.h \
+  /usr/include/qt6/QtGui/qkeysequence.h \
+  /usr/include/qt6/QtGui/qpaintdevice.h \
+  /usr/include/qt6/QtGui/qpalette.h \
+  /usr/include/qt6/QtGui/qpen.h \
+  /usr/include/qt6/QtGui/qpicture.h \
+  /usr/include/qt6/QtGui/qpixelformat.h \
+  /usr/include/qt6/QtGui/qpixmap.h \
+  /usr/include/qt6/QtGui/qpolygon.h \
+  /usr/include/qt6/QtGui/qregion.h \
+  /usr/include/qt6/QtGui/qrgb.h \
+  /usr/include/qt6/QtGui/qrgba64.h \
+  /usr/include/qt6/QtGui/qstandarditemmodel.h \
+  /usr/include/qt6/QtGui/qtextcursor.h \
+  /usr/include/qt6/QtGui/qtextdocument.h \
+  /usr/include/qt6/QtGui/qtextformat.h \
+  /usr/include/qt6/QtGui/qtextoption.h \
+  /usr/include/qt6/QtGui/qtgui-config.h \
+  /usr/include/qt6/QtGui/qtguiexports.h \
+  /usr/include/qt6/QtGui/qtguiglobal.h \
+  /usr/include/qt6/QtGui/qtransform.h \
+  /usr/include/qt6/QtGui/qvalidator.h \
+  /usr/include/qt6/QtGui/qwindowdefs.h \
+  /usr/include/qt6/QtWidgets/QCheckBox \
+  /usr/include/qt6/QtWidgets/QHBoxLayout \
+  /usr/include/qt6/QtWidgets/QLabel \
+  /usr/include/qt6/QtWidgets/QLineEdit \
+  /usr/include/qt6/QtWidgets/QListView \
+  /usr/include/qt6/QtWidgets/QMainWindow \
+  /usr/include/qt6/QtWidgets/QMenu \
+  /usr/include/qt6/QtWidgets/QPushButton \
+  /usr/include/qt6/QtWidgets/QSplitter \
+  /usr/include/qt6/QtWidgets/QStackedWidget \
+  /usr/include/qt6/QtWidgets/QStatusBar \
+  /usr/include/qt6/QtWidgets/QTabWidget \
+  /usr/include/qt6/QtWidgets/QTableView \
+  /usr/include/qt6/QtWidgets/QTextEdit \
+  /usr/include/qt6/QtWidgets/QToolBar \
+  /usr/include/qt6/QtWidgets/QVBoxLayout \
+  /usr/include/qt6/QtWidgets/qabstractbutton.h \
+  /usr/include/qt6/QtWidgets/qabstractitemdelegate.h \
+  /usr/include/qt6/QtWidgets/qabstractitemview.h \
+  /usr/include/qt6/QtWidgets/qabstractscrollarea.h \
+  /usr/include/qt6/QtWidgets/qabstractslider.h \
+  /usr/include/qt6/QtWidgets/qabstractspinbox.h \
+  /usr/include/qt6/QtWidgets/qboxlayout.h \
+  /usr/include/qt6/QtWidgets/qcheckbox.h \
+  /usr/include/qt6/QtWidgets/qframe.h \
+  /usr/include/qt6/QtWidgets/qgridlayout.h \
+  /usr/include/qt6/QtWidgets/qlabel.h \
+  /usr/include/qt6/QtWidgets/qlayout.h \
+  /usr/include/qt6/QtWidgets/qlayoutitem.h \
+  /usr/include/qt6/QtWidgets/qlineedit.h \
+  /usr/include/qt6/QtWidgets/qlistview.h \
+  /usr/include/qt6/QtWidgets/qmainwindow.h \
+  /usr/include/qt6/QtWidgets/qmenu.h \
+  /usr/include/qt6/QtWidgets/qpushbutton.h \
+  /usr/include/qt6/QtWidgets/qrubberband.h \
+  /usr/include/qt6/QtWidgets/qsizepolicy.h \
+  /usr/include/qt6/QtWidgets/qslider.h \
+  /usr/include/qt6/QtWidgets/qsplitter.h \
+  /usr/include/qt6/QtWidgets/qstackedwidget.h \
+  /usr/include/qt6/QtWidgets/qstatusbar.h \
+  /usr/include/qt6/QtWidgets/qstyle.h \
+  /usr/include/qt6/QtWidgets/qstyleoption.h \
+  /usr/include/qt6/QtWidgets/qtabbar.h \
+  /usr/include/qt6/QtWidgets/qtableview.h \
+  /usr/include/qt6/QtWidgets/qtabwidget.h \
+  /usr/include/qt6/QtWidgets/qtextedit.h \
+  /usr/include/qt6/QtWidgets/qtoolbar.h \
+  /usr/include/qt6/QtWidgets/qtwidgets-config.h \
+  /usr/include/qt6/QtWidgets/qtwidgetsexports.h \
+  /usr/include/qt6/QtWidgets/qtwidgetsglobal.h \
+  /usr/include/qt6/QtWidgets/qwidget.h \
+  /usr/include/sched.h \
+  /usr/include/stdc-predef.h \
+  /usr/include/stdint.h \
+  /usr/include/stdio.h \
+  /usr/include/stdlib.h \
+  /usr/include/string.h \
+  /usr/include/strings.h \
+  /usr/include/sys/cdefs.h \
+  /usr/include/sys/select.h \
+  /usr/include/sys/single_threaded.h \
+  /usr/include/sys/stat.h \
+  /usr/include/sys/types.h \
+  /usr/include/time.h \
+  /usr/include/unistd.h \
+  /usr/include/wchar.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/limits.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdarg.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdbool.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stddef.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdint.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/syslimits.h
 
 CMakeFiles/pacmangui.dir/src/core/package.cpp.o: /home/matt/PacmanGui-new/src/core/package.cpp \
   /home/matt/PacmanGui-new/include/core/package.hpp \
@@ -689,6 +1821,7 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: /home/matt/PacmanGui-new
   /usr/include/bits/wordsize.h \
   /usr/include/c++/14.2.1/algorithm \
   /usr/include/c++/14.2.1/array \
+  /usr/include/c++/14.2.1/atomic \
   /usr/include/c++/14.2.1/backward/auto_ptr.h \
   /usr/include/c++/14.2.1/backward/binders.h \
   /usr/include/c++/14.2.1/bit \
@@ -705,6 +1838,7 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: /home/matt/PacmanGui-new
   /usr/include/c++/14.2.1/bits/basic_string.tcc \
   /usr/include/c++/14.2.1/bits/char_traits.h \
   /usr/include/c++/14.2.1/bits/charconv.h \
+  /usr/include/c++/14.2.1/bits/chrono.h \
   /usr/include/c++/14.2.1/bits/codecvt.h \
   /usr/include/c++/14.2.1/bits/concept_check.h \
   /usr/include/c++/14.2.1/bits/cpp_type_traits.h \
@@ -737,6 +1871,7 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: /home/matt/PacmanGui-new
   /usr/include/c++/14.2.1/bits/node_handle.h \
   /usr/include/c++/14.2.1/bits/ostream.tcc \
   /usr/include/c++/14.2.1/bits/ostream_insert.h \
+  /usr/include/c++/14.2.1/bits/parse_numbers.h \
   /usr/include/c++/14.2.1/bits/postypes.h \
   /usr/include/c++/14.2.1/bits/predefined_ops.h \
   /usr/include/c++/14.2.1/bits/ptr_traits.h \
@@ -749,6 +1884,7 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: /home/matt/PacmanGui-new
   /usr/include/c++/14.2.1/bits/sstream.tcc \
   /usr/include/c++/14.2.1/bits/std_abs.h \
   /usr/include/c++/14.2.1/bits/std_function.h \
+  /usr/include/c++/14.2.1/bits/std_thread.h \
   /usr/include/c++/14.2.1/bits/stl_algo.h \
   /usr/include/c++/14.2.1/bits/stl_algobase.h \
   /usr/include/c++/14.2.1/bits/stl_bvector.h \
@@ -767,6 +1903,7 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: /home/matt/PacmanGui-new
   /usr/include/c++/14.2.1/bits/streambuf_iterator.h \
   /usr/include/c++/14.2.1/bits/string_view.tcc \
   /usr/include/c++/14.2.1/bits/stringfwd.h \
+  /usr/include/c++/14.2.1/bits/this_thread_sleep.h \
   /usr/include/c++/14.2.1/bits/uniform_int_dist.h \
   /usr/include/c++/14.2.1/bits/unique_ptr.h \
   /usr/include/c++/14.2.1/bits/unordered_map.h \
@@ -785,6 +1922,7 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: /home/matt/PacmanGui-new
   /usr/include/c++/14.2.1/cstdio \
   /usr/include/c++/14.2.1/cstdlib \
   /usr/include/c++/14.2.1/cstring \
+  /usr/include/c++/14.2.1/ctime \
   /usr/include/c++/14.2.1/cwchar \
   /usr/include/c++/14.2.1/cwctype \
   /usr/include/c++/14.2.1/debug/assertions.h \
@@ -804,6 +1942,7 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: /home/matt/PacmanGui-new
   /usr/include/c++/14.2.1/iosfwd \
   /usr/include/c++/14.2.1/iostream \
   /usr/include/c++/14.2.1/istream \
+  /usr/include/c++/14.2.1/limits \
   /usr/include/c++/14.2.1/memory \
   /usr/include/c++/14.2.1/new \
   /usr/include/c++/14.2.1/ostream \
@@ -811,6 +1950,7 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: /home/matt/PacmanGui-new
   /usr/include/c++/14.2.1/pstl/glue_algorithm_defs.h \
   /usr/include/c++/14.2.1/pstl/glue_memory_defs.h \
   /usr/include/c++/14.2.1/pstl/pstl_config.h \
+  /usr/include/c++/14.2.1/ratio \
   /usr/include/c++/14.2.1/sstream \
   /usr/include/c++/14.2.1/stdexcept \
   /usr/include/c++/14.2.1/stdlib.h \
@@ -818,6 +1958,7 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: /home/matt/PacmanGui-new
   /usr/include/c++/14.2.1/string \
   /usr/include/c++/14.2.1/string_view \
   /usr/include/c++/14.2.1/system_error \
+  /usr/include/c++/14.2.1/thread \
   /usr/include/c++/14.2.1/tuple \
   /usr/include/c++/14.2.1/type_traits \
   /usr/include/c++/14.2.1/typeinfo \
@@ -1392,11 +2533,12 @@ CMakeFiles/pacmangui.dir/src/core/transaction.cpp.o: /home/matt/PacmanGui-new/sr
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stddef.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdint.h
 
-CMakeFiles/pacmangui.dir/src/main.cpp.o: /home/matt/PacmanGui-new/src/main.cpp \
+CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o: /home/matt/PacmanGui-new/src/gui/mainwindow.cpp \
   /home/matt/PacmanGui-new/include/core/package.hpp \
   /home/matt/PacmanGui-new/include/core/packagemanager.hpp \
   /home/matt/PacmanGui-new/include/core/repository.hpp \
   /home/matt/PacmanGui-new/include/core/transaction.hpp \
+  /home/matt/PacmanGui-new/include/gui/mainwindow.hpp \
   /usr/include/alloca.h \
   /usr/include/alpm.h \
   /usr/include/alpm_list.h \
@@ -1413,6 +2555,7 @@ CMakeFiles/pacmangui.dir/src/main.cpp.o: /home/matt/PacmanGui-new/src/main.cpp \
   /usr/include/asm/posix_types.h \
   /usr/include/asm/posix_types_64.h \
   /usr/include/asm/types.h \
+  /usr/include/assert.h \
   /usr/include/bits/atomic_wide_counter.h \
   /usr/include/bits/byteswap.h \
   /usr/include/bits/confname.h \
@@ -1423,11 +2566,24 @@ CMakeFiles/pacmangui.dir/src/main.cpp.o: /home/matt/PacmanGui-new/src/main.cpp \
   /usr/include/bits/errno.h \
   /usr/include/bits/floatn-common.h \
   /usr/include/bits/floatn.h \
+  /usr/include/bits/flt-eval-method.h \
+  /usr/include/bits/fp-fast.h \
+  /usr/include/bits/fp-logb.h \
   /usr/include/bits/getopt_core.h \
   /usr/include/bits/getopt_posix.h \
+  /usr/include/bits/iscanonical.h \
   /usr/include/bits/libc-header-start.h \
+  /usr/include/bits/libm-simd-decl-stubs.h \
+  /usr/include/bits/local_lim.h \
   /usr/include/bits/locale.h \
   /usr/include/bits/long-double.h \
+  /usr/include/bits/math-vector.h \
+  /usr/include/bits/mathcalls-helper-functions.h \
+  /usr/include/bits/mathcalls-macros.h \
+  /usr/include/bits/mathcalls-narrow.h \
+  /usr/include/bits/mathcalls.h \
+  /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/posix2_lim.h \
   /usr/include/bits/posix_opt.h \
   /usr/include/bits/pthread_stack_min-dynamic.h \
   /usr/include/bits/pthreadtypes-arch.h \
@@ -1480,16 +2636,927 @@ CMakeFiles/pacmangui.dir/src/main.cpp.o: /home/matt/PacmanGui-new/src/main.cpp \
   /usr/include/bits/types/wint_t.h \
   /usr/include/bits/typesizes.h \
   /usr/include/bits/uintn-identity.h \
+  /usr/include/bits/uio_lim.h \
   /usr/include/bits/unistd_ext.h \
   /usr/include/bits/waitflags.h \
   /usr/include/bits/waitstatus.h \
   /usr/include/bits/wchar.h \
   /usr/include/bits/wctype-wchar.h \
   /usr/include/bits/wordsize.h \
+  /usr/include/bits/xopen_lim.h \
+  /usr/include/c++/14.2.1/algorithm \
   /usr/include/c++/14.2.1/array \
+  /usr/include/c++/14.2.1/atomic \
   /usr/include/c++/14.2.1/backward/auto_ptr.h \
   /usr/include/c++/14.2.1/backward/binders.h \
   /usr/include/c++/14.2.1/bit \
+  /usr/include/c++/14.2.1/bits/algorithmfwd.h \
+  /usr/include/c++/14.2.1/bits/align.h \
+  /usr/include/c++/14.2.1/bits/alloc_traits.h \
+  /usr/include/c++/14.2.1/bits/allocated_ptr.h \
+  /usr/include/c++/14.2.1/bits/allocator.h \
+  /usr/include/c++/14.2.1/bits/atomic_base.h \
+  /usr/include/c++/14.2.1/bits/atomic_futex.h \
+  /usr/include/c++/14.2.1/bits/atomic_lockfree_defines.h \
+  /usr/include/c++/14.2.1/bits/basic_ios.h \
+  /usr/include/c++/14.2.1/bits/basic_ios.tcc \
+  /usr/include/c++/14.2.1/bits/basic_string.h \
+  /usr/include/c++/14.2.1/bits/basic_string.tcc \
+  /usr/include/c++/14.2.1/bits/char_traits.h \
+  /usr/include/c++/14.2.1/bits/charconv.h \
+  /usr/include/c++/14.2.1/bits/chrono.h \
+  /usr/include/c++/14.2.1/bits/codecvt.h \
+  /usr/include/c++/14.2.1/bits/concept_check.h \
+  /usr/include/c++/14.2.1/bits/cpp_type_traits.h \
+  /usr/include/c++/14.2.1/bits/cxxabi_forced.h \
+  /usr/include/c++/14.2.1/bits/cxxabi_init_exception.h \
+  /usr/include/c++/14.2.1/bits/enable_special_members.h \
+  /usr/include/c++/14.2.1/bits/erase_if.h \
+  /usr/include/c++/14.2.1/bits/exception.h \
+  /usr/include/c++/14.2.1/bits/exception_defines.h \
+  /usr/include/c++/14.2.1/bits/exception_ptr.h \
+  /usr/include/c++/14.2.1/bits/fs_dir.h \
+  /usr/include/c++/14.2.1/bits/fs_fwd.h \
+  /usr/include/c++/14.2.1/bits/fs_ops.h \
+  /usr/include/c++/14.2.1/bits/fs_path.h \
+  /usr/include/c++/14.2.1/bits/functexcept.h \
+  /usr/include/c++/14.2.1/bits/functional_hash.h \
+  /usr/include/c++/14.2.1/bits/hash_bytes.h \
+  /usr/include/c++/14.2.1/bits/hashtable.h \
+  /usr/include/c++/14.2.1/bits/hashtable_policy.h \
+  /usr/include/c++/14.2.1/bits/invoke.h \
+  /usr/include/c++/14.2.1/bits/ios_base.h \
+  /usr/include/c++/14.2.1/bits/istream.tcc \
+  /usr/include/c++/14.2.1/bits/list.tcc \
+  /usr/include/c++/14.2.1/bits/locale_classes.h \
+  /usr/include/c++/14.2.1/bits/locale_classes.tcc \
+  /usr/include/c++/14.2.1/bits/locale_conv.h \
+  /usr/include/c++/14.2.1/bits/locale_facets.h \
+  /usr/include/c++/14.2.1/bits/locale_facets.tcc \
+  /usr/include/c++/14.2.1/bits/locale_facets_nonio.h \
+  /usr/include/c++/14.2.1/bits/locale_facets_nonio.tcc \
+  /usr/include/c++/14.2.1/bits/localefwd.h \
+  /usr/include/c++/14.2.1/bits/memory_resource.h \
+  /usr/include/c++/14.2.1/bits/memoryfwd.h \
+  /usr/include/c++/14.2.1/bits/move.h \
+  /usr/include/c++/14.2.1/bits/nested_exception.h \
+  /usr/include/c++/14.2.1/bits/new_allocator.h \
+  /usr/include/c++/14.2.1/bits/node_handle.h \
+  /usr/include/c++/14.2.1/bits/ostream.tcc \
+  /usr/include/c++/14.2.1/bits/ostream_insert.h \
+  /usr/include/c++/14.2.1/bits/parse_numbers.h \
+  /usr/include/c++/14.2.1/bits/postypes.h \
+  /usr/include/c++/14.2.1/bits/predefined_ops.h \
+  /usr/include/c++/14.2.1/bits/ptr_traits.h \
+  /usr/include/c++/14.2.1/bits/quoted_string.h \
+  /usr/include/c++/14.2.1/bits/random.h \
+  /usr/include/c++/14.2.1/bits/random.tcc \
+  /usr/include/c++/14.2.1/bits/range_access.h \
+  /usr/include/c++/14.2.1/bits/refwrap.h \
+  /usr/include/c++/14.2.1/bits/requires_hosted.h \
+  /usr/include/c++/14.2.1/bits/shared_ptr.h \
+  /usr/include/c++/14.2.1/bits/shared_ptr_atomic.h \
+  /usr/include/c++/14.2.1/bits/shared_ptr_base.h \
+  /usr/include/c++/14.2.1/bits/specfun.h \
+  /usr/include/c++/14.2.1/bits/sstream.tcc \
+  /usr/include/c++/14.2.1/bits/std_abs.h \
+  /usr/include/c++/14.2.1/bits/std_function.h \
+  /usr/include/c++/14.2.1/bits/std_mutex.h \
+  /usr/include/c++/14.2.1/bits/std_thread.h \
+  /usr/include/c++/14.2.1/bits/stl_algo.h \
+  /usr/include/c++/14.2.1/bits/stl_algobase.h \
+  /usr/include/c++/14.2.1/bits/stl_bvector.h \
+  /usr/include/c++/14.2.1/bits/stl_construct.h \
+  /usr/include/c++/14.2.1/bits/stl_function.h \
+  /usr/include/c++/14.2.1/bits/stl_heap.h \
+  /usr/include/c++/14.2.1/bits/stl_iterator.h \
+  /usr/include/c++/14.2.1/bits/stl_iterator_base_funcs.h \
+  /usr/include/c++/14.2.1/bits/stl_iterator_base_types.h \
+  /usr/include/c++/14.2.1/bits/stl_list.h \
+  /usr/include/c++/14.2.1/bits/stl_map.h \
+  /usr/include/c++/14.2.1/bits/stl_multimap.h \
+  /usr/include/c++/14.2.1/bits/stl_multiset.h \
+  /usr/include/c++/14.2.1/bits/stl_numeric.h \
+  /usr/include/c++/14.2.1/bits/stl_pair.h \
+  /usr/include/c++/14.2.1/bits/stl_raw_storage_iter.h \
+  /usr/include/c++/14.2.1/bits/stl_relops.h \
+  /usr/include/c++/14.2.1/bits/stl_set.h \
+  /usr/include/c++/14.2.1/bits/stl_tempbuf.h \
+  /usr/include/c++/14.2.1/bits/stl_tree.h \
+  /usr/include/c++/14.2.1/bits/stl_uninitialized.h \
+  /usr/include/c++/14.2.1/bits/stl_vector.h \
+  /usr/include/c++/14.2.1/bits/stream_iterator.h \
+  /usr/include/c++/14.2.1/bits/streambuf.tcc \
+  /usr/include/c++/14.2.1/bits/streambuf_iterator.h \
+  /usr/include/c++/14.2.1/bits/string_view.tcc \
+  /usr/include/c++/14.2.1/bits/stringfwd.h \
+  /usr/include/c++/14.2.1/bits/uniform_int_dist.h \
+  /usr/include/c++/14.2.1/bits/unique_lock.h \
+  /usr/include/c++/14.2.1/bits/unique_ptr.h \
+  /usr/include/c++/14.2.1/bits/unordered_map.h \
+  /usr/include/c++/14.2.1/bits/unordered_set.h \
+  /usr/include/c++/14.2.1/bits/uses_allocator.h \
+  /usr/include/c++/14.2.1/bits/uses_allocator_args.h \
+  /usr/include/c++/14.2.1/bits/utility.h \
+  /usr/include/c++/14.2.1/bits/vector.tcc \
+  /usr/include/c++/14.2.1/bits/version.h \
+  /usr/include/c++/14.2.1/cassert \
+  /usr/include/c++/14.2.1/cctype \
+  /usr/include/c++/14.2.1/cerrno \
+  /usr/include/c++/14.2.1/chrono \
+  /usr/include/c++/14.2.1/climits \
+  /usr/include/c++/14.2.1/clocale \
+  /usr/include/c++/14.2.1/cmath \
+  /usr/include/c++/14.2.1/codecvt \
+  /usr/include/c++/14.2.1/compare \
+  /usr/include/c++/14.2.1/concepts \
+  /usr/include/c++/14.2.1/condition_variable \
+  /usr/include/c++/14.2.1/cstddef \
+  /usr/include/c++/14.2.1/cstdint \
+  /usr/include/c++/14.2.1/cstdio \
+  /usr/include/c++/14.2.1/cstdlib \
+  /usr/include/c++/14.2.1/cstring \
+  /usr/include/c++/14.2.1/ctime \
+  /usr/include/c++/14.2.1/cwchar \
+  /usr/include/c++/14.2.1/cwctype \
+  /usr/include/c++/14.2.1/debug/assertions.h \
+  /usr/include/c++/14.2.1/debug/debug.h \
+  /usr/include/c++/14.2.1/exception \
+  /usr/include/c++/14.2.1/experimental/source_location \
+  /usr/include/c++/14.2.1/ext/aligned_buffer.h \
+  /usr/include/c++/14.2.1/ext/alloc_traits.h \
+  /usr/include/c++/14.2.1/ext/atomicity.h \
+  /usr/include/c++/14.2.1/ext/concurrence.h \
+  /usr/include/c++/14.2.1/ext/numeric_traits.h \
+  /usr/include/c++/14.2.1/ext/string_conversions.h \
+  /usr/include/c++/14.2.1/ext/type_traits.h \
+  /usr/include/c++/14.2.1/filesystem \
+  /usr/include/c++/14.2.1/functional \
+  /usr/include/c++/14.2.1/future \
+  /usr/include/c++/14.2.1/initializer_list \
+  /usr/include/c++/14.2.1/iomanip \
+  /usr/include/c++/14.2.1/ios \
+  /usr/include/c++/14.2.1/iosfwd \
+  /usr/include/c++/14.2.1/istream \
+  /usr/include/c++/14.2.1/iterator \
+  /usr/include/c++/14.2.1/limits \
+  /usr/include/c++/14.2.1/list \
+  /usr/include/c++/14.2.1/locale \
+  /usr/include/c++/14.2.1/map \
+  /usr/include/c++/14.2.1/memory \
+  /usr/include/c++/14.2.1/memory_resource \
+  /usr/include/c++/14.2.1/mutex \
+  /usr/include/c++/14.2.1/new \
+  /usr/include/c++/14.2.1/numeric \
+  /usr/include/c++/14.2.1/optional \
+  /usr/include/c++/14.2.1/ostream \
+  /usr/include/c++/14.2.1/pstl/execution_defs.h \
+  /usr/include/c++/14.2.1/pstl/glue_algorithm_defs.h \
+  /usr/include/c++/14.2.1/pstl/glue_memory_defs.h \
+  /usr/include/c++/14.2.1/pstl/glue_numeric_defs.h \
+  /usr/include/c++/14.2.1/pstl/pstl_config.h \
+  /usr/include/c++/14.2.1/random \
+  /usr/include/c++/14.2.1/ratio \
+  /usr/include/c++/14.2.1/set \
+  /usr/include/c++/14.2.1/shared_mutex \
+  /usr/include/c++/14.2.1/sstream \
+  /usr/include/c++/14.2.1/stdexcept \
+  /usr/include/c++/14.2.1/stdlib.h \
+  /usr/include/c++/14.2.1/streambuf \
+  /usr/include/c++/14.2.1/string \
+  /usr/include/c++/14.2.1/string_view \
+  /usr/include/c++/14.2.1/system_error \
+  /usr/include/c++/14.2.1/tr1/bessel_function.tcc \
+  /usr/include/c++/14.2.1/tr1/beta_function.tcc \
+  /usr/include/c++/14.2.1/tr1/ell_integral.tcc \
+  /usr/include/c++/14.2.1/tr1/exp_integral.tcc \
+  /usr/include/c++/14.2.1/tr1/gamma.tcc \
+  /usr/include/c++/14.2.1/tr1/hypergeometric.tcc \
+  /usr/include/c++/14.2.1/tr1/legendre_function.tcc \
+  /usr/include/c++/14.2.1/tr1/modified_bessel_func.tcc \
+  /usr/include/c++/14.2.1/tr1/poly_hermite.tcc \
+  /usr/include/c++/14.2.1/tr1/poly_laguerre.tcc \
+  /usr/include/c++/14.2.1/tr1/riemann_zeta.tcc \
+  /usr/include/c++/14.2.1/tr1/special_function_util.h \
+  /usr/include/c++/14.2.1/tuple \
+  /usr/include/c++/14.2.1/type_traits \
+  /usr/include/c++/14.2.1/typeinfo \
+  /usr/include/c++/14.2.1/unordered_map \
+  /usr/include/c++/14.2.1/unordered_set \
+  /usr/include/c++/14.2.1/utility \
+  /usr/include/c++/14.2.1/variant \
+  /usr/include/c++/14.2.1/vector \
+  /usr/include/c++/14.2.1/version \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++locale.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/ctype_base.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/ctype_inline.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/error_constants.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/gthr-default.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/gthr.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/messages_members.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/opt_random.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/os_defines.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/time_members.h \
+  /usr/include/ctype.h \
+  /usr/include/endian.h \
+  /usr/include/errno.h \
+  /usr/include/features-time64.h \
+  /usr/include/features.h \
+  /usr/include/gnu/stubs-64.h \
+  /usr/include/gnu/stubs.h \
+  /usr/include/inttypes.h \
+  /usr/include/libintl.h \
+  /usr/include/limits.h \
+  /usr/include/linux/close_range.h \
+  /usr/include/linux/errno.h \
+  /usr/include/linux/limits.h \
+  /usr/include/linux/posix_types.h \
+  /usr/include/linux/sched/types.h \
+  /usr/include/linux/stat.h \
+  /usr/include/linux/stddef.h \
+  /usr/include/linux/types.h \
+  /usr/include/locale.h \
+  /usr/include/math.h \
+  /usr/include/pthread.h \
+  /usr/include/qt6/QtConcurrent/QtConcurrent \
+  /usr/include/qt6/QtConcurrent/QtConcurrentDepends \
+  /usr/include/qt6/QtConcurrent/qtaskbuilder.h \
+  /usr/include/qt6/QtConcurrent/qtconcurrent_global.h \
+  /usr/include/qt6/QtConcurrent/qtconcurrentcompilertest.h \
+  /usr/include/qt6/QtConcurrent/qtconcurrentexports.h \
+  /usr/include/qt6/QtConcurrent/qtconcurrentfilter.h \
+  /usr/include/qt6/QtConcurrent/qtconcurrentfilterkernel.h \
+  /usr/include/qt6/QtConcurrent/qtconcurrentfunctionwrappers.h \
+  /usr/include/qt6/QtConcurrent/qtconcurrentiteratekernel.h \
+  /usr/include/qt6/QtConcurrent/qtconcurrentmap.h \
+  /usr/include/qt6/QtConcurrent/qtconcurrentmapkernel.h \
+  /usr/include/qt6/QtConcurrent/qtconcurrentmedian.h \
+  /usr/include/qt6/QtConcurrent/qtconcurrentreducekernel.h \
+  /usr/include/qt6/QtConcurrent/qtconcurrentrun.h \
+  /usr/include/qt6/QtConcurrent/qtconcurrentrunbase.h \
+  /usr/include/qt6/QtConcurrent/qtconcurrentstoredfunctioncall.h \
+  /usr/include/qt6/QtConcurrent/qtconcurrenttask.h \
+  /usr/include/qt6/QtConcurrent/qtconcurrentthreadengine.h \
+  /usr/include/qt6/QtConcurrent/qtconcurrentversion.h \
+  /usr/include/qt6/QtCore/QDeadlineTimer \
+  /usr/include/qt6/QtCore/QHash \
+  /usr/include/qt6/QtCore/QList \
+  /usr/include/qt6/QtCore/QMap \
+  /usr/include/qt6/QtCore/QMutex \
+  /usr/include/qt6/QtCore/QObject \
+  /usr/include/qt6/QtCore/QProcess \
+  /usr/include/qt6/QtCore/QRect \
+  /usr/include/qt6/QtCore/QSet \
+  /usr/include/qt6/QtCore/QSettings \
+  /usr/include/qt6/QtCore/QSize \
+  /usr/include/qt6/QtCore/QSizeF \
+  /usr/include/qt6/QtCore/QString \
+  /usr/include/qt6/QtCore/QStringList \
+  /usr/include/qt6/QtCore/QUrl \
+  /usr/include/qt6/QtCore/QVariant \
+  /usr/include/qt6/QtCore/QtCore \
+  /usr/include/qt6/QtCore/QtCoreDepends \
+  /usr/include/qt6/QtCore/q17memory.h \
+  /usr/include/qt6/QtCore/q20algorithm.h \
+  /usr/include/qt6/QtCore/q20chrono.h \
+  /usr/include/qt6/QtCore/q20functional.h \
+  /usr/include/qt6/QtCore/q20iterator.h \
+  /usr/include/qt6/QtCore/q20map.h \
+  /usr/include/qt6/QtCore/q20memory.h \
+  /usr/include/qt6/QtCore/q20type_traits.h \
+  /usr/include/qt6/QtCore/q20utility.h \
+  /usr/include/qt6/QtCore/q20vector.h \
+  /usr/include/qt6/QtCore/q23functional.h \
+  /usr/include/qt6/QtCore/q23utility.h \
+  /usr/include/qt6/QtCore/q26numeric.h \
+  /usr/include/qt6/QtCore/qabstractanimation.h \
+  /usr/include/qt6/QtCore/qabstracteventdispatcher.h \
+  /usr/include/qt6/QtCore/qabstractitemmodel.h \
+  /usr/include/qt6/QtCore/qabstractnativeeventfilter.h \
+  /usr/include/qt6/QtCore/qabstractproxymodel.h \
+  /usr/include/qt6/QtCore/qalgorithms.h \
+  /usr/include/qt6/QtCore/qanimationgroup.h \
+  /usr/include/qt6/QtCore/qanystringview.h \
+  /usr/include/qt6/QtCore/qapplicationstatic.h \
+  /usr/include/qt6/QtCore/qarraydata.h \
+  /usr/include/qt6/QtCore/qarraydataops.h \
+  /usr/include/qt6/QtCore/qarraydatapointer.h \
+  /usr/include/qt6/QtCore/qassert.h \
+  /usr/include/qt6/QtCore/qassociativeiterable.h \
+  /usr/include/qt6/QtCore/qatomic.h \
+  /usr/include/qt6/QtCore/qatomic_cxx11.h \
+  /usr/include/qt6/QtCore/qatomicscopedvaluerollback.h \
+  /usr/include/qt6/QtCore/qbasicatomic.h \
+  /usr/include/qt6/QtCore/qbasictimer.h \
+  /usr/include/qt6/QtCore/qbindingstorage.h \
+  /usr/include/qt6/QtCore/qbitarray.h \
+  /usr/include/qt6/QtCore/qbuffer.h \
+  /usr/include/qt6/QtCore/qbytearray.h \
+  /usr/include/qt6/QtCore/qbytearrayalgorithms.h \
+  /usr/include/qt6/QtCore/qbytearraylist.h \
+  /usr/include/qt6/QtCore/qbytearraymatcher.h \
+  /usr/include/qt6/QtCore/qbytearrayview.h \
+  /usr/include/qt6/QtCore/qcache.h \
+  /usr/include/qt6/QtCore/qcalendar.h \
+  /usr/include/qt6/QtCore/qcborarray.h \
+  /usr/include/qt6/QtCore/qcborcommon.h \
+  /usr/include/qt6/QtCore/qcbormap.h \
+  /usr/include/qt6/QtCore/qcborstream.h \
+  /usr/include/qt6/QtCore/qcborstreamreader.h \
+  /usr/include/qt6/QtCore/qcborstreamwriter.h \
+  /usr/include/qt6/QtCore/qcborvalue.h \
+  /usr/include/qt6/QtCore/qchar.h \
+  /usr/include/qt6/QtCore/qchronotimer.h \
+  /usr/include/qt6/QtCore/qcollator.h \
+  /usr/include/qt6/QtCore/qcommandlineoption.h \
+  /usr/include/qt6/QtCore/qcommandlineparser.h \
+  /usr/include/qt6/QtCore/qcompare.h \
+  /usr/include/qt6/QtCore/qcompare_impl.h \
+  /usr/include/qt6/QtCore/qcomparehelpers.h \
+  /usr/include/qt6/QtCore/qcompilerdetection.h \
+  /usr/include/qt6/QtCore/qconcatenatetablesproxymodel.h \
+  /usr/include/qt6/QtCore/qconfig.h \
+  /usr/include/qt6/QtCore/qconstructormacros.h \
+  /usr/include/qt6/QtCore/qcontainerfwd.h \
+  /usr/include/qt6/QtCore/qcontainerinfo.h \
+  /usr/include/qt6/QtCore/qcontainertools_impl.h \
+  /usr/include/qt6/QtCore/qcontiguouscache.h \
+  /usr/include/qt6/QtCore/qcoreapplication.h \
+  /usr/include/qt6/QtCore/qcoreapplication_platform.h \
+  /usr/include/qt6/QtCore/qcoreevent.h \
+  /usr/include/qt6/QtCore/qcryptographichash.h \
+  /usr/include/qt6/QtCore/qdarwinhelpers.h \
+  /usr/include/qt6/QtCore/qdatastream.h \
+  /usr/include/qt6/QtCore/qdatetime.h \
+  /usr/include/qt6/QtCore/qdeadlinetimer.h \
+  /usr/include/qt6/QtCore/qdebug.h \
+  /usr/include/qt6/QtCore/qdir.h \
+  /usr/include/qt6/QtCore/qdiriterator.h \
+  /usr/include/qt6/QtCore/qdirlisting.h \
+  /usr/include/qt6/QtCore/qeasingcurve.h \
+  /usr/include/qt6/QtCore/qelapsedtimer.h \
+  /usr/include/qt6/QtCore/qendian.h \
+  /usr/include/qt6/QtCore/qeventloop.h \
+  /usr/include/qt6/QtCore/qexception.h \
+  /usr/include/qt6/QtCore/qexceptionhandling.h \
+  /usr/include/qt6/QtCore/qfactoryinterface.h \
+  /usr/include/qt6/QtCore/qfile.h \
+  /usr/include/qt6/QtCore/qfiledevice.h \
+  /usr/include/qt6/QtCore/qfileinfo.h \
+  /usr/include/qt6/QtCore/qfileselector.h \
+  /usr/include/qt6/QtCore/qfilesystemwatcher.h \
+  /usr/include/qt6/QtCore/qflags.h \
+  /usr/include/qt6/QtCore/qfloat16.h \
+  /usr/include/qt6/QtCore/qforeach.h \
+  /usr/include/qt6/QtCore/qfunctionaltools_impl.h \
+  /usr/include/qt6/QtCore/qfunctionpointer.h \
+  /usr/include/qt6/QtCore/qfuture.h \
+  /usr/include/qt6/QtCore/qfuture_impl.h \
+  /usr/include/qt6/QtCore/qfutureinterface.h \
+  /usr/include/qt6/QtCore/qfuturesynchronizer.h \
+  /usr/include/qt6/QtCore/qfuturewatcher.h \
+  /usr/include/qt6/QtCore/qgenericatomic.h \
+  /usr/include/qt6/QtCore/qglobal.h \
+  /usr/include/qt6/QtCore/qglobalstatic.h \
+  /usr/include/qt6/QtCore/qhash.h \
+  /usr/include/qt6/QtCore/qhashfunctions.h \
+  /usr/include/qt6/QtCore/qidentityproxymodel.h \
+  /usr/include/qt6/QtCore/qiodevice.h \
+  /usr/include/qt6/QtCore/qiodevicebase.h \
+  /usr/include/qt6/QtCore/qitemselectionmodel.h \
+  /usr/include/qt6/QtCore/qiterable.h \
+  /usr/include/qt6/QtCore/qiterator.h \
+  /usr/include/qt6/QtCore/qjsonarray.h \
+  /usr/include/qt6/QtCore/qjsondocument.h \
+  /usr/include/qt6/QtCore/qjsonobject.h \
+  /usr/include/qt6/QtCore/qjsonparseerror.h \
+  /usr/include/qt6/QtCore/qjsonvalue.h \
+  /usr/include/qt6/QtCore/qlatin1stringmatcher.h \
+  /usr/include/qt6/QtCore/qlatin1stringview.h \
+  /usr/include/qt6/QtCore/qlibrary.h \
+  /usr/include/qt6/QtCore/qlibraryinfo.h \
+  /usr/include/qt6/QtCore/qline.h \
+  /usr/include/qt6/QtCore/qlist.h \
+  /usr/include/qt6/QtCore/qlocale.h \
+  /usr/include/qt6/QtCore/qlockfile.h \
+  /usr/include/qt6/QtCore/qlogging.h \
+  /usr/include/qt6/QtCore/qloggingcategory.h \
+  /usr/include/qt6/QtCore/qmalloc.h \
+  /usr/include/qt6/QtCore/qmap.h \
+  /usr/include/qt6/QtCore/qmargins.h \
+  /usr/include/qt6/QtCore/qmath.h \
+  /usr/include/qt6/QtCore/qmessageauthenticationcode.h \
+  /usr/include/qt6/QtCore/qmetacontainer.h \
+  /usr/include/qt6/QtCore/qmetaobject.h \
+  /usr/include/qt6/QtCore/qmetatype.h \
+  /usr/include/qt6/QtCore/qmimedata.h \
+  /usr/include/qt6/QtCore/qmimedatabase.h \
+  /usr/include/qt6/QtCore/qmimetype.h \
+  /usr/include/qt6/QtCore/qminmax.h \
+  /usr/include/qt6/QtCore/qmutex.h \
+  /usr/include/qt6/QtCore/qnamespace.h \
+  /usr/include/qt6/QtCore/qnativeinterface.h \
+  /usr/include/qt6/QtCore/qnumeric.h \
+  /usr/include/qt6/QtCore/qobject.h \
+  /usr/include/qt6/QtCore/qobject_impl.h \
+  /usr/include/qt6/QtCore/qobjectcleanuphandler.h \
+  /usr/include/qt6/QtCore/qobjectdefs.h \
+  /usr/include/qt6/QtCore/qobjectdefs_impl.h \
+  /usr/include/qt6/QtCore/qoperatingsystemversion.h \
+  /usr/include/qt6/QtCore/qoverload.h \
+  /usr/include/qt6/QtCore/qpair.h \
+  /usr/include/qt6/QtCore/qparallelanimationgroup.h \
+  /usr/include/qt6/QtCore/qpauseanimation.h \
+  /usr/include/qt6/QtCore/qpermissions.h \
+  /usr/include/qt6/QtCore/qplugin.h \
+  /usr/include/qt6/QtCore/qpluginloader.h \
+  /usr/include/qt6/QtCore/qpoint.h \
+  /usr/include/qt6/QtCore/qpointer.h \
+  /usr/include/qt6/QtCore/qprocess.h \
+  /usr/include/qt6/QtCore/qprocessordetection.h \
+  /usr/include/qt6/QtCore/qpromise.h \
+  /usr/include/qt6/QtCore/qproperty.h \
+  /usr/include/qt6/QtCore/qpropertyanimation.h \
+  /usr/include/qt6/QtCore/qpropertyprivate.h \
+  /usr/include/qt6/QtCore/qqueue.h \
+  /usr/include/qt6/QtCore/qrandom.h \
+  /usr/include/qt6/QtCore/qreadwritelock.h \
+  /usr/include/qt6/QtCore/qrect.h \
+  /usr/include/qt6/QtCore/qrefcount.h \
+  /usr/include/qt6/QtCore/qregularexpression.h \
+  /usr/include/qt6/QtCore/qresource.h \
+  /usr/include/qt6/QtCore/qresultstore.h \
+  /usr/include/qt6/QtCore/qrunnable.h \
+  /usr/include/qt6/QtCore/qsavefile.h \
+  /usr/include/qt6/QtCore/qscopedpointer.h \
+  /usr/include/qt6/QtCore/qscopedvaluerollback.h \
+  /usr/include/qt6/QtCore/qscopeguard.h \
+  /usr/include/qt6/QtCore/qsemaphore.h \
+  /usr/include/qt6/QtCore/qsequentialanimationgroup.h \
+  /usr/include/qt6/QtCore/qsequentialiterable.h \
+  /usr/include/qt6/QtCore/qset.h \
+  /usr/include/qt6/QtCore/qsettings.h \
+  /usr/include/qt6/QtCore/qshareddata.h \
+  /usr/include/qt6/QtCore/qshareddata_impl.h \
+  /usr/include/qt6/QtCore/qsharedmemory.h \
+  /usr/include/qt6/QtCore/qsharedpointer.h \
+  /usr/include/qt6/QtCore/qsharedpointer_impl.h \
+  /usr/include/qt6/QtCore/qsignalmapper.h \
+  /usr/include/qt6/QtCore/qsimd.h \
+  /usr/include/qt6/QtCore/qsize.h \
+  /usr/include/qt6/QtCore/qsocketnotifier.h \
+  /usr/include/qt6/QtCore/qsortfilterproxymodel.h \
+  /usr/include/qt6/QtCore/qspan.h \
+  /usr/include/qt6/QtCore/qstack.h \
+  /usr/include/qt6/QtCore/qstandardpaths.h \
+  /usr/include/qt6/QtCore/qstaticlatin1stringmatcher.h \
+  /usr/include/qt6/QtCore/qstdlibdetection.h \
+  /usr/include/qt6/QtCore/qstorageinfo.h \
+  /usr/include/qt6/QtCore/qstring.h \
+  /usr/include/qt6/QtCore/qstringalgorithms.h \
+  /usr/include/qt6/QtCore/qstringbuilder.h \
+  /usr/include/qt6/QtCore/qstringconverter.h \
+  /usr/include/qt6/QtCore/qstringconverter_base.h \
+  /usr/include/qt6/QtCore/qstringfwd.h \
+  /usr/include/qt6/QtCore/qstringlist.h \
+  /usr/include/qt6/QtCore/qstringlistmodel.h \
+  /usr/include/qt6/QtCore/qstringliteral.h \
+  /usr/include/qt6/QtCore/qstringmatcher.h \
+  /usr/include/qt6/QtCore/qstringtokenizer.h \
+  /usr/include/qt6/QtCore/qstringview.h \
+  /usr/include/qt6/QtCore/qswap.h \
+  /usr/include/qt6/QtCore/qsysinfo.h \
+  /usr/include/qt6/QtCore/qsystemdetection.h \
+  /usr/include/qt6/QtCore/qsystemsemaphore.h \
+  /usr/include/qt6/QtCore/qtaggedpointer.h \
+  /usr/include/qt6/QtCore/qtclasshelpermacros.h \
+  /usr/include/qt6/QtCore/qtconfiginclude.h \
+  /usr/include/qt6/QtCore/qtconfigmacros.h \
+  /usr/include/qt6/QtCore/qtcore-config.h \
+  /usr/include/qt6/QtCore/qtcoreexports.h \
+  /usr/include/qt6/QtCore/qtcoreglobal.h \
+  /usr/include/qt6/QtCore/qtcoreversion.h \
+  /usr/include/qt6/QtCore/qtdeprecationdefinitions.h \
+  /usr/include/qt6/QtCore/qtdeprecationmarkers.h \
+  /usr/include/qt6/QtCore/qtemporarydir.h \
+  /usr/include/qt6/QtCore/qtemporaryfile.h \
+  /usr/include/qt6/QtCore/qtenvironmentvariables.h \
+  /usr/include/qt6/QtCore/qtextboundaryfinder.h \
+  /usr/include/qt6/QtCore/qtextstream.h \
+  /usr/include/qt6/QtCore/qtformat_impl.h \
+  /usr/include/qt6/QtCore/qthread.h \
+  /usr/include/qt6/QtCore/qthreadpool.h \
+  /usr/include/qt6/QtCore/qthreadstorage.h \
+  /usr/include/qt6/QtCore/qtimeline.h \
+  /usr/include/qt6/QtCore/qtimer.h \
+  /usr/include/qt6/QtCore/qtimezone.h \
+  /usr/include/qt6/QtCore/qtipccommon.h \
+  /usr/include/qt6/QtCore/qtmetamacros.h \
+  /usr/include/qt6/QtCore/qtmocconstants.h \
+  /usr/include/qt6/QtCore/qtnoop.h \
+  /usr/include/qt6/QtCore/qtpreprocessorsupport.h \
+  /usr/include/qt6/QtCore/qtranslator.h \
+  /usr/include/qt6/QtCore/qtransposeproxymodel.h \
+  /usr/include/qt6/QtCore/qtresource.h \
+  /usr/include/qt6/QtCore/qtsan_impl.h \
+  /usr/include/qt6/QtCore/qtsymbolmacros.h \
+  /usr/include/qt6/QtCore/qttranslation.h \
+  /usr/include/qt6/QtCore/qttypetraits.h \
+  /usr/include/qt6/QtCore/qtversion.h \
+  /usr/include/qt6/QtCore/qtversionchecks.h \
+  /usr/include/qt6/QtCore/qtypeinfo.h \
+  /usr/include/qt6/QtCore/qtyperevision.h \
+  /usr/include/qt6/QtCore/qtypes.h \
+  /usr/include/qt6/QtCore/qurl.h \
+  /usr/include/qt6/QtCore/qurlquery.h \
+  /usr/include/qt6/QtCore/qutf8stringview.h \
+  /usr/include/qt6/QtCore/quuid.h \
+  /usr/include/qt6/QtCore/qvariant.h \
+  /usr/include/qt6/QtCore/qvariantanimation.h \
+  /usr/include/qt6/QtCore/qvarianthash.h \
+  /usr/include/qt6/QtCore/qvariantlist.h \
+  /usr/include/qt6/QtCore/qvariantmap.h \
+  /usr/include/qt6/QtCore/qvarlengtharray.h \
+  /usr/include/qt6/QtCore/qvector.h \
+  /usr/include/qt6/QtCore/qversionnumber.h \
+  /usr/include/qt6/QtCore/qversiontagging.h \
+  /usr/include/qt6/QtCore/qwaitcondition.h \
+  /usr/include/qt6/QtCore/qwineventnotifier.h \
+  /usr/include/qt6/QtCore/qxmlstream.h \
+  /usr/include/qt6/QtCore/qxpfunctional.h \
+  /usr/include/qt6/QtCore/qxptype_traits.h \
+  /usr/include/qt6/QtCore/qyieldcpu.h \
+  /usr/include/qt6/QtGui/QAction \
+  /usr/include/qt6/QtGui/QCloseEvent \
+  /usr/include/qt6/QtGui/QDesktopServices \
+  /usr/include/qt6/QtGui/QFont \
+  /usr/include/qt6/QtGui/QIcon \
+  /usr/include/qt6/QtGui/QPalette \
+  /usr/include/qt6/QtGui/QScreen \
+  /usr/include/qt6/QtGui/QStandardItemModel \
+  /usr/include/qt6/QtGui/QTransform \
+  /usr/include/qt6/QtGui/qaction.h \
+  /usr/include/qt6/QtGui/qbitmap.h \
+  /usr/include/qt6/QtGui/qbrush.h \
+  /usr/include/qt6/QtGui/qcolor.h \
+  /usr/include/qt6/QtGui/qcursor.h \
+  /usr/include/qt6/QtGui/qdesktopservices.h \
+  /usr/include/qt6/QtGui/qevent.h \
+  /usr/include/qt6/QtGui/qeventpoint.h \
+  /usr/include/qt6/QtGui/qfont.h \
+  /usr/include/qt6/QtGui/qfontinfo.h \
+  /usr/include/qt6/QtGui/qfontmetrics.h \
+  /usr/include/qt6/QtGui/qfontvariableaxis.h \
+  /usr/include/qt6/QtGui/qguiapplication.h \
+  /usr/include/qt6/QtGui/qguiapplication_platform.h \
+  /usr/include/qt6/QtGui/qicon.h \
+  /usr/include/qt6/QtGui/qimage.h \
+  /usr/include/qt6/QtGui/qinputdevice.h \
+  /usr/include/qt6/QtGui/qinputmethod.h \
+  /usr/include/qt6/QtGui/qkeysequence.h \
+  /usr/include/qt6/QtGui/qpaintdevice.h \
+  /usr/include/qt6/QtGui/qpalette.h \
+  /usr/include/qt6/QtGui/qpen.h \
+  /usr/include/qt6/QtGui/qpicture.h \
+  /usr/include/qt6/QtGui/qpixelformat.h \
+  /usr/include/qt6/QtGui/qpixmap.h \
+  /usr/include/qt6/QtGui/qpointingdevice.h \
+  /usr/include/qt6/QtGui/qpolygon.h \
+  /usr/include/qt6/QtGui/qregion.h \
+  /usr/include/qt6/QtGui/qrgb.h \
+  /usr/include/qt6/QtGui/qrgba64.h \
+  /usr/include/qt6/QtGui/qscreen.h \
+  /usr/include/qt6/QtGui/qscreen_platform.h \
+  /usr/include/qt6/QtGui/qstandarditemmodel.h \
+  /usr/include/qt6/QtGui/qtextcursor.h \
+  /usr/include/qt6/QtGui/qtextdocument.h \
+  /usr/include/qt6/QtGui/qtextformat.h \
+  /usr/include/qt6/QtGui/qtextoption.h \
+  /usr/include/qt6/QtGui/qtgui-config.h \
+  /usr/include/qt6/QtGui/qtguiexports.h \
+  /usr/include/qt6/QtGui/qtguiglobal.h \
+  /usr/include/qt6/QtGui/qtransform.h \
+  /usr/include/qt6/QtGui/qvalidator.h \
+  /usr/include/qt6/QtGui/qvector2d.h \
+  /usr/include/qt6/QtGui/qvectornd.h \
+  /usr/include/qt6/QtGui/qwindowdefs.h \
+  /usr/include/qt6/QtWidgets/QApplication \
+  /usr/include/qt6/QtWidgets/QCheckBox \
+  /usr/include/qt6/QtWidgets/QFileDialog \
+  /usr/include/qt6/QtWidgets/QHBoxLayout \
+  /usr/include/qt6/QtWidgets/QHeaderView \
+  /usr/include/qt6/QtWidgets/QInputDialog \
+  /usr/include/qt6/QtWidgets/QLabel \
+  /usr/include/qt6/QtWidgets/QLineEdit \
+  /usr/include/qt6/QtWidgets/QListView \
+  /usr/include/qt6/QtWidgets/QMainWindow \
+  /usr/include/qt6/QtWidgets/QMenu \
+  /usr/include/qt6/QtWidgets/QMenuBar \
+  /usr/include/qt6/QtWidgets/QMessageBox \
+  /usr/include/qt6/QtWidgets/QProgressDialog \
+  /usr/include/qt6/QtWidgets/QPushButton \
+  /usr/include/qt6/QtWidgets/QScrollBar \
+  /usr/include/qt6/QtWidgets/QSplitter \
+  /usr/include/qt6/QtWidgets/QStackedWidget \
+  /usr/include/qt6/QtWidgets/QStatusBar \
+  /usr/include/qt6/QtWidgets/QStyle \
+  /usr/include/qt6/QtWidgets/QStyleFactory \
+  /usr/include/qt6/QtWidgets/QTabWidget \
+  /usr/include/qt6/QtWidgets/QTableView \
+  /usr/include/qt6/QtWidgets/QTextEdit \
+  /usr/include/qt6/QtWidgets/QToolBar \
+  /usr/include/qt6/QtWidgets/QVBoxLayout \
+  /usr/include/qt6/QtWidgets/qabstractbutton.h \
+  /usr/include/qt6/QtWidgets/qabstractitemdelegate.h \
+  /usr/include/qt6/QtWidgets/qabstractitemview.h \
+  /usr/include/qt6/QtWidgets/qabstractscrollarea.h \
+  /usr/include/qt6/QtWidgets/qabstractslider.h \
+  /usr/include/qt6/QtWidgets/qabstractspinbox.h \
+  /usr/include/qt6/QtWidgets/qapplication.h \
+  /usr/include/qt6/QtWidgets/qboxlayout.h \
+  /usr/include/qt6/QtWidgets/qcheckbox.h \
+  /usr/include/qt6/QtWidgets/qdialog.h \
+  /usr/include/qt6/QtWidgets/qdialogbuttonbox.h \
+  /usr/include/qt6/QtWidgets/qfiledialog.h \
+  /usr/include/qt6/QtWidgets/qframe.h \
+  /usr/include/qt6/QtWidgets/qgridlayout.h \
+  /usr/include/qt6/QtWidgets/qheaderview.h \
+  /usr/include/qt6/QtWidgets/qinputdialog.h \
+  /usr/include/qt6/QtWidgets/qlabel.h \
+  /usr/include/qt6/QtWidgets/qlayout.h \
+  /usr/include/qt6/QtWidgets/qlayoutitem.h \
+  /usr/include/qt6/QtWidgets/qlineedit.h \
+  /usr/include/qt6/QtWidgets/qlistview.h \
+  /usr/include/qt6/QtWidgets/qmainwindow.h \
+  /usr/include/qt6/QtWidgets/qmenu.h \
+  /usr/include/qt6/QtWidgets/qmenubar.h \
+  /usr/include/qt6/QtWidgets/qmessagebox.h \
+  /usr/include/qt6/QtWidgets/qprogressdialog.h \
+  /usr/include/qt6/QtWidgets/qpushbutton.h \
+  /usr/include/qt6/QtWidgets/qrubberband.h \
+  /usr/include/qt6/QtWidgets/qscrollbar.h \
+  /usr/include/qt6/QtWidgets/qsizepolicy.h \
+  /usr/include/qt6/QtWidgets/qslider.h \
+  /usr/include/qt6/QtWidgets/qsplitter.h \
+  /usr/include/qt6/QtWidgets/qstackedwidget.h \
+  /usr/include/qt6/QtWidgets/qstatusbar.h \
+  /usr/include/qt6/QtWidgets/qstyle.h \
+  /usr/include/qt6/QtWidgets/qstylefactory.h \
+  /usr/include/qt6/QtWidgets/qstyleoption.h \
+  /usr/include/qt6/QtWidgets/qtabbar.h \
+  /usr/include/qt6/QtWidgets/qtableview.h \
+  /usr/include/qt6/QtWidgets/qtabwidget.h \
+  /usr/include/qt6/QtWidgets/qtextedit.h \
+  /usr/include/qt6/QtWidgets/qtoolbar.h \
+  /usr/include/qt6/QtWidgets/qtwidgets-config.h \
+  /usr/include/qt6/QtWidgets/qtwidgetsexports.h \
+  /usr/include/qt6/QtWidgets/qtwidgetsglobal.h \
+  /usr/include/qt6/QtWidgets/qwidget.h \
+  /usr/include/sched.h \
+  /usr/include/stdc-predef.h \
+  /usr/include/stdint.h \
+  /usr/include/stdio.h \
+  /usr/include/stdlib.h \
+  /usr/include/string.h \
+  /usr/include/strings.h \
+  /usr/include/sys/cdefs.h \
+  /usr/include/sys/select.h \
+  /usr/include/sys/single_threaded.h \
+  /usr/include/sys/stat.h \
+  /usr/include/sys/types.h \
+  /usr/include/time.h \
+  /usr/include/unistd.h \
+  /usr/include/wchar.h \
+  /usr/include/wctype.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/adxintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/amxbf16intrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/amxcomplexintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/amxfp16intrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/amxint8intrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/amxtileintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx2intrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx5124fmapsintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx5124vnniwintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512bf16intrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512bf16vlintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512bitalgintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512bitalgvlintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512bwintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512cdintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512dqintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512erintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512fintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512fp16intrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512fp16vlintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512ifmaintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512ifmavlintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512pfintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vbmi2intrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vbmi2vlintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vbmiintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vbmivlintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vlbwintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vldqintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vlintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vnniintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vnnivlintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vp2intersectintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vp2intersectvlintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vpopcntdqintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vpopcntdqvlintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxifmaintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxneconvertintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxvnniint16intrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxvnniint8intrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxvnniintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/bmi2intrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/bmiintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/cetintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/cldemoteintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/clflushoptintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/clwbintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/clzerointrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/cmpccxaddintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/emmintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/enqcmdintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/f16cintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/fmaintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/fxsrintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/gfniintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/hresetintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/ia32intrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/immintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/keylockerintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/limits.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/lwpintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/lzcntintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/mm_malloc.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/mmintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/movdirintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/mwaitintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/mwaitxintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/pconfigintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/pkuintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/pmmintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/popcntintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/prfchiintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/prfchwintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/raointintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/rdseedintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/rtmintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/serializeintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/sgxintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/sha512intrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/shaintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/sm3intrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/sm4intrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/smmintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdarg.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdbool.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stddef.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdint.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/syslimits.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/tbmintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/tmmintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/tsxldtrkintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/uintrintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/usermsrintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/vaesintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/vpclmulqdqintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/waitpkgintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/wbnoinvdintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/wmmintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/x86gprintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xmmintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xsavecintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xsaveintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xsaveoptintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xsavesintrin.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xtestintrin.h
+
+CMakeFiles/pacmangui.dir/src/main.cpp.o: /home/matt/PacmanGui-new/src/main.cpp \
+  /home/matt/PacmanGui-new/include/core/package.hpp \
+  /home/matt/PacmanGui-new/include/core/packagemanager.hpp \
+  /home/matt/PacmanGui-new/include/core/repository.hpp \
+  /home/matt/PacmanGui-new/include/core/transaction.hpp \
+  /home/matt/PacmanGui-new/include/gui/mainwindow.hpp \
+  /usr/include/alloca.h \
+  /usr/include/alpm.h \
+  /usr/include/alpm_list.h \
+  /usr/include/archive.h \
+  /usr/include/archive_entry.h \
+  /usr/include/asm-generic/bitsperlong.h \
+  /usr/include/asm-generic/errno-base.h \
+  /usr/include/asm-generic/errno.h \
+  /usr/include/asm-generic/int-ll64.h \
+  /usr/include/asm-generic/posix_types.h \
+  /usr/include/asm-generic/types.h \
+  /usr/include/asm/bitsperlong.h \
+  /usr/include/asm/errno.h \
+  /usr/include/asm/posix_types.h \
+  /usr/include/asm/posix_types_64.h \
+  /usr/include/asm/types.h \
+  /usr/include/assert.h \
+  /usr/include/bits/atomic_wide_counter.h \
+  /usr/include/bits/byteswap.h \
+  /usr/include/bits/confname.h \
+  /usr/include/bits/cpu-set.h \
+  /usr/include/bits/endian.h \
+  /usr/include/bits/endianness.h \
+  /usr/include/bits/environments.h \
+  /usr/include/bits/errno.h \
+  /usr/include/bits/floatn-common.h \
+  /usr/include/bits/floatn.h \
+  /usr/include/bits/flt-eval-method.h \
+  /usr/include/bits/fp-fast.h \
+  /usr/include/bits/fp-logb.h \
+  /usr/include/bits/getopt_core.h \
+  /usr/include/bits/getopt_posix.h \
+  /usr/include/bits/iscanonical.h \
+  /usr/include/bits/libc-header-start.h \
+  /usr/include/bits/libm-simd-decl-stubs.h \
+  /usr/include/bits/local_lim.h \
+  /usr/include/bits/locale.h \
+  /usr/include/bits/long-double.h \
+  /usr/include/bits/math-vector.h \
+  /usr/include/bits/mathcalls-helper-functions.h \
+  /usr/include/bits/mathcalls-macros.h \
+  /usr/include/bits/mathcalls-narrow.h \
+  /usr/include/bits/mathcalls.h \
+  /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/posix2_lim.h \
+  /usr/include/bits/posix_opt.h \
+  /usr/include/bits/pthread_stack_min-dynamic.h \
+  /usr/include/bits/pthreadtypes-arch.h \
+  /usr/include/bits/pthreadtypes.h \
+  /usr/include/bits/sched.h \
+  /usr/include/bits/select.h \
+  /usr/include/bits/setjmp.h \
+  /usr/include/bits/stat.h \
+  /usr/include/bits/statx-generic.h \
+  /usr/include/bits/statx.h \
+  /usr/include/bits/stdint-intn.h \
+  /usr/include/bits/stdint-least.h \
+  /usr/include/bits/stdint-uintn.h \
+  /usr/include/bits/stdio_lim.h \
+  /usr/include/bits/stdlib-float.h \
+  /usr/include/bits/struct_mutex.h \
+  /usr/include/bits/struct_rwlock.h \
+  /usr/include/bits/struct_stat.h \
+  /usr/include/bits/thread-shared-types.h \
+  /usr/include/bits/time.h \
+  /usr/include/bits/time64.h \
+  /usr/include/bits/timesize.h \
+  /usr/include/bits/timex.h \
+  /usr/include/bits/types.h \
+  /usr/include/bits/types/FILE.h \
+  /usr/include/bits/types/__FILE.h \
+  /usr/include/bits/types/__fpos64_t.h \
+  /usr/include/bits/types/__fpos_t.h \
+  /usr/include/bits/types/__locale_t.h \
+  /usr/include/bits/types/__mbstate_t.h \
+  /usr/include/bits/types/__sigset_t.h \
+  /usr/include/bits/types/clock_t.h \
+  /usr/include/bits/types/clockid_t.h \
+  /usr/include/bits/types/cookie_io_functions_t.h \
+  /usr/include/bits/types/error_t.h \
+  /usr/include/bits/types/locale_t.h \
+  /usr/include/bits/types/mbstate_t.h \
+  /usr/include/bits/types/sigset_t.h \
+  /usr/include/bits/types/struct_FILE.h \
+  /usr/include/bits/types/struct___jmp_buf_tag.h \
+  /usr/include/bits/types/struct_itimerspec.h \
+  /usr/include/bits/types/struct_sched_param.h \
+  /usr/include/bits/types/struct_statx.h \
+  /usr/include/bits/types/struct_statx_timestamp.h \
+  /usr/include/bits/types/struct_timespec.h \
+  /usr/include/bits/types/struct_timeval.h \
+  /usr/include/bits/types/struct_tm.h \
+  /usr/include/bits/types/time_t.h \
+  /usr/include/bits/types/timer_t.h \
+  /usr/include/bits/types/wint_t.h \
+  /usr/include/bits/typesizes.h \
+  /usr/include/bits/uintn-identity.h \
+  /usr/include/bits/uio_lim.h \
+  /usr/include/bits/unistd_ext.h \
+  /usr/include/bits/waitflags.h \
+  /usr/include/bits/waitstatus.h \
+  /usr/include/bits/wchar.h \
+  /usr/include/bits/wctype-wchar.h \
+  /usr/include/bits/wordsize.h \
+  /usr/include/bits/xopen_lim.h \
+  /usr/include/c++/14.2.1/algorithm \
+  /usr/include/c++/14.2.1/array \
+  /usr/include/c++/14.2.1/atomic \
+  /usr/include/c++/14.2.1/backward/auto_ptr.h \
+  /usr/include/c++/14.2.1/backward/binders.h \
+  /usr/include/c++/14.2.1/bit \
+  /usr/include/c++/14.2.1/bits/algorithmfwd.h \
   /usr/include/c++/14.2.1/bits/align.h \
   /usr/include/c++/14.2.1/bits/alloc_traits.h \
   /usr/include/c++/14.2.1/bits/allocated_ptr.h \
@@ -1502,6 +3569,7 @@ CMakeFiles/pacmangui.dir/src/main.cpp.o: /home/matt/PacmanGui-new/src/main.cpp \
   /usr/include/c++/14.2.1/bits/basic_string.tcc \
   /usr/include/c++/14.2.1/bits/char_traits.h \
   /usr/include/c++/14.2.1/bits/charconv.h \
+  /usr/include/c++/14.2.1/bits/chrono.h \
   /usr/include/c++/14.2.1/bits/concept_check.h \
   /usr/include/c++/14.2.1/bits/cpp_type_traits.h \
   /usr/include/c++/14.2.1/bits/cxxabi_forced.h \
@@ -1519,6 +3587,7 @@ CMakeFiles/pacmangui.dir/src/main.cpp.o: /home/matt/PacmanGui-new/src/main.cpp \
   /usr/include/c++/14.2.1/bits/invoke.h \
   /usr/include/c++/14.2.1/bits/ios_base.h \
   /usr/include/c++/14.2.1/bits/istream.tcc \
+  /usr/include/c++/14.2.1/bits/list.tcc \
   /usr/include/c++/14.2.1/bits/locale_classes.h \
   /usr/include/c++/14.2.1/bits/locale_classes.tcc \
   /usr/include/c++/14.2.1/bits/locale_facets.h \
@@ -1532,6 +3601,7 @@ CMakeFiles/pacmangui.dir/src/main.cpp.o: /home/matt/PacmanGui-new/src/main.cpp \
   /usr/include/c++/14.2.1/bits/node_handle.h \
   /usr/include/c++/14.2.1/bits/ostream.tcc \
   /usr/include/c++/14.2.1/bits/ostream_insert.h \
+  /usr/include/c++/14.2.1/bits/parse_numbers.h \
   /usr/include/c++/14.2.1/bits/postypes.h \
   /usr/include/c++/14.2.1/bits/predefined_ops.h \
   /usr/include/c++/14.2.1/bits/ptr_traits.h \
@@ -1541,40 +3611,60 @@ CMakeFiles/pacmangui.dir/src/main.cpp.o: /home/matt/PacmanGui-new/src/main.cpp \
   /usr/include/c++/14.2.1/bits/shared_ptr.h \
   /usr/include/c++/14.2.1/bits/shared_ptr_atomic.h \
   /usr/include/c++/14.2.1/bits/shared_ptr_base.h \
+  /usr/include/c++/14.2.1/bits/specfun.h \
   /usr/include/c++/14.2.1/bits/std_abs.h \
   /usr/include/c++/14.2.1/bits/std_function.h \
+  /usr/include/c++/14.2.1/bits/stl_algo.h \
   /usr/include/c++/14.2.1/bits/stl_algobase.h \
   /usr/include/c++/14.2.1/bits/stl_bvector.h \
   /usr/include/c++/14.2.1/bits/stl_construct.h \
   /usr/include/c++/14.2.1/bits/stl_function.h \
+  /usr/include/c++/14.2.1/bits/stl_heap.h \
   /usr/include/c++/14.2.1/bits/stl_iterator.h \
   /usr/include/c++/14.2.1/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/14.2.1/bits/stl_iterator_base_types.h \
+  /usr/include/c++/14.2.1/bits/stl_list.h \
+  /usr/include/c++/14.2.1/bits/stl_map.h \
+  /usr/include/c++/14.2.1/bits/stl_multimap.h \
+  /usr/include/c++/14.2.1/bits/stl_multiset.h \
+  /usr/include/c++/14.2.1/bits/stl_numeric.h \
   /usr/include/c++/14.2.1/bits/stl_pair.h \
   /usr/include/c++/14.2.1/bits/stl_raw_storage_iter.h \
+  /usr/include/c++/14.2.1/bits/stl_relops.h \
+  /usr/include/c++/14.2.1/bits/stl_set.h \
   /usr/include/c++/14.2.1/bits/stl_tempbuf.h \
+  /usr/include/c++/14.2.1/bits/stl_tree.h \
   /usr/include/c++/14.2.1/bits/stl_uninitialized.h \
   /usr/include/c++/14.2.1/bits/stl_vector.h \
+  /usr/include/c++/14.2.1/bits/stream_iterator.h \
   /usr/include/c++/14.2.1/bits/streambuf.tcc \
   /usr/include/c++/14.2.1/bits/streambuf_iterator.h \
   /usr/include/c++/14.2.1/bits/string_view.tcc \
   /usr/include/c++/14.2.1/bits/stringfwd.h \
+  /usr/include/c++/14.2.1/bits/uniform_int_dist.h \
   /usr/include/c++/14.2.1/bits/unique_ptr.h \
   /usr/include/c++/14.2.1/bits/unordered_map.h \
+  /usr/include/c++/14.2.1/bits/unordered_set.h \
   /usr/include/c++/14.2.1/bits/uses_allocator.h \
   /usr/include/c++/14.2.1/bits/uses_allocator_args.h \
   /usr/include/c++/14.2.1/bits/utility.h \
   /usr/include/c++/14.2.1/bits/vector.tcc \
   /usr/include/c++/14.2.1/bits/version.h \
+  /usr/include/c++/14.2.1/cassert \
   /usr/include/c++/14.2.1/cctype \
   /usr/include/c++/14.2.1/cerrno \
+  /usr/include/c++/14.2.1/chrono \
+  /usr/include/c++/14.2.1/climits \
   /usr/include/c++/14.2.1/clocale \
+  /usr/include/c++/14.2.1/cmath \
   /usr/include/c++/14.2.1/compare \
   /usr/include/c++/14.2.1/concepts \
   /usr/include/c++/14.2.1/cstddef \
   /usr/include/c++/14.2.1/cstdint \
   /usr/include/c++/14.2.1/cstdio \
   /usr/include/c++/14.2.1/cstdlib \
+  /usr/include/c++/14.2.1/cstring \
+  /usr/include/c++/14.2.1/ctime \
   /usr/include/c++/14.2.1/cwchar \
   /usr/include/c++/14.2.1/cwctype \
   /usr/include/c++/14.2.1/debug/assertions.h \
@@ -1593,23 +3683,49 @@ CMakeFiles/pacmangui.dir/src/main.cpp.o: /home/matt/PacmanGui-new/src/main.cpp \
   /usr/include/c++/14.2.1/iosfwd \
   /usr/include/c++/14.2.1/iostream \
   /usr/include/c++/14.2.1/istream \
+  /usr/include/c++/14.2.1/iterator \
+  /usr/include/c++/14.2.1/limits \
+  /usr/include/c++/14.2.1/list \
+  /usr/include/c++/14.2.1/map \
   /usr/include/c++/14.2.1/memory \
   /usr/include/c++/14.2.1/new \
+  /usr/include/c++/14.2.1/numeric \
+  /usr/include/c++/14.2.1/optional \
   /usr/include/c++/14.2.1/ostream \
   /usr/include/c++/14.2.1/pstl/execution_defs.h \
+  /usr/include/c++/14.2.1/pstl/glue_algorithm_defs.h \
   /usr/include/c++/14.2.1/pstl/glue_memory_defs.h \
+  /usr/include/c++/14.2.1/pstl/glue_numeric_defs.h \
   /usr/include/c++/14.2.1/pstl/pstl_config.h \
+  /usr/include/c++/14.2.1/ratio \
+  /usr/include/c++/14.2.1/set \
   /usr/include/c++/14.2.1/stdexcept \
   /usr/include/c++/14.2.1/stdlib.h \
   /usr/include/c++/14.2.1/streambuf \
   /usr/include/c++/14.2.1/string \
   /usr/include/c++/14.2.1/string_view \
   /usr/include/c++/14.2.1/system_error \
+  /usr/include/c++/14.2.1/tr1/bessel_function.tcc \
+  /usr/include/c++/14.2.1/tr1/beta_function.tcc \
+  /usr/include/c++/14.2.1/tr1/ell_integral.tcc \
+  /usr/include/c++/14.2.1/tr1/exp_integral.tcc \
+  /usr/include/c++/14.2.1/tr1/gamma.tcc \
+  /usr/include/c++/14.2.1/tr1/hypergeometric.tcc \
+  /usr/include/c++/14.2.1/tr1/legendre_function.tcc \
+  /usr/include/c++/14.2.1/tr1/modified_bessel_func.tcc \
+  /usr/include/c++/14.2.1/tr1/poly_hermite.tcc \
+  /usr/include/c++/14.2.1/tr1/poly_laguerre.tcc \
+  /usr/include/c++/14.2.1/tr1/riemann_zeta.tcc \
+  /usr/include/c++/14.2.1/tr1/special_function_util.h \
   /usr/include/c++/14.2.1/tuple \
   /usr/include/c++/14.2.1/type_traits \
   /usr/include/c++/14.2.1/typeinfo \
   /usr/include/c++/14.2.1/unordered_map \
+  /usr/include/c++/14.2.1/unordered_set \
+  /usr/include/c++/14.2.1/utility \
+  /usr/include/c++/14.2.1/variant \
   /usr/include/c++/14.2.1/vector \
+  /usr/include/c++/14.2.1/version \
   /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
   /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
   /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
@@ -1629,20 +3745,261 @@ CMakeFiles/pacmangui.dir/src/main.cpp.o: /home/matt/PacmanGui-new/src/main.cpp \
   /usr/include/gnu/stubs-64.h \
   /usr/include/gnu/stubs.h \
   /usr/include/inttypes.h \
+  /usr/include/limits.h \
   /usr/include/linux/close_range.h \
   /usr/include/linux/errno.h \
+  /usr/include/linux/limits.h \
   /usr/include/linux/posix_types.h \
   /usr/include/linux/sched/types.h \
   /usr/include/linux/stat.h \
   /usr/include/linux/stddef.h \
   /usr/include/linux/types.h \
   /usr/include/locale.h \
+  /usr/include/math.h \
   /usr/include/pthread.h \
+  /usr/include/qt6/QtCore/QCommandLineOption \
+  /usr/include/qt6/QtCore/QCommandLineParser \
+  /usr/include/qt6/QtCore/QSet \
+  /usr/include/qt6/QtCore/q17memory.h \
+  /usr/include/qt6/QtCore/q20functional.h \
+  /usr/include/qt6/QtCore/q20iterator.h \
+  /usr/include/qt6/QtCore/q20memory.h \
+  /usr/include/qt6/QtCore/q20type_traits.h \
+  /usr/include/qt6/QtCore/q20utility.h \
+  /usr/include/qt6/QtCore/q23utility.h \
+  /usr/include/qt6/QtCore/qabstracteventdispatcher.h \
+  /usr/include/qt6/QtCore/qabstractitemmodel.h \
+  /usr/include/qt6/QtCore/qalgorithms.h \
+  /usr/include/qt6/QtCore/qanystringview.h \
+  /usr/include/qt6/QtCore/qarraydata.h \
+  /usr/include/qt6/QtCore/qarraydataops.h \
+  /usr/include/qt6/QtCore/qarraydatapointer.h \
+  /usr/include/qt6/QtCore/qassert.h \
+  /usr/include/qt6/QtCore/qatomic.h \
+  /usr/include/qt6/QtCore/qatomic_cxx11.h \
+  /usr/include/qt6/QtCore/qbasicatomic.h \
+  /usr/include/qt6/QtCore/qbasictimer.h \
+  /usr/include/qt6/QtCore/qbindingstorage.h \
+  /usr/include/qt6/QtCore/qbytearray.h \
+  /usr/include/qt6/QtCore/qbytearrayalgorithms.h \
+  /usr/include/qt6/QtCore/qbytearraylist.h \
+  /usr/include/qt6/QtCore/qbytearrayview.h \
+  /usr/include/qt6/QtCore/qchar.h \
+  /usr/include/qt6/QtCore/qcommandlineoption.h \
+  /usr/include/qt6/QtCore/qcommandlineparser.h \
+  /usr/include/qt6/QtCore/qcompare.h \
+  /usr/include/qt6/QtCore/qcompare_impl.h \
+  /usr/include/qt6/QtCore/qcomparehelpers.h \
+  /usr/include/qt6/QtCore/qcompilerdetection.h \
+  /usr/include/qt6/QtCore/qconfig.h \
+  /usr/include/qt6/QtCore/qconstructormacros.h \
+  /usr/include/qt6/QtCore/qcontainerfwd.h \
+  /usr/include/qt6/QtCore/qcontainerinfo.h \
+  /usr/include/qt6/QtCore/qcontainertools_impl.h \
+  /usr/include/qt6/QtCore/qcontiguouscache.h \
+  /usr/include/qt6/QtCore/qcoreapplication.h \
+  /usr/include/qt6/QtCore/qcoreapplication_platform.h \
+  /usr/include/qt6/QtCore/qcoreevent.h \
+  /usr/include/qt6/QtCore/qdarwinhelpers.h \
+  /usr/include/qt6/QtCore/qdatastream.h \
+  /usr/include/qt6/QtCore/qdeadlinetimer.h \
+  /usr/include/qt6/QtCore/qdebug.h \
+  /usr/include/qt6/QtCore/qelapsedtimer.h \
+  /usr/include/qt6/QtCore/qendian.h \
+  /usr/include/qt6/QtCore/qeventloop.h \
+  /usr/include/qt6/QtCore/qexceptionhandling.h \
+  /usr/include/qt6/QtCore/qflags.h \
+  /usr/include/qt6/QtCore/qfloat16.h \
+  /usr/include/qt6/QtCore/qforeach.h \
+  /usr/include/qt6/QtCore/qfunctionaltools_impl.h \
+  /usr/include/qt6/QtCore/qfunctionpointer.h \
+  /usr/include/qt6/QtCore/qgenericatomic.h \
+  /usr/include/qt6/QtCore/qglobal.h \
+  /usr/include/qt6/QtCore/qglobalstatic.h \
+  /usr/include/qt6/QtCore/qhash.h \
+  /usr/include/qt6/QtCore/qhashfunctions.h \
+  /usr/include/qt6/QtCore/qiodevice.h \
+  /usr/include/qt6/QtCore/qiodevicebase.h \
+  /usr/include/qt6/QtCore/qitemselectionmodel.h \
+  /usr/include/qt6/QtCore/qiterable.h \
+  /usr/include/qt6/QtCore/qiterator.h \
+  /usr/include/qt6/QtCore/qlatin1stringview.h \
+  /usr/include/qt6/QtCore/qline.h \
+  /usr/include/qt6/QtCore/qlist.h \
+  /usr/include/qt6/QtCore/qlocale.h \
+  /usr/include/qt6/QtCore/qlogging.h \
+  /usr/include/qt6/QtCore/qmalloc.h \
+  /usr/include/qt6/QtCore/qmap.h \
+  /usr/include/qt6/QtCore/qmargins.h \
+  /usr/include/qt6/QtCore/qmath.h \
+  /usr/include/qt6/QtCore/qmetacontainer.h \
+  /usr/include/qt6/QtCore/qmetatype.h \
+  /usr/include/qt6/QtCore/qminmax.h \
+  /usr/include/qt6/QtCore/qnamespace.h \
+  /usr/include/qt6/QtCore/qnativeinterface.h \
+  /usr/include/qt6/QtCore/qnumeric.h \
+  /usr/include/qt6/QtCore/qobject.h \
+  /usr/include/qt6/QtCore/qobject_impl.h \
+  /usr/include/qt6/QtCore/qobjectdefs.h \
+  /usr/include/qt6/QtCore/qobjectdefs_impl.h \
+  /usr/include/qt6/QtCore/qoverload.h \
+  /usr/include/qt6/QtCore/qpair.h \
+  /usr/include/qt6/QtCore/qpoint.h \
+  /usr/include/qt6/QtCore/qprocessordetection.h \
+  /usr/include/qt6/QtCore/qrect.h \
+  /usr/include/qt6/QtCore/qrefcount.h \
+  /usr/include/qt6/QtCore/qregularexpression.h \
+  /usr/include/qt6/QtCore/qscopedpointer.h \
+  /usr/include/qt6/QtCore/qscopeguard.h \
+  /usr/include/qt6/QtCore/qset.h \
+  /usr/include/qt6/QtCore/qshareddata.h \
+  /usr/include/qt6/QtCore/qshareddata_impl.h \
+  /usr/include/qt6/QtCore/qsharedpointer.h \
+  /usr/include/qt6/QtCore/qsharedpointer_impl.h \
+  /usr/include/qt6/QtCore/qsize.h \
+  /usr/include/qt6/QtCore/qspan.h \
+  /usr/include/qt6/QtCore/qstdlibdetection.h \
+  /usr/include/qt6/QtCore/qstring.h \
+  /usr/include/qt6/QtCore/qstringalgorithms.h \
+  /usr/include/qt6/QtCore/qstringbuilder.h \
+  /usr/include/qt6/QtCore/qstringconverter.h \
+  /usr/include/qt6/QtCore/qstringconverter_base.h \
+  /usr/include/qt6/QtCore/qstringfwd.h \
+  /usr/include/qt6/QtCore/qstringlist.h \
+  /usr/include/qt6/QtCore/qstringliteral.h \
+  /usr/include/qt6/QtCore/qstringmatcher.h \
+  /usr/include/qt6/QtCore/qstringtokenizer.h \
+  /usr/include/qt6/QtCore/qstringview.h \
+  /usr/include/qt6/QtCore/qswap.h \
+  /usr/include/qt6/QtCore/qsysinfo.h \
+  /usr/include/qt6/QtCore/qsystemdetection.h \
+  /usr/include/qt6/QtCore/qtaggedpointer.h \
+  /usr/include/qt6/QtCore/qtclasshelpermacros.h \
+  /usr/include/qt6/QtCore/qtconfiginclude.h \
+  /usr/include/qt6/QtCore/qtconfigmacros.h \
+  /usr/include/qt6/QtCore/qtcore-config.h \
+  /usr/include/qt6/QtCore/qtcoreexports.h \
+  /usr/include/qt6/QtCore/qtcoreglobal.h \
+  /usr/include/qt6/QtCore/qtdeprecationdefinitions.h \
+  /usr/include/qt6/QtCore/qtdeprecationmarkers.h \
+  /usr/include/qt6/QtCore/qtenvironmentvariables.h \
+  /usr/include/qt6/QtCore/qtextstream.h \
+  /usr/include/qt6/QtCore/qtformat_impl.h \
+  /usr/include/qt6/QtCore/qtmetamacros.h \
+  /usr/include/qt6/QtCore/qtnoop.h \
+  /usr/include/qt6/QtCore/qtpreprocessorsupport.h \
+  /usr/include/qt6/QtCore/qtresource.h \
+  /usr/include/qt6/QtCore/qttranslation.h \
+  /usr/include/qt6/QtCore/qttypetraits.h \
+  /usr/include/qt6/QtCore/qtversion.h \
+  /usr/include/qt6/QtCore/qtversionchecks.h \
+  /usr/include/qt6/QtCore/qtypeinfo.h \
+  /usr/include/qt6/QtCore/qtypes.h \
+  /usr/include/qt6/QtCore/qurl.h \
+  /usr/include/qt6/QtCore/qutf8stringview.h \
+  /usr/include/qt6/QtCore/qvariant.h \
+  /usr/include/qt6/QtCore/qvarlengtharray.h \
+  /usr/include/qt6/QtCore/qversiontagging.h \
+  /usr/include/qt6/QtCore/qxptype_traits.h \
+  /usr/include/qt6/QtCore/qyieldcpu.h \
+  /usr/include/qt6/QtGui/QAction \
+  /usr/include/qt6/QtGui/QStandardItemModel \
+  /usr/include/qt6/QtGui/qaction.h \
+  /usr/include/qt6/QtGui/qbitmap.h \
+  /usr/include/qt6/QtGui/qbrush.h \
+  /usr/include/qt6/QtGui/qcolor.h \
+  /usr/include/qt6/QtGui/qcursor.h \
+  /usr/include/qt6/QtGui/qfont.h \
+  /usr/include/qt6/QtGui/qfontinfo.h \
+  /usr/include/qt6/QtGui/qfontmetrics.h \
+  /usr/include/qt6/QtGui/qfontvariableaxis.h \
+  /usr/include/qt6/QtGui/qguiapplication.h \
+  /usr/include/qt6/QtGui/qguiapplication_platform.h \
+  /usr/include/qt6/QtGui/qicon.h \
+  /usr/include/qt6/QtGui/qimage.h \
+  /usr/include/qt6/QtGui/qinputmethod.h \
+  /usr/include/qt6/QtGui/qkeysequence.h \
+  /usr/include/qt6/QtGui/qpaintdevice.h \
+  /usr/include/qt6/QtGui/qpalette.h \
+  /usr/include/qt6/QtGui/qpen.h \
+  /usr/include/qt6/QtGui/qpicture.h \
+  /usr/include/qt6/QtGui/qpixelformat.h \
+  /usr/include/qt6/QtGui/qpixmap.h \
+  /usr/include/qt6/QtGui/qpolygon.h \
+  /usr/include/qt6/QtGui/qregion.h \
+  /usr/include/qt6/QtGui/qrgb.h \
+  /usr/include/qt6/QtGui/qrgba64.h \
+  /usr/include/qt6/QtGui/qstandarditemmodel.h \
+  /usr/include/qt6/QtGui/qtextcursor.h \
+  /usr/include/qt6/QtGui/qtextdocument.h \
+  /usr/include/qt6/QtGui/qtextformat.h \
+  /usr/include/qt6/QtGui/qtextoption.h \
+  /usr/include/qt6/QtGui/qtgui-config.h \
+  /usr/include/qt6/QtGui/qtguiexports.h \
+  /usr/include/qt6/QtGui/qtguiglobal.h \
+  /usr/include/qt6/QtGui/qtransform.h \
+  /usr/include/qt6/QtGui/qvalidator.h \
+  /usr/include/qt6/QtGui/qwindowdefs.h \
+  /usr/include/qt6/QtWidgets/QApplication \
+  /usr/include/qt6/QtWidgets/QCheckBox \
+  /usr/include/qt6/QtWidgets/QHBoxLayout \
+  /usr/include/qt6/QtWidgets/QLabel \
+  /usr/include/qt6/QtWidgets/QLineEdit \
+  /usr/include/qt6/QtWidgets/QListView \
+  /usr/include/qt6/QtWidgets/QMainWindow \
+  /usr/include/qt6/QtWidgets/QMenu \
+  /usr/include/qt6/QtWidgets/QPushButton \
+  /usr/include/qt6/QtWidgets/QSplitter \
+  /usr/include/qt6/QtWidgets/QStackedWidget \
+  /usr/include/qt6/QtWidgets/QStatusBar \
+  /usr/include/qt6/QtWidgets/QTabWidget \
+  /usr/include/qt6/QtWidgets/QTableView \
+  /usr/include/qt6/QtWidgets/QTextEdit \
+  /usr/include/qt6/QtWidgets/QToolBar \
+  /usr/include/qt6/QtWidgets/QVBoxLayout \
+  /usr/include/qt6/QtWidgets/qabstractbutton.h \
+  /usr/include/qt6/QtWidgets/qabstractitemdelegate.h \
+  /usr/include/qt6/QtWidgets/qabstractitemview.h \
+  /usr/include/qt6/QtWidgets/qabstractscrollarea.h \
+  /usr/include/qt6/QtWidgets/qabstractslider.h \
+  /usr/include/qt6/QtWidgets/qabstractspinbox.h \
+  /usr/include/qt6/QtWidgets/qapplication.h \
+  /usr/include/qt6/QtWidgets/qboxlayout.h \
+  /usr/include/qt6/QtWidgets/qcheckbox.h \
+  /usr/include/qt6/QtWidgets/qframe.h \
+  /usr/include/qt6/QtWidgets/qgridlayout.h \
+  /usr/include/qt6/QtWidgets/qlabel.h \
+  /usr/include/qt6/QtWidgets/qlayout.h \
+  /usr/include/qt6/QtWidgets/qlayoutitem.h \
+  /usr/include/qt6/QtWidgets/qlineedit.h \
+  /usr/include/qt6/QtWidgets/qlistview.h \
+  /usr/include/qt6/QtWidgets/qmainwindow.h \
+  /usr/include/qt6/QtWidgets/qmenu.h \
+  /usr/include/qt6/QtWidgets/qpushbutton.h \
+  /usr/include/qt6/QtWidgets/qrubberband.h \
+  /usr/include/qt6/QtWidgets/qsizepolicy.h \
+  /usr/include/qt6/QtWidgets/qslider.h \
+  /usr/include/qt6/QtWidgets/qsplitter.h \
+  /usr/include/qt6/QtWidgets/qstackedwidget.h \
+  /usr/include/qt6/QtWidgets/qstatusbar.h \
+  /usr/include/qt6/QtWidgets/qstyle.h \
+  /usr/include/qt6/QtWidgets/qstyleoption.h \
+  /usr/include/qt6/QtWidgets/qtabbar.h \
+  /usr/include/qt6/QtWidgets/qtableview.h \
+  /usr/include/qt6/QtWidgets/qtabwidget.h \
+  /usr/include/qt6/QtWidgets/qtextedit.h \
+  /usr/include/qt6/QtWidgets/qtoolbar.h \
+  /usr/include/qt6/QtWidgets/qtwidgets-config.h \
+  /usr/include/qt6/QtWidgets/qtwidgetsexports.h \
+  /usr/include/qt6/QtWidgets/qtwidgetsglobal.h \
+  /usr/include/qt6/QtWidgets/qwidget.h \
   /usr/include/sched.h \
   /usr/include/stdc-predef.h \
   /usr/include/stdint.h \
   /usr/include/stdio.h \
   /usr/include/stdlib.h \
+  /usr/include/string.h \
+  /usr/include/strings.h \
   /usr/include/sys/cdefs.h \
   /usr/include/sys/select.h \
   /usr/include/sys/single_threaded.h \
@@ -1652,9 +4009,12 @@ CMakeFiles/pacmangui.dir/src/main.cpp.o: /home/matt/PacmanGui-new/src/main.cpp \
   /usr/include/unistd.h \
   /usr/include/wchar.h \
   /usr/include/wctype.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/limits.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdarg.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdbool.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stddef.h \
-  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdint.h
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdint.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/syslimits.h
 
 pacmangui: /usr/lib/Scrt1.o \
   /usr/lib/crti.o \
@@ -1734,55 +4094,59 @@ pacmangui: /usr/lib/Scrt1.o \
   /usr/lib/libxml2.so.2 \
   /usr/lib/libz.so.1 \
   /usr/lib/libzstd.so.1 \
+  CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o \
   CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o \
   CMakeFiles/pacmangui.dir/src/core/package.cpp.o \
   CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o \
   CMakeFiles/pacmangui.dir/src/core/repository.cpp.o \
   CMakeFiles/pacmangui.dir/src/core/transaction.cpp.o \
+  CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o \
   CMakeFiles/pacmangui.dir/src/main.cpp.o
 
 
+CMakeFiles/pacmangui.dir/src/core/transaction.cpp.o:
+
+CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o:
+
 /usr/lib/libz.so.1:
 
-/usr/lib/libsystemd.so.0:
+/usr/lib/libxml2.so.2:
 
-/usr/lib/libssl.so.3:
+/usr/lib/libxkbcommon.so.0:
 
 /usr/lib/libssh2.so.1:
 
 /usr/lib/libpsl.so.5:
 
-/usr/lib/libpng16.so.16:
+/usr/lib/libpcre2-16.so.0:
 
-/usr/lib/libpcre2-8.so.0:
+/usr/lib/libnghttp2.so.14:
 
-/usr/lib/libnghttp3.so.9:
+/usr/lib/libmvec.so.1:
 
-/usr/lib/libm.so.6:
+/usr/lib/libmd4c.so.0:
 
 /usr/lib/liblzma.so.5:
 
 /usr/lib/liblz4.so.1:
 
+/usr/lib/libkrb5.so.3:
+
 /usr/lib/libkeyutils.so.1:
 
 /usr/lib/libicui18n.so.76:
 
-/usr/lib/libharfbuzz.so.0:
+/usr/lib/libicudata.so.76:
 
 /usr/lib/libgssapi_krb5.so.2:
 
 /usr/lib/libgpgme.so.11:
 
-/usr/lib/libgomp.so.1:
-
-/usr/lib/libglib-2.0.so.0:
-
-/usr/lib/libfontconfig.so.1:
+/usr/lib/libfreetype.so.6:
 
 /usr/lib/libexpat.so.1:
 
-/usr/lib/libdbus-1.so.3:
+/usr/lib/libdouble-conversion.so.3:
 
 /usr/lib/libcurl.so.4:
 
@@ -1790,23 +4154,17 @@ pacmangui: /usr/lib/Scrt1.o \
 
 /usr/lib/libcap.so.2:
 
-/usr/lib/libc_nonshared.a:
-
-CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o:
-
 /usr/lib/libc.so.6:
 
 /usr/lib/libbz2.so.1.0:
 
 /usr/lib/libbrotlidec.so.1:
 
-/usr/lib/libb2.so.1:
-
-/usr/lib/libassuan.so.9:
-
-/usr/lib/libicuuc.so.76:
+/usr/lib/libbrotlicommon.so.1:
 
 /usr/lib/libarchive.so.13:
+
+/usr/lib/libalpm.so:
 
 /usr/lib/libacl.so.1:
 
@@ -1814,809 +4172,1971 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o:
 
 /usr/lib/libXau.so.6:
 
+/usr/lib/libX11.so.6:
+
+/usr/lib/libQt6Widgets.so.6.9.0:
+
+/usr/lib/libQt6Gui.so.6.9.0:
+
 /usr/lib/libQt6Core.so.6.9.0:
 
-/usr/lib/libOpenGL.so:
-
-/usr/lib/libkrb5support.so.0:
+/usr/lib/libGLX.so:
 
 /usr/lib/libEGL.so.1:
 
 /usr/lib/ld-linux-x86-64.so.2:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/libgcc.a:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/crtendS.o:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/crtbeginS.o:
-
-/usr/lib/libmd4c.so.0:
 
 /usr/lib/libstdc++.so:
 
 /usr/lib/libm.so:
 
-/usr/lib/libcom_err.so.2:
-
-/usr/lib/libgcc_s.so.1:
-
 /usr/lib/libgcc_s.so:
 
-/usr/lib/crtn.o:
+/usr/include/qt6/QtCore/QCommandLineParser:
 
-/usr/lib/Scrt1.o:
+/usr/include/qt6/QtCore/QCommandLineOption:
 
-/usr/include/string.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xtestintrin.h:
 
-/usr/include/c++/14.2.1/unordered_map:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xsavesintrin.h:
 
-/usr/include/c++/14.2.1/sstream:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xsaveoptintrin.h:
 
-/usr/include/c++/14.2.1/pstl/glue_memory_defs.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xsavecintrin.h:
 
-/usr/lib/libdouble-conversion.so.3:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/waitpkgintrin.h:
 
-/usr/include/c++/14.2.1/pstl/glue_algorithm_defs.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/uintrintrin.h:
 
-/usr/include/c++/14.2.1/pstl/execution_defs.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/tbmintrin.h:
 
-/usr/include/c++/14.2.1/memory:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/smmintrin.h:
 
-/usr/include/c++/14.2.1/functional:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/sm4intrin.h:
 
-/usr/include/c++/14.2.1/ext/concurrence.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/sm3intrin.h:
 
-/usr/include/c++/14.2.1/bits/unique_ptr.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/shaintrin.h:
 
-/usr/include/c++/14.2.1/bits/std_function.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/sha512intrin.h:
 
-/usr/include/c++/14.2.1/bits/sstream.tcc:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/serializeintrin.h:
 
-/usr/include/c++/14.2.1/bits/shared_ptr_base.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/prfchwintrin.h:
 
-/usr/include/c++/14.2.1/bits/shared_ptr.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/prfchiintrin.h:
 
-/usr/include/c++/14.2.1/bits/node_handle.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/popcntintrin.h:
 
-/usr/include/c++/14.2.1/bits/hashtable_policy.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/pmmintrin.h:
 
-/usr/include/c++/14.2.1/bits/hashtable.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/pconfigintrin.h:
 
-/usr/lib/libGLdispatch.so.0:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/mwaitxintrin.h:
 
-/usr/include/c++/14.2.1/bits/erase_if.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/movdirintrin.h:
 
-/usr/lib/libfreetype.so.6:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/mmintrin.h:
 
-/usr/include/c++/14.2.1/bits/enable_special_members.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/mm_malloc.h:
 
-/usr/include/c++/14.2.1/bits/codecvt.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/lzcntintrin.h:
 
-/usr/include/c++/14.2.1/bits/atomic_lockfree_defines.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/keylockerintrin.h:
 
-/usr/include/c++/14.2.1/bits/atomic_base.h:
-
-/usr/include/c++/14.2.1/bits/algorithmfwd.h:
-
-/usr/include/c++/14.2.1/bits/unordered_map.h:
-
-/usr/include/c++/14.2.1/algorithm:
-
-/usr/include/c++/14.2.1/array:
-
-/home/matt/PacmanGui-new/include/core/transaction.hpp:
-
-/usr/lib/crti.o:
-
-/home/matt/PacmanGui-new/include/core/repository.hpp:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stddef.h:
-
-/usr/lib/libk5crypto.so.3:
-
-/usr/include/wctype.h:
-
-/usr/include/wchar.h:
-
-/usr/include/unistd.h:
-
-/usr/include/time.h:
-
-/usr/include/sys/select.h:
-
-/usr/lib/libzstd.so.1:
-
-/usr/include/sys/cdefs.h:
-
-/usr/include/stdlib.h:
-
-/usr/include/stdio.h:
-
-/usr/include/stdint.h:
-
-/usr/lib/libQt6DBus.so.6:
-
-/usr/include/sched.h:
-
-/usr/include/pthread.h:
-
-/usr/lib/libpcre2-16.so.0:
-
-/usr/include/locale.h:
-
-/usr/include/linux/types.h:
-
-/usr/lib/libmvec.so.1:
-
-/usr/include/linux/stddef.h:
-
-/usr/include/linux/sched/types.h:
-
-/usr/include/linux/posix_types.h:
-
-/usr/include/gnu/stubs-64.h:
-
-/usr/include/features.h:
-
-/usr/include/c++/14.2.1/bits/stl_heap.h:
-
-/usr/include/features-time64.h:
-
-/usr/include/errno.h:
-
-/usr/include/endian.h:
-
-/usr/include/sys/types.h:
-
-/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/os_defines.h:
-
-/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/ctype_inline.h:
-
-/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h:
-
-/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++locale.h:
-
-CMakeFiles/pacmangui.dir/src/main.cpp.o:
-
-/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++allocator.h:
-
-/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/atomic_word.h:
-
-/usr/include/c++/14.2.1/vector:
-
-/usr/include/c++/14.2.1/typeinfo:
-
-/usr/lib/cmake/Qt6Gui/Qt6QWebpPluginConfig.cmake:
-
-/usr/lib/cmake/Qt6CoreTools/Qt6CoreToolsAdditionalTargetInfo.cmake:
-
-/usr/include/alpm.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QWbmpPluginTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QWaylandIntegrationPluginTargets-relwithdebinfo.cmake:
-
-/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/gthr.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QWaylandIntegrationPluginConfig.cmake:
-
-/home/matt/PacmanGui-new/include/core/packagemanager.hpp:
-
-/usr/lib/cmake/Qt6Gui/Qt6QPdfPluginConfig.cmake:
-
-/usr/include/c++/14.2.1/ext/aligned_buffer.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QXcbGlxIntegrationPluginAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QWaylandEglPlatformIntegrationPluginTargets-relwithdebinfo.cmake:
-
-/usr/include/bits/endian.h:
-
-/usr/lib/libunistring.so.5:
-
-/usr/lib/cmake/Qt6Gui/Qt6QVncIntegrationPluginConfig.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QVncIntegrationPluginAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QVkKhrDisplayIntegrationPluginConfig.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QVirtualKeyboardPluginTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSKmsGbmIntegrationPluginConfig.cmake:
-
-/usr/include/bits/types/wint_t.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QVirtualKeyboardPluginConfig.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QTuioTouchPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QLibInputPluginAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QICOPluginConfig.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QTuioTouchPluginTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateVersionlessAliasTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSIntegrationPluginConfig.cmake:
-
-/usr/lib/libX11.so.6:
-
-/usr/lib/cmake/Qt6Gui/Qt6QTuioTouchPluginConfig.cmake:
-
-/usr/share/cmake/Modules/Linker/GNU.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QTuioTouchPluginAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QTsLibPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QTiffPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QTgaPluginTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QGtk3ThemePluginConfig.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QWbmpPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6DBusTools/Qt6DBusToolsConfigVersionImpl.cmake:
-
-/usr/include/bits/types/struct_statx.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QVncIntegrationPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QTgaPluginAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSEmulatorIntegrationPluginAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QSvgPluginTargets.cmake:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/crtendS.o:
-
-/usr/share/cmake/Modules/Platform/Linux.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QSvgPluginConfig.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QSvgIconPluginTargets-relwithdebinfo.cmake:
-
-/usr/include/c++/14.2.1/bits/stl_algo.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QSvgIconPluginConfig.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QSvgIconPluginAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QPdfPluginTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QWebpPluginAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6Widgets/Qt6WidgetsMacros.cmake:
-
-/usr/include/bits/waitflags.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QOffscreenIntegrationPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QOffscreenIntegrationPluginTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QICNSPluginConfig.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QOffscreenIntegrationPluginConfig.cmake:
-
-/usr/share/cmake/Modules/Compiler/GNU.cmake:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdint.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QMngPluginAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QEvdevTouchScreenPluginTargets-relwithdebinfo.cmake:
-
-/usr/include/c++/14.2.1/compare:
-
-/usr/share/cmake/Modules/Internal/CheckFlagCommonConfig.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QMinimalIntegrationPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSX11IntegrationPluginConfig.cmake:
-
-/home/matt/PacmanGui-new/src/core/repository.cpp:
-
-/usr/lib/cmake/Qt6/QtFeature.cmake:
-
-/usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QMinimalEglIntegrationPluginTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6DBus/Qt6DBusAdditionalTargetInfo.cmake:
-
-/usr/include/bits/types/__FILE.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QJp2PluginConfig.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QMinimalEglIntegrationPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QMngPluginTargets.cmake:
-
-/usr/include/c++/14.2.1/bits/stl_raw_storage_iter.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QLinuxFbIntegrationPluginConfig.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QMinimalEglIntegrationPluginAdditionalTargetInfo.cmake:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdarg.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QLibInputPluginTargets.cmake:
-
-/usr/include/c++/14.2.1/cwctype:
-
-/usr/lib/cmake/Qt6Gui/Qt6QJpegPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QVkKhrDisplayIntegrationPluginAdditionalTargetInfo.cmake:
-
-/usr/lib/libidn2.so.0:
-
-/usr/lib/cmake/Qt6Gui/Qt6QJpegPluginTargets-relwithdebinfo.cmake:
-
-/usr/share/cmake/Modules/FeatureSummary.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QVncIntegrationPluginTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QJp2PluginTargets.cmake:
-
-/usr/include/bits/types/sigset_t.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QIbusPlatformInputContextPluginTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QICNSPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QICNSPluginAdditionalTargetInfo.cmake:
-
-CMakeFiles/pacmangui.dir/src/core/package.cpp.o:
-
-/usr/lib/cmake/Qt6Gui/Qt6QGtk3ThemePluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Widgets/Qt6WidgetsTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QGifPluginConfig.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QEvdevTouchScreenPluginTargets.cmake:
-
-/usr/include/c++/14.2.1/bits/ostream_insert.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/ia32intrin.h:
 
 /usr/lib/libxcb.so.1:
 
-/usr/lib/cmake/Qt6Gui/Qt6QWaylandIntegrationPluginAdditionalTargetInfo.cmake:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/gfniintrin.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QEvdevTouchScreenPluginConfig.cmake:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/fmaintrin.h:
 
-/usr/include/strings.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/f16cintrin.h:
 
-/usr/lib/cmake/Qt6/QtPublicAndroidHelpers.cmake:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/enqcmdintrin.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QXcbGlxIntegrationPluginTargets-relwithdebinfo.cmake:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/emmintrin.h:
 
-/usr/lib/libicudata.so.76:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/cmpccxaddintrin.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QJp2PluginTargets-relwithdebinfo.cmake:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/clzerointrin.h:
 
-/usr/include/archive.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/clwbintrin.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QEvdevTabletPluginTargets-relwithdebinfo.cmake:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/clflushoptintrin.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QEvdevTabletPluginConfig.cmake:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/bmiintrin.h:
 
-/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/basic_file.h:
+/usr/lib/libssl.so.3:
 
-/usr/include/c++/14.2.1/bits/uses_allocator_args.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxvnniint16intrin.h:
 
-/usr/lib/libnghttp2.so.14:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxneconvertintrin.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QEvdevTabletPluginAdditionalTargetInfo.cmake:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxintrin.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QEvdevMousePluginTargets-relwithdebinfo.cmake:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxifmaintrin.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QEvdevMousePluginAdditionalTargetInfo.cmake:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vpopcntdqvlintrin.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QEvdevKeyboardPluginConfig.cmake:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vp2intersectvlintrin.h:
 
-/usr/include/c++/14.2.1/bits/functexcept.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vp2intersectintrin.h:
 
-/usr/lib/cmake/Qt6CoreTools/Qt6CoreToolsVersionlessTargets.cmake:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vnnivlintrin.h:
 
-/usr/include/bits/pthread_stack_min-dynamic.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vlintrin.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QWaylandIntegrationPluginTargets.cmake:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vldqintrin.h:
 
-/usr/lib/libxkbcommon.so.0:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vlbwintrin.h:
 
-/usr/include/bits/timesize.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vbmiintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vbmi2vlintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512ifmavlintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512ifmaintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512fintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512erintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512dqintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512bitalgintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512bf16vlintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512bf16intrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx5124vnniwintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx2intrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/amxtileintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/amxcomplexintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/adxintrin.h:
+
+/usr/lib/libfontconfig.so.1:
+
+/usr/include/qt6/QtWidgets/qstylefactory.h:
+
+/usr/include/qt6/QtWidgets/qscrollbar.h:
+
+/usr/include/qt6/QtWidgets/qmenubar.h:
+
+/usr/include/qt6/QtWidgets/qinputdialog.h:
+
+/usr/include/qt6/QtWidgets/qfiledialog.h:
+
+/usr/include/qt6/QtWidgets/qdialogbuttonbox.h:
+
+/usr/include/qt6/QtWidgets/qdialog.h:
+
+/usr/include/qt6/QtWidgets/QStyle:
+
+/usr/include/qt6/QtWidgets/QScrollBar:
+
+/usr/include/qt6/QtWidgets/QMessageBox:
+
+/usr/include/qt6/QtWidgets/QMenuBar:
+
+/usr/include/qt6/QtWidgets/QHeaderView:
+
+/usr/include/qt6/QtWidgets/QFileDialog:
+
+/usr/include/qt6/QtGui/qvectornd.h:
+
+/usr/include/qt6/QtGui/qvector2d.h:
+
+/usr/include/qt6/QtGui/qscreen.h:
+
+/usr/lib/libc.so:
+
+/usr/include/qt6/QtGui/qpointingdevice.h:
+
+/usr/include/qt6/QtGui/qinputmethod.h:
+
+/usr/include/qt6/QtGui/qguiapplication.h:
+
+/usr/include/qt6/QtGui/qeventpoint.h:
+
+/usr/include/qt6/QtGui/qdesktopservices.h:
+
+/usr/include/qt6/QtGui/QScreen:
+
+/usr/include/qt6/QtGui/QPalette:
+
+/usr/include/qt6/QtGui/QFont:
+
+/usr/include/qt6/QtGui/QDesktopServices:
+
+/usr/include/qt6/QtCore/qxpfunctional.h:
+
+/usr/include/qt6/QtCore/qxmlstream.h:
+
+/usr/include/qt6/QtCore/qwaitcondition.h:
+
+/usr/include/qt6/QtCore/qversionnumber.h:
+
+/usr/include/qt6/QtCore/qvector.h:
+
+/usr/include/qt6/QtCore/qvariantmap.h:
+
+/usr/include/qt6/QtCore/qvarianthash.h:
+
+/usr/include/qt6/QtCore/qvariantlist.h:
+
+/usr/include/qt6/QtCore/qvariantanimation.h:
+
+/usr/lib/libgcc_s.so.1:
+
+/usr/include/qt6/QtCore/quuid.h:
+
+/usr/include/qt6/QtCore/qurlquery.h:
+
+/usr/lib/libc_nonshared.a:
+
+/usr/include/qt6/QtCore/qtyperevision.h:
+
+/usr/include/qt6/QtCore/qtsymbolmacros.h:
+
+/usr/include/qt6/QtCore/qtsan_impl.h:
+
+/usr/include/qt6/QtCore/qtransposeproxymodel.h:
+
+/usr/include/qt6/QtCore/qtimezone.h:
+
+/usr/include/qt6/QtCore/qtimeline.h:
+
+/usr/include/qt6/QtCore/qthreadstorage.h:
+
+/usr/include/qt6/QtCore/qthreadpool.h:
+
+/usr/include/qt6/QtCore/qtextboundaryfinder.h:
+
+/usr/include/qt6/QtCore/qtemporaryfile.h:
+
+/usr/include/qt6/QtCore/qtranslator.h:
+
+/usr/include/qt6/QtCore/qtemporarydir.h:
+
+/usr/include/qt6/QtCore/qtcoreversion.h:
+
+/usr/include/qt6/QtCore/qsystemsemaphore.h:
+
+/usr/include/qt6/QtCore/qstaticlatin1stringmatcher.h:
+
+/usr/include/qt6/QtCore/qsortfilterproxymodel.h:
+
+/usr/include/qt6/QtCore/qsimd.h:
+
+/usr/include/qt6/QtCore/qsequentialiterable.h:
+
+/usr/include/qt6/QtCore/qsequentialanimationgroup.h:
+
+/usr/include/qt6/QtCore/qsemaphore.h:
+
+/usr/include/qt6/QtCore/qsavefile.h:
+
+/usr/include/qt6/QtCore/qrunnable.h:
+
+/usr/include/qt6/QtCore/qresultstore.h:
+
+/usr/include/qt6/QtCore/qreadwritelock.h:
+
+/usr/include/qt6/QtCore/qqueue.h:
+
+/usr/include/qt6/QtCore/qpropertyprivate.h:
+
+/usr/include/qt6/QtCore/qpropertyanimation.h:
+
+/usr/include/qt6/QtCore/qprocess.h:
+
+/usr/include/qt6/QtCore/qplugin.h:
+
+/usr/include/qt6/QtCore/qpermissions.h:
+
+/usr/include/qt6/QtCore/qparallelanimationgroup.h:
+
+/usr/include/qt6/QtCore/qoperatingsystemversion.h:
+
+/usr/include/qt6/QtCore/qobjectcleanuphandler.h:
+
+/usr/include/qt6/QtCore/qnativeinterface.h:
+
+/usr/include/qt6/QtCore/qmimetype.h:
+
+/usr/include/qt6/QtCore/qmimedatabase.h:
+
+/usr/include/qt6/QtCore/qmimedata.h:
+
+/usr/include/qt6/QtCore/qmetaobject.h:
+
+/usr/include/qt6/QtCore/qpluginloader.h:
+
+/usr/include/qt6/QtCore/qloggingcategory.h:
+
+/usr/include/qt6/QtCore/qlockfile.h:
+
+/usr/include/qt6/QtCore/qlibrary.h:
+
+/usr/include/qt6/QtCore/qlatin1stringmatcher.h:
+
+/usr/include/qt6/QtGui/QTransform:
+
+/usr/include/qt6/QtCore/qjsonvalue.h:
+
+/usr/include/qt6/QtCore/qjsonobject.h:
+
+/usr/include/qt6/QtCore/qidentityproxymodel.h:
+
+/usr/include/qt6/QtCore/qfuturewatcher.h:
+
+/usr/include/qt6/QtWidgets/QLineEdit:
+
+/usr/include/bits/struct_rwlock.h:
+
+/usr/include/qt6/QtCore/qconfig.h:
+
+/usr/include/qt6/QtCore/qshareddata_impl.h:
+
+/usr/lib/libzstd.so.1:
+
+/usr/include/bits/sched.h:
+
+/usr/lib/cmake/Qt6/Qt6ConfigExtras.cmake:
+
+/usr/include/sys/stat.h:
+
+/usr/include/sys/select.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/string.h:
+
+/usr/include/stdlib.h:
+
+/usr/include/qt6/QtCore/qfutureinterface.h:
+
+/usr/include/qt6/QtWidgets/qslider.h:
+
+/usr/include/stdc-predef.h:
+
+/usr/include/inttypes.h:
+
+/usr/include/c++/14.2.1/debug/debug.h:
+
+/usr/include/qt6/QtWidgets/qtoolbar.h:
+
+/usr/include/qt6/QtWidgets/qtabwidget.h:
+
+/usr/include/bits/floatn-common.h:
+
+/usr/include/qt6/QtWidgets/qstyleoption.h:
+
+/usr/include/qt6/QtCore/qlocale.h:
+
+/usr/include/qt6/QtWidgets/qstackedwidget.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/rtmintrin.h:
+
+/usr/include/c++/14.2.1/tr1/special_function_util.h:
+
+/usr/include/qt6/QtWidgets/qmainwindow.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QXdgDesktopPortalThemePluginTargets-relwithdebinfo.cmake:
+
+/usr/share/cmake/Modules/Internal/FeatureTesting.cmake:
+
+/usr/include/qt6/QtWidgets/qlabel.h:
+
+/usr/include/qt6/QtWidgets/qframe.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/wmmintrin.h:
 
 /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/gthr-default.h:
 
 /usr/lib/cmake/Qt6Gui/Qt6QEvdevKeyboardPluginAdditionalTargetInfo.cmake:
 
-/usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateConfigVersionImpl.cmake:
+/usr/include/qt6/QtWidgets/qcheckbox.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QEvdevTouchScreenPluginAdditionalTargetInfo.cmake:
+/usr/include/qt6/QtCore/qtypeinfo.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QPdfPluginAdditionalTargetInfo.cmake:
+/usr/include/qt6/QtWidgets/qabstractitemdelegate.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSX11IntegrationPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSX11IntegrationPluginAdditionalTargetInfo.cmake:
-
-/usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake:
-
-/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QWebpPluginTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSKmsGbmIntegrationPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Core/Qt6CoreMacros.cmake:
-
-/usr/lib/cmake/Qt6Core/Qt6CoreConfigExtras.cmake:
-
-/usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsConfigVersionImpl.cmake:
-
-/usr/lib/cmake/Qt6Core/Qt6CoreConfigVersionImpl.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QVirtualKeyboardPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QXcbGlxIntegrationPluginConfig.cmake:
-
-/usr/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6/QtPublicWalkLibsHelpers.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QPdfPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6DBusTools/Qt6DBusToolsTargets.cmake:
-
-/usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsConfigVersion.cmake:
-
-/usr/lib/cmake/Qt6GuiPrivate/Qt6GuiPrivateTargets.cmake:
-
-/usr/lib/cmake/Qt6/QtPublicSbomSystemDepHelpers.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QLibInputPluginConfig.cmake:
-
-/usr/lib/cmake/Qt6/QtPublicSbomOpsHelpers.cmake:
-
-/usr/lib/cmake/Qt6/QtPublicSbomLicenseHelpers.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSIntegrationPluginAdditionalTargetInfo.cmake:
-
-/usr/share/cmake/Modules/Compiler/GNU-CXX.cmake:
-
-/usr/lib/cmake/Qt6/QtPublicTestHelpers.cmake:
-
-/usr/lib/cmake/Qt6/QtPublicSbomGenerationHelpers.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QMngPluginTargets-relwithdebinfo.cmake:
+/usr/include/c++/14.2.1/bits/memoryfwd.h:
 
 /usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsVersionlessTargets.cmake:
 
-/usr/lib/cmake/Qt6/QtPublicTargetHelpers.cmake:
+/usr/include/qt6/QtCore/qdeadlinetimer.h:
 
-/usr/lib/cmake/Qt6/QtPublicSbomFileHelpers.cmake:
+/usr/include/qt6/QtGui/QIcon:
 
-/usr/include/c++/14.2.1/clocale:
+/usr/include/qt6/QtWidgets/QTableView:
 
-/usr/lib/cmake/Qt6Gui/Qt6QTsLibPluginConfig.cmake:
+/usr/lib/cmake/Qt6Gui/Qt6QICNSPluginTargets-relwithdebinfo.cmake:
 
-/usr/lib/cmake/Qt6DBusPrivate/Qt6DBusPrivateConfigVersion.cmake:
+/usr/include/qt6/QtWidgets/QStatusBar:
 
-/usr/include/bits/uintn-identity.h:
+/usr/include/qt6/QtGui/qtgui-config.h:
 
-/usr/include/c++/14.2.1/bits/exception.h:
+/usr/include/qt6/QtGui/qrgb.h:
 
-/usr/lib/cmake/Qt6/QtPublicSbomHelpers.cmake:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/limits.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QICOPluginAdditionalTargetInfo.cmake:
+/usr/include/qt6/QtCore/qfunctionaltools_impl.h:
 
-/usr/lib/cmake/Qt6/FindWrapOpenGL.cmake:
+/usr/include/bits/getopt_posix.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QLinuxFbIntegrationPluginTargets-relwithdebinfo.cmake:
+/usr/lib/libcom_err.so.2:
 
-/usr/include/c++/14.2.1/bits/concept_check.h:
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSKmsEglDeviceIntegrationPluginConfig.cmake:
 
-/usr/lib/cmake/Qt6Gui/Qt6QOffscreenIntegrationPluginAdditionalTargetInfo.cmake:
+/usr/include/qt6/QtGui/qpixelformat.h:
 
-/usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake:
+/usr/include/qt6/QtWidgets/QToolBar:
 
-/usr/lib/cmake/Qt6DBusPrivate/Qt6DBusPrivateConfig.cmake:
-
-/home/matt/PacmanGui-new/cmake/modules/FindALPM.cmake:
-
-/usr/include/c++/14.2.1/bits/locale_facets.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QSvgPluginAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6GuiPrivate/Qt6GuiPrivateConfigVersion.cmake:
-
-/home/matt/PacmanGui-new/src/main.cpp:
-
-CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o:
-
-/usr/include/bits/types.h:
-
-/usr/include/bits/types/clock_t.h:
-
-/usr/lib/cmake/Qt6/QtPublicFindPackageHelpers.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSKmsGbmIntegrationPluginTargets-relwithdebinfo.cmake:
+/usr/lib/cmake/Qt6Gui/Qt6QPdfPluginTargets-relwithdebinfo.cmake:
 
 /usr/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateTargets.cmake:
 
-/usr/lib/cmake/Qt6Gui/Qt6QICOPluginTargets-relwithdebinfo.cmake:
+/usr/include/qt6/QtGui/qfontvariableaxis.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QComposePlatformInputContextPluginTargets-relwithdebinfo.cmake:
+/usr/include/qt6/QtCore/qbasictimer.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6GuiTargets-relwithdebinfo.cmake:
+/usr/include/qt6/QtGui/qfontmetrics.h:
 
-/usr/include/c++/14.2.1/bits/allocated_ptr.h:
+/usr/include/c++/14.2.1/bits/uses_allocator.h:
 
-/usr/lib/cmake/Qt6/Qt6Targets.cmake:
+/usr/lib/cmake/Qt6/QtPublicToolHelpers.cmake:
 
-/usr/include/c++/14.2.1/bits/basic_ios.tcc:
+/usr/include/qt6/QtGui/qfont.h:
 
-/usr/lib/cmake/Qt6/QtPublicPluginHelpers.cmake:
+/usr/include/qt6/QtWidgets/qlineedit.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSEmulatorIntegrationPluginTargets.cmake:
+/usr/include/qt6/QtGui/qtguiglobal.h:
 
-CMakeFiles/pacmangui.dir/src/core/repository.cpp.o:
+/usr/include/qt6/QtGui/qbitmap.h:
 
-/usr/lib/cmake/Qt6/QtPublicGitHelpers.cmake:
+/usr/include/qt6/QtGui/qaction.h:
 
-/home/matt/PacmanGui-new/src/core/package.cpp:
+CMakeFiles/pacmangui.dir/src/main.cpp.o:
 
-CMakeFiles/4.0.0/CMakeSystem.cmake:
+/usr/lib/cmake/Qt6DBusTools/Qt6DBusToolsVersionlessTargets.cmake:
 
-/usr/lib/cmake/Qt6/Qt6VersionlessAliasTargets.cmake:
+/usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsTargets-relwithdebinfo.cmake:
 
-/usr/lib/cmake/Qt6Gui/Qt6QTiffPluginAdditionalTargetInfo.cmake:
+/usr/include/c++/14.2.1/mutex:
 
-/usr/lib/cmake/Qt6/QtPublicFinalizerHelpers.cmake:
+/usr/include/qt6/QtWidgets/qsplitter.h:
 
-/usr/include/asm/posix_types_64.h:
+/usr/include/qt6/QtCore/qwineventnotifier.h:
 
-/usr/lib/cmake/Qt6DBus/Qt6DBusConfigVersionImpl.cmake:
+/usr/include/qt6/QtCore/qyieldcpu.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSEmulatorIntegrationPluginTargets-relwithdebinfo.cmake:
+/usr/include/qt6/QtCore/qalgorithms.h:
 
-/usr/lib/cmake/Qt6CoreTools/Qt6CoreToolsConfigVersion.cmake:
+/usr/include/c++/14.2.1/clocale:
 
-/usr/include/c++/14.2.1/bits/stl_algobase.h:
+CMakeFiles/pacmangui.dir/src/core/package.cpp.o:
 
-/usr/lib/cmake/Qt6/Qt6Dependencies.cmake:
+/usr/include/qt6/QtCore/qtypes.h:
 
-/usr/lib/cmake/Qt6DBus/Qt6DBusVersionlessAliasTargets.cmake:
+/usr/include/qt6/QtConcurrent/qtconcurrentfilterkernel.h:
 
-/usr/include/c++/14.2.1/bits/string_view.tcc:
+/usr/include/qt6/QtCore/qtversion.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QMinimalIntegrationPluginConfig.cmake:
+/usr/include/c++/14.2.1/memory:
 
-/usr/lib/cmake/Qt6/FindWrapAtomic.cmake:
+/usr/include/bits/libc-header-start.h:
 
-/usr/include/c++/14.2.1/bits/move.h:
+/usr/include/c++/14.2.1/bits/random.tcc:
 
-/usr/lib/cmake/Qt6/FindWrapVulkanHeaders.cmake:
+/usr/include/qt6/QtCore/qchronotimer.h:
 
-/usr/include/c++/14.2.1/new:
+/usr/include/qt6/QtGui/qpalette.h:
 
-/usr/lib/cmake/Qt6/QtPublicPluginHelpers_v2.cmake:
+/usr/include/qt6/QtCore/qtmetamacros.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSKmsEglDeviceIntegrationPluginTargets-relwithdebinfo.cmake:
+/usr/share/cmake/Modules/Internal/CheckCompilerFlag.cmake:
 
-/usr/lib/libresolv.so.2:
+/usr/include/qt6/QtCore/qtimer.h:
 
-/usr/include/alloca.h:
+/usr/lib/cmake/Qt6/QtPublicAndroidHelpers.cmake:
 
-/usr/include/c++/14.2.1/bits/shared_ptr_atomic.h:
+/usr/include/asm/posix_types.h:
 
-/usr/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateConfig.cmake:
+/usr/include/qt6/QtCore/qtcore-config.h:
 
-/home/matt/PacmanGui-new/src/core/packagemanager.cpp:
+/usr/include/qt6/QtConcurrent/QtConcurrent:
 
-/usr/include/alpm_list.h:
+/usr/include/qt6/QtCore/qtconfigmacros.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QMinimalIntegrationPluginAdditionalTargetInfo.cmake:
+/usr/lib/cmake/Qt6Widgets/Qt6WidgetsConfigVersion.cmake:
 
-/usr/include/c++/14.2.1/ext/type_traits.h:
+/usr/include/qt6/QtGui/qstandarditemmodel.h:
 
-/usr/include/bits/stat.h:
+/usr/lib/cmake/Qt6Gui/Qt6QPdfPluginConfig.cmake:
 
-/usr/include/linux/stat.h:
+/usr/include/qt6/QtCore/qtclasshelpermacros.h:
 
-/usr/share/cmake/Modules/Internal/CheckSourceCompiles.cmake:
+/usr/lib/cmake/Qt6DBus/Qt6DBusMacros.cmake:
 
-/usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake:
+/usr/include/qt6/QtCore/qsystemdetection.h:
 
-/usr/lib/cmake/Qt6DBusPrivate/Qt6DBusPrivateDependencies.cmake:
+/usr/include/qt6/QtCore/qsysinfo.h:
 
-CMakeFiles/4.0.0/CMakeCXXCompiler.cmake:
+/usr/include/qt6/QtCore/qswap.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QXdgDesktopPortalThemePluginAdditionalTargetInfo.cmake:
+/usr/include/assert.h:
 
-/usr/include/c++/14.2.1/bits/stl_iterator_base_funcs.h:
+/usr/include/qt6/QtCore/qstringliteral.h:
 
-/usr/lib/cmake/Qt6CoreTools/Qt6CoreToolsTargets.cmake:
+/usr/lib/libnghttp3.so.9:
 
 /usr/lib/cmake/Qt6/Qt6ConfigVersion.cmake:
 
+/usr/lib/cmake/Qt6/Qt6Config.cmake:
+
+/usr/include/qt6/QtCore/qstringfwd.h:
+
+/usr/include/qt6/QtCore/qstringconverter.h:
+
+/usr/include/qt6/QtCore/qstring.h:
+
+/usr/include/qt6/QtCore/qspan.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QTsLibPluginConfig.cmake:
+
+/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsConfigVersionImpl.cmake:
+
+/usr/include/qt6/QtCore/qsize.h:
+
+/usr/include/qt6/QtCore/qshareddata.h:
+
+/usr/include/qt6/QtCore/qset.h:
+
+/usr/include/qt6/QtCore/qscopeguard.h:
+
+/home/matt/PacmanGui-new/include/core/packagemanager.hpp:
+
+/usr/include/qt6/QtWidgets/QListView:
+
+/usr/include/c++/14.2.1/bits/stl_iterator.h:
+
+/usr/lib/cmake/Qt6CoreTools/Qt6CoreToolsConfig.cmake:
+
+/usr/include/qt6/QtCore/QMutex:
+
+/usr/include/qt6/QtCore/qcalendar.h:
+
+/usr/include/qt6/QtCore/qprocessordetection.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QGtk3ThemePluginConfig.cmake:
+
+/usr/lib/cmake/Qt6Widgets/Qt6WidgetsTargets-relwithdebinfo.cmake:
+
+/usr/include/qt6/QtCore/qobjectdefs_impl.h:
+
+/usr/include/qt6/QtCore/qobject.h:
+
+/usr/include/qt6/QtConcurrent/qtaskbuilder.h:
+
+/usr/include/qt6/QtCore/qcoreevent.h:
+
+/usr/include/qt6/QtCore/qnamespace.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/mwaitintrin.h:
+
+/usr/share/cmake/Modules/CMakeDetermineSystem.cmake:
+
+/usr/include/qt6/QtCore/qmetatype.h:
+
+/usr/include/sched.h:
+
+/usr/include/qt6/QtCore/qmetacontainer.h:
+
+/usr/lib/libresolv.so.2:
+
+/usr/include/qt6/QtWidgets/qsizepolicy.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512bwintrin.h:
+
+/usr/include/qt6/QtCore/qdiriterator.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vpopcntdqintrin.h:
+
+/usr/include/qt6/QtCore/qmath.h:
+
+/usr/include/qt6/QtGui/qtextformat.h:
+
+/usr/include/qt6/QtCore/qmap.h:
+
+/usr/include/qt6/QtGui/qcolor.h:
+
+/usr/include/qt6/QtCore/qlogging.h:
+
+/usr/include/bits/stdint-uintn.h:
+
+/usr/include/qt6/QtCore/qline.h:
+
+/usr/include/qt6/QtCore/qiterator.h:
+
+/usr/include/qt6/QtCore/qminmax.h:
+
+/usr/include/qt6/QtCore/qglobalstatic.h:
+
+/usr/include/limits.h:
+
+/usr/include/qt6/QtCore/qobjectdefs.h:
+
+/usr/include/qt6/QtCore/qglobal.h:
+
+/usr/lib/libglib-2.0.so.0:
+
+/usr/include/qt6/QtCore/qfunctionpointer.h:
+
+/usr/include/qt6/QtCore/qsharedpointer_impl.h:
+
+/usr/include/qt6/QtCore/qforeach.h:
+
+/usr/include/c++/14.2.1/bits/std_thread.h:
+
+/usr/share/cmake/Modules/FindThreads.cmake:
+
+/usr/include/bits/types/__FILE.h:
+
+/usr/include/qt6/QtCore/qlatin1stringview.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/lwpintrin.h:
+
+/usr/include/qt6/QtCore/qfloat16.h:
+
+/usr/include/qt6/QtCore/qexceptionhandling.h:
+
+/usr/include/c++/14.2.1/bits/requires_hosted.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWbmpPluginAdditionalTargetInfo.cmake:
+
+/usr/include/qt6/QtWidgets/QTextEdit:
+
+/usr/include/qt6/QtCore/qcontainertools_impl.h:
+
+/usr/include/qt6/QtCore/qcontainerinfo.h:
+
+/usr/include/c++/14.2.1/ctime:
+
+/usr/include/time.h:
+
+/usr/include/qt6/QtCore/qcontainerfwd.h:
+
+/usr/share/cmake/Modules/Platform/UnixPaths.cmake:
+
+/usr/include/qt6/QtCore/qconstructormacros.h:
+
 /usr/include/c++/14.2.1/cstring:
+
+/usr/include/c++/14.2.1/codecvt:
 
 /usr/lib/cmake/Qt6Gui/Qt6QEglFSIntegrationPluginTargets.cmake:
 
-/usr/lib/cmake/Qt6/QtPublicCMakeVersionHelpers.cmake:
+/usr/include/c++/14.2.1/iostream:
 
-/usr/lib/cmake/Qt6Gui/Qt6QLinuxFbIntegrationPluginAdditionalTargetInfo.cmake:
+/usr/include/qt6/QtCore/qcompare.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6GuiTargets.cmake:
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QLinuxFbIntegrationPluginTargets.cmake:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512fp16intrin.h:
 
-/usr/lib/cmake/Qt6/QtFeatureCommon.cmake:
+/usr/include/qt6/QtCore/qchar.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QLibInputPluginTargets-relwithdebinfo.cmake:
+/usr/lib/cmake/Qt6DBusPrivate/Qt6DBusPrivateAdditionalTargetInfo.cmake:
 
-/usr/lib/cmake/Qt6Gui/Qt6QVkKhrDisplayIntegrationPluginTargets-relwithdebinfo.cmake:
+/usr/lib/cmake/Qt6/Qt6Targets.cmake:
 
-/usr/lib/cmake/Qt6DBus/Qt6DBusTargets.cmake:
+/usr/include/c++/14.2.1/bits/allocated_ptr.h:
 
-/usr/lib/libc.so:
+/usr/lib/libassuan.so.9:
 
-/usr/include/asm-generic/types.h:
-
-/usr/include/bits/types/clockid_t.h:
-
-/usr/lib/cmake/Qt6/QtInstallPaths.cmake:
-
-/usr/lib/cmake/Qt6DBusTools/Qt6DBusToolsTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QXcbEglIntegrationPluginTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6Core/Qt6CoreVersionlessAliasTargets.cmake:
-
-/usr/lib/cmake/Qt6/QtPublicAppleHelpers.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6GuiPlugins.cmake:
-
-/usr/lib/libQt6Widgets.so.6.9.0:
+/usr/include/qt6/QtCore/qbytearrayview.h:
 
 /usr/lib/cmake/Qt6Gui/Qt6QEvdevKeyboardPluginTargets-relwithdebinfo.cmake:
 
 /usr/lib/cmake/Qt6Widgets/Qt6WidgetsConfigVersionImpl.cmake:
 
-/usr/lib/cmake/Qt6Gui/Qt6QJpegPluginAdditionalTargetInfo.cmake:
+/usr/include/qt6/QtCore/qbytearraylist.h:
 
-/usr/lib/cmake/Qt6Core/Qt6CoreTargets-relwithdebinfo.cmake:
+/usr/include/c++/14.2.1/bits/std_mutex.h:
 
-/usr/lib/cmake/Qt6/QtPublicCMakeHelpers.cmake:
+/usr/include/qt6/QtCore/qatomic_cxx11.h:
 
-/usr/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateConfigVersion.cmake:
+/usr/include/qt6/QtCore/qresource.h:
 
-/usr/lib/cmake/Qt6DBusPrivate/Qt6DBusPrivateAdditionalTargetInfo.cmake:
+/usr/include/c++/14.2.1/bits/locale_facets.h:
 
-/usr/include/asm/errno.h:
+/usr/include/qt6/QtCore/qassert.h:
 
-/usr/include/c++/14.2.1/iostream:
+/usr/include/qt6/QtWidgets/qtableview.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QXdgDesktopPortalThemePluginTargets-relwithdebinfo.cmake:
+/usr/include/qt6/QtCore/qstack.h:
 
-/usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateAdditionalTargetInfo.cmake:
+/usr/include/qt6/QtCore/qflags.h:
 
-/usr/include/c++/14.2.1/cstdlib:
+/usr/include/c++/14.2.1/bits/unique_lock.h:
 
-/usr/lib/cmake/Qt6GuiPrivate/Qt6GuiPrivateDependencies.cmake:
+/usr/include/qt6/QtCore/qarraydataops.h:
 
-/usr/include/bits/types/struct_itimerspec.h:
+/usr/include/qt6/QtCore/qanystringview.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QComposePlatformInputContextPluginAdditionalTargetInfo.cmake:
+/usr/lib/cmake/Qt6/Qt6VersionlessAliasTargets.cmake:
 
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSEmulatorIntegrationPluginConfig.cmake:
+/usr/include/qt6/QtCore/qjsonparseerror.h:
 
-/usr/lib/cmake/Qt6Core/Qt6CoreConfigVersion.cmake:
+/usr/include/qt6/QtCore/qabstractitemmodel.h:
 
-/usr/lib/cmake/Qt6/QtPublicExternalProjectHelpers.cmake:
+/usr/lib/cmake/Qt6CoreTools/Qt6CoreToolsConfigVersion.cmake:
 
-/usr/include/c++/14.2.1/bits/invoke.h:
+/usr/include/qt6/QtGui/qwindowdefs.h:
 
-/usr/include/c++/14.2.1/bits/fstream.tcc:
+/usr/include/qt6/QtCore/q20utility.h:
 
-/usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake:
+/usr/include/qt6/QtWidgets/qmessagebox.h:
+
+/usr/include/qt6/QtGui/qimage.h:
+
+/usr/include/c++/14.2.1/bits/functexcept.h:
+
+/usr/lib/cmake/Qt6CoreTools/Qt6CoreToolsVersionlessTargets.cmake:
+
+/usr/include/qt6/QtWidgets/qboxlayout.h:
+
+/usr/include/qt6/QtCore/q20iterator.h:
+
+/usr/include/features.h:
+
+/usr/include/qt6/QtCore/QSet:
+
+/usr/lib/cmake/Qt6Gui/Qt6QComposePlatformInputContextPluginConfig.cmake:
+
+/usr/include/linux/types.h:
+
+/usr/include/qt6/QtCore/qatomic.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWebpPluginTargets.cmake:
+
+/usr/include/qt6/QtConcurrent/qtconcurrentreducekernel.h:
+
+/usr/include/qt6/QtCore/qtversionchecks.h:
+
+/usr/include/c++/14.2.1/utility:
+
+/usr/include/stdint.h:
+
+/usr/include/qt6/QtGui/qregion.h:
+
+/usr/include/qt6/QtCore/qstringbuilder.h:
+
+/usr/include/c++/14.2.1/bits/uses_allocator_args.h:
+
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/basic_file.h:
+
+/usr/include/qt6/QtCore/qitemselectionmodel.h:
+
+/usr/share/cmake/Modules/CMakeGenericSystem.cmake:
+
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/os_defines.h:
+
+/usr/share/cmake/Modules/Compiler/ARMCC-DetermineCompiler.cmake:
+
+/usr/include/sys/types.h:
+
+/usr/include/qt6/QtCore/qhashfunctions.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QJp2PluginTargets.cmake:
+
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++config.h:
+
+/usr/include/bits/errno.h:
+
+/usr/include/qt6/QtGui/qrgba64.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512fp16vlintrin.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QPdfPluginAdditionalTargetInfo.cmake:
+
+/usr/include/qt6/QtCore/qmalloc.h:
+
+/usr/include/c++/14.2.1/tr1/poly_laguerre.tcc:
+
+/usr/include/c++/14.2.1/tr1/poly_hermite.tcc:
+
+/usr/include/qt6/QtCore/qversiontagging.h:
+
+/usr/include/qt6/QtCore/qttranslation.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEvdevTouchScreenPluginTargets-relwithdebinfo.cmake:
+
+/usr/include/c++/14.2.1/tr1/modified_bessel_func.tcc:
+
+/usr/include/c++/14.2.1/tr1/legendre_function.tcc:
+
+/usr/include/c++/14.2.1/tr1/hypergeometric.tcc:
+
+/usr/include/c++/14.2.1/ext/alloc_traits.h:
+
+/usr/include/qt6/QtWidgets/qwidget.h:
+
+/usr/lib/cmake/Qt6CoreTools/Qt6CoreToolsTargets-relwithdebinfo.cmake:
+
+/usr/lib/cmake/Qt6DBus/Qt6DBusDependencies.cmake:
+
+/usr/include/bits/pthreadtypes.h:
+
+CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o:
+
+/usr/include/qt6/QtWidgets/qtwidgets-config.h:
+
+/usr/include/c++/14.2.1/bits/uniform_int_dist.h:
+
+/usr/include/c++/14.2.1/pstl/glue_memory_defs.h:
+
+/usr/include/linux/errno.h:
+
+/usr/include/c++/14.2.1/string_view:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWaylandEglPlatformIntegrationPluginTargets-relwithdebinfo.cmake:
 
 /usr/include/c++/14.2.1/bits/align.h:
 
 /usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateDependencies.cmake:
 
-/usr/lib/cmake/Qt6Gui/Qt6GuiDependencies.cmake:
+/usr/include/c++/14.2.1/bits/nested_exception.h:
 
-/usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateTargets.cmake:
+/usr/lib/cmake/Qt6Gui/Qt6QGifPluginTargets-relwithdebinfo.cmake:
 
-/usr/lib/cmake/Qt6Gui/Qt6QWbmpPluginConfig.cmake:
+/usr/lib/cmake/Qt6Gui/Qt6QIbusPlatformInputContextPluginTargets.cmake:
 
-/usr/include/asm-generic/errno-base.h:
+/usr/include/qt6/QtWidgets/QStyleFactory:
 
-/usr/include/c++/14.2.1/bits/uniform_int_dist.h:
+/usr/include/asm-generic/posix_types.h:
 
-/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsDependencies.cmake:
+/usr/include/c++/14.2.1/type_traits:
 
-/usr/bin/cmake:
+/usr/include/qt6/QtCore/qsharedmemory.h:
 
-/usr/lib/libgraphite2.so.3:
+/usr/include/c++/14.2.1/array:
 
-/usr/lib/cmake/Qt6Gui/Qt6QVkKhrDisplayIntegrationPluginTargets.cmake:
+/home/matt/PacmanGui-new/include/core/transaction.hpp:
 
-/usr/lib/cmake/Qt6/QtPublicWindowsHelpers.cmake:
+/usr/include/qt6/QtWidgets/QCheckBox:
 
-/usr/lib/cmake/Qt6CoreTools/Qt6CoreToolsConfigVersionImpl.cmake:
+/usr/include/c++/14.2.1/cerrno:
 
-/usr/include/c++/14.2.1/bits/istream.tcc:
+/usr/include/bits/xopen_lim.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSIntegrationPluginTargets-relwithdebinfo.cmake:
+/usr/include/qt6/QtCore/qjsondocument.h:
 
-/usr/lib/cmake/Qt6CoreTools/Qt6CoreToolsDependencies.cmake:
+/usr/include/stdio.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QIbusPlatformInputContextPluginConfig.cmake:
+/usr/include/c++/14.2.1/ext/string_conversions.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QTgaPluginConfig.cmake:
+/usr/include/qt6/QtCore/qiodevicebase.h:
 
-/usr/lib/cmake/Qt6Core/Qt6CoreAdditionalTargetInfo.cmake:
+/home/matt/PacmanGui-new/src/core/packagemanager.cpp:
+
+/usr/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateConfig.cmake:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vbmivlintrin.h:
+
+/usr/include/qt6/QtCore/qpointer.h:
+
+/usr/include/bits/types/wint_t.h:
+
+/usr/include/qt6/QtWidgets/qabstractbutton.h:
+
+/usr/include/qt6/QtGui/QStandardItemModel:
+
+/usr/include/c++/14.2.1/bits/basic_ios.h:
+
+/usr/include/bits/types/timer_t.h:
+
+/usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake:
+
+/usr/include/c++/14.2.1/bits/localefwd.h:
+
+/usr/include/bits/types/struct_tm.h:
+
+/usr/include/qt6/QtCore/qtformat_impl.h:
+
+/usr/include/bits/types/struct_statx_timestamp.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QVirtualKeyboardPluginAdditionalTargetInfo.cmake:
+
+/usr/include/c++/14.2.1/istream:
+
+/usr/share/cmake/Modules/Compiler/TIClang-DetermineCompiler.cmake:
+
+/usr/lib/libOpenGL.so:
+
+/usr/include/bits/types/struct_statx.h:
+
+/usr/include/c++/14.2.1/bits/atomic_futex.h:
+
+/usr/include/qt6/QtCore/q20type_traits.h:
+
+/usr/include/c++/14.2.1/sstream:
+
+/usr/include/qt6/QtCore/q20vector.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/syslimits.h:
+
+/usr/include/bits/types/struct_itimerspec.h:
+
+/usr/include/bits/types/mbstate_t.h:
+
+/usr/include/c++/14.2.1/bits/locale_classes.h:
+
+/usr/include/c++/14.2.1/bits/version.h:
 
 /usr/include/bits/types/locale_t.h:
 
 /usr/lib/cmake/Qt6/QtPublicSbomPythonHelpers.cmake:
 
-/usr/lib/cmake/Qt6Gui/Qt6QGifPluginAdditionalTargetInfo.cmake:
+/usr/include/qt6/QtWidgets/qtextedit.h:
 
-/usr/lib/cmake/Qt6DBus/Qt6DBusConfigVersion.cmake:
+/usr/lib/cmake/Qt6Core/Qt6CoreAdditionalTargetInfo.cmake:
 
-/usr/include/sys/stat.h:
+/usr/include/qt6/QtCore/qsharedpointer.h:
 
-/usr/lib/cmake/Qt6DBus/Qt6DBusMacros.cmake:
+/usr/include/qt6/QtCore/qtresource.h:
+
+/usr/include/qt6/QtCore/qdarwinhelpers.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QTsLibPluginTargets.cmake:
+
+/usr/include/c++/14.2.1/bits/stl_map.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSX11IntegrationPluginTargets-relwithdebinfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QTsLibPluginAdditionalTargetInfo.cmake:
+
+/usr/include/bits/types/clock_t.h:
+
+/usr/include/c++/14.2.1/new:
+
+/usr/include/qt6/QtCore/qdebug.h:
+
+/usr/include/c++/14.2.1/bits/atomic_lockfree_defines.h:
 
 /usr/include/c++/14.2.1/bits/stl_tempbuf.h:
 
 /usr/lib/cmake/Qt6Core/Qt6CoreTargets.cmake:
 
-/usr/include/bits/stdlib-float.h:
+/usr/lib/cmake/Qt6Gui/Qt6QIbusPlatformInputContextPluginConfig.cmake:
 
-/usr/lib/cmake/Qt6Gui/Qt6QWaylandEglPlatformIntegrationPluginTargets.cmake:
+/usr/include/bits/types/__fpos64_t.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QWaylandEglPlatformIntegrationPluginAdditionalTargetInfo.cmake:
+/usr/lib/cmake/Qt6Gui/Qt6GuiConfigVersion.cmake:
 
-/usr/lib/cmake/Qt6/3rdparty/kwin/FindXKB.cmake:
+/usr/include/bits/timex.h:
+
+/usr/include/c++/14.2.1/bits/stl_vector.h:
+
+/usr/include/bits/thread-shared-types.h:
+
+/usr/include/bits/struct_stat.h:
+
+/usr/include/bits/types/time_t.h:
+
+/usr/include/c++/14.2.1/stdexcept:
+
+/usr/include/qt6/QtGui/qtransform.h:
+
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/gthr.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWaylandIntegrationPluginConfig.cmake:
 
 /usr/include/bits/time64.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QJpegPluginConfig.cmake:
+/usr/lib/cmake/Qt6/3rdparty/kwin/FindXKB.cmake:
 
-/usr/lib/cmake/Qt6Gui/Qt6QMinimalEglIntegrationPluginConfig.cmake:
+/usr/include/bits/stdint-least.h:
 
-/usr/include/bits/cpu-set.h:
+/usr/include/qt6/QtCore/qstringtokenizer.h:
 
-/usr/lib/cmake/Qt6DBus/Qt6DBusConfig.cmake:
+/usr/include/bits/waitstatus.h:
 
-/usr/lib/cmake/Qt6/QtPublicSbomCpeHelpers.cmake:
+/usr/include/c++/14.2.1/cstddef:
 
-/usr/include/bits/floatn.h:
+/usr/include/c++/14.2.1/fstream:
 
-/usr/lib/cmake/Qt6/QtPublicDependencyHelpers.cmake:
+/usr/lib/cmake/Qt6DBus/Qt6DBusTargets.cmake:
+
+/usr/include/bits/types/struct___jmp_buf_tag.h:
+
+/usr/share/cmake/Modules/FindOpenGL.cmake:
+
+/usr/lib/cmake/Qt6/Qt6Dependencies.cmake:
+
+/usr/include/bits/types/__sigset_t.h:
+
+/usr/include/c++/14.2.1/bit:
+
+/usr/include/c++/14.2.1/condition_variable:
+
+/usr/include/qt6/QtWidgets/qlistview.h:
+
+/usr/include/bits/statx.h:
+
+/usr/include/qt6/QtCore/qendian.h:
+
+/usr/include/qt6/QtWidgets/QHBoxLayout:
+
+/usr/include/strings.h:
+
+/usr/include/c++/14.2.1/limits:
+
+/usr/include/qt6/QtCore/qabstracteventdispatcher.h:
+
+/usr/include/qt6/QtCore/qxptype_traits.h:
+
+/usr/lib/cmake/Qt6/QtPublicSbomLicenseHelpers.cmake:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/libgcc.a:
+
+/usr/include/asm-generic/int-ll64.h:
+
+/usr/include/qt6/QtWidgets/qstatusbar.h:
+
+/usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsTargets.cmake:
+
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++io.h:
+
+/usr/include/c++/14.2.1/bits/unique_ptr.h:
+
+/home/matt/PacmanGui-new/resources/resources.qrc:
+
+/usr/include/c++/14.2.1/bits/unordered_set.h:
+
+/usr/share/cmake/Modules/Compiler/CrayClang-DetermineCompiler.cmake:
+
+/usr/share/cmake/Modules/CMakeCompilerIdDetection.cmake:
+
+/usr/include/asm-generic/errno-base.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWbmpPluginConfig.cmake:
+
+/usr/include/qt6/QtCore/qiterable.h:
+
+/usr/include/bits/types/struct_timespec.h:
+
+/usr/include/archive.h:
+
+/usr/lib/cmake/Qt6/QtFeature.cmake:
+
+/usr/include/qt6/QtGui/qpaintdevice.h:
+
+/usr/include/qt6/QtCore/qtextstream.h:
+
+/usr/include/qt6/QtGui/QAction:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEvdevTabletPluginTargets.cmake:
+
+/usr/share/cmake/Modules/Compiler/MSVC-DetermineCompiler.cmake:
+
+/home/matt/PacmanGui-new/src/core/repository.cpp:
+
+/home/matt/PacmanGui-new/include/core/package.hpp:
+
+/usr/include/c++/14.2.1/ext/atomicity.h:
+
+/usr/include/bits/pthreadtypes-arch.h:
+
+/usr/include/qt6/QtCore/qhash.h:
+
+/usr/include/qt6/QtCore/qmargins.h:
+
+/usr/include/c++/14.2.1/initializer_list:
+
+/usr/lib/cmake/Qt6Core/Qt6CoreConfig.cmake:
+
+/usr/include/c++/14.2.1/ext/type_traits.h:
+
+/usr/include/bits/stat.h:
+
+/usr/include/qt6/QtWidgets/qheaderview.h:
+
+/usr/include/bits/types/struct_timeval.h:
+
+/usr/include/bits/stdio_lim.h:
+
+/usr/include/qt6/QtCore/qtdeprecationmarkers.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/hresetintrin.h:
+
+/usr/include/locale.h:
+
+/usr/include/alpm.h:
 
 /usr/lib/cmake/Qt6DBusPrivate/Qt6DBusPrivateConfigVersionImpl.cmake:
 
-/usr/lib/cmake/Qt6Gui/Qt6QXcbGlxIntegrationPluginTargets.cmake:
+/usr/include/qt6/QtCore/qeventloop.h:
+
+/usr/include/qt6/QtGui/qpixmap.h:
+
+/home/matt/PacmanGui-new/src/gui/mainwindow.cpp:
+
+/usr/include/asm/bitsperlong.h:
+
+/usr/include/qt6/QtCore/qanimationgroup.h:
+
+/usr/include/c++/14.2.1/bits/cxxabi_forced.h:
+
+/usr/include/qt6/QtGui/qpicture.h:
+
+/usr/include/qt6/QtCore/qcbormap.h:
+
+/usr/include/qt6/QtCore/qcompilerdetection.h:
+
+/usr/include/bits/waitflags.h:
+
+/usr/include/qt6/QtCore/qstringlist.h:
+
+/usr/include/qt6/QtGui/qtextcursor.h:
+
+CMakeFiles/4.0.0/CMakeCXXCompiler.cmake:
+
+/usr/include/qt6/QtCore/qmessageauthenticationcode.h:
+
+/usr/share/cmake/Modules/CMakeDetermineCompilerSupport.cmake:
+
+/usr/include/qt6/QtCore/QVariant:
+
+/usr/include/qt6/QtCore/qgenericatomic.h:
+
+/usr/include/qt6/QtCore/qbytearray.h:
+
+/usr/lib/cmake/Qt6/FindWrapOpenGL.cmake:
+
+/usr/include/qt6/QtGui/qtextoption.h:
+
+/usr/include/c++/14.2.1/bits/concept_check.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QLinuxFbIntegrationPluginTargets-relwithdebinfo.cmake:
+
+/home/matt/PacmanGui-new/CMakeLists.txt:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xsaveintrin.h:
+
+/usr/include/qt6/QtCore/qthread.h:
+
+/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsTargets-relwithdebinfo.cmake:
+
+/usr/include/c++/14.2.1/ios:
+
+CMakeFiles/4.0.0/CMakeSystem.cmake:
+
+/usr/include/c++/14.2.1/bits/new_allocator.h:
+
+/usr/include/qt6/QtWidgets/qgridlayout.h:
+
+/usr/include/bits/types/sigset_t.h:
+
+/usr/include/alpm_list.h:
+
+/usr/include/bits/setjmp.h:
+
+/usr/include/c++/14.2.1/bits/charconv.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QIbusPlatformInputContextPluginAdditionalTargetInfo.cmake:
+
+/usr/include/qt6/QtCore/QString:
+
+/usr/include/c++/14.2.1/typeinfo:
+
+/usr/include/bits/endianness.h:
+
+/usr/include/c++/14.2.1/bits/erase_if.h:
+
+/usr/share/cmake/Modules/CMakeDetermineCompiler.cmake:
+
+/usr/include/qt6/QtWidgets/QProgressDialog:
+
+/usr/include/qt6/QtGui/qtextdocument.h:
+
+/usr/share/cmake/Modules/Compiler/GHS-DetermineCompiler.cmake:
+
+/usr/include/qt6/QtConcurrent/qtconcurrenttask.h:
+
+/usr/include/qt6/QtGui/qfontinfo.h:
+
+/usr/include/bits/types/error_t.h:
+
+/usr/include/qt6/QtCore/qfuturesynchronizer.h:
+
+/usr/lib/cmake/Qt6/FindWrapVulkanHeaders.cmake:
+
+/usr/include/c++/14.2.1/exception:
+
+/usr/lib/crti.o:
+
+/usr/share/cmake/Modules/Platform/Linux-Determine-CXX.cmake:
+
+/usr/include/bits/posix2_lim.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QLinuxFbIntegrationPluginTargets.cmake:
+
+/home/matt/PacmanGui-new/include/core/repository.hpp:
+
+/usr/include/c++/14.2.1/optional:
+
+/usr/lib/Scrt1.o:
+
+/usr/include/c++/14.2.1/cwchar:
+
+/usr/share/cmake/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake:
+
+/usr/include/c++/14.2.1/bits/alloc_traits.h:
+
+/usr/include/c++/14.2.1/bits/algorithmfwd.h:
+
+/usr/include/qt6/QtWidgets/qabstractslider.h:
+
+/usr/include/bits/select.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QMngPluginConfig.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QTsLibPluginTargets-relwithdebinfo.cmake:
+
+/usr/include/c++/14.2.1/bits/stl_raw_storage_iter.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QLinuxFbIntegrationPluginConfig.cmake:
+
+/usr/lib/libdbus-1.so.3:
+
+/usr/include/c++/14.2.1/tr1/gamma.tcc:
+
+/usr/include/bits/stdint-intn.h:
+
+/usr/lib/cmake/Qt6/QtPublicSbomDepHelpers.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6GuiConfigVersionImpl.cmake:
+
+/usr/include/bits/types/clockid_t.h:
+
+/usr/lib/cmake/Qt6/QtInstallPaths.cmake:
+
+/usr/include/bits/posix_opt.h:
+
+/usr/include/qt6/QtWidgets/qrubberband.h:
+
+/usr/include/linux/stddef.h:
+
+/usr/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateConfigVersion.cmake:
+
+/usr/include/qt6/QtCore/qtcoreexports.h:
+
+/usr/include/c++/14.2.1/atomic:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSEmulatorIntegrationPluginTargets-relwithdebinfo.cmake:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512pfintrin.h:
+
+/usr/include/qt6/QtCore/qnumeric.h:
+
+/usr/share/cmake/Modules/Compiler/PathScale-DetermineCompiler.cmake:
+
+/usr/include/qt6/QtGui/qbrush.h:
+
+/usr/include/bits/local_lim.h:
+
+/home/matt/PacmanGui-new/src/core/transaction.cpp:
+
+/usr/lib/libgraphite2.so.3:
+
+/usr/include/c++/14.2.1/bits/stl_pair.h:
+
+/usr/include/c++/14.2.1/bits/char_traits.h:
+
+/usr/include/c++/14.2.1/bits/basic_string.tcc:
+
+/usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsConfig.cmake:
+
+/usr/include/bits/confname.h:
+
+/usr/include/qt6/QtCore/qlist.h:
+
+/usr/include/bits/typesizes.h:
+
+/usr/include/bits/cpu-set.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QMinimalEglIntegrationPluginConfig.cmake:
+
+/usr/include/c++/14.2.1/cmath:
+
+/usr/include/c++/14.2.1/bits/ostream_insert.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/cetintrin.h:
+
+/usr/share/cmake/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake:
+
+/usr/include/bits/endian.h:
+
+/usr/include/c++/14.2.1/bits/atomic_base.h:
+
+/usr/include/c++/14.2.1/bits/stl_tree.h:
+
+/usr/include/c++/14.2.1/bits/exception_defines.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/amxbf16intrin.h:
+
+/usr/include/c++/14.2.1/concepts:
+
+/usr/include/alloca.h:
+
+/usr/include/qt6/QtCore/QDeadlineTimer:
+
+/usr/include/qt6/QtGui/qvalidator.h:
+
+/usr/include/qt6/QtWidgets/QStackedWidget:
+
+/usr/include/qt6/QtCore/qvarlengtharray.h:
+
+/usr/include/c++/14.2.1/bits/hash_bytes.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/bmi2intrin.h:
+
+/usr/include/qt6/QtCore/qstdlibdetection.h:
+
+/usr/share/cmake/Modules/Compiler/PGI-DetermineCompiler.cmake:
+
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/ctype_base.h:
+
+/usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsConfigVersion.cmake:
+
+/usr/lib/libpng16.so.16:
+
+/usr/include/c++/14.2.1/bits/shared_ptr_base.h:
+
+/usr/include/bits/floatn.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/sgxintrin.h:
+
+/usr/include/c++/14.2.1/bits/ios_base.h:
+
+/usr/include/c++/14.2.1/bits/cxxabi_init_exception.h:
+
+/usr/include/qt6/QtWidgets/QApplication:
+
+/usr/include/qt6/QtGui/qtguiexports.h:
+
+/usr/include/bits/getopt_core.h:
+
+/usr/include/qt6/QtCore/QSize:
+
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++locale.h:
+
+/usr/include/bits/unistd_ext.h:
+
+/usr/include/c++/14.2.1/ext/aligned_buffer.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QXcbGlxIntegrationPluginAdditionalTargetInfo.cmake:
+
+/usr/include/bits/types/struct_FILE.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWaylandEglPlatformIntegrationPluginConfig.cmake:
+
+/home/matt/PacmanGui-new/include/gui/mainwindow.hpp:
+
+/usr/include/bits/long-double.h:
+
+/usr/include/bits/types/cookie_io_functions_t.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/x86gprintrin.h:
+
+/usr/include/qt6/QtWidgets/QVBoxLayout:
+
+/usr/include/bits/types/struct_sched_param.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QXcbEglIntegrationPluginAdditionalTargetInfo.cmake:
+
+/usr/include/c++/14.2.1/bits/stl_uninitialized.h:
+
+CMakeFiles/pacmangui.dir/src/core/repository.cpp.o:
+
+/usr/include/c++/14.2.1/iterator:
+
+/usr/include/asm-generic/bitsperlong.h:
+
+/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsTargets.cmake:
+
+/usr/lib/cmake/Qt6Core/Qt6CoreConfigVersionImpl.cmake:
+
+/usr/include/c++/14.2.1/shared_mutex:
+
+/usr/lib/crtn.o:
+
+/usr/include/asm-generic/types.h:
+
+/usr/include/c++/14.2.1/ext/concurrence.h:
+
+/usr/include/qt6/QtCore/qdatastream.h:
+
+/usr/include/qt6/QtConcurrent/qtconcurrentiteratekernel.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/rdseedintrin.h:
+
+/usr/include/qt6/QtCore/qarraydatapointer.h:
+
+/usr/include/c++/14.2.1/bits/exception.h:
+
+/usr/include/c++/14.2.1/backward/binders.h:
+
+/usr/include/c++/14.2.1/map:
+
+/usr/lib/cmake/Qt6Gui/Qt6QVncIntegrationPluginTargets-relwithdebinfo.cmake:
+
+/usr/include/c++/14.2.1/bits/specfun.h:
+
+/usr/include/qt6/QtCore/qstringalgorithms.h:
+
+/usr/include/bits/atomic_wide_counter.h:
+
+/usr/include/qt6/QtCore/qutf8stringview.h:
+
+/usr/include/c++/14.2.1/bits/hashtable_policy.h:
+
+/usr/include/c++/14.2.1/bits/list.tcc:
+
+/usr/include/c++/14.2.1/bits/exception_ptr.h:
+
+/usr/include/c++/14.2.1/tr1/riemann_zeta.tcc:
+
+/usr/include/qt6/QtWidgets/qlayoutitem.h:
+
+/usr/lib/libGLdispatch.so.0:
+
+/usr/include/qt6/QtWidgets/qtwidgetsexports.h:
+
+/usr/include/bits/types/__locale_t.h:
+
+/usr/include/c++/14.2.1/bits/functional_hash.h:
+
+/usr/include/qt6/QtCore/qrect.h:
+
+/usr/include/c++/14.2.1/vector:
+
+/usr/include/qt6/QtCore/qttypetraits.h:
+
+/usr/include/qt6/QtWidgets/qprogressdialog.h:
+
+/usr/include/c++/14.2.1/bits/hashtable.h:
+
+/usr/include/c++/14.2.1/bits/invoke.h:
+
+/usr/include/c++/14.2.1/bits/stl_set.h:
+
+/usr/include/c++/14.2.1/bits/locale_classes.tcc:
+
+/usr/include/bits/timesize.h:
+
+/usr/lib/cmake/Qt6/FindWrapAtomic.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QMinimalIntegrationPluginConfig.cmake:
+
+/usr/include/c++/14.2.1/bits/move.h:
+
+/usr/include/c++/14.2.1/bits/this_thread_sleep.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdbool.h:
+
+/usr/include/pthread.h:
+
+CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o:
+
+/usr/include/c++/14.2.1/string:
+
+/usr/include/c++/14.2.1/backward/auto_ptr.h:
+
+/usr/include/qt6/QtWidgets/qpushbutton.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6GuiConfig.cmake:
+
+/usr/include/c++/14.2.1/memory_resource:
+
+/usr/include/c++/14.2.1/algorithm:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx5124fmapsintrin.h:
+
+/usr/include/qt6/QtCore/qiodevice.h:
+
+/usr/include/c++/14.2.1/bits/unordered_map.h:
+
+/usr/include/c++/14.2.1/bits/postypes.h:
+
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++allocator.h:
+
+/usr/include/c++/14.2.1/system_error:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xmmintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/immintrin.h:
+
+/usr/share/cmake/Modules/FindPackageMessage.cmake:
+
+/usr/include/qt6/QtCore/q17memory.h:
+
+/usr/share/cmake/Modules/CMakeCXXCompiler.cmake.in:
+
+/usr/include/features-time64.h:
+
+/usr/include/c++/14.2.1/bits/stl_heap.h:
+
+/usr/share/cmake/Modules/CMakeTestCompilerCommon.cmake:
+
+/usr/include/qt6/QtWidgets/QPushButton:
+
+/usr/share/cmake/Modules/CMakeParseImplicitIncludeInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QTgaPluginTargets-relwithdebinfo.cmake:
+
+/usr/include/c++/14.2.1/bits/refwrap.h:
+
+/usr/include/qt6/QtCore/QtCore:
+
+/usr/include/c++/14.2.1/tr1/bessel_function.tcc:
+
+/usr/include/c++/14.2.1/bits/shared_ptr.h:
+
+/usr/include/qt6/QtWidgets/qstyle.h:
+
+/usr/include/gnu/stubs.h:
+
+/usr/include/c++/14.2.1/bits/std_function.h:
+
+/usr/include/c++/14.2.1/bits/ptr_traits.h:
+
+/usr/include/qt6/QtWidgets/qtwidgetsglobal.h:
+
+/usr/include/c++/14.2.1/bits/stl_algo.h:
+
+/usr/lib/libgpg-error.so.0:
+
+/usr/lib/cmake/Qt6Gui/Qt6QSvgIconPluginConfig.cmake:
+
+/usr/share/cmake/Modules/Compiler/Watcom-DetermineCompiler.cmake:
+
+/usr/include/qt6/QtCore/qbitarray.h:
+
+/usr/include/c++/14.2.1/compare:
+
+/usr/include/c++/14.2.1/bits/string_view.tcc:
+
+/usr/include/c++/14.2.1/set:
+
+/usr/share/cmake/Modules/Internal/CheckFlagCommonConfig.cmake:
+
+/usr/lib/libk5crypto.so.3:
+
+/usr/include/c++/14.2.1/bits/std_abs.h:
+
+/usr/include/c++/14.2.1/bits/stl_bvector.h:
+
+/usr/include/qt6/QtCore/qfileinfo.h:
+
+/usr/include/qt6/QtWidgets/qtabbar.h:
+
+/usr/lib/libidn2.so.0:
+
+/usr/include/qt6/QtCore/qpair.h:
+
+/usr/include/c++/14.2.1/tr1/exp_integral.tcc:
+
+/usr/lib/cmake/Qt6Gui/Qt6QTuioTouchPluginTargets.cmake:
+
+/usr/include/libintl.h:
+
+/usr/include/c++/14.2.1/bits/stl_algobase.h:
+
+/usr/include/qt6/QtCore/qobject_impl.h:
+
+/usr/include/endian.h:
+
+/usr/include/c++/14.2.1/cstdlib:
+
+/usr/lib/cmake/Qt6GuiPrivate/Qt6GuiPrivateDependencies.cmake:
+
+/usr/include/qt6/QtCore/QSettings:
+
+/usr/lib/cmake/Qt6Gui/Qt6QXcbGlxIntegrationPluginConfig.cmake:
+
+/home/matt/PacmanGui-new/src/main.cpp:
+
+/usr/include/qt6/QtCore/qstringlistmodel.h:
+
+/usr/include/qt6/QtCore/qsocketnotifier.h:
+
+/usr/lib/cmake/Qt6GuiPrivate/Qt6GuiPrivateConfigVersion.cmake:
+
+/usr/include/bits/types.h:
+
+/usr/include/c++/14.2.1/bits/stl_list.h:
+
+/usr/include/qt6/QtWidgets/qabstractitemview.h:
+
+/usr/include/c++/14.2.1/bits/stl_multimap.h:
+
+/usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake:
+
+/usr/include/c++/14.2.1/variant:
+
+/usr/lib/libpcre2-8.so.0:
+
+/usr/include/c++/14.2.1/bits/streambuf.tcc:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEvdevKeyboardPluginConfig.cmake:
+
+/usr/include/c++/14.2.1/iosfwd:
+
+/usr/include/c++/14.2.1/bits/streambuf_iterator.h:
+
+/usr/include/qt6/QtCore/qcborcommon.h:
+
+/usr/include/qt6/QtWidgets/QTabWidget:
+
+/usr/lib/cmake/Qt6/QtPublicSbomHelpers.cmake:
+
+/usr/include/c++/14.2.1/numeric:
+
+/usr/include/c++/14.2.1/bits/stl_construct.h:
+
+/usr/include/c++/14.2.1/bits/utility.h:
+
+/usr/include/c++/14.2.1/bits/vector.tcc:
+
+/usr/lib/libkrb5support.so.0:
+
+/usr/lib/cmake/Qt6Gui/Qt6QTiffPluginConfig.cmake:
+
+/usr/share/cmake/Modules/Compiler/Embarcadero-DetermineCompiler.cmake:
+
+/usr/include/bits/struct_mutex.h:
+
+/usr/include/qt6/QtCore/q23utility.h:
+
+/usr/include/linux/posix_types.h:
+
+/usr/include/qt6/QtWidgets/qapplication.h:
+
+/usr/include/qt6/QtGui/qicon.h:
+
+/usr/include/bits/types/FILE.h:
+
+/usr/include/qt6/QtGui/qinputdevice.h:
+
+/usr/include/c++/14.2.1/cctype:
+
+/usr/include/asm-generic/errno.h:
+
+/usr/include/c++/14.2.1/bits/enable_special_members.h:
+
+/usr/include/sys/single_threaded.h:
+
+/usr/include/c++/14.2.1/climits:
+
+/usr/include/wchar.h:
+
+/usr/include/bits/wordsize.h:
+
+/usr/include/bits/posix1_lim.h:
+
+/usr/include/c++/14.2.1/cstdio:
+
+/usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateConfigVersion.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QTiffPluginTargets-relwithdebinfo.cmake:
+
+/usr/lib/cmake/Qt6GuiPrivate/Qt6GuiPrivateConfig.cmake:
+
+/usr/share/cmake/Modules/CMakeFindBinUtils.cmake:
+
+/usr/include/qt6/QtWidgets/qabstractspinbox.h:
+
+/usr/include/qt6/QtCore/qtcoreglobal.h:
+
+/usr/include/bits/time.h:
+
+/usr/include/qt6/QtGui/qkeysequence.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QGtk3ThemePluginTargets-relwithdebinfo.cmake:
+
+/usr/include/qt6/QtCore/qarraydata.h:
+
+/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsAdditionalTargetInfo.cmake:
+
+/usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/fxsrintrin.h:
+
+/usr/include/qt6/QtCore/qlibraryinfo.h:
+
+/usr/include/c++/14.2.1/streambuf:
+
+pacmangui_autogen/moc_predefs.h:
+
+/usr/share/cmake/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake:
+
+/usr/include/c++/14.2.1/ext/numeric_traits.h:
+
+/usr/include/c++/14.2.1/functional:
+
+/usr/include/qt6/QtCore/qbindingstorage.h:
+
+/usr/include/qt6/QtWidgets/QSplitter:
+
+/usr/share/cmake/Modules/MacroAddFileDependencies.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSKmsGbmIntegrationPluginTargets-relwithdebinfo.cmake:
+
+/home/matt/PacmanGui-new/cmake/modules/FindALPM.cmake:
+
+/usr/lib/cmake/Qt6/Qt6ConfigVersionImpl.cmake:
+
+/usr/include/qt6/QtWidgets/QLabel:
+
+/usr/include/c++/14.2.1/pstl/execution_defs.h:
+
+/usr/include/qt6/QtWidgets/QInputDialog:
+
+/usr/include/c++/14.2.1/pstl/glue_numeric_defs.h:
+
+/usr/include/qt6/QtCore/qstringview.h:
+
+/usr/include/c++/14.2.1/tr1/beta_function.tcc:
+
+/usr/include/c++/14.2.1/bits/stl_multiset.h:
+
+/usr/include/bits/pthread_stack_min-dynamic.h:
+
+/usr/include/c++/14.2.1/tr1/ell_integral.tcc:
+
+/usr/include/bits/statx-generic.h:
+
+/usr/lib/cmake/Qt6/QtPublicAppleHelpers.cmake:
+
+/usr/lib/cmake/Qt6/QtPublicCMakeHelpers.cmake:
+
+/usr/lib/cmake/Qt6/QtPublicCMakeVersionHelpers.cmake:
+
+/usr/lib/cmake/Qt6/QtPublicDependencyHelpers.cmake:
+
+/usr/lib/cmake/Qt6Core/Qt6CoreConfigVersion.cmake:
+
+/usr/lib/cmake/Qt6/QtPublicFinalizerHelpers.cmake:
+
+/usr/include/qt6/QtCore/qpauseanimation.h:
+
+/usr/include/asm/errno.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QTiffPluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6/QtPublicFindPackageHelpers.cmake:
+
+/usr/lib/cmake/Qt6/QtPublicGitHelpers.cmake:
+
+/usr/share/cmake/Modules/Compiler/ARMClang-DetermineCompiler.cmake:
+
+/usr/lib/cmake/Qt6/QtPublicPluginHelpers.cmake:
+
+/usr/lib/cmake/Qt6/QtPublicPluginHelpers_v2.cmake:
+
+/usr/lib/cmake/Qt6/QtPublicSbomAttributionHelpers.cmake:
+
+/usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake:
+
+/usr/lib/cmake/Qt6/QtPublicSbomFileHelpers.cmake:
+
+/usr/include/archive_entry.h:
+
+/usr/lib/cmake/Qt6/QtPublicSbomOpsHelpers.cmake:
+
+/usr/include/qt6/QtCore/qfuture.h:
+
+/usr/lib/cmake/Qt6/QtPublicSbomPurlHelpers.cmake:
+
+/usr/lib/libm.so.6:
+
+/usr/lib/cmake/Qt6/QtPublicSbomQtEntityHelpers.cmake:
+
+/usr/include/qt6/QtCore/qstringmatcher.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6GuiVersionlessAliasTargets.cmake:
+
+/usr/lib/cmake/Qt6Widgets/Qt6WidgetsVersionlessAliasTargets.cmake:
+
+/usr/include/qt6/QtCore/qoverload.h:
+
+/usr/lib/cmake/Qt6/QtPublicSbomSystemDepHelpers.cmake:
+
+/usr/lib/cmake/Qt6/QtPublicTargetHelpers.cmake:
+
+/usr/lib/cmake/Qt6/QtPublicTestHelpers.cmake:
+
+/usr/include/c++/14.2.1/debug/assertions.h:
+
+/usr/include/bits/iscanonical.h:
+
+/usr/include/qt6/QtCore/qdir.h:
+
+/usr/lib/cmake/Qt6/QtPublicWalkLibsHelpers.cmake:
+
+/usr/lib/cmake/Qt6/QtPublicWindowsHelpers.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QVkKhrDisplayIntegrationPluginTargets.cmake:
+
+/usr/include/gnu/stubs-64.h:
+
+/usr/lib/cmake/Qt6Core/Qt6CoreConfigExtras.cmake:
+
+/usr/lib/cmake/Qt6Core/Qt6CoreTargets-relwithdebinfo.cmake:
+
+/usr/include/qt6/QtGui/qscreen_platform.h:
+
+/usr/lib/cmake/Qt6Core/Qt6CoreVersionlessAliasTargets.cmake:
+
+/usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateConfig.cmake:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/raointintrin.h:
+
+/usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateConfigVersionImpl.cmake:
+
+/usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateTargets.cmake:
+
+/usr/include/bits/types/__fpos_t.h:
+
+/usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateVersionlessAliasTargets.cmake:
+
+/usr/lib/cmake/Qt6CoreTools/Qt6CoreToolsAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6CoreTools/Qt6CoreToolsConfigVersionImpl.cmake:
+
+/usr/lib/cmake/Qt6CoreTools/Qt6CoreToolsDependencies.cmake:
+
+/usr/include/qt6/QtCore/QObject:
+
+/usr/lib/cmake/Qt6CoreTools/Qt6CoreToolsTargets.cmake:
+
+/usr/lib/cmake/Qt6DBus/Qt6DBusConfigVersion.cmake:
+
+/usr/lib/cmake/Qt6DBus/Qt6DBusConfigVersionImpl.cmake:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/cldemoteintrin.h:
 
 /usr/lib/cmake/Qt6DBus/Qt6DBusTargets-relwithdebinfo.cmake:
 
 /usr/lib/cmake/Qt6DBusPrivate/Qt6DBusPrivateTargets.cmake:
 
-/usr/include/bits/stdint-uintn.h:
+/usr/include/c++/14.2.1/unordered_map:
 
-/usr/lib/cmake/Qt6Gui/Qt6QEvdevTabletPluginTargets.cmake:
+/usr/lib/cmake/Qt6Gui/Qt6QXcbGlxIntegrationPluginTargets.cmake:
+
+/usr/include/c++/14.2.1/bits/predefined_ops.h:
+
+/usr/lib/cmake/Qt6DBusPrivate/Qt6DBusPrivateConfig.cmake:
+
+/usr/include/c++/14.2.1/bits/allocator.h:
+
+/usr/lib/cmake/Qt6DBusPrivate/Qt6DBusPrivateConfigVersion.cmake:
+
+/usr/lib/cmake/Qt6DBusPrivate/Qt6DBusPrivateDependencies.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QMinimalIntegrationPluginTargets-relwithdebinfo.cmake:
 
 /usr/lib/cmake/Qt6DBusPrivate/Qt6DBusPrivateVersionlessAliasTargets.cmake:
 
-/usr/lib/cmake/Qt6/QtPublicSbomPurlHelpers.cmake:
+/usr/lib/cmake/Qt6DBusTools/Qt6DBusToolsAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6DBusTools/Qt6DBusToolsConfig.cmake:
+
+/usr/include/qt6/QtCore/qdatetime.h:
+
+/usr/lib/cmake/Qt6DBusTools/Qt6DBusToolsConfigVersion.cmake:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512bitalgvlintrin.h:
+
+/usr/include/c++/14.2.1/bits/locale_facets.tcc:
+
+/usr/lib/cmake/Qt6DBusTools/Qt6DBusToolsConfigVersionImpl.cmake:
+
+/usr/lib/cmake/Qt6DBusTools/Qt6DBusToolsDependencies.cmake:
+
+/usr/lib/cmake/Qt6DBusTools/Qt6DBusToolsTargets-relwithdebinfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QXcbEglIntegrationPluginTargets-relwithdebinfo.cmake:
+
+/usr/lib/cmake/Qt6DBusTools/Qt6DBusToolsTargets.cmake:
+
+/usr/include/unistd.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QSvgIconPluginTargets.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6GuiAdditionalTargetInfo.cmake:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxvnniint8intrin.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6GuiDependencies.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6GuiPlugins.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6GuiTargets.cmake:
+
+/usr/include/bits/types/__mbstate_t.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QComposePlatformInputContextPluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QComposePlatformInputContextPluginTargets-relwithdebinfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QComposePlatformInputContextPluginTargets.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSKmsGbmIntegrationPluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSEmulatorIntegrationPluginAdditionalTargetInfo.cmake:
+
+/usr/include/c++/14.2.1/chrono:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWaylandIntegrationPluginTargets.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSEmulatorIntegrationPluginConfig.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSEmulatorIntegrationPluginTargets.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSIntegrationPluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSIntegrationPluginConfig.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSIntegrationPluginTargets-relwithdebinfo.cmake:
+
+/usr/include/c++/14.2.1/bits/istream.tcc:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSKmsEglDeviceIntegrationPluginAdditionalTargetInfo.cmake:
+
+/usr/share/cmake/Modules/FindPkgConfig.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSKmsEglDeviceIntegrationPluginTargets-relwithdebinfo.cmake:
 
 /usr/lib/cmake/Qt6Gui/Qt6QEglFSKmsEglDeviceIntegrationPluginTargets.cmake:
+
+/usr/include/qt6/QtCore/qsignalmapper.h:
 
 /usr/lib/cmake/Qt6Gui/Qt6QJp2PluginAdditionalTargetInfo.cmake:
 
@@ -2624,554 +6144,806 @@ CMakeFiles/4.0.0/CMakeCXXCompiler.cmake:
 
 /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake:
 
-/usr/lib/cmake/Qt6DBusTools/Qt6DBusToolsAdditionalTargetInfo.cmake:
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSKmsGbmIntegrationPluginConfig.cmake:
 
-/usr/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateVersionlessAliasTargets.cmake:
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSKmsGbmIntegrationPluginTargets.cmake:
 
-/usr/include/c++/14.2.1/bits/localefwd.h:
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSX11IntegrationPluginAdditionalTargetInfo.cmake:
 
-/usr/lib/cmake/Qt6DBusTools/Qt6DBusToolsConfig.cmake:
+/usr/include/qt6/QtCore/qtipccommon.h:
 
-/usr/lib/libQt6Gui.so.6.9.0:
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSX11IntegrationPluginConfig.cmake:
 
-/usr/include/c++/14.2.1/bits/locale_facets.tcc:
-
-/usr/lib/cmake/Qt6DBusTools/Qt6DBusToolsConfigVersion.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QComposePlatformInputContextPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSKmsGbmIntegrationPluginAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsVersionlessTargets.cmake:
-
-/usr/lib/cmake/Qt6DBusTools/Qt6DBusToolsDependencies.cmake:
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSX11IntegrationPluginTargets.cmake:
 
 /usr/lib/cmake/Qt6Gui/Qt6QEvdevKeyboardPluginTargets.cmake:
 
-/usr/lib/cmake/Qt6Gui/Qt6QGtk3ThemePluginAdditionalTargetInfo.cmake:
+/usr/lib/cmake/Qt6Gui/Qt6QEvdevMousePluginAdditionalTargetInfo.cmake:
 
-/usr/include/asm-generic/bitsperlong.h:
-
-/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6GuiAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSX11IntegrationPluginTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QTsLibPluginAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QComposePlatformInputContextPluginConfig.cmake:
-
-/usr/include/c++/14.2.1/cstdint:
-
-/usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateConfig.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QTgaPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QICOPluginTargets.cmake:
-
-/usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake:
-
-/usr/include/c++/14.2.1/bits/new_allocator.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QICNSPluginTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QTiffPluginConfig.cmake:
-
-/usr/include/c++/14.2.1/bits/vector.tcc:
-
-/usr/lib/cmake/Qt6Gui/Qt6QWebpPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6/Qt6ConfigExtras.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QXcbEglIntegrationPluginAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QXcbEglIntegrationPluginTargets.cmake:
-
-/usr/include/bits/types/struct_timeval.h:
-
-/usr/share/cmake/Modules/FindPackageMessage.cmake:
-
-/usr/include/c++/14.2.1/system_error:
-
-/usr/lib/cmake/Qt6Gui/Qt6QXcbIntegrationPluginTargets-relwithdebinfo.cmake:
-
-/usr/include/asm/bitsperlong.h:
-
-/usr/include/c++/14.2.1/bits/cxxabi_forced.h:
-
-/usr/include/c++/14.2.1/bits/cpp_type_traits.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QXcbIntegrationPluginAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QXdgDesktopPortalThemePluginConfig.cmake:
-
-/usr/share/cmake/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake:
-
-/usr/include/c++/14.2.1/cwchar:
-
-/usr/lib/cmake/Qt6Gui/Qt6QXdgDesktopPortalThemePluginTargets.cmake:
-
-/usr/include/bits/types/struct_timespec.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QSvgPluginTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6GuiPrivate/Qt6GuiPrivateAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6GuiConfig.cmake:
-
-/usr/lib/cmake/Qt6GuiPrivate/Qt6GuiPrivateConfig.cmake:
-
-/usr/lib/cmake/Qt6GuiPrivate/Qt6GuiPrivateConfigVersionImpl.cmake:
-
-/usr/lib/cmake/Qt6GuiPrivate/Qt6GuiPrivateVersionlessAliasTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QGifPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsConfig.cmake:
-
-/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsConfigVersionImpl.cmake:
-
-/home/matt/PacmanGui-new/CMakeLists.txt:
-
-/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsTargets-relwithdebinfo.cmake:
-
-/usr/share/cmake/Modules/CMakeInitializeConfigs.cmake:
-
-/usr/lib/cmake/Qt6Widgets/Qt6WidgetsAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QIbusPlatformInputContextPluginAdditionalTargetInfo.cmake:
-
-/usr/include/archive_entry.h:
-
-/usr/lib/cmake/Qt6Widgets/Qt6WidgetsConfig.cmake:
-
-/usr/include/gnu/stubs.h:
-
-/usr/lib/cmake/Qt6Widgets/Qt6WidgetsConfigVersion.cmake:
-
-/usr/lib/cmake/Qt6Widgets/Qt6WidgetsDependencies.cmake:
-
-/usr/lib/cmake/Qt6Widgets/Qt6WidgetsPlugins.cmake:
-
-/usr/lib/libkrb5.so.3:
-
-/usr/lib/cmake/Qt6Widgets/Qt6WidgetsTargets.cmake:
-
-/usr/lib/cmake/Qt6/QtPublicSbomQtEntityHelpers.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6GuiVersionlessAliasTargets.cmake:
-
-/usr/lib/cmake/Qt6Widgets/Qt6WidgetsVersionlessAliasTargets.cmake:
-
-/usr/lib/cmake/Qt6CoreTools/Qt6CoreToolsConfig.cmake:
-
-/usr/include/c++/14.2.1/bits/stl_iterator.h:
-
-/usr/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateConfigVersionImpl.cmake:
-
-/usr/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateDependencies.cmake:
-
-/usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake:
-
-/usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsDependencies.cmake:
-
-/usr/lib/cmake/Qt6DBusTools/Qt6DBusToolsVersionlessTargets.cmake:
-
-/usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QXcbIntegrationPluginTargets.cmake:
-
-/usr/share/cmake/Modules/CMakeCXXInformation.cmake:
-
-/usr/share/cmake/Modules/CMakeLanguageInformation.cmake:
-
-/usr/share/cmake/Modules/CheckCXXCompilerFlag.cmake:
-
-/usr/include/bits/types/mbstate_t.h:
-
-/usr/share/cmake/Modules/CheckCXXSourceCompiles.cmake:
-
-pacmangui_autogen/mocs_compilation.cpp:
-
-/usr/lib/libGLX.so:
+/usr/include/c++/14.2.1/bits/quoted_string.h:
 
 /usr/lib/cmake/Qt6Gui/Qt6QEvdevMousePluginConfig.cmake:
 
 /usr/share/cmake/Modules/CheckIncludeFileCXX.cmake:
 
-/usr/share/cmake/Modules/CheckLibraryExists.cmake:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/usermsrintrin.h:
 
-/home/matt/PacmanGui-new/src/core/transaction.cpp:
+/usr/include/c++/14.2.1/ratio:
 
-/usr/include/c++/14.2.1/bits/stl_pair.h:
+/usr/include/c++/14.2.1/bits/fs_path.h:
 
-/usr/share/cmake/Modules/FindPackageHandleStandardArgs.cmake:
+/usr/lib/cmake/Qt6Gui/Qt6QEvdevMousePluginTargets-relwithdebinfo.cmake:
 
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSKmsEglDeviceIntegrationPluginAdditionalTargetInfo.cmake:
-
-/usr/share/cmake/Modules/FindPkgConfig.cmake:
-
-/usr/share/cmake/Modules/FindVulkan.cmake:
-
-/usr/include/bits/stdio_lim.h:
-
-/usr/share/cmake/Modules/GNUInstallDirs.cmake:
-
-/usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake:
-
-/usr/share/cmake/Modules/Internal/CheckCompilerFlag.cmake:
-
-/usr/share/cmake/Modules/Platform/Linux-Initialize.cmake:
-
-/usr/include/c++/14.2.1/bits/exception_ptr.h:
-
-/usr/share/cmake/Modules/Linker/GNU-CXX.cmake:
-
-/usr/include/bits/types/timer_t.h:
-
-/usr/share/cmake/Modules/MacroAddFileDependencies.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QWaylandEglPlatformIntegrationPluginConfig.cmake:
-
-/usr/include/bits/environments.h:
-
-/usr/include/bits/types/struct_FILE.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QXcbEglIntegrationPluginConfig.cmake:
-
-/usr/share/cmake/Modules/Platform/Linker/GNU.cmake:
-
-/usr/lib/cmake/Qt6/QtPublicSbomAttributionHelpers.cmake:
-
-/usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake:
-
-/usr/include/linux/close_range.h:
-
-/usr/include/c++/14.2.1/ostream:
-
-/usr/share/cmake/Modules/Platform/Linux-GNU.cmake:
-
-/usr/share/cmake/Modules/Platform/UnixPaths.cmake:
-
-/usr/include/stdc-predef.h:
-
-/usr/include/sys/single_threaded.h:
-
-/usr/include/asm-generic/errno.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QSvgIconPluginTargets.cmake:
-
-/usr/include/asm-generic/int-ll64.h:
-
-/usr/include/asm-generic/posix_types.h:
-
-/usr/include/asm/posix_types.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QGtk3ThemePluginTargets-relwithdebinfo.cmake:
-
-/usr/include/bits/time.h:
-
-/usr/include/c++/14.2.1/debug/assertions.h:
-
-/usr/include/bits/atomic_wide_counter.h:
-
-/usr/include/bits/confname.h:
-
-/usr/include/bits/endianness.h:
-
-/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++config.h:
-
-/usr/include/bits/errno.h:
-
-/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++io.h:
-
-/usr/include/bits/floatn-common.h:
-
-/usr/include/bits/getopt_core.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSKmsEglDeviceIntegrationPluginConfig.cmake:
-
-/usr/include/bits/getopt_posix.h:
-
-/usr/include/bits/libc-header-start.h:
-
-/usr/lib/cmake/Qt6Core/Qt6CoreDependencies.cmake:
-
-/usr/include/bits/locale.h:
-
-/usr/include/bits/long-double.h:
-
-/usr/lib/libbrotlicommon.so.1:
-
-/usr/include/bits/posix_opt.h:
-
-/usr/include/bits/pthreadtypes-arch.h:
-
-/usr/include/bits/pthreadtypes.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QMngPluginConfig.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QTsLibPluginTargets-relwithdebinfo.cmake:
-
-/usr/include/bits/select.h:
-
-/usr/include/bits/setjmp.h:
-
-/usr/include/c++/14.2.1/bits/charconv.h:
-
-/usr/include/bits/statx-generic.h:
-
-/usr/include/bits/statx.h:
-
-/usr/include/bits/struct_mutex.h:
-
-/usr/include/c++/14.2.1/bits/locale_classes.tcc:
-
-/usr/include/bits/sched.h:
-
-/usr/lib/cmake/Qt6/Qt6ConfigVersionImpl.cmake:
-
-/usr/include/bits/struct_rwlock.h:
-
-/usr/include/bits/struct_stat.h:
-
-/usr/include/bits/thread-shared-types.h:
-
-/usr/include/c++/14.2.1/bits/stl_vector.h:
-
-/usr/include/bits/timex.h:
-
-/usr/share/cmake/Modules/FindThreads.cmake:
-
-/usr/include/c++/14.2.1/tuple:
-
-/usr/include/bits/types/FILE.h:
-
-/usr/include/c++/14.2.1/cctype:
-
-/usr/lib/cmake/Qt6Gui/Qt6GuiConfigVersion.cmake:
-
-/usr/include/bits/types/__fpos64_t.h:
-
-/usr/include/bits/types/__fpos_t.h:
-
-/usr/include/bits/types/__locale_t.h:
-
-/usr/include/c++/14.2.1/bits/functional_hash.h:
-
-/usr/include/c++/14.2.1/ext/alloc_traits.h:
-
-/usr/include/bits/types/__mbstate_t.h:
-
-/usr/include/c++/14.2.1/bit:
-
-/usr/include/bits/types/__sigset_t.h:
-
-/usr/include/bits/types/cookie_io_functions_t.h:
-
-/usr/include/bits/types/error_t.h:
-
-/usr/share/cmake/Modules/FindOpenGL.cmake:
-
-/usr/include/bits/types/struct___jmp_buf_tag.h:
-
-/usr/include/bits/waitstatus.h:
-
-/usr/include/c++/14.2.1/fstream:
-
-/usr/include/c++/14.2.1/cstddef:
-
-/usr/include/bits/wchar.h:
-
-/usr/include/bits/types/struct_sched_param.h:
-
-/usr/include/c++/14.2.1/bits/stl_uninitialized.h:
-
-/usr/include/bits/types/struct_tm.h:
-
-/usr/include/bits/types/time_t.h:
-
-/usr/lib/libxml2.so.2:
-
-/usr/include/bits/typesizes.h:
-
-/usr/include/bits/unistd_ext.h:
-
-/usr/lib/cmake/Qt6/QtPublicToolHelpers.cmake:
-
-/usr/include/c++/14.2.1/bits/uses_allocator.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6GuiConfigVersionImpl.cmake:
-
-/usr/lib/cmake/Qt6/QtPublicSbomDepHelpers.cmake:
-
-/usr/include/bits/stdint-intn.h:
-
-/usr/include/bits/wctype-wchar.h:
-
-/usr/include/bits/wordsize.h:
-
-/usr/include/c++/14.2.1/backward/binders.h:
-
-/usr/include/c++/14.2.1/bits/alloc_traits.h:
-
-/usr/include/c++/14.2.1/bits/basic_ios.h:
-
-/usr/lib/cmake/Qt6CoreTools/Qt6CoreToolsTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6DBus/Qt6DBusDependencies.cmake:
-
-/usr/include/c++/14.2.1/bits/basic_string.h:
-
-/usr/include/c++/14.2.1/bits/basic_string.tcc:
-
-/usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsConfig.cmake:
-
-/usr/include/bits/byteswap.h:
-
-/usr/include/c++/14.2.1/bits/char_traits.h:
-
-/usr/include/c++/14.2.1/bits/cxxabi_init_exception.h:
-
-/usr/share/cmake/Modules/CMakeFindDependencyMacro.cmake:
-
-/usr/include/c++/14.2.1/bits/exception_defines.h:
-
-/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/ctype_base.h:
-
-/usr/include/c++/14.2.1/bits/hash_bytes.h:
-
-/usr/lib/cmake/Qt6/Qt6Config.cmake:
-
-/usr/include/c++/14.2.1/bits/ios_base.h:
-
-/usr/include/c++/14.2.1/bits/locale_classes.h:
-
-/usr/include/c++/14.2.1/bits/memory_resource.h:
-
-/usr/include/c++/14.2.1/bits/memoryfwd.h:
-
-/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/error_constants.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QIbusPlatformInputContextPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QGifPluginTargets-relwithdebinfo.cmake:
-
-/usr/include/c++/14.2.1/bits/nested_exception.h:
-
-/usr/include/c++/14.2.1/bits/ostream.tcc:
-
-/usr/include/c++/14.2.1/bits/postypes.h:
-
-/usr/include/c++/14.2.1/bits/predefined_ops.h:
-
-/usr/lib/libgpg-error.so.0:
-
-/usr/include/c++/14.2.1/bits/range_access.h:
-
-/usr/include/c++/14.2.1/bits/refwrap.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QWbmpPluginAdditionalTargetInfo.cmake:
-
-/usr/include/c++/14.2.1/bits/requires_hosted.h:
-
-/usr/include/c++/14.2.1/bits/std_abs.h:
-
-/usr/include/c++/14.2.1/bits/stl_bvector.h:
-
-/usr/include/c++/14.2.1/bits/stl_construct.h:
-
-/usr/include/c++/14.2.1/bits/utility.h:
-
-/home/matt/PacmanGui-new/include/core/package.hpp:
-
-/usr/include/c++/14.2.1/ext/atomicity.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/wbnoinvdintrin.h:
 
 /usr/lib/cmake/Qt6Gui/Qt6QEvdevMousePluginTargets.cmake:
 
 /usr/include/c++/14.2.1/stdlib.h:
 
-/usr/include/ctype.h:
+/usr/include/c++/14.2.1/bits/locale_conv.h:
 
-/usr/share/cmake/Modules/CMakeGenericSystem.cmake:
+/usr/lib/cmake/Qt6Gui/Qt6QEvdevTabletPluginAdditionalTargetInfo.cmake:
 
-/usr/include/c++/14.2.1/bits/stl_function.h:
+/usr/lib/cmake/Qt6Gui/Qt6QEvdevTabletPluginConfig.cmake:
 
-/usr/include/bits/stdint-least.h:
+/usr/include/qt6/QtConcurrent/qtconcurrentmedian.h:
 
-/usr/include/c++/14.2.1/bits/stl_iterator_base_types.h:
+/usr/lib/cmake/Qt6Gui/Qt6QEvdevTabletPluginTargets-relwithdebinfo.cmake:
 
-/usr/include/c++/14.2.1/bits/streambuf_iterator.h:
+/usr/lib/cmake/Qt6Gui/Qt6QEvdevTouchScreenPluginTargets.cmake:
 
-/usr/include/c++/14.2.1/bits/stringfwd.h:
+/usr/lib/cmake/Qt6Gui/Qt6QGifPluginAdditionalTargetInfo.cmake:
 
-/usr/lib/cmake/Qt6Gui/Qt6QMinimalIntegrationPluginTargets-relwithdebinfo.cmake:
+/usr/include/qt6/QtCore/qsettings.h:
 
-/usr/include/c++/14.2.1/bits/version.h:
+/usr/share/cmake/Modules/Compiler/GNU-FindBinUtils.cmake:
 
-/usr/include/c++/14.2.1/cerrno:
+/usr/lib/cmake/Qt6Gui/Qt6QGifPluginConfig.cmake:
 
-/usr/include/c++/14.2.1/concepts:
+/usr/include/linux/limits.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QTiffPluginTargets-relwithdebinfo.cmake:
+/usr/lib/cmake/Qt6Gui/Qt6QGifPluginTargets.cmake:
 
-/usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateConfigVersion.cmake:
+/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsConfig.cmake:
 
-/usr/include/c++/14.2.1/cstdio:
+/usr/lib/cmake/Qt6Gui/Qt6QGtk3ThemePluginTargets.cmake:
 
-/usr/include/inttypes.h:
+/usr/lib/cmake/Qt6Gui/Qt6QICNSPluginAdditionalTargetInfo.cmake:
 
-/usr/include/c++/14.2.1/bits/allocator.h:
+/usr/lib/cmake/Qt6Gui/Qt6QICNSPluginConfig.cmake:
 
-/usr/include/c++/14.2.1/debug/debug.h:
+/usr/lib/cmake/Qt6Gui/Qt6QICNSPluginTargets.cmake:
 
-CMakeFiles/pacmangui.dir/src/core/transaction.cpp.o:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/vpclmulqdqintrin.h:
 
-/usr/include/c++/14.2.1/exception:
+/usr/lib/cmake/Qt6Gui/Qt6QICOPluginAdditionalTargetInfo.cmake:
 
-/usr/include/c++/14.2.1/ext/numeric_traits.h:
+/usr/lib/cmake/Qt6Gui/Qt6QICOPluginConfig.cmake:
 
-/usr/include/c++/14.2.1/ext/string_conversions.h:
+/usr/lib/cmake/Qt6Gui/Qt6QICOPluginTargets-relwithdebinfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QICOPluginTargets.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QIbusPlatformInputContextPluginTargets-relwithdebinfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QJp2PluginConfig.cmake:
+
+/usr/lib/libb2.so.1:
+
+/usr/lib/cmake/Qt6Gui/Qt6QJp2PluginTargets-relwithdebinfo.cmake:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/tmmintrin.h:
+
+/usr/include/qt6/QtCore/qstandardpaths.h:
+
+/usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QJpegPluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QJpegPluginTargets-relwithdebinfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QJpegPluginTargets.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QLibInputPluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QLibInputPluginTargets-relwithdebinfo.cmake:
+
+/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsDependencies.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QLibInputPluginTargets.cmake:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdarg.h:
+
+/usr/include/qt6/QtCore/qcommandlineparser.h:
+
+/usr/lib/cmake/Qt6DBus/Qt6DBusConfig.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QLinuxFbIntegrationPluginAdditionalTargetInfo.cmake:
+
+/usr/include/qt6/QtCore/qregularexpression.h:
+
+/usr/include/qt6/QtCore/QUrl:
+
+/usr/share/cmake/Modules/Compiler/XL-CXX-DetermineCompiler.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QMinimalEglIntegrationPluginAdditionalTargetInfo.cmake:
+
+/usr/share/cmake/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QMinimalEglIntegrationPluginTargets-relwithdebinfo.cmake:
+
+/usr/include/qt6/QtGui/qcursor.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QMinimalEglIntegrationPluginTargets.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QMinimalIntegrationPluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QMinimalIntegrationPluginTargets.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QMngPluginAdditionalTargetInfo.cmake:
+
+/usr/include/bits/mathcalls-narrow.h:
+
+/usr/include/qt6/QtCore/qproperty.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdint.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QMngPluginTargets-relwithdebinfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QMngPluginTargets.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QGtk3ThemePluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QOffscreenIntegrationPluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QOffscreenIntegrationPluginConfig.cmake:
+
+/usr/include/qt6/QtCore/qtaggedpointer.h:
+
+/usr/share/cmake/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake:
+
+/usr/include/qt6/QtConcurrent/QtConcurrentDepends:
+
+/usr/lib/cmake/Qt6Gui/Qt6QOffscreenIntegrationPluginTargets-relwithdebinfo.cmake:
+
+/usr/include/c++/14.2.1/bits/stl_numeric.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QLibInputPluginConfig.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QOffscreenIntegrationPluginTargets.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QPdfPluginTargets.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QSvgIconPluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QSvgIconPluginTargets-relwithdebinfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QSvgPluginAdditionalTargetInfo.cmake:
 
 /usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsConfigVersion.cmake:
 
-/usr/include/c++/14.2.1/initializer_list:
+/usr/lib/cmake/Qt6Gui/Qt6QSvgPluginConfig.cmake:
 
-/usr/lib/cmake/Qt6Core/Qt6CoreConfig.cmake:
+/usr/lib/cmake/Qt6Gui/Qt6QSvgPluginTargets-relwithdebinfo.cmake:
 
-/usr/include/asm/types.h:
+/usr/lib/cmake/Qt6GuiPrivate/Qt6GuiPrivateAdditionalTargetInfo.cmake:
 
-/usr/include/c++/14.2.1/ios:
+/usr/lib/cmake/Qt6Gui/Qt6QSvgPluginTargets.cmake:
 
-/usr/include/c++/14.2.1/bits/streambuf.tcc:
+/usr/include/qt6/QtCore/qtmocconstants.h:
 
-/usr/include/c++/14.2.1/iosfwd:
+/usr/lib/cmake/Qt6Gui/Qt6QTgaPluginAdditionalTargetInfo.cmake:
 
-/usr/lib/cmake/Qt6Gui/Qt6QVirtualKeyboardPluginAdditionalTargetInfo.cmake:
+/usr/lib/cmake/Qt6Gui/Qt6QTiffPluginTargets.cmake:
 
-/usr/include/c++/14.2.1/bits/ptr_traits.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512cdintrin.h:
 
-/usr/include/bits/types/struct_statx_timestamp.h:
+/usr/include/bits/environments.h:
 
-/usr/include/c++/14.2.1/istream:
+/usr/lib/cmake/Qt6Gui/Qt6QTuioTouchPluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QTuioTouchPluginConfig.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QTuioTouchPluginTargets-relwithdebinfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QVirtualKeyboardPluginConfig.cmake:
+
+/usr/include/c++/14.2.1/bits/range_access.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QVirtualKeyboardPluginTargets-relwithdebinfo.cmake:
+
+/usr/include/qt6/QtCore/QList:
+
+/usr/lib/cmake/Qt6Gui/Qt6QVirtualKeyboardPluginTargets.cmake:
+
+/usr/include/c++/14.2.1/bits/locale_facets_nonio.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QVkKhrDisplayIntegrationPluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QVkKhrDisplayIntegrationPluginConfig.cmake:
+
+/usr/include/qt6/QtCore/qabstractproxymodel.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QVkKhrDisplayIntegrationPluginTargets-relwithdebinfo.cmake:
+
+/usr/share/cmake/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QVncIntegrationPluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QVncIntegrationPluginConfig.cmake:
+
+/usr/include/qt6/QtWidgets/qabstractscrollarea.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QVncIntegrationPluginTargets.cmake:
+
+/usr/include/qt6/QtCore/qtpreprocessorsupport.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWaylandEglPlatformIntegrationPluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWaylandEglPlatformIntegrationPluginTargets.cmake:
+
+/usr/share/cmake/Modules/CMakeFindDependencyMacro.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QJpegPluginConfig.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWaylandIntegrationPluginTargets-relwithdebinfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWbmpPluginTargets-relwithdebinfo.cmake:
+
+/usr/lib/cmake/Qt6DBus/Qt6DBusAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWbmpPluginTargets.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWebpPluginAdditionalTargetInfo.cmake:
+
+/usr/include/qt6/QtCore/qfile.h:
+
+/usr/include/ctype.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWebpPluginConfig.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWebpPluginTargets-relwithdebinfo.cmake:
+
+/usr/include/qt6/QtCore/qmutex.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QXcbEglIntegrationPluginConfig.cmake:
+
+/usr/share/cmake/Modules/Platform/Linker/GNU.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QXcbEglIntegrationPluginTargets.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QXcbGlxIntegrationPluginTargets-relwithdebinfo.cmake:
+
+/usr/include/errno.h:
+
+/usr/share/cmake/Modules/Internal/CMakeInspectCXXLinker.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QXcbIntegrationPluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QXdgDesktopPortalThemePluginConfig.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QXcbIntegrationPluginTargets-relwithdebinfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QXcbIntegrationPluginTargets.cmake:
+
+/usr/share/cmake/Modules/CMakeCXXInformation.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QXdgDesktopPortalThemePluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QXdgDesktopPortalThemePluginTargets.cmake:
+
+/usr/include/bits/locale.h:
+
+pacmangui_autogen/BMPI5EA7AM/moc_mainwindow.cpp:
+
+/usr/lib/cmake/Qt6GuiPrivate/Qt6GuiPrivateConfigVersionImpl.cmake:
+
+/usr/lib/cmake/Qt6GuiPrivate/Qt6GuiPrivateTargets.cmake:
+
+/usr/lib/libgomp.so.1:
+
+/usr/include/qt6/QtWidgets/QMenu:
+
+/usr/lib/cmake/Qt6GuiPrivate/Qt6GuiPrivateVersionlessAliasTargets.cmake:
+
+/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsVersionlessTargets.cmake:
+
+/usr/include/c++/14.2.1/bits/cpp_type_traits.h:
+
+/usr/include/c++/14.2.1/cassert:
+
+/usr/lib/cmake/Qt6Widgets/Qt6WidgetsAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Widgets/Qt6WidgetsConfig.cmake:
+
+/usr/lib/cmake/Qt6Widgets/Qt6WidgetsDependencies.cmake:
+
+/usr/include/qt6/QtGui/qpolygon.h:
+
+/usr/share/cmake/Modules/Compiler/Borland-DetermineCompiler.cmake:
+
+/usr/lib/cmake/Qt6Widgets/Qt6WidgetsMacros.cmake:
+
+/usr/include/c++/14.2.1/bits/stl_relops.h:
+
+/usr/lib/cmake/Qt6Widgets/Qt6WidgetsPlugins.cmake:
+
+/usr/include/qt6/QtCore/qcompare_impl.h:
+
+/usr/lib/cmake/Qt6Widgets/Qt6WidgetsTargets.cmake:
+
+/usr/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateAdditionalTargetInfo.cmake:
+
+/usr/include/qt6/QtCore/q20memory.h:
+
+/usr/lib/cmake/Qt6/QtFeatureCommon.cmake:
+
+/usr/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateConfigVersionImpl.cmake:
+
+/usr/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateDependencies.cmake:
+
+/usr/include/c++/14.2.1/bits/fs_dir.h:
+
+/usr/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateVersionlessAliasTargets.cmake:
+
+/usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsAdditionalTargetInfo.cmake:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vbmi2intrin.h:
+
+/usr/include/qt6/QtCore/qcomparehelpers.h:
+
+/usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake:
+
+/usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsConfigVersionImpl.cmake:
+
+/usr/include/qt6/QtCore/qvariant.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QTgaPluginTargets.cmake:
+
+/usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsDependencies.cmake:
+
+/usr/share/cmake/Modules/Compiler/Cray-DetermineCompiler.cmake:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stddef.h:
+
+/usr/lib/cmake/Qt6Core/Qt6CoreMacros.cmake:
+
+/usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp:
+
+/usr/include/qt6/QtWidgets/qmenu.h:
+
+/usr/include/c++/14.2.1/locale:
+
+/usr/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake:
+
+/usr/lib/cmake/Qt6/QtPublicSbomCpeHelpers.cmake:
+
+/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QTgaPluginConfig.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEvdevTouchScreenPluginConfig.cmake:
 
 /usr/include/c++/14.2.1/pstl/pstl_config.h:
 
-/usr/include/c++/14.2.1/stdexcept:
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/messages_members.h:
 
-/usr/include/c++/14.2.1/streambuf:
+/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:
 
-/usr/include/c++/14.2.1/backward/auto_ptr.h:
+/usr/include/c++/14.2.1/bits/parse_numbers.h:
 
-/usr/include/c++/14.2.1/string:
+/usr/share/cmake/Modules/CMakeInitializeConfigs.cmake:
 
-/usr/lib/libalpm.so:
+/usr/share/cmake/Modules/CMakeLanguageInformation.cmake:
 
-/usr/include/linux/errno.h:
+/usr/share/cmake/Modules/CMakeParseImplicitLinkInfo.cmake:
 
-/usr/include/c++/14.2.1/string_view:
+/usr/include/qt6/QtCore/qurl.h:
 
-/usr/include/c++/14.2.1/type_traits:
+/usr/include/c++/14.2.1/bits/shared_ptr_atomic.h:
+
+/usr/lib/cmake/Qt6/QtPublicSbomGenerationHelpers.cmake:
+
+/usr/share/cmake/Modules/CMakeParseLibraryArchitecture.cmake:
+
+/usr/include/qt6/QtConcurrent/qtconcurrentthreadengine.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/vaesintrin.h:
+
+/usr/include/c++/14.2.1/tuple:
+
+/usr/share/cmake/Modules/CMakeSystem.cmake.in:
+
+/usr/share/cmake/Modules/Compiler/Intel-DetermineCompiler.cmake:
+
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/error_constants.h:
+
+/usr/share/cmake/Modules/CMakeUnixFindMake.cmake:
+
+/usr/share/cmake/Modules/Compiler/AppleClang-DetermineCompiler.cmake:
+
+/usr/share/cmake/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake:
+
+/usr/include/c++/14.2.1/bits/node_handle.h:
+
+/usr/share/cmake/Modules/CheckCXXCompilerFlag.cmake:
+
+/usr/lib/libharfbuzz.so.0:
+
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/opt_random.h:
+
+/usr/share/cmake/Modules/CheckCXXSourceCompiles.cmake:
+
+/usr/include/asm/types.h:
+
+/usr/share/cmake/Modules/CheckLibraryExists.cmake:
+
+/usr/share/cmake/Modules/Compiler/ADSP-DetermineCompiler.cmake:
+
+/usr/include/qt6/QtCore/qbytearrayalgorithms.h:
+
+/usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake:
+
+/usr/share/cmake/Modules/Compiler/Clang-DetermineCompiler.cmake:
+
+/usr/include/c++/14.2.1/bits/stream_iterator.h:
+
+/usr/share/cmake/Modules/Compiler/Clang-DetermineCompilerInternal.cmake:
+
+/usr/share/cmake/Modules/Compiler/OrangeC-DetermineCompiler.cmake:
+
+/usr/include/qt6/QtCore/qtnoop.h:
+
+/usr/share/cmake/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake:
+
+/usr/include/qt6/QtCore/qstorageinfo.h:
+
+/usr/share/cmake/Modules/Compiler/IAR-DetermineCompiler.cmake:
+
+/usr/include/qt6/QtCore/qpromise.h:
+
+/usr/include/c++/14.2.1/list:
+
+/usr/include/c++/14.2.1/version:
+
+/usr/include/qt6/QtWidgets/QMainWindow:
+
+/usr/bin/cmake:
+
+/usr/share/cmake/Modules/Compiler/Fujitsu-DetermineCompiler.cmake:
+
+/usr/include/qt6/QtWidgets/qlayout.h:
+
+/usr/share/cmake/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/amxint8intrin.h:
+
+/usr/include/qt6/QtCore/qcontiguouscache.h:
+
+/usr/include/qt6/QtCore/q20functional.h:
+
+/usr/share/cmake/Modules/Compiler/GNU-CXX.cmake:
+
+/usr/include/qt6/QtCore/qcborarray.h:
+
+/usr/share/cmake/Modules/Compiler/GNU.cmake:
+
+/usr/include/qt6/QtCore/qatomicscopedvaluerollback.h:
+
+/usr/share/cmake/Modules/Compiler/HP-CXX-DetermineCompiler.cmake:
+
+/usr/share/cmake/Modules/Compiler/IBMClang-CXX-DetermineCompiler.cmake:
+
+/usr/include/qt6/QtCore/qcborstreamreader.h:
+
+/usr/include/c++/14.2.1/iomanip:
+
+/home/matt/PacmanGui-new/src/core/package.cpp:
+
+/usr/lib/cmake/Qt6Gui/Qt6GuiTargets-relwithdebinfo.cmake:
+
+/usr/share/cmake/Modules/Compiler/LCC-CXX-DetermineCompiler.cmake:
+
+/usr/share/cmake/Modules/Compiler/NVHPC-DetermineCompiler.cmake:
+
+/usr/include/linux/sched/types.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vnniintrin.h:
+
+/usr/share/cmake/Modules/Compiler/NVIDIA-DetermineCompiler.cmake:
+
+/usr/include/qt6/QtCore/qjsonarray.h:
+
+/usr/include/bits/math-vector.h:
+
+/usr/lib/libicuuc.so.76:
+
+/usr/share/cmake/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake:
+
+/usr/share/cmake/Modules/Compiler/SCO-DetermineCompiler.cmake:
+
+/usr/share/cmake/Modules/Compiler/TI-DetermineCompiler.cmake:
+
+/usr/share/cmake/Modules/Compiler/Tasking-DetermineCompiler.cmake:
+
+/usr/include/qt6/QtGui/qevent.h:
+
+pacmangui_autogen/mocs_compilation.cpp:
+
+/usr/include/c++/14.2.1/bits/memory_resource.h:
+
+/usr/share/cmake/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake:
+
+/usr/include/qt6/QtConcurrent/qtconcurrentrun.h:
+
+/usr/include/qt6/QtCore/q20map.h:
+
+/usr/share/cmake/Modules/FindPackageHandleStandardArgs.cmake:
+
+/usr/share/cmake/Modules/FindVulkan.cmake:
+
+/usr/include/qt6/QtCore/qrandom.h:
+
+/usr/include/asm/posix_types_64.h:
+
+/usr/include/c++/14.2.1/cstdint:
+
+/usr/share/cmake/Modules/GNUInstallDirs.cmake:
+
+/usr/include/qt6/QtGui/qguiapplication_platform.h:
+
+/usr/include/bits/wchar.h:
+
+/usr/include/qt6/QtConcurrent/qtconcurrent_global.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWaylandIntegrationPluginAdditionalTargetInfo.cmake:
+
+/usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake:
+
+/usr/include/qt6/QtCore/qtmochelpers.h:
+
+/usr/include/bits/uio_lim.h:
+
+/usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake:
+
+/usr/include/qt6/QtCore/qbasicatomic.h:
+
+/usr/lib/cmake/Qt6/QtPublicExternalProjectHelpers.cmake:
+
+/usr/include/c++/14.2.1/bits/fstream.tcc:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/tsxldtrkintrin.h:
+
+/usr/share/cmake/Modules/Internal/CMakeDetermineLinkerId.cmake:
+
+/usr/share/cmake/Modules/Internal/CheckSourceCompiles.cmake:
+
+/usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake:
+
+/usr/include/qt6/QtCore/qcommandlineoption.h:
+
+/usr/include/linux/stat.h:
+
+/usr/share/cmake/Modules/Linker/GNU-CXX.cmake:
+
+/usr/share/cmake/Modules/Linker/GNU.cmake:
+
+/usr/share/cmake/Modules/Platform/Linux-GNU.cmake:
+
+/usr/include/bits/stdlib-float.h:
+
+/usr/share/cmake/Modules/Platform/Linux-Initialize.cmake:
+
+/usr/share/cmake/Modules/Platform/Linux.cmake:
+
+pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp:
+
+/usr/include/bits/flt-eval-method.h:
+
+/usr/include/bits/fp-fast.h:
+
+/usr/include/bits/libm-simd-decl-stubs.h:
+
+/usr/include/bits/mathcalls-helper-functions.h:
+
+/usr/include/bits/fp-logb.h:
+
+/usr/include/c++/14.2.1/bits/basic_string.h:
+
+/usr/include/bits/mathcalls-macros.h:
+
+/usr/include/bits/mathcalls.h:
+
+/usr/include/c++/14.2.1/pstl/glue_algorithm_defs.h:
+
+/usr/include/bits/uintn-identity.h:
+
+/usr/include/linux/close_range.h:
+
+/usr/include/c++/14.2.1/ostream:
+
+/usr/include/math.h:
+
+/usr/include/qt6/QtCore/q20algorithm.h:
+
+/usr/include/qt6/QtCore/q23type_traits.h:
+
+/usr/include/c++/14.2.1/bits/stringfwd.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEvdevTouchScreenPluginAdditionalTargetInfo.cmake:
+
+/usr/include/c++/14.2.1/future:
+
+/usr/include/c++/14.2.1/bits/basic_ios.tcc:
+
+/usr/include/c++/14.2.1/bits/ostream.tcc:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/amxfp16intrin.h:
+
+/usr/include/c++/14.2.1/cwctype:
+
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/ctype_inline.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/pkuintrin.h:
+
+/usr/include/wctype.h:
+
+/usr/include/c++/14.2.1/unordered_set:
+
+/usr/include/c++/14.2.1/bits/stl_iterator_base_funcs.h:
+
+/usr/include/c++/14.2.1/bits/codecvt.h:
+
+/usr/include/c++/14.2.1/bits/sstream.tcc:
+
+/usr/include/c++/14.2.1/thread:
+
+/usr/include/c++/14.2.1/bits/fs_fwd.h:
+
+/usr/include/c++/14.2.1/bits/fs_ops.h:
+
+/usr/include/bits/wctype-wchar.h:
+
+/usr/include/c++/14.2.1/bits/locale_facets_nonio.tcc:
+
+/usr/include/c++/14.2.1/bits/random.h:
+
+/usr/lib/libunistring.so.5:
+
+/usr/include/qt6/QtCore/qscopedvaluerollback.h:
+
+/usr/include/qt6/QtCore/qrefcount.h:
+
+/usr/include/c++/14.2.1/experimental/source_location:
+
+/usr/include/c++/14.2.1/filesystem:
+
+/usr/include/c++/14.2.1/random:
+
+/usr/include/qt6/QtCore/QMap:
+
+/usr/include/qt6/QtCore/qpoint.h:
+
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/time_members.h:
+
+/usr/include/qt6/QtConcurrent/qtconcurrentcompilertest.h:
+
+/usr/include/qt6/QtConcurrent/qtconcurrentexports.h:
+
+/usr/include/qt6/QtConcurrent/qtconcurrentfilter.h:
+
+/usr/include/qt6/QtConcurrent/qtconcurrentfunctionwrappers.h:
+
+/usr/include/qt6/QtConcurrent/qtconcurrentmap.h:
+
+/usr/include/qt6/QtConcurrent/qtconcurrentmapkernel.h:
+
+/usr/include/qt6/QtConcurrent/qtconcurrentrunbase.h:
+
+/usr/include/qt6/QtConcurrent/qtconcurrentstoredfunctioncall.h:
+
+/usr/include/qt6/QtConcurrent/qtconcurrentversion.h:
+
+/usr/include/qt6/QtGui/QCloseEvent:
+
+/usr/include/qt6/QtCore/QHash:
+
+/usr/include/c++/14.2.1/bits/stl_function.h:
+
+/usr/include/qt6/QtCore/QProcess:
+
+/usr/include/qt6/QtCore/QRect:
+
+/usr/share/cmake/Modules/FeatureSummary.cmake:
+
+/usr/include/qt6/QtCore/QSizeF:
+
+/usr/include/qt6/QtCore/QtCoreDepends:
+
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/atomic_word.h:
+
+/usr/include/qt6/QtCore/q20chrono.h:
+
+/usr/lib/libsystemd.so.0:
+
+/usr/include/qt6/QtCore/q23functional.h:
+
+/usr/include/qt6/QtCore/q26numeric.h:
+
+/usr/include/qt6/QtCore/qabstractanimation.h:
+
+/usr/include/c++/14.2.1/bits/stl_iterator_base_types.h:
+
+/usr/include/qt6/QtCore/qabstractnativeeventfilter.h:
+
+/usr/include/qt6/QtCore/qapplicationstatic.h:
+
+/usr/include/qt6/QtGui/qpen.h:
+
+/usr/include/qt6/QtCore/qassociativeiterable.h:
+
+/usr/include/qt6/QtCore/qstringconverter_base.h:
+
+/usr/include/qt6/QtCore/qbuffer.h:
+
+/usr/include/qt6/QtCore/qcborstream.h:
+
+/usr/include/qt6/QtCore/qbytearraymatcher.h:
+
+/usr/include/qt6/QtCore/qcache.h:
+
+/usr/include/qt6/QtCore/qtenvironmentvariables.h:
+
+/usr/include/qt6/QtCore/qcborstreamwriter.h:
+
+CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o:
+
+/usr/include/qt6/QtCore/qelapsedtimer.h:
+
+/usr/include/qt6/QtCore/qfiledevice.h:
+
+/usr/include/qt6/QtCore/qtconfiginclude.h:
+
+/usr/include/qt6/QtCore/qcborvalue.h:
+
+/usr/include/qt6/QtCore/qcollator.h:
+
+/usr/include/bits/byteswap.h:
+
+/usr/include/c++/14.2.1/bits/chrono.h:
+
+/usr/include/qt6/QtCore/qconcatenatetablesproxymodel.h:
+
+/usr/include/qt6/QtCore/qcoreapplication.h:
+
+/usr/include/qt6/QtCore/qcoreapplication_platform.h:
+
+/usr/include/qt6/QtCore/qscopedpointer.h:
+
+/usr/lib/cmake/Qt6DBus/Qt6DBusVersionlessAliasTargets.cmake:
+
+/usr/include/qt6/QtCore/qcryptographichash.h:
+
+/usr/include/qt6/QtCore/qdirlisting.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxvnniintrin.h:
+
+/usr/include/qt6/QtCore/qeasingcurve.h:
+
+/usr/include/qt6/QtCore/qexception.h:
+
+/usr/include/qt6/QtCore/qfactoryinterface.h:
+
+/usr/lib/libQt6DBus.so.6:
+
+/usr/lib/cmake/Qt6Core/Qt6CoreDependencies.cmake:
+
+/usr/include/qt6/QtCore/qfileselector.h:
+
+/usr/include/qt6/QtCore/QStringList:
+
+/usr/include/qt6/QtCore/qfilesystemwatcher.h:
+
+/usr/include/qt6/QtCore/qtdeprecationdefinitions.h:
+
+/usr/include/qt6/QtCore/qfuture_impl.h:
