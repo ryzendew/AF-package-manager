@@ -76,26 +76,53 @@ public:
     /**
      * @brief Install a package
      * 
-     * @param package_name Package name to install
+     * @param package_name Name of the package to install
      * @return bool True if installation successful
      */
     bool install_package(const std::string& package_name);
     
     /**
+     * @brief Install a package with authentication
+     * 
+     * @param package_name Name of the package to install
+     * @param password The password to use for sudo authentication
+     * @return bool True if installation successful
+     */
+    bool install_package(const std::string& package_name, const std::string& password);
+    
+    /**
      * @brief Remove a package
      * 
-     * @param package_name Package name to remove
+     * @param package_name Name of the package to remove
      * @return bool True if removal successful
      */
     bool remove_package(const std::string& package_name);
     
     /**
+     * @brief Remove a package with authentication
+     * 
+     * @param package_name Name of the package to remove
+     * @param password The password to use for sudo authentication
+     * @return bool True if removal successful
+     */
+    bool remove_package(const std::string& package_name, const std::string& password);
+    
+    /**
      * @brief Update a package
      * 
-     * @param package_name Package name to update
+     * @param package_name Name of the package to update
      * @return bool True if update successful
      */
     bool update_package(const std::string& package_name);
+    
+    /**
+     * @brief Update a package with authentication
+     * 
+     * @param package_name Name of the package to update
+     * @param password The password to use for sudo authentication
+     * @return bool True if update successful
+     */
+    bool update_package(const std::string& package_name, const std::string& password);
     
     /**
      * @brief Synchronize all packages (update all)
@@ -103,6 +130,14 @@ public:
      * @return bool True if synchronization successful
      */
     bool sync_all();
+    
+    /**
+     * @brief Synchronize all packages (update all) with authentication
+     * 
+     * @param password The password to use for sudo authentication
+     * @return bool True if synchronization successful
+     */
+    bool sync_all(const std::string& password);
     
     /**
      * @brief Check if a package is installed

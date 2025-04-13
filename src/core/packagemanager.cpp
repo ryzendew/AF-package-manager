@@ -18,6 +18,17 @@ bool execute_with_sudo(const std::string& command) {
     return result == 0;
 }
 
+// Helper function to execute commands with sudo and password
+bool execute_with_sudo(const std::string& command, const std::string& password) {
+    // Create command with sudo -S which reads password from stdin
+    std::string sudo_cmd = "echo " + password + " | sudo -S " + command;
+    std::cout << "Executing sudo command with password" << std::endl;
+    
+    // Execute the command
+    int result = system(sudo_cmd.c_str());
+    return result == 0;
+}
+
 // ALPM error callback - updated to match alpm_cb_log signature
 void alpm_log_cb(void* ctx, alpm_loglevel_t level, const char *format, va_list args)
 {
@@ -264,6 +275,28 @@ bool PackageManager::install_package(const std::string& package_name)
     }
 }
 
+bool PackageManager::install_package(const std::string& package_name, const std::string& password)
+{
+    if (package_name.empty()) {
+        set_last_error("Invalid package name");
+        return false;
+    }
+    
+    std::cout << "PackageManager: Installing package with authentication: " << package_name << std::endl;
+    
+    // Use pacman directly with sudo and password
+    std::string command = "pacman -S --noconfirm " + package_name;
+    bool success = execute_with_sudo(command, password);
+    
+    if (success) {
+        std::cout << "PackageManager: Package installed successfully: " << package_name << std::endl;
+        return true;
+    } else {
+        set_last_error("Failed to install package: " + package_name + ". Authentication may have failed.");
+        return false;
+    }
+}
+
 bool PackageManager::remove_package(const std::string& package_name)
 {
     if (package_name.empty()) {
@@ -282,6 +315,28 @@ bool PackageManager::remove_package(const std::string& package_name)
         return true;
     } else {
         set_last_error("Failed to remove package: " + package_name);
+        return false;
+    }
+}
+
+bool PackageManager::remove_package(const std::string& package_name, const std::string& password)
+{
+    if (package_name.empty()) {
+        set_last_error("Invalid package name");
+        return false;
+    }
+    
+    std::cout << "PackageManager: Removing package with authentication: " << package_name << std::endl;
+    
+    // Use pacman directly with sudo and password
+    std::string command = "pacman -R --noconfirm " + package_name;
+    bool success = execute_with_sudo(command, password);
+    
+    if (success) {
+        std::cout << "PackageManager: Package removed successfully: " << package_name << std::endl;
+        return true;
+    } else {
+        set_last_error("Failed to remove package: " + package_name + ". Authentication may have failed.");
         return false;
     }
 }
@@ -308,6 +363,28 @@ bool PackageManager::update_package(const std::string& package_name)
     }
 }
 
+bool PackageManager::update_package(const std::string& package_name, const std::string& password)
+{
+    if (package_name.empty()) {
+        set_last_error("Invalid package name");
+        return false;
+    }
+    
+    std::cout << "PackageManager: Updating package with authentication: " << package_name << std::endl;
+    
+    // Use pacman directly with sudo and password
+    std::string command = "pacman -S --noconfirm " + package_name;
+    bool success = execute_with_sudo(command, password);
+    
+    if (success) {
+        std::cout << "PackageManager: Package updated successfully: " << package_name << std::endl;
+        return true;
+    } else {
+        set_last_error("Failed to update package: " + package_name + ". Authentication may have failed.");
+        return false;
+    }
+}
+
 bool PackageManager::sync_all()
 {
     std::cout << "PackageManager: Synchronizing all packages" << std::endl;
@@ -318,6 +395,27 @@ bool PackageManager::sync_all()
     
     if (!refresh_success) {
         set_last_error("Failed to refresh package databases");
+        return false;
+    }
+    
+    std::cout << "PackageManager: Package databases refreshed successfully" << std::endl;
+    
+    // Re-initialize to get updated package information
+    m_repo_manager->initialize();
+    
+    return true;
+}
+
+bool PackageManager::sync_all(const std::string& password)
+{
+    std::cout << "PackageManager: Synchronizing all packages with authentication" << std::endl;
+    
+    // First refresh the package databases
+    std::string refresh_cmd = "pacman -Sy";
+    bool refresh_success = execute_with_sudo(refresh_cmd, password);
+    
+    if (!refresh_success) {
+        set_last_error("Failed to refresh package databases. Authentication may have failed.");
         return false;
     }
     
