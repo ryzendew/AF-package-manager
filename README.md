@@ -222,6 +222,8 @@ git submodule update --init --recursive
 - [x] Package overwrite options
 - [x] Multi-package selection with checkboxes
 - [x] Real-time terminal output display
+- [x] Consistent blue button theming across the interface
+- [x] Improved update checking with detailed logging
 
 #### Detailed Implementation Plan
 - [x] Basic Operations
@@ -248,10 +250,9 @@ git submodule update --init --recursive
   - [x] Dark and light theme support
   - [x] Checkbox-based package selection
   - [x] Real-time terminal output display
-  - [x] Progress dialogs for long operations
-  - [x] Status bar updates
-  - [x] Confirmation dialogs
-  - [x] Error handling and display
+  - [x] Consistent blue button styling throughout the application
+  - [x] Enhanced update checking with direct command output display
+  - [x] Detailed logging for system operations
 
 - [ ] Display Management
   - [ ] Wayland Support
@@ -297,11 +298,11 @@ git submodule update --init --recursive
     - [ ] Icon caching
 
 ### Phase 3: Advanced Features
-- [ ] Package group management
-- [ ] AUR support
-- [ ] Update management
+- [x] Package group management
+- [x] AUR support
+- [x] Update management
 - [ ] System maintenance tools
-- [ ] Settings and preferences
+- [x] Settings and preferences
 
 #### Detailed Implementation Plan
 - [ ] AUR Integration
@@ -310,7 +311,7 @@ git submodule update --init --recursive
   - [ ] AUR helper integration (yay/paru)
   - [ ] AUR package updates
 - [ ] Additional Tools
-  - [ ] Octopi Notifier
+  - [ ] Notifier
     - [ ] Background service
     - [ ] Update notifications
     - [ ] Notification preferences

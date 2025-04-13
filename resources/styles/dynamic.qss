@@ -1,0 +1,214 @@
+/* Dynamic stylesheet for PacmanGUI with responsive design */
+
+/* Global styling */
+* {
+    font-family: "Noto Sans", "Segoe UI", sans-serif;
+}
+
+/* Main window */
+QMainWindow {
+    min-width: 800px;
+    min-height: 600px;
+}
+
+/* Widget spacing and margins */
+QWidget {
+    margin: 0px;
+    padding: 0px;
+}
+
+/* Labels */
+QLabel {
+    min-height: 18px;
+}
+
+QLabel[heading="true"] {
+    font-weight: bold;
+    font-size: 16pt;
+    margin-bottom: 5px;
+}
+
+QLabel[subheading="true"] {
+    font-weight: bold;
+    font-size: 12pt;
+    margin-bottom: 3px;
+}
+
+/* Buttons with consistent sizing and padding */
+QPushButton {
+    min-height: 32px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    background-color: #2196F3;
+    color: white;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #1976D2;
+}
+
+QPushButton:disabled {
+    background-color: #78909C;
+    color: #ECEFF1;
+}
+
+/* Search box */
+QLineEdit {
+    min-height: 30px;
+    padding: 2px 8px;
+    border: 1px solid #c0c0c0;
+    border-radius: 4px;
+}
+
+/* Tab widget */
+QTabWidget::pane {
+    border: 1px solid #c0c0c0;
+    border-radius: 4px;
+}
+
+QTabBar::tab {
+    min-width: 100px;
+    min-height: 25px;
+    padding: 5px 10px;
+    margin-right: 2px;
+}
+
+QTabBar::tab:selected {
+    background: #e0e0e0;
+}
+
+/* Table views */
+QTableView {
+    gridline-color: #e0e0e0;
+    selection-background-color: #c0c0c0;
+}
+
+QHeaderView::section {
+    min-height: 25px;
+    padding: 5px;
+    background-color: #f0f0f0;
+    border: 1px solid #c0c0c0;
+}
+
+/* Scroll bars */
+QScrollBar:vertical {
+    width: 14px;
+    margin: 0px;
+}
+
+QScrollBar:horizontal {
+    height: 14px;
+    margin: 0px;
+}
+
+/* Group boxes */
+QGroupBox {
+    font-weight: bold;
+    margin-top: 15px;
+    padding-top: 15px;
+}
+
+/* Tool buttons */
+QToolButton {
+    min-width: 30px;
+    min-height: 30px;
+    padding: 5px;
+    background-color: #2196F3;
+    color: white;
+    border-radius: 4px;
+}
+
+QToolButton:hover {
+    background-color: #1976D2;
+}
+
+QToolButton:disabled {
+    background-color: #78909C;
+    color: #ECEFF1;
+}
+
+/* Status bar */
+QStatusBar {
+    min-height: 20px;
+}
+
+/* Text edit / Log views */
+QTextEdit {
+    min-height: 100px;
+}
+
+/* Dark theme overrides */
+.dark-theme QWidget {
+    background-color: #303030;
+    color: #ffffff;
+}
+
+.dark-theme QPushButton {
+    background-color: #2196F3;
+    color: #ffffff;
+    border: 1px solid #1565C0;
+}
+
+.dark-theme QPushButton:hover {
+    background-color: #1976D2;
+}
+
+.dark-theme QPushButton:disabled {
+    background-color: #455A64;
+    color: #B0BEC5;
+}
+
+.dark-theme QLineEdit, .dark-theme QTextEdit {
+    background-color: #202020;
+    color: #ffffff;
+    border: 1px solid #505050;
+}
+
+.dark-theme QTableView, .dark-theme QHeaderView::section {
+    background-color: #303030;
+    color: #ffffff;
+    border: 1px solid #505050;
+}
+
+.dark-theme QTabBar::tab {
+    background-color: #404040;
+    color: #ffffff;
+}
+
+.dark-theme QTabBar::tab:selected {
+    background-color: #505050;
+}
+
+/* System maintenance tab specific styles */
+#maintenanceTab QPushButton {
+    min-width: 120px;
+}
+
+/* Progress indicators */
+QProgressBar {
+    border: 1px solid #c0c0c0;
+    border-radius: 3px;
+    text-align: center;
+    min-height: 20px;
+}
+
+QProgressBar::chunk {
+    background-color: #2196F3;
+    width: 10px;
+}
+
+/* Menu styling */
+QMenu {
+    padding: 5px;
+}
+
+QMenu::item {
+    padding: 5px 25px 5px 25px;
+    min-width: 150px;
+}
+
+QMenu::item:selected {
+    background-color: #2196F3;
+    color: white;
+} 
