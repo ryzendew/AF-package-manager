@@ -2,6 +2,7 @@
 <RCC version="1.0">
     <qresource prefix="/icons">
         <!-- Icons will be added here later -->
+        <file>icons/cog.png</file>
     </qresource>
     <qresource prefix="/styles">
         <!-- Style sheets will be added here later -->

@@ -1,4 +1,5 @@
 #include "gui/mainwindow.hpp"
+#include "gui/settingsdialog.hpp"
 #include <QApplication>
 #include <QSettings>
 #include <QMessageBox>
@@ -28,6 +29,7 @@ MainWindow::MainWindow(QWidget* parent)
     , m_tabWidget(nullptr)
     , m_searchBox(nullptr)
     , m_searchButton(nullptr)
+    , m_settingsButton(nullptr)
     , m_packagesView(nullptr)
     , m_installedView(nullptr)
     , m_batchInstallButton(nullptr)
@@ -49,6 +51,7 @@ MainWindow::MainWindow(QWidget* parent)
     , m_systemUpdateOverwriteCheckbox(nullptr)
     , m_packageOverwriteCheckbox(nullptr)
     , m_selectedPackages()
+    , m_settingsDialog(nullptr)
 {
     // Initialize package manager
     if (!m_packageManager.initialize("/", "/var/lib/pacman")) {
@@ -119,9 +122,16 @@ void MainWindow::setupUi()
     m_searchButton = new QPushButton("Search", this);
     m_searchButton->setDefault(true);
     
+    // Create settings button with cog icon
+    m_settingsButton = new QToolButton(this);
+    m_settingsButton->setIcon(QIcon::fromTheme("preferences-system", QIcon(":/icons/cog.png")));
+    m_settingsButton->setIconSize(QSize(20, 20));
+    m_settingsButton->setToolTip("Settings");
+    
     searchLayout->addWidget(searchLabel);
     searchLayout->addWidget(m_searchBox, 1); // Make search box expandable
     searchLayout->addWidget(m_searchButton);
+    searchLayout->addWidget(m_settingsButton);
     
     mainLayout->addLayout(searchLayout);
     
@@ -388,6 +398,9 @@ void MainWindow::setupConnections()
     connect(m_searchBox, &QLineEdit::returnPressed, this, &MainWindow::onSearchClicked);
     connect(m_searchBox, &QLineEdit::textChanged, this, &MainWindow::onSearchTextChanged);
     connect(m_searchButton, &QPushButton::clicked, this, &MainWindow::onSearchClicked);
+    
+    // Connect settings button
+    connect(m_settingsButton, &QToolButton::clicked, this, &MainWindow::openSettings);
     
     // Connect tab changed signal
     connect(m_tabWidget, &QTabWidget::currentChanged, this, &MainWindow::onTabChanged);
@@ -1303,6 +1316,28 @@ void MainWindow::updateBatchInstallButton()
         m_batchInstallButton->setText("Install Selected Packages");
     } else {
         m_batchInstallButton->setText(QString("Install Selected Packages (%1)").arg(m_selectedPackages.size()));
+    }
+}
+
+void MainWindow::openSettings()
+{
+    // Create settings dialog if it doesn't exist
+    if (!m_settingsDialog) {
+        m_settingsDialog = new SettingsDialog(this);
+    }
+    
+    // Show the dialog and apply settings if accepted
+    if (m_settingsDialog->exec() == QDialog::Accepted) {
+        // Load settings that may have changed
+        bool isDarkTheme = QSettings("PacmanGUI", "PacmanGUI").value("appearance/darkTheme", m_darkTheme).toBool();
+        
+        // Apply theme if it changed
+        if (isDarkTheme != m_darkTheme) {
+            applyTheme(isDarkTheme);
+        }
+        
+        // Other settings can be applied here
+        statusBar()->showMessage("Settings updated", 3000);
     }
 }
 

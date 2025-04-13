@@ -368,6 +368,30 @@ src/gui/mainwindow.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.s
 .PHONY : src/gui/mainwindow.cpp.s
 
+src/gui/settingsdialog.o: src/gui/settingsdialog.cpp.o
+.PHONY : src/gui/settingsdialog.o
+
+# target to build an object file
+src/gui/settingsdialog.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o
+.PHONY : src/gui/settingsdialog.cpp.o
+
+src/gui/settingsdialog.i: src/gui/settingsdialog.cpp.i
+.PHONY : src/gui/settingsdialog.i
+
+# target to preprocess a source file
+src/gui/settingsdialog.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.i
+.PHONY : src/gui/settingsdialog.cpp.i
+
+src/gui/settingsdialog.s: src/gui/settingsdialog.cpp.s
+.PHONY : src/gui/settingsdialog.s
+
+# target to generate assembly for a file
+src/gui/settingsdialog.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.s
+.PHONY : src/gui/settingsdialog.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -428,6 +452,9 @@ help:
 	@echo "... src/gui/mainwindow.o"
 	@echo "... src/gui/mainwindow.i"
 	@echo "... src/gui/mainwindow.s"
+	@echo "... src/gui/settingsdialog.o"
+	@echo "... src/gui/settingsdialog.i"
+	@echo "... src/gui/settingsdialog.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

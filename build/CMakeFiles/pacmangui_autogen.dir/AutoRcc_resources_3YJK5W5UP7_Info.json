@@ -7,7 +7,7 @@
 	"CROSS_CONFIG" : false,
 	"GENERATOR" : "Unix Makefiles",
 	"INCLUDE_DIR" : "/home/matt/PacmanGui-new/build/pacmangui_autogen/include",
-	"INPUTS" : [],
+	"INPUTS" : [ "/home/matt/PacmanGui-new/resources/icons/cog.png" ],
 	"LOCK_FILE" : "/home/matt/PacmanGui-new/build/CMakeFiles/pacmangui_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Lock.lock",
 	"MULTI_CONFIG" : false,
 	"OPTIONS" : [ "-name", "resources" ],

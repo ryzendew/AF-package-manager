@@ -396,7 +396,8 @@ CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o: \
  /usr/include/qt6/QtWidgets/qtextedit.h \
  /usr/include/qt6/QtWidgets/QCheckBox \
  /usr/include/qt6/QtWidgets/qcheckbox.h /usr/include/qt6/QtCore/QSet \
- /usr/include/qt6/QtCore/qset.h \
+ /usr/include/qt6/QtCore/qset.h /usr/include/qt6/QtWidgets/QToolButton \
+ /usr/include/qt6/QtWidgets/qtoolbutton.h \
  /home/matt/PacmanGui-new/include/core/packagemanager.hpp \
  /usr/include/alpm.h /usr/include/archive.h /usr/include/sys/stat.h \
  /usr/include/bits/stat.h /usr/include/bits/struct_stat.h \
@@ -412,6 +413,15 @@ CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o: \
  /home/matt/PacmanGui-new/include/core/package.hpp \
  /home/matt/PacmanGui-new/include/core/repository.hpp \
  /home/matt/PacmanGui-new/include/core/transaction.hpp \
+ /home/matt/PacmanGui-new/include/gui/settingsdialog.hpp \
+ /usr/include/qt6/QtWidgets/QDialog /usr/include/qt6/QtWidgets/qdialog.h \
+ /usr/include/qt6/QtWidgets/QComboBox \
+ /usr/include/qt6/QtWidgets/qcombobox.h \
+ /usr/include/qt6/QtWidgets/QGroupBox \
+ /usr/include/qt6/QtWidgets/qgroupbox.h \
+ /usr/include/qt6/QtWidgets/QRadioButton \
+ /usr/include/qt6/QtWidgets/qradiobutton.h \
+ /usr/include/qt6/QtCore/QSettings /usr/include/qt6/QtCore/qsettings.h \
  /usr/include/qt6/QtWidgets/QApplication \
  /usr/include/qt6/QtWidgets/qapplication.h \
  /usr/include/qt6/QtCore/qcoreapplication.h \
@@ -426,7 +436,6 @@ CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o: \
  /usr/include/qt6/QtGui/qguiapplication.h \
  /usr/include/qt6/QtGui/qinputmethod.h \
  /usr/include/qt6/QtGui/qguiapplication_platform.h \
- /usr/include/qt6/QtCore/QSettings /usr/include/qt6/QtCore/qsettings.h \
  /usr/include/qt6/QtWidgets/QMessageBox \
  /usr/include/qt6/QtWidgets/qmessagebox.h \
  /usr/include/qt6/QtWidgets/qdialog.h \

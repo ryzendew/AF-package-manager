@@ -19,7 +19,15 @@
 #include <QTextEdit>
 #include <QCheckBox>
 #include <QSet>
+#include <QToolButton>
 #include "core/packagemanager.hpp"
+
+// Forward declaration
+namespace pacmangui {
+namespace gui {
+    class SettingsDialog;
+}
+}
 
 namespace pacmangui {
 namespace gui {
@@ -72,6 +80,9 @@ private slots:
     
     // Theme
     void toggleTheme();
+    
+    // Settings
+    void openSettings();
 
 private:
     void setupUi();
@@ -90,6 +101,7 @@ private:
     QTabWidget* m_tabWidget;
     QLineEdit* m_searchBox;
     QPushButton* m_searchButton;
+    QToolButton* m_settingsButton;
     
     // Package listing views
     QTableView* m_packagesView;
@@ -126,6 +138,9 @@ private:
     
     // Theme settings
     bool m_darkTheme;
+    
+    // Settings dialog
+    SettingsDialog* m_settingsDialog;
 };
 
 } // namespace gui

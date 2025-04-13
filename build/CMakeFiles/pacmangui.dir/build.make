@@ -78,6 +78,7 @@ pacmangui_autogen/timestamp: CMakeFiles/pacmangui.dir/compiler_depend.ts
 
 pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp: /home/matt/PacmanGui-new/resources/resources.qrc
 pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp: CMakeFiles/pacmangui_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Info.json
+pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp: /home/matt/PacmanGui-new/resources/icons/cog.png
 pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp: /usr/lib/qt6/rcc
 pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp: /usr/lib/qt6/rcc
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Automatic RCC for resources/resources.qrc"
@@ -184,10 +185,24 @@ CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/PacmanGui-new/src/gui/mainwindow.cpp -o CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.s
 
+CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o: CMakeFiles/pacmangui.dir/flags.make
+CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o: /home/matt/PacmanGui-new/src/gui/settingsdialog.cpp
+CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o: CMakeFiles/pacmangui.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o -MF CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o.d -o CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o -c /home/matt/PacmanGui-new/src/gui/settingsdialog.cpp
+
+CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/PacmanGui-new/src/gui/settingsdialog.cpp > CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.i
+
+CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/PacmanGui-new/src/gui/settingsdialog.cpp -o CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.s
+
 CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o: CMakeFiles/pacmangui.dir/flags.make
 CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o: pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp
 CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o: CMakeFiles/pacmangui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o -MF CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o.d -o CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o -c /home/matt/PacmanGui-new/build/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp
 
 CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.i: cmake_force
@@ -207,6 +222,7 @@ pacmangui_OBJECTS = \
 "CMakeFiles/pacmangui.dir/src/core/transaction.cpp.o" \
 "CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o" \
 "CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o" \
+"CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o" \
 "CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o"
 
 # External object files for target pacmangui
@@ -219,6 +235,7 @@ pacmangui: CMakeFiles/pacmangui.dir/src/core/repository.cpp.o
 pacmangui: CMakeFiles/pacmangui.dir/src/core/transaction.cpp.o
 pacmangui: CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o
 pacmangui: CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o
+pacmangui: CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o
 pacmangui: CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o
 pacmangui: CMakeFiles/pacmangui.dir/build.make
 pacmangui: CMakeFiles/pacmangui.dir/compiler_depend.ts
@@ -229,7 +246,7 @@ pacmangui: /usr/lib/libGLX.so
 pacmangui: /usr/lib/libOpenGL.so
 pacmangui: /usr/lib/libQt6Core.so.6.9.0
 pacmangui: CMakeFiles/pacmangui.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable pacmangui"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Linking CXX executable pacmangui"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/pacmangui.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

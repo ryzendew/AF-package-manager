@@ -53,7 +53,8 @@ template <> constexpr inline auto pacmangui::gui::MainWindow::qt_create_metaobje
         "onBatchInstall",
         "onSystemUpdate",
         "onCheckForUpdates",
-        "toggleTheme"
+        "toggleTheme",
+        "openSettings"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -83,6 +84,8 @@ template <> constexpr inline auto pacmangui::gui::MainWindow::qt_create_metaobje
         QtMocHelpers::SlotData<void()>(13, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'toggleTheme'
         QtMocHelpers::SlotData<void()>(14, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'openSettings'
+        QtMocHelpers::SlotData<void()>(15, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -117,6 +120,7 @@ void pacmangui::gui::MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Ca
         case 8: _t->onSystemUpdate(); break;
         case 9: _t->onCheckForUpdates(); break;
         case 10: _t->toggleTheme(); break;
+        case 11: _t->openSettings(); break;
         default: ;
         }
     }
@@ -141,14 +145,14 @@ int pacmangui::gui::MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void 
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 11)
+        if (_id < 12)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 11;
+        _id -= 12;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 11)
+        if (_id < 12)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 11;
+        _id -= 12;
     }
     return _id;
 }

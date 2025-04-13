@@ -17,6 +17,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/pacmangui.dir/src/core/transaction.cpp.o.d"
   "CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o"
   "CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o.d"
+  "CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o"
+  "CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o.d"
   "CMakeFiles/pacmangui.dir/src/main.cpp.o"
   "CMakeFiles/pacmangui.dir/src/main.cpp.o.d"
   "pacmangui"

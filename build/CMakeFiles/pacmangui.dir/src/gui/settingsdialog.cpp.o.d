@@ -1,10 +1,8 @@
-CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o: \
- /home/matt/PacmanGui-new/build/pacmangui_autogen/mocs_compilation.cpp \
+CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o: \
+ /home/matt/PacmanGui-new/src/gui/settingsdialog.cpp \
  /usr/include/stdc-predef.h \
- /home/matt/PacmanGui-new/build/pacmangui_autogen/BMPI5EA7AM/moc_mainwindow.cpp \
- /home/matt/PacmanGui-new/build/pacmangui_autogen/BMPI5EA7AM/../../../include/gui/mainwindow.hpp \
- /usr/include/qt6/QtWidgets/QMainWindow \
- /usr/include/qt6/QtWidgets/qmainwindow.h \
+ /home/matt/PacmanGui-new/include/gui/settingsdialog.hpp \
+ /usr/include/qt6/QtWidgets/QDialog /usr/include/qt6/QtWidgets/qdialog.h \
  /usr/include/qt6/QtWidgets/qtwidgetsglobal.h \
  /usr/include/qt6/QtGui/qtguiglobal.h /usr/include/qt6/QtCore/qglobal.h \
  /usr/include/c++/14.2.1/type_traits \
@@ -343,20 +341,6 @@ CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o: \
  /usr/include/qt6/QtGui/qfontvariableaxis.h \
  /usr/include/qt6/QtWidgets/qsizepolicy.h \
  /usr/include/qt6/QtGui/qcursor.h /usr/include/qt6/QtGui/qbitmap.h \
- /usr/include/qt6/QtWidgets/qtabwidget.h \
- /usr/include/qt6/QtWidgets/QTabWidget \
- /usr/include/qt6/QtWidgets/qtabwidget.h \
- /usr/include/qt6/QtWidgets/QLineEdit \
- /usr/include/qt6/QtWidgets/qlineedit.h \
- /usr/include/qt6/QtWidgets/qframe.h /usr/include/qt6/QtGui/qtextcursor.h \
- /usr/include/qt6/QtGui/qtextdocument.h /usr/include/qt6/QtCore/qurl.h \
- /usr/include/qt6/QtGui/qtextformat.h /usr/include/qt6/QtGui/qpen.h \
- /usr/include/qt6/QtGui/qtextoption.h \
- /usr/include/qt6/QtWidgets/QPushButton \
- /usr/include/qt6/QtWidgets/qpushbutton.h \
- /usr/include/qt6/QtWidgets/qabstractbutton.h \
- /usr/include/qt6/QtWidgets/QStackedWidget \
- /usr/include/qt6/QtWidgets/qstackedwidget.h \
  /usr/include/qt6/QtWidgets/QVBoxLayout \
  /usr/include/qt6/QtWidgets/qboxlayout.h \
  /usr/include/qt6/QtWidgets/qlayout.h \
@@ -364,12 +348,11 @@ CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o: \
  /usr/include/qt6/QtWidgets/qboxlayout.h \
  /usr/include/qt6/QtWidgets/qgridlayout.h \
  /usr/include/qt6/QtWidgets/QHBoxLayout \
- /usr/include/qt6/QtWidgets/QTableView \
- /usr/include/qt6/QtWidgets/qtableview.h \
- /usr/include/qt6/QtWidgets/qabstractitemview.h \
- /usr/include/qt6/QtWidgets/qabstractscrollarea.h \
- /usr/include/qt6/QtCore/qabstractitemmodel.h \
- /usr/include/qt6/QtCore/qitemselectionmodel.h \
+ /usr/include/qt6/QtWidgets/QCheckBox \
+ /usr/include/qt6/QtWidgets/qcheckbox.h \
+ /usr/include/qt6/QtWidgets/qabstractbutton.h \
+ /usr/include/qt6/QtWidgets/QComboBox \
+ /usr/include/qt6/QtWidgets/qcombobox.h \
  /usr/include/qt6/QtWidgets/qabstractitemdelegate.h \
  /usr/include/qt6/QtWidgets/qstyleoption.h \
  /usr/include/qt6/QtCore/qlocale.h \
@@ -379,52 +362,59 @@ CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o: \
  /usr/include/qt6/QtWidgets/qslider.h \
  /usr/include/qt6/QtWidgets/qabstractslider.h \
  /usr/include/qt6/QtWidgets/qstyle.h /usr/include/qt6/QtWidgets/qtabbar.h \
+ /usr/include/qt6/QtWidgets/qtabwidget.h \
  /usr/include/qt6/QtWidgets/qrubberband.h \
+ /usr/include/qt6/QtWidgets/qframe.h \
+ /usr/include/qt6/QtCore/qabstractitemmodel.h \
  /usr/include/qt6/QtWidgets/QLabel /usr/include/qt6/QtWidgets/qlabel.h \
  /usr/include/qt6/QtGui/qpicture.h /usr/include/qt6/QtCore/qiodevice.h \
- /usr/include/qt6/QtGui/QAction /usr/include/qt6/QtGui/qaction.h \
- /usr/include/qt6/QtWidgets/QToolBar \
- /usr/include/qt6/QtWidgets/qtoolbar.h /usr/include/qt6/QtWidgets/QMenu \
- /usr/include/qt6/QtWidgets/qmenu.h /usr/include/qt6/QtWidgets/QStatusBar \
- /usr/include/qt6/QtWidgets/qstatusbar.h \
- /usr/include/qt6/QtWidgets/QSplitter \
- /usr/include/qt6/QtWidgets/qsplitter.h \
- /usr/include/qt6/QtWidgets/QListView \
- /usr/include/qt6/QtWidgets/qlistview.h \
- /usr/include/qt6/QtGui/QStandardItemModel \
- /usr/include/qt6/QtGui/qstandarditemmodel.h \
- /usr/include/qt6/QtWidgets/QTextEdit \
- /usr/include/qt6/QtWidgets/qtextedit.h \
- /usr/include/qt6/QtWidgets/QCheckBox \
- /usr/include/qt6/QtWidgets/qcheckbox.h /usr/include/qt6/QtCore/QSet \
- /usr/include/qt6/QtCore/qset.h /usr/include/qt6/QtWidgets/QToolButton \
- /usr/include/qt6/QtWidgets/qtoolbutton.h \
- /home/matt/PacmanGui-new/include/core/packagemanager.hpp \
- /usr/include/alpm.h /usr/include/archive.h /usr/include/sys/stat.h \
- /usr/include/bits/stat.h /usr/include/bits/struct_stat.h \
- /usr/include/bits/statx.h /usr/include/linux/stat.h \
- /usr/include/bits/statx-generic.h \
- /usr/include/bits/types/struct_statx_timestamp.h \
- /usr/include/bits/types/struct_statx.h /usr/include/inttypes.h \
- /usr/include/unistd.h /usr/include/bits/posix_opt.h \
- /usr/include/bits/environments.h /usr/include/bits/confname.h \
- /usr/include/bits/getopt_posix.h /usr/include/bits/getopt_core.h \
- /usr/include/bits/unistd_ext.h /usr/include/linux/close_range.h \
- /usr/include/archive_entry.h /usr/include/alpm_list.h \
- /home/matt/PacmanGui-new/include/core/package.hpp \
- /home/matt/PacmanGui-new/include/core/repository.hpp \
- /home/matt/PacmanGui-new/include/core/transaction.hpp \
- /usr/include/qt6/QtCore/qtmochelpers.h \
- /usr/include/qt6/QtCore/qtmocconstants.h \
- /usr/include/qt6/QtCore/q20algorithm.h \
- /usr/include/qt6/QtCore/q23type_traits.h \
- /home/matt/PacmanGui-new/build/pacmangui_autogen/BMPI5EA7AM/moc_settingsdialog.cpp \
- /home/matt/PacmanGui-new/build/pacmangui_autogen/BMPI5EA7AM/../../../include/gui/settingsdialog.hpp \
- /usr/include/qt6/QtWidgets/QDialog /usr/include/qt6/QtWidgets/qdialog.h \
- /usr/include/qt6/QtWidgets/QComboBox \
- /usr/include/qt6/QtWidgets/qcombobox.h \
+ /usr/include/qt6/QtGui/qtextdocument.h /usr/include/qt6/QtCore/qurl.h \
+ /usr/include/qt6/QtWidgets/QPushButton \
+ /usr/include/qt6/QtWidgets/qpushbutton.h \
+ /usr/include/qt6/QtWidgets/QTabWidget \
+ /usr/include/qt6/QtWidgets/qtabwidget.h \
  /usr/include/qt6/QtWidgets/QGroupBox \
  /usr/include/qt6/QtWidgets/qgroupbox.h \
  /usr/include/qt6/QtWidgets/QRadioButton \
  /usr/include/qt6/QtWidgets/qradiobutton.h \
- /usr/include/qt6/QtCore/QSettings /usr/include/qt6/QtCore/qsettings.h
+ /usr/include/qt6/QtCore/QSettings /usr/include/qt6/QtCore/qsettings.h \
+ /usr/include/qt6/QtCore/QProcess /usr/include/qt6/QtCore/qprocess.h \
+ /usr/include/qt6/QtCore/QStandardPaths \
+ /usr/include/qt6/QtCore/qstandardpaths.h /usr/include/qt6/QtCore/QFile \
+ /usr/include/qt6/QtCore/qfile.h /usr/include/qt6/QtCore/qfiledevice.h \
+ /usr/include/c++/14.2.1/filesystem /usr/include/c++/14.2.1/bits/fs_fwd.h \
+ /usr/include/c++/14.2.1/bits/fs_path.h /usr/include/c++/14.2.1/locale \
+ /usr/include/c++/14.2.1/bits/locale_facets.h \
+ /usr/include/c++/14.2.1/cwctype /usr/include/wctype.h \
+ /usr/include/bits/wctype-wchar.h \
+ /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/ctype_base.h \
+ /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/ctype_inline.h \
+ /usr/include/c++/14.2.1/bits/locale_facets.tcc \
+ /usr/include/c++/14.2.1/bits/locale_facets_nonio.h \
+ /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/time_members.h \
+ /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/messages_members.h \
+ /usr/include/libintl.h /usr/include/c++/14.2.1/bits/codecvt.h \
+ /usr/include/c++/14.2.1/bits/locale_facets_nonio.tcc \
+ /usr/include/c++/14.2.1/bits/locale_conv.h \
+ /usr/include/c++/14.2.1/iomanip \
+ /usr/include/c++/14.2.1/bits/quoted_string.h \
+ /usr/include/c++/14.2.1/sstream /usr/include/c++/14.2.1/istream \
+ /usr/include/c++/14.2.1/ios /usr/include/c++/14.2.1/bits/basic_ios.h \
+ /usr/include/c++/14.2.1/bits/basic_ios.tcc \
+ /usr/include/c++/14.2.1/ostream /usr/include/c++/14.2.1/bits/ostream.tcc \
+ /usr/include/c++/14.2.1/bits/istream.tcc \
+ /usr/include/c++/14.2.1/bits/sstream.tcc /usr/include/c++/14.2.1/codecvt \
+ /usr/include/c++/14.2.1/bits/fs_dir.h \
+ /usr/include/c++/14.2.1/bits/fs_ops.h \
+ /usr/include/qt6/QtWidgets/QMessageBox \
+ /usr/include/qt6/QtWidgets/qmessagebox.h \
+ /usr/include/qt6/QtWidgets/qdialog.h \
+ /usr/include/qt6/QtWidgets/qdialogbuttonbox.h \
+ /usr/include/qt6/QtCore/QDir /usr/include/qt6/QtCore/qdir.h \
+ /usr/include/qt6/QtCore/qdirlisting.h \
+ /usr/include/qt6/QtCore/qdatetime.h /usr/include/qt6/QtCore/qcalendar.h \
+ /usr/include/qt6/QtCore/qfile.h /usr/include/qt6/QtCore/qfileinfo.h \
+ /usr/include/qt6/QtCore/qtimezone.h \
+ /usr/include/qt6/QtWidgets/QFormLayout \
+ /usr/include/qt6/QtWidgets/qformlayout.h \
+ /usr/include/qt6/QtWidgets/QLayout /usr/include/qt6/QtWidgets/qlayout.h

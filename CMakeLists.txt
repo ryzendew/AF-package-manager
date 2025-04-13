@@ -39,11 +39,13 @@ set(CORE_SOURCES
 # Source files - GUI components
 set(GUI_SOURCES
     src/gui/mainwindow.cpp
+    src/gui/settingsdialog.cpp
 )
 
 # Headers with Q_OBJECT macro that need to be processed by MOC
 set(MOC_HEADERS
     include/gui/mainwindow.hpp
+    include/gui/settingsdialog.hpp
 )
 
 # Main source
