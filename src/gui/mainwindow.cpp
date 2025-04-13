@@ -20,6 +20,9 @@
 #include <QScrollBar>
 #include <QProgressDialog>
 #include <QtConcurrent/QtConcurrent>
+#include <QStandardPaths>
+#include <QTemporaryDir>
+#include <QMetaObject>
 
 namespace pacmangui {
 namespace gui {
@@ -33,14 +36,6 @@ MainWindow::MainWindow(QWidget* parent)
     , m_packagesView(nullptr)
     , m_installedView(nullptr)
     , m_batchInstallButton(nullptr)
-    , m_detailsWidget(nullptr)
-    , m_packageNameLabel(nullptr)
-    , m_packageVersionLabel(nullptr)
-    , m_packageDescLabel(nullptr)
-    , m_actionButton(nullptr)
-    , m_packagesModel(nullptr)
-    , m_installedModel(nullptr)
-    , m_darkTheme(false)
     , m_systemUpdateTab(nullptr)
     , m_systemUpdateInfoLabel(nullptr)
     , m_systemUpdateButton(nullptr)
@@ -49,41 +44,49 @@ MainWindow::MainWindow(QWidget* parent)
     , m_systemUpdatesView(nullptr)
     , m_systemUpdatesModel(nullptr)
     , m_systemUpdateOverwriteCheckbox(nullptr)
+    , m_detailsWidget(nullptr)
+    , m_packageNameLabel(nullptr)
+    , m_packageVersionLabel(nullptr)
+    , m_packageDescLabel(nullptr)
+    , m_actionButton(nullptr)
     , m_packageOverwriteCheckbox(nullptr)
+    , m_packagesModel(nullptr)
+    , m_installedModel(nullptr)
     , m_selectedPackages()
-    , m_settingsDialog(nullptr)
+    , m_darkTheme(false)
+    , m_settingsDialog(new SettingsDialog(this))
+    , m_packageManager()
 {
+    setWindowTitle("PacmanGUI");
+    setMinimumSize(1000, 600);
+    
     // Initialize package manager
     if (!m_packageManager.initialize("/", "/var/lib/pacman")) {
-        QMessageBox::critical(this, "Error", "Failed to initialize package manager");
+        QMessageBox::critical(this, "Error", "Failed to initialize package manager.");
+        return;
     }
     
-    // Load user settings
-    loadSettings();
-    
-    // Set up the UI
+    // Setup UI components
     setupUi();
     setupActions();
     setupMenus();
     setupConnections();
     
-    // Apply theme based on settings
+    // Load settings
+    loadSettings();
+    
+    // Apply theme
     applyTheme(m_darkTheme);
     
-    // Set window properties
-    setWindowTitle("PacmanGUI - Package Manager");
-    setMinimumSize(800, 600);
-    
-    // Center on screen
-    QScreen* screen = QApplication::primaryScreen();
-    QRect screenGeometry = screen->geometry();
-    int x = (screenGeometry.width() - width()) / 2;
-    int y = (screenGeometry.height() - height()) / 2;
-    move(x, y);
-    
-    // Refresh the package lists
+    // Populate the tables
     refreshInstalledPackages();
     refreshUpdatesList();
+    
+    // Check for AUR helper
+    checkAurHelper();
+    
+    // Show status message
+    statusBar()->showMessage("Ready", 3000);
 }
 
 MainWindow::~MainWindow()
@@ -92,6 +95,189 @@ MainWindow::~MainWindow()
     delete m_packagesModel;
     delete m_installedModel;
     delete m_systemUpdatesModel;
+}
+
+void MainWindow::checkAurHelper()
+{
+    // Check if AUR is enabled in settings
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    bool aurEnabled = settings.value("aur/enabled", false).toBool();
+    
+    if (!aurEnabled) {
+        return;  // AUR not enabled, nothing to check
+    }
+    
+    // Get list of common AUR helpers
+    const QStringList helpers = {"yay", "paru", "pikaur", "trizen", "pacaur"};
+    bool helperFound = false;
+    
+    // Check if any helper is installed
+    for (const QString& helper : helpers) {
+        QString path = QStandardPaths::findExecutable(helper);
+        if (!path.isEmpty()) {
+            helperFound = true;
+            // Update the selected AUR helper in settings
+            settings.setValue("aur/helper", helper);
+            break;
+        }
+    }
+    
+    // If no helper found but AUR is enabled, prompt to download yay-bin
+    if (!helperFound) {
+        QMessageBox::StandardButton reply = QMessageBox::question(this, 
+            "AUR Helper Not Found",
+            "AUR support is enabled but no AUR helper was found.\n\n"
+            "Would you like to download and install 'yay-bin' from GitHub?",
+            QMessageBox::Yes | QMessageBox::No);
+        
+        if (reply == QMessageBox::Yes) {
+            downloadYayHelper();
+        } else {
+            // Disable AUR since no helper is available
+            settings.setValue("aur/enabled", false);
+            
+            // Update UI
+            for (QAction* action : findChildren<QAction*>()) {
+                if (action->statusTip().contains("AUR")) {
+                    action->setEnabled(false);
+                }
+            }
+            
+            // Show message
+            statusBar()->showMessage("AUR support disabled (no helper found)", 5000);
+        }
+    }
+}
+
+void MainWindow::downloadYayHelper()
+{
+    // Show progress dialog
+    QProgressDialog progress("Downloading yay-bin...", "Cancel", 0, 100, this);
+    progress.setWindowModality(Qt::WindowModal);
+    progress.show();
+    
+    // Use a background thread for download
+    QFuture<bool> future = QtConcurrent::run([this, &progress]() {
+        try {
+            // Step 1: Create a temporary directory
+            QTemporaryDir tempDir;
+            if (!tempDir.isValid()) {
+                throw std::runtime_error("Could not create temporary directory");
+            }
+            
+            progress.setValue(10);
+            if (progress.wasCanceled()) return false;
+            
+            // Step 2: Download yay-bin from GitHub using curl
+            std::string downloadCommand = "curl -L -o " + tempDir.path().toStdString() + 
+                                        "/yay-bin-latest.tar.gz " +
+                                        "https://github.com/Jguer/yay/releases/latest/download/yay_*_x86_64.tar.gz";
+            
+            int result = system(downloadCommand.c_str());
+            if (result != 0) {
+                throw std::runtime_error("Failed to download yay-bin");
+            }
+            
+            progress.setValue(40);
+            if (progress.wasCanceled()) return false;
+            
+            // Step 3: Extract the tar.gz file
+            std::string extractCommand = "tar -xzf " + tempDir.path().toStdString() + 
+                                       "/yay-bin-latest.tar.gz -C " + tempDir.path().toStdString();
+            
+            result = system(extractCommand.c_str());
+            if (result != 0) {
+                throw std::runtime_error("Failed to extract yay-bin");
+            }
+            
+            progress.setValue(70);
+            if (progress.wasCanceled()) return false;
+            
+            // Step 4: Get admin password for installation
+            bool ok;
+            QString password = QInputDialog::getText(nullptr, "Authentication Required",
+                                                  "Enter your password to install yay:",
+                                                  QLineEdit::Password, "", &ok);
+            
+            if (!ok || password.isEmpty()) {
+                throw std::runtime_error("Authentication cancelled");
+            }
+            
+            // Step 5: Move the binary to /usr/bin
+            std::string moveCommand = "cp " + tempDir.path().toStdString() + "/yay /tmp/yay-bin";
+            result = system(moveCommand.c_str());
+            if (result != 0) {
+                throw std::runtime_error("Failed to prepare yay binary");
+            }
+            
+            std::string installCommand = "mv /tmp/yay-bin /usr/bin/yay && chmod +x /usr/bin/yay";
+            bool success = m_packageManager.execute_with_sudo(installCommand, password.toStdString());
+            
+            if (!success) {
+                throw std::runtime_error("Failed to install yay. Authentication may have failed.");
+            }
+            
+            progress.setValue(100);
+            
+            // Update settings
+            QSettings settings("PacmanGUI", "PacmanGUI");
+            settings.setValue("aur/enabled", true);
+            settings.setValue("aur/helper", "yay");
+            
+            return true;
+        }
+        catch (const std::exception& e) {
+            QString errorMsg = QString("Error: %1").arg(e.what());
+            // Use QMetaObject::invokeMethod to safely show message from another thread
+            QMetaObject::invokeMethod(this, "showStatusMessage", 
+                                     Qt::QueuedConnection,
+                                     Q_ARG(QString, errorMsg),
+                                     Q_ARG(int, 5000));
+            return false;
+        }
+    });
+    
+    // Handle future result in the main thread
+    QFutureWatcher<bool>* watcher = new QFutureWatcher<bool>(this);
+    connect(watcher, &QFutureWatcher<bool>::finished, this, [this, watcher]() {
+        bool success = watcher->result();
+        if (success) {
+            QMessageBox::information(this, "Installation Successful", 
+                                     "yay was successfully installed.\nAUR support is now enabled.");
+            
+            // Enable AUR actions
+            for (QAction* action : findChildren<QAction*>()) {
+                if (action->statusTip().contains("AUR")) {
+                    action->setEnabled(true);
+                }
+            }
+            
+            statusBar()->showMessage("yay installed. AUR support enabled", 5000);
+        } else {
+            QMessageBox::warning(this, "Installation Failed", 
+                                "Failed to install yay.\nAUR support will be disabled.");
+            
+            // Disable AUR actions
+            for (QAction* action : findChildren<QAction*>()) {
+                if (action->statusTip().contains("AUR")) {
+                    action->setEnabled(false);
+                }
+            }
+            
+            // Update settings
+            QSettings settings("PacmanGUI", "PacmanGUI");
+            settings.setValue("aur/enabled", false);
+        }
+        
+        watcher->deleteLater();
+    });
+    
+    watcher->setFuture(future);
+}
+
+void MainWindow::showStatusMessage(const QString& message, int timeout)
+{
+    statusBar()->showMessage(message, timeout);
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)
@@ -152,18 +338,20 @@ void MainWindow::setupUi()
     m_packagesView->setSelectionMode(QAbstractItemView::MultiSelection);
     m_packagesView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_packagesView->setAlternatingRowColors(true);
-    m_packagesView->horizontalHeader()->setStretchLastSection(true);
-    m_packagesView->verticalHeader()->setVisible(false);
     m_packagesView->setSortingEnabled(true);
     
-    m_packagesModel = new QStandardItemModel(0, 4, this);
-    m_packagesModel->setHorizontalHeaderLabels(QStringList() << "" << "Name" << "Version" << "Description");
+    m_packagesModel = new QStandardItemModel(0, 5, this);
+    m_packagesModel->setHorizontalHeaderLabels(QStringList() << "" << "Name" << "Version" << "Repository" << "Description");
     m_packagesView->setModel(m_packagesModel);
     
     // Set column widths and alignment
     m_packagesView->setColumnWidth(0, 30); // Checkbox column
+    m_packagesView->setColumnWidth(1, 180); // Name column
+    m_packagesView->setColumnWidth(2, 100); // Version column
+    m_packagesView->setColumnWidth(3, 120); // Repository column
     m_packagesView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     m_packagesView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed); // Fix the checkbox column width
+    m_packagesView->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch); // Make description column stretch
     
     // Add batch install button
     m_batchInstallButton = new QPushButton("Install Selected Packages", packagesTab);
@@ -186,7 +374,7 @@ void MainWindow::setupUi()
     m_installedView->setSortingEnabled(true);
     
     m_installedModel = new QStandardItemModel(0, 4, this);
-    m_installedModel->setHorizontalHeaderLabels(QStringList() << "" << "Name" << "Version" << "Description");
+    m_installedModel->setHorizontalHeaderLabels(QStringList() << "" << "Name" << "Version" << "Repository" << "Description");
     m_installedView->setModel(m_installedModel);
     
     // Set column widths and alignment
@@ -321,75 +509,146 @@ void MainWindow::setupUi()
 
 void MainWindow::setupActions()
 {
-    // Create actions
-    QAction* refreshAction = new QAction("Refresh", this);
-    refreshAction->setShortcut(QKeySequence::Refresh);
-    refreshAction->setStatusTip("Refresh package lists");
-    connect(refreshAction, &QAction::triggered, this, &MainWindow::onSyncAll);
-    
-    QAction* installAction = new QAction("Install", this);
+    // Create actions for menu
+    QAction* installAction = new QAction("Install Package", this);
     installAction->setStatusTip("Install selected package");
     connect(installAction, &QAction::triggered, this, &MainWindow::onInstallPackage);
     
-    QAction* removeAction = new QAction("Remove", this);
+    QAction* removeAction = new QAction("Remove Package", this);
     removeAction->setStatusTip("Remove selected package");
     connect(removeAction, &QAction::triggered, this, &MainWindow::onRemovePackage);
     
-    QAction* updateAction = new QAction("Update", this);
+    QAction* updateAction = new QAction("Update Package", this);
     updateAction->setStatusTip("Update selected package");
     connect(updateAction, &QAction::triggered, this, &MainWindow::onUpdatePackage);
+    
+    QAction* syncAction = new QAction("Sync Databases", this);
+    syncAction->setStatusTip("Synchronize package databases");
+    connect(syncAction, &QAction::triggered, this, &MainWindow::onSyncAll);
     
     QAction* systemUpdateAction = new QAction("System Update", this);
     systemUpdateAction->setStatusTip("Update all packages on the system");
     connect(systemUpdateAction, &QAction::triggered, this, &MainWindow::onSystemUpdate);
     
-    QAction* themeAction = new QAction("Toggle Theme", this);
-    themeAction->setStatusTip("Switch between light and dark theme");
-    connect(themeAction, &QAction::triggered, this, &MainWindow::toggleTheme);
+    QAction* checkUpdatesAction = new QAction("Check for Updates", this);
+    checkUpdatesAction->setStatusTip("Check for available updates");
+    connect(checkUpdatesAction, &QAction::triggered, this, &MainWindow::onCheckForUpdates);
+    
+    // AUR actions
+    QAction* aurInstallAction = new QAction("Install AUR Package", this);
+    aurInstallAction->setStatusTip("Install selected AUR package");
+    connect(aurInstallAction, &QAction::triggered, this, &MainWindow::onInstallAurPackage);
+    
+    QAction* aurUpdateAction = new QAction("Update AUR Packages", this);
+    aurUpdateAction->setStatusTip("Update AUR packages");
+    connect(aurUpdateAction, &QAction::triggered, this, &MainWindow::onUpdateAurPackages);
+    
+    QAction* settingsAction = new QAction("Settings", this);
+    settingsAction->setStatusTip("Open settings");
+    connect(settingsAction, &QAction::triggered, this, &MainWindow::openSettings);
+    
+    QAction* aboutAction = new QAction("About", this);
+    aboutAction->setStatusTip("About PacmanGUI");
+    connect(aboutAction, &QAction::triggered, this, &MainWindow::onAbout);
     
     QAction* exitAction = new QAction("Exit", this);
+    exitAction->setStatusTip("Exit application");
     exitAction->setShortcut(QKeySequence::Quit);
-    exitAction->setStatusTip("Exit the application");
     connect(exitAction, &QAction::triggered, this, &QMainWindow::close);
     
-    // Add actions to toolbar
-    QToolBar* toolbar = addToolBar("Main Toolbar");
-    toolbar->addAction(refreshAction);
-    toolbar->addSeparator();
-    toolbar->addAction(installAction);
-    toolbar->addAction(removeAction);
-    toolbar->addAction(updateAction);
-    toolbar->addSeparator();
-    toolbar->addAction(systemUpdateAction);
-    toolbar->addSeparator();
-    toolbar->addAction(themeAction);
+    // Save the actions for use in the menu setup
+    m_actions["install"] = installAction;
+    m_actions["remove"] = removeAction;
+    m_actions["update"] = updateAction;
+    m_actions["sync"] = syncAction;
+    m_actions["systemUpdate"] = systemUpdateAction;
+    m_actions["checkUpdates"] = checkUpdatesAction;
+    m_actions["aurInstall"] = aurInstallAction;
+    m_actions["aurUpdate"] = aurUpdateAction;
+    m_actions["settings"] = settingsAction;
+    m_actions["about"] = aboutAction;
+    m_actions["exit"] = exitAction;
+    
+    // Check if AUR is enabled and disable AUR actions if not
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    bool aurEnabled = settings.value("aur/enabled", false).toBool();
+    aurInstallAction->setEnabled(aurEnabled);
+    aurUpdateAction->setEnabled(aurEnabled);
 }
 
 void MainWindow::setupMenus()
 {
-    // Create menus
-    QMenu* fileMenu = menuBar()->addMenu("File");
-    fileMenu->addAction("Refresh", this, &MainWindow::onSyncAll);
+    // File menu
+    QMenu* fileMenu = menuBar()->addMenu("&File");
+    fileMenu->addAction(m_actions["sync"]);
     fileMenu->addSeparator();
-    fileMenu->addAction("Exit", this, &QMainWindow::close);
+    fileMenu->addAction(m_actions["exit"]);
     
-    QMenu* packageMenu = menuBar()->addMenu("Package");
-    packageMenu->addAction("Install", this, &MainWindow::onInstallPackage);
-    packageMenu->addAction("Remove", this, &MainWindow::onRemovePackage);
-    packageMenu->addAction("Update", this, &MainWindow::onUpdatePackage);
-    packageMenu->addSeparator();
-    packageMenu->addAction("System Update", this, &MainWindow::onSystemUpdate);
+    // Operations menu
+    QMenu* operationsMenu = menuBar()->addMenu("&Operations");
     
-    QMenu* viewMenu = menuBar()->addMenu("View");
-    viewMenu->addAction("Toggle Theme", this, &MainWindow::toggleTheme);
+    // Package operations
+    operationsMenu->addAction(m_actions["install"]);
+    operationsMenu->addAction(m_actions["remove"]);
+    operationsMenu->addAction(m_actions["update"]);
+    operationsMenu->addSeparator();
     
-    QMenu* helpMenu = menuBar()->addMenu("Help");
-    helpMenu->addAction("About", [this]() {
-        QMessageBox::about(this, "About PacmanGUI",
-                          "PacmanGUI - A modern GUI frontend for the Arch Linux package manager.\n\n"
-                          "Version: 0.1.0\n"
-                          "License: GPL-3.0");
+    // System update operations
+    operationsMenu->addAction(m_actions["checkUpdates"]);
+    operationsMenu->addAction(m_actions["systemUpdate"]);
+    operationsMenu->addSeparator();
+    
+    // AUR operations
+    operationsMenu->addAction(m_actions["aurInstall"]);
+    operationsMenu->addAction(m_actions["aurUpdate"]);
+    
+    // Settings menu
+    QMenu* settingsMenu = menuBar()->addMenu("&Settings");
+    
+    // AUR support setting
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    bool aurEnabled = settings.value("aur/enabled", false).toBool();
+    
+    QAction* aurAction = settingsMenu->addAction("Enable &AUR Support");
+    aurAction->setCheckable(true);
+    aurAction->setChecked(aurEnabled);
+    
+    connect(aurAction, &QAction::toggled, this, [this](bool checked) {
+        QSettings settings("PacmanGUI", "PacmanGUI");
+        settings.setValue("aur/enabled", checked);
+        
+        // Update AUR actions enable state
+        m_actions["aurInstall"]->setEnabled(checked);
+        m_actions["aurUpdate"]->setEnabled(checked);
+        
+        QString message = checked ? "AUR support enabled" : "AUR support disabled";
+        statusBar()->showMessage(message, 3000);
+        
+        // Refresh search results if needed
+        if (!m_searchBox->text().isEmpty()) {
+            searchPackages(m_searchBox->text());
+        }
     });
+    
+    // Add theme toggle
+    QAction* themeAction = settingsMenu->addAction("&Dark Theme");
+    themeAction->setCheckable(true);
+    themeAction->setChecked(m_darkTheme);
+    connect(themeAction, &QAction::toggled, this, [this](bool checked) {
+        m_darkTheme = checked;
+        applyTheme(m_darkTheme);
+        
+        // Save the setting
+        QSettings settings("PacmanGUI", "PacmanGUI");
+        settings.setValue("appearance/darkTheme", m_darkTheme);
+    });
+    
+    settingsMenu->addSeparator();
+    settingsMenu->addAction(m_actions["settings"]);
+    
+    // Help menu
+    QMenu* helpMenu = menuBar()->addMenu("&Help");
+    helpMenu->addAction(m_actions["about"]);
 }
 
 void MainWindow::setupConnections()
@@ -418,10 +677,11 @@ void MainWindow::setupConnections()
         int row = index.row();
         QString packageName = m_packagesModel->data(m_packagesModel->index(row, 1)).toString();
         QString version = m_packagesModel->data(m_packagesModel->index(row, 2)).toString();
-        QString description = m_packagesModel->data(m_packagesModel->index(row, 3)).toString();
+        QString repository = m_packagesModel->data(m_packagesModel->index(row, 3)).toString();
+        QString description = m_packagesModel->data(m_packagesModel->index(row, 4)).toString();
         
         m_packageNameLabel->setText(packageName);
-        m_packageVersionLabel->setText("Version: " + version);
+        m_packageVersionLabel->setText("Version: " + version + " (" + repository + ")");
         m_packageDescLabel->setText(description);
         
         // Set action button based on installation status
@@ -443,10 +703,11 @@ void MainWindow::setupConnections()
         int row = index.row();
         QString packageName = m_installedModel->data(m_installedModel->index(row, 1)).toString();
         QString version = m_installedModel->data(m_installedModel->index(row, 2)).toString();
-        QString description = m_installedModel->data(m_installedModel->index(row, 3)).toString();
+        QString repository = m_installedModel->data(m_installedModel->index(row, 3)).toString();
+        QString description = m_installedModel->data(m_installedModel->index(row, 4)).toString();
         
         m_packageNameLabel->setText(packageName);
-        m_packageVersionLabel->setText("Version: " + version);
+        m_packageVersionLabel->setText("Version: " + version + " (" + repository + ")");
         m_packageDescLabel->setText(description);
         
         // For installed packages, always show Remove button
@@ -699,12 +960,47 @@ void MainWindow::searchPackages(const QString& searchTerm)
     m_selectedPackages.clear();
     updateBatchInstallButton();
     
-    // Search for packages
+    // Search for packages in repos
     std::vector<core::Package> results = m_packageManager.search_by_name(searchTerm.toStdString());
+    
+    // Check if AUR is enabled in settings
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    bool aurEnabled = settings.value("aur/enabled", false).toBool();
+    
+    // Also search AUR if enabled
+    if (aurEnabled) {
+        statusBar()->showMessage("Searching repositories and AUR for: " + searchTerm);
+        std::vector<core::Package> aurResults = m_packageManager.search_aur(searchTerm.toStdString());
+        
+        // Add AUR results to the combined results
+        results.insert(results.end(), aurResults.begin(), aurResults.end());
+    }
+    
+    // Update header to include repository column
+    m_packagesModel->setHorizontalHeaderLabels(QStringList() << "" << "Name" << "Version" << "Repository" << "Description");
     
     // Display results
     for (const auto& pkg : results) {
         QString packageName = QString::fromStdString(pkg.get_name());
+        QString repoName = QString::fromStdString(pkg.get_repository());
+        QString repoDisplay;
+        
+        // Categorize repository source
+        if (repoName.contains("cachyos", Qt::CaseInsensitive)) {
+            repoDisplay = "CachyOS";
+        } else if (repoName == "core" || repoName == "extra" || repoName == "multilib") {
+            repoDisplay = "Arch";
+        } else if (repoName == "chaotic-aur") {
+            repoDisplay = "Chaotic AUR";
+        } else if (repoName == "aur") {
+            repoDisplay = "AUR";
+        } else if (repoName.isEmpty() && !pkg.get_aur_info().empty()) {
+            repoDisplay = "AUR";
+        } else if (repoName.isEmpty()) {
+            repoDisplay = "Unknown";
+        } else {
+            repoDisplay = repoName;
+        }
         
         QList<QStandardItem*> row;
         
@@ -717,6 +1013,7 @@ void MainWindow::searchPackages(const QString& searchTerm)
         row << checkItem;
         row << new QStandardItem(packageName);
         row << new QStandardItem(QString::fromStdString(pkg.get_version()));
+        row << new QStandardItem(repoDisplay);
         row << new QStandardItem(QString::fromStdString(pkg.get_description()));
         
         m_packagesModel->appendRow(row);
@@ -759,12 +1056,34 @@ void MainWindow::refreshInstalledPackages()
     // Clear previous list
     m_installedModel->removeRows(0, m_installedModel->rowCount());
     
+    // Update header to include repository column
+    m_installedModel->setHorizontalHeaderLabels(QStringList() << "" << "Name" << "Version" << "Repository" << "Description");
+    
     // Get installed packages
     std::vector<core::Package> installed = m_packageManager.get_installed_packages();
     
     // Display packages
     for (const auto& pkg : installed) {
         QString packageName = QString::fromStdString(pkg.get_name());
+        QString repoName = QString::fromStdString(pkg.get_repository());
+        QString repoDisplay;
+        
+        // Categorize repository source
+        if (repoName.contains("cachyos", Qt::CaseInsensitive)) {
+            repoDisplay = "CachyOS";
+        } else if (repoName == "core" || repoName == "extra" || repoName == "multilib") {
+            repoDisplay = "Arch";
+        } else if (repoName == "chaotic-aur") {
+            repoDisplay = "Chaotic AUR";
+        } else if (repoName == "aur") {
+            repoDisplay = "AUR";
+        } else if (repoName.isEmpty() && !pkg.get_aur_info().empty()) {
+            repoDisplay = "AUR";
+        } else if (repoName.isEmpty()) {
+            repoDisplay = "Unknown";
+        } else {
+            repoDisplay = repoName;
+        }
         
         QList<QStandardItem*> row;
         
@@ -777,6 +1096,7 @@ void MainWindow::refreshInstalledPackages()
         row << checkItem;
         row << new QStandardItem(packageName);
         row << new QStandardItem(QString::fromStdString(pkg.get_version()));
+        row << new QStandardItem(repoDisplay);
         row << new QStandardItem(QString::fromStdString(pkg.get_description()));
         
         m_installedModel->appendRow(row);
@@ -1321,24 +1641,255 @@ void MainWindow::updateBatchInstallButton()
 
 void MainWindow::openSettings()
 {
-    // Create settings dialog if it doesn't exist
     if (!m_settingsDialog) {
         m_settingsDialog = new SettingsDialog(this);
     }
     
-    // Show the dialog and apply settings if accepted
+    // Store current AUR settings
+    bool previousAurEnabled = m_settingsDialog->isAurEnabled();
+    
+    // Show the settings dialog
     if (m_settingsDialog->exec() == QDialog::Accepted) {
-        // Load settings that may have changed
-        bool isDarkTheme = QSettings("PacmanGUI", "PacmanGUI").value("appearance/darkTheme", m_darkTheme).toBool();
-        
-        // Apply theme if it changed
-        if (isDarkTheme != m_darkTheme) {
-            applyTheme(isDarkTheme);
+        // Apply theme immediately if changed
+        bool darkTheme = m_settingsDialog->isDarkThemeEnabled();
+        if (m_darkTheme != darkTheme) {
+            m_darkTheme = darkTheme;
+            applyTheme(m_darkTheme);
         }
         
-        // Other settings can be applied here
-        statusBar()->showMessage("Settings updated", 3000);
+        // Check if AUR settings changed
+        bool currentAurEnabled = m_settingsDialog->isAurEnabled();
+        if (previousAurEnabled != currentAurEnabled) {
+            // Refresh package listings if AUR was enabled/disabled
+            statusBar()->showMessage("AUR settings changed, refreshing package lists...");
+            
+            // Update AUR actions in toolbar and menu
+            for (QAction* action : findChildren<QAction*>()) {
+                if (action->statusTip().contains("AUR")) {
+                    action->setEnabled(currentAurEnabled);
+                }
+            }
+            
+            // Refresh package lists to include/exclude AUR packages
+            if (!m_searchBox->text().isEmpty()) {
+                searchPackages(m_searchBox->text());
+            }
+            
+            QString aurStatus = currentAurEnabled ? "enabled" : "disabled";
+            statusBar()->showMessage(QString("AUR support %1").arg(aurStatus), 3000);
+        }
     }
+}
+
+void MainWindow::onInstallAurPackage()
+{
+    // Get the selected package from the packages view
+    QModelIndex index = m_packagesView->currentIndex();
+    if (!index.isValid()) {
+        QMessageBox::warning(this, "No Package Selected", "Please select a package to install.");
+        return;
+    }
+    
+    // Get the package name from the model
+    QString packageName = m_packagesModel->data(m_packagesModel->index(index.row(), 0)).toString();
+    QString repoName = m_packagesModel->data(m_packagesModel->index(index.row(), 1)).toString();
+    
+    // Only proceed if this is an AUR package
+    if (repoName != "AUR") {
+        QMessageBox::information(this, "Not an AUR Package", 
+                                "The selected package is not from AUR. Use the regular install option.");
+        return;
+    }
+    
+    // Confirm installation
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Install AUR Package",
+                                 "Do you want to install the AUR package '" + packageName + "'?",
+                                 QMessageBox::Yes | QMessageBox::No);
+    
+    if (reply != QMessageBox::Yes) {
+        return;
+    }
+    
+    // Get AUR helper from settings
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    QString aurHelper = settings.value("aur/helper", "yay").toString();
+    
+    // Add authentication dialog
+    bool ok;
+    QString password = QInputDialog::getText(this, "Authentication Required",
+                                           "Enter your password to install AUR package:",
+                                           QLineEdit::Password, "", &ok);
+    
+    if (!ok || password.isEmpty()) {
+        statusBar()->showMessage("AUR Package installation cancelled");
+        return;
+    }
+    
+    // Install the package
+    statusBar()->showMessage("Installing AUR package: " + packageName);
+    setCursor(Qt::WaitCursor);
+    
+    // Use the AUR installation method
+    bool success = m_packageManager.install_aur_package(
+        packageName.toStdString(), 
+        password.toStdString(),
+        aurHelper.toStdString()
+    );
+    
+    setCursor(Qt::ArrowCursor);
+    
+    if (success) {
+        QMessageBox::information(this, "Installation Successful", 
+                                "AUR Package '" + packageName + "' was installed successfully.");
+        statusBar()->showMessage("AUR Package installed: " + packageName);
+        
+        // Refresh the installed packages list
+        refreshInstalledPackages();
+    } else {
+        QMessageBox::critical(this, "Installation Failed", 
+                            "Failed to install AUR package '" + packageName + "'.\n" + 
+                            QString::fromStdString(m_packageManager.get_last_error()));
+        statusBar()->showMessage("Installation failed: " + QString::fromStdString(m_packageManager.get_last_error()));
+    }
+}
+
+void MainWindow::onUpdateAurPackages()
+{
+    // Check if AUR is enabled in settings
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    bool aurEnabled = settings.value("aur/enabled", false).toBool();
+    
+    if (!aurEnabled) {
+        QMessageBox::information(this, "AUR Support Disabled", 
+                               "AUR support is disabled in settings. Enable it in Settings > AUR tab.");
+        return;
+    }
+    
+    QString aurHelper = settings.value("aur/helper", "yay").toString();
+    if (aurHelper.isEmpty()) {
+        QMessageBox::warning(this, "No AUR Helper", 
+                            "No AUR helper is configured. Please select an AUR helper in Settings.");
+        return;
+    }
+    
+    // First check for updates
+    statusBar()->showMessage("Checking for AUR updates...");
+    setCursor(Qt::WaitCursor);
+    
+    std::vector<std::pair<std::string, std::string>> aurUpdates = 
+        m_packageManager.check_aur_updates(aurHelper.toStdString());
+    
+    setCursor(Qt::ArrowCursor);
+    
+    if (aurUpdates.empty()) {
+        QMessageBox::information(this, "No AUR Updates", 
+                               "No AUR package updates available.");
+        statusBar()->showMessage("No AUR updates available");
+        return;
+    }
+    
+    // Confirm update
+    QMessageBox::StandardButton reply;
+    QString message = QString("Found %1 AUR package updates. Do you want to update them?").arg(aurUpdates.size());
+    reply = QMessageBox::question(this, "AUR Updates Available", message,
+                                 QMessageBox::Yes | QMessageBox::No);
+    
+    if (reply != QMessageBox::Yes) {
+        statusBar()->showMessage("AUR update cancelled");
+        return;
+    }
+    
+    // Add authentication dialog
+    bool ok;
+    QString password = QInputDialog::getText(this, "Authentication Required",
+                                           "Enter your password to update AUR packages:",
+                                           QLineEdit::Password, "", &ok);
+    
+    if (!ok || password.isEmpty()) {
+        statusBar()->showMessage("AUR update cancelled");
+        return;
+    }
+    
+    // Update the packages
+    statusBar()->showMessage("Updating AUR packages...");
+    setCursor(Qt::WaitCursor);
+    
+    // Prepare output area
+    m_systemUpdateLogView->append("<p><b>Starting AUR Update:</b></p>");
+    
+    // Update with real-time output callback
+    auto outputCallback = [this](const std::string& output) {
+        QString qOutput = QString::fromStdString(output);
+        
+        // Strip line endings for proper HTML formatting
+        qOutput = qOutput.trimmed();
+        
+        // Skip empty lines
+        if (!qOutput.isEmpty()) {
+            // Colorize important parts of the output
+            if (qOutput.contains("error", Qt::CaseInsensitive)) {
+                qOutput = "<span style='color:red'>" + qOutput + "</span>";
+            } else if (qOutput.contains("warning", Qt::CaseInsensitive)) {
+                qOutput = "<span style='color:orange'>" + qOutput + "</span>";
+            } else if (qOutput.contains("installing", Qt::CaseInsensitive) || 
+                      qOutput.contains("upgrading", Qt::CaseInsensitive)) {
+                qOutput = "<span style='color:green'>" + qOutput + "</span>";
+            } else if (qOutput.contains("downloading", Qt::CaseInsensitive)) {
+                qOutput = "<span style='color:blue'>" + qOutput + "</span>";
+            }
+            
+            // Append to log view with proper HTML formatting
+            m_systemUpdateLogView->append("<pre>" + qOutput + "</pre>");
+            
+            // Scroll to bottom to show the latest output
+            m_systemUpdateLogView->verticalScrollBar()->setValue(
+                m_systemUpdateLogView->verticalScrollBar()->maximum());
+            
+            // Process events to update the UI
+            QApplication::processEvents();
+        }
+    };
+    
+    bool success = m_packageManager.update_aur_packages(
+        password.toStdString(), 
+        aurHelper.toStdString(),
+        outputCallback
+    );
+    
+    setCursor(Qt::ArrowCursor);
+    
+    if (success) {
+        QMessageBox::information(this, "AUR Update Successful", 
+                               "AUR packages were updated successfully.");
+        statusBar()->showMessage("AUR packages updated successfully");
+        
+        // Refresh the installed packages list
+        refreshInstalledPackages();
+        
+        m_systemUpdateLogView->append("<p style='color:green'><b>AUR update completed successfully!</b></p>");
+    } else {
+        QMessageBox::critical(this, "AUR Update Failed", 
+                            "Failed to update AUR packages.\n" + 
+                            QString::fromStdString(m_packageManager.get_last_error()));
+        statusBar()->showMessage("AUR update failed: " + QString::fromStdString(m_packageManager.get_last_error()));
+        
+        m_systemUpdateLogView->append("<p style='color:red'><b>AUR update failed.</b></p>");
+        m_systemUpdateLogView->append("<p style='color:red'>" + 
+                                    QString::fromStdString(m_packageManager.get_last_error()) + 
+                                    "</p>");
+    }
+}
+
+void MainWindow::onAbout()
+{
+    QMessageBox::about(this, "About PacmanGUI",
+                      "PacmanGUI - A graphical interface for Pacman\n\n"
+                      "Version: 1.0.0\n"
+                      "License: GPL-3.0\n\n"
+                      "A modern GUI frontend for the Arch Linux package manager.\n"
+                      "Features include package search, installation, removal, updates,\n"
+                      "AUR support, and more.");
 }
 
 } // namespace gui

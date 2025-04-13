@@ -11,6 +11,7 @@
 #include <atomic>
 #include <thread>
 #include <functional>
+#include <QSettings>
 
 namespace pacmangui {
 namespace core {
@@ -163,9 +164,114 @@ std::vector<Package> PackageManager::search_aur(const std::string& name) const
     
     std::cout << "PackageManager: Searching for AUR packages matching '" << name << "'" << std::endl;
     
-    // For now, just print a message and return empty list
-    // This will be expanded in Phase 3 to actually search the AUR
-    std::cout << "PackageManager: AUR search not yet implemented" << std::endl;
+    // Check if AUR is enabled in settings
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    bool aurEnabled = settings.value("aur/enabled", false).toBool();
+    
+    if (!aurEnabled) {
+        std::cout << "PackageManager: AUR search is disabled in settings" << std::endl;
+        return results;
+    }
+    
+    try {
+        // Directly call the AUR RPC API using curl
+        // This is inspired by Octopi's approach but simplified
+        std::string tempFile = "/tmp/aur_search_results.json";
+        std::string escapedSearch = name;
+        
+        // Escape special characters in the search term
+        for (size_t i = 0; i < escapedSearch.length(); i++) {
+            if (escapedSearch[i] == ' ') {
+                escapedSearch.replace(i, 1, "%20");
+            }
+        }
+        
+        // Construct the curl command to query the AUR RPC API
+        std::string command = "curl -s 'https://aur.archlinux.org/rpc/?v=5&type=search&arg=" + 
+                             escapedSearch + "' -o " + tempFile;
+        
+        // Execute the curl command
+        std::cout << "PackageManager: Executing AUR API query" << std::endl;
+        int result = system(command.c_str());
+        
+        if (result != 0) {
+            std::cerr << "PackageManager: Failed to execute curl command" << std::endl;
+            return results;
+        }
+        
+        // Parse the JSON response
+        std::ifstream file(tempFile);
+        if (!file.is_open()) {
+            std::cerr << "PackageManager: Failed to open temporary file" << std::endl;
+            return results;
+        }
+        
+        std::string jsonContent((std::istreambuf_iterator<char>(file)), 
+                               std::istreambuf_iterator<char>());
+        file.close();
+        
+        // Very simple JSON parsing (in a real app, use a proper JSON library)
+        if (jsonContent.find("\"resultcount\":0") != std::string::npos) {
+            std::cout << "PackageManager: No AUR packages found matching '" << name << "'" << std::endl;
+            return results;
+        }
+        
+        size_t pos = 0;
+        std::string packageNameKey = "\"Name\":\"";
+        std::string versionKey = "\"Version\":\"";
+        std::string descriptionKey = "\"Description\":\"";
+        
+        while ((pos = jsonContent.find(packageNameKey, pos)) != std::string::npos) {
+            Package aurPackage;
+            
+            // Extract package name
+            size_t nameStart = pos + packageNameKey.length();
+            size_t nameEnd = jsonContent.find("\"", nameStart);
+            if (nameEnd != std::string::npos) {
+                std::string packageName = jsonContent.substr(nameStart, nameEnd - nameStart);
+                aurPackage.set_name(packageName);
+                aurPackage.set_repository("aur");
+                
+                // Extract version (search after the package name)
+                size_t versionPos = jsonContent.find(versionKey, nameEnd);
+                if (versionPos != std::string::npos && versionPos < jsonContent.find(packageNameKey, nameEnd + 1)) {
+                    size_t versionStart = versionPos + versionKey.length();
+                    size_t versionEnd = jsonContent.find("\"", versionStart);
+                    if (versionEnd != std::string::npos) {
+                        std::string version = jsonContent.substr(versionStart, versionEnd - versionStart);
+                        aurPackage.set_version(version);
+                    }
+                }
+                
+                // Extract description (search after the package name)
+                size_t descPos = jsonContent.find(descriptionKey, nameEnd);
+                if (descPos != std::string::npos && descPos < jsonContent.find(packageNameKey, nameEnd + 1)) {
+                    size_t descStart = descPos + descriptionKey.length();
+                    size_t descEnd = jsonContent.find("\"", descStart);
+                    if (descEnd != std::string::npos) {
+                        std::string description = jsonContent.substr(descStart, descEnd - descStart);
+                        aurPackage.set_description(description);
+                    }
+                }
+                
+                // Set AUR-specific information
+                aurPackage.set_aur_info("AUR Package");
+                
+                // Add to results
+                results.push_back(aurPackage);
+            }
+            
+            // Move to the next package
+            pos = nameEnd + 1;
+        }
+        
+        // Clean up the temporary file
+        remove(tempFile.c_str());
+        
+        std::cout << "PackageManager: Found " << results.size() << " AUR packages matching '" << name << "'" << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "PackageManager: Exception during AUR search: " << e.what() << std::endl;
+    }
     
     return results;
 }
@@ -255,8 +361,41 @@ std::vector<Package> PackageManager::search_by_name(const std::string& name) con
         
         std::cout << "PackageManager: Total of " << results.size() << " matching packages found" << std::endl;
         
-        // Also search AUR in the future
-        std::cout << "PackageManager: AUR search will be implemented in Phase 3" << std::endl;
+        // Check if AUR is enabled and search AUR packages
+        QSettings settings("PacmanGUI", "PacmanGUI");
+        bool aurEnabled = settings.value("aur/enabled", false).toBool();
+        
+        if (aurEnabled) {
+            std::cout << "PackageManager: AUR search is enabled, searching AUR packages" << std::endl;
+            
+            // Search AUR packages
+            std::vector<Package> aur_results = search_aur(name);
+            
+            // Filter out duplicates (packages already in results)
+            std::vector<Package> filtered_aur_results;
+            for (const auto& pkg : aur_results) {
+                bool already_added = false;
+                for (const auto& existing : results) {
+                    if (existing.get_name() == pkg.get_name()) {
+                        already_added = true;
+                        break;
+                    }
+                }
+                
+                if (!already_added) {
+                    filtered_aur_results.push_back(pkg);
+                }
+            }
+            
+            std::cout << "PackageManager: Found " << filtered_aur_results.size() << " unique AUR packages" << std::endl;
+            
+            // Add AUR results to the final results
+            results.insert(results.end(), filtered_aur_results.begin(), filtered_aur_results.end());
+            
+            std::cout << "PackageManager: Total of " << results.size() << " matching packages found (including AUR)" << std::endl;
+        } else {
+            std::cout << "PackageManager: AUR search is disabled" << std::endl;
+        }
     } catch (const std::exception& e) {
         std::cerr << "PackageManager: Exception during search: " << e.what() << std::endl;
     }
@@ -459,6 +598,88 @@ bool PackageManager::sync_all(const std::string& password)
     m_repo_manager->initialize();
     
     return true;
+}
+
+bool PackageManager::install_aur_package(const std::string& package_name)
+{
+    if (package_name.empty()) {
+        set_last_error("Invalid package name");
+        return false;
+    }
+    
+    // Check if AUR is enabled in settings
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    bool aurEnabled = settings.value("aur/enabled", false).toBool();
+    
+    if (!aurEnabled) {
+        set_last_error("AUR support is disabled in settings");
+        return false;
+    }
+    
+    // Get configured AUR helper
+    std::string aurHelper = settings.value("aur/helper", "yay").toString().toStdString();
+    if (aurHelper.empty()) {
+        set_last_error("No AUR helper configured");
+        return false;
+    }
+    
+    std::cout << "PackageManager: Installing AUR package: " << package_name << " using " << aurHelper << std::endl;
+    
+    // Execute the AUR helper command
+    std::string command = aurHelper + " -S --noconfirm " + package_name;
+    int result = system(command.c_str());
+    
+    if (result == 0) {
+        std::cout << "PackageManager: AUR Package installed successfully: " << package_name << std::endl;
+        return true;
+    } else {
+        set_last_error("Failed to install AUR package: " + package_name);
+        return false;
+    }
+}
+
+bool PackageManager::install_aur_package(const std::string& package_name, const std::string& password,
+                                        const std::string& aur_helper)
+{
+    if (package_name.empty()) {
+        set_last_error("Invalid package name");
+        return false;
+    }
+    
+    // Check if AUR is enabled in settings
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    bool aurEnabled = settings.value("aur/enabled", false).toBool();
+    
+    if (!aurEnabled) {
+        set_last_error("AUR support is disabled in settings");
+        return false;
+    }
+    
+    // Use provided AUR helper or fall back to configured one
+    std::string aurHelper = aur_helper;
+    if (aurHelper.empty()) {
+        aurHelper = settings.value("aur/helper", "yay").toString().toStdString();
+    }
+    
+    if (aurHelper.empty()) {
+        set_last_error("No AUR helper configured");
+        return false;
+    }
+    
+    std::cout << "PackageManager: Installing AUR package with authentication: " 
+             << package_name << " using " << aurHelper << std::endl;
+    
+    // Execute the AUR helper command with sudo
+    std::string command = aurHelper + " -S --noconfirm " + package_name;
+    bool success = execute_with_sudo(command, password);
+    
+    if (success) {
+        std::cout << "PackageManager: AUR Package installed successfully: " << package_name << std::endl;
+        return true;
+    } else {
+        set_last_error("Failed to install AUR package: " + package_name + ". Authentication may have failed.");
+        return false;
+    }
 }
 
 bool PackageManager::is_package_installed(const std::string& package_name) const
@@ -749,6 +970,252 @@ std::vector<std::pair<std::string, std::string>> PackageManager::check_updates()
     
     std::cout << "PackageManager: Found " << updates.size() << " available updates" << std::endl;
     return updates;
+}
+
+std::vector<std::pair<std::string, std::string>> PackageManager::check_aur_updates(const std::string& aur_helper) const
+{
+    std::vector<std::pair<std::string, std::string>> updates;
+    
+    // Check if AUR is enabled in settings
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    bool aurEnabled = settings.value("aur/enabled", false).toBool();
+    
+    if (!aurEnabled) {
+        std::cout << "PackageManager: AUR support is disabled in settings" << std::endl;
+        return updates;
+    }
+    
+    // Get the AUR helper to use
+    std::string helper = aur_helper;
+    if (helper.empty()) {
+        helper = settings.value("aur/helper", "yay").toString().toStdString();
+    }
+    
+    if (helper.empty()) {
+        std::cerr << "PackageManager: No AUR helper configured" << std::endl;
+        return updates;
+    }
+    
+    std::cout << "PackageManager: Checking for available AUR updates using " << helper << std::endl;
+    
+    // Different command formats based on helper
+    std::string update_check_cmd;
+    if (helper == "yay") {
+        update_check_cmd = "yay -Qua";
+    } else if (helper == "paru") {
+        update_check_cmd = "paru -Qua";
+    } else {
+        // Generic format that should work with most helpers
+        update_check_cmd = helper + " -Qua";
+    }
+    
+    // Run the AUR helper to check for updates
+    FILE* pipe = popen(update_check_cmd.c_str(), "r");
+    if (!pipe) {
+        std::cerr << "PackageManager: Error running AUR update check" << std::endl;
+        return updates;
+    }
+    
+    char buffer[256];
+    while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
+        std::string line(buffer);
+        
+        // Parse output line (format depends on the helper but usually: package_name old_version -> new_version)
+        size_t first_space = line.find(' ');
+        if (first_space != std::string::npos) {
+            std::string package_name = line.substr(0, first_space);
+            
+            // Find the arrow separator (common in pacman-compatible output)
+            size_t arrow_pos = line.find("->");
+            if (arrow_pos != std::string::npos) {
+                // Extract new version (skip spaces after arrow)
+                size_t version_start = arrow_pos + 2;
+                while (version_start < line.size() && isspace(line[version_start])) {
+                    version_start++;
+                }
+                
+                std::string new_version = line.substr(version_start);
+                // Trim trailing whitespace/newline
+                new_version.erase(new_version.find_last_not_of(" \n\r\t") + 1);
+                
+                updates.push_back(std::make_pair(package_name, new_version));
+            }
+        }
+    }
+    
+    pclose(pipe);
+    
+    std::cout << "PackageManager: Found " << updates.size() << " available AUR updates" << std::endl;
+    return updates;
+}
+
+bool PackageManager::update_aur_packages(const std::string& aur_helper)
+{
+    // Check if AUR is enabled in settings
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    bool aurEnabled = settings.value("aur/enabled", false).toBool();
+    
+    if (!aurEnabled) {
+        set_last_error("AUR support is disabled in settings");
+        return false;
+    }
+    
+    // Get the AUR helper to use
+    std::string helper = aur_helper;
+    if (helper.empty()) {
+        helper = settings.value("aur/helper", "yay").toString().toStdString();
+    }
+    
+    if (helper.empty()) {
+        set_last_error("No AUR helper configured");
+        return false;
+    }
+    
+    std::cout << "PackageManager: Updating AUR packages using " << helper << std::endl;
+    
+    // Different command formats based on helper
+    std::string update_cmd;
+    if (helper == "yay") {
+        update_cmd = "yay -Sua --noconfirm";
+    } else if (helper == "paru") {
+        update_cmd = "paru -Sua --noconfirm";
+    } else {
+        // Generic format that should work with most helpers
+        update_cmd = helper + " -Sua --noconfirm";
+    }
+    
+    // Run the AUR helper to update packages
+    int result = system(update_cmd.c_str());
+    
+    if (result == 0) {
+        std::cout << "PackageManager: AUR packages updated successfully" << std::endl;
+        return true;
+    } else {
+        set_last_error("Failed to update AUR packages using " + helper);
+        return false;
+    }
+}
+
+bool PackageManager::update_aur_packages(const std::string& password, 
+                                       const std::string& aur_helper,
+                                       std::function<void(const std::string&)> output_callback)
+{
+    // Check if AUR is enabled in settings
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    bool aurEnabled = settings.value("aur/enabled", false).toBool();
+    
+    if (!aurEnabled) {
+        set_last_error("AUR support is disabled in settings");
+        if (output_callback) {
+            output_callback("ERROR: AUR support is disabled in settings\n");
+        }
+        return false;
+    }
+    
+    // Get the AUR helper to use
+    std::string helper = aur_helper;
+    if (helper.empty()) {
+        helper = settings.value("aur/helper", "yay").toString().toStdString();
+    }
+    
+    if (helper.empty()) {
+        set_last_error("No AUR helper configured");
+        if (output_callback) {
+            output_callback("ERROR: No AUR helper configured\n");
+        }
+        return false;
+    }
+    
+    std::cout << "PackageManager: Updating AUR packages with authentication using " << helper << std::endl;
+    if (output_callback) {
+        output_callback("Updating AUR packages using " + helper + "...\n");
+    }
+    
+    // Create a temporary file to capture output
+    std::string temp_output_file = "/tmp/pacmangui_aur_update_output.txt";
+    
+    // Different command formats based on helper
+    std::string update_cmd;
+    if (helper == "yay") {
+        update_cmd = "yay -Sua --noconfirm";
+    } else if (helper == "paru") {
+        update_cmd = "paru -Sua --noconfirm";
+    } else {
+        // Generic format that should work with most helpers
+        update_cmd = helper + " -Sua --noconfirm";
+    }
+    
+    // Add output redirection
+    update_cmd += " | tee " + temp_output_file;
+    
+    // Start a background thread to monitor the output file and send updates
+    std::atomic<bool> running(true);
+    std::thread output_thread;
+    
+    if (output_callback) {
+        output_thread = std::thread([temp_output_file, &output_callback, &running]() {
+            std::ifstream output_file(temp_output_file);
+            if (!output_file.is_open()) {
+                return;
+            }
+            
+            std::string line;
+            while (running) {
+                if (std::getline(output_file, line)) {
+                    output_callback(line + "\n");
+                } else {
+                    // Wait a bit before checking for more output
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                }
+            }
+            
+            // Read any remaining output
+            while (std::getline(output_file, line)) {
+                output_callback(line + "\n");
+            }
+            
+            output_file.close();
+        });
+    }
+    
+    // Execute the command
+    bool success = execute_with_sudo(update_cmd, password);
+    
+    // Stop the output thread and wait for it to finish
+    if (output_callback && output_thread.joinable()) {
+        running = false;
+        output_thread.join();
+    }
+    
+    // Clean up the temporary file
+    std::remove(temp_output_file.c_str());
+    
+    if (success) {
+        std::cout << "PackageManager: AUR packages updated successfully" << std::endl;
+        if (output_callback) {
+            output_callback("AUR packages updated successfully.\n");
+        }
+        return true;
+    } else {
+        std::string error_message = "Failed to update AUR packages using " + helper + ". Authentication may have failed.";
+        set_last_error(error_message);
+        if (output_callback) {
+            output_callback("ERROR: " + error_message + "\n");
+        }
+        return false;
+    }
+}
+
+bool PackageManager::execute_with_sudo(const std::string& command, const std::string& password)
+{
+    // Call the free function
+    return ::pacmangui::core::execute_with_sudo(command, password);
+}
+
+bool PackageManager::execute_with_sudo(const std::string& command)
+{
+    // Call the free function
+    return ::pacmangui::core::execute_with_sudo(command);
 }
 
 } // namespace core

@@ -143,6 +143,25 @@ public:
     bool sync_all(const std::string& password);
     
     /**
+     * @brief Install a package from AUR
+     * 
+     * @param package_name Name of the AUR package to install
+     * @return bool True if installation successful
+     */
+    bool install_aur_package(const std::string& package_name);
+    
+    /**
+     * @brief Install a package from AUR with authentication
+     * 
+     * @param package_name Name of the AUR package to install
+     * @param password The password to use for sudo authentication
+     * @param aur_helper AUR helper to use (yay, paru, etc.)
+     * @return bool True if installation successful
+     */
+    bool install_aur_package(const std::string& package_name, const std::string& password, 
+                            const std::string& aur_helper = "yay");
+    
+    /**
      * @brief Check if a package is installed
      * 
      * @param package_name Package name to check
@@ -189,6 +208,51 @@ public:
      * @return std::vector<std::pair<std::string, std::string>> List of packages with updates (name, new_version)
      */
     std::vector<std::pair<std::string, std::string>> check_updates() const;
+    
+    /**
+     * @brief Check for available AUR updates (without installing)
+     * 
+     * @param aur_helper The AUR helper to use (e.g., "yay", "paru")
+     * @return std::vector<std::pair<std::string, std::string>> List of AUR packages with updates (name, new_version)
+     */
+    std::vector<std::pair<std::string, std::string>> check_aur_updates(const std::string& aur_helper = "") const;
+    
+    /**
+     * @brief Update all AUR packages
+     * 
+     * @param aur_helper The AUR helper to use (e.g., "yay", "paru")
+     * @return bool True if update successful
+     */
+    bool update_aur_packages(const std::string& aur_helper = "");
+    
+    /**
+     * @brief Update all AUR packages with authentication
+     * 
+     * @param password The password to use for sudo authentication
+     * @param aur_helper The AUR helper to use (e.g., "yay", "paru")
+     * @param output_callback Callback function to receive real-time output
+     * @return bool True if update successful
+     */
+    bool update_aur_packages(const std::string& password, 
+                           const std::string& aur_helper = "",
+                           std::function<void(const std::string&)> output_callback = nullptr);
+    
+    /**
+     * @brief Execute a command with sudo authentication
+     * 
+     * @param command The command to execute
+     * @param password The password to use for sudo authentication
+     * @return bool True if command executed successfully
+     */
+    bool execute_with_sudo(const std::string& command, const std::string& password);
+    
+    /**
+     * @brief Execute a command with sudo (no password)
+     * 
+     * @param command The command to execute
+     * @return bool True if command executed successfully
+     */
+    bool execute_with_sudo(const std::string& command);
 
 private:
     alpm_handle_t* m_handle;                          ///< ALPM handle
