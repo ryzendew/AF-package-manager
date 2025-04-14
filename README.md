@@ -478,59 +478,41 @@ git submodule update --init --recursive
 
 ## Building the Project
 
-### Prerequisites
+### Dependencies
+
+#### Required Dependencies
+- C++17 compatible compiler (GCC 7+ or Clang 5+)
 - CMake 3.10 or higher
-- Qt6 development packages
-- Pacman (which provides libalpm)
-- C++17 compatible compiler
+- Qt6 (Core, Widgets, Gui)
+- Pacman (libalpm)
+- pkg-config
+
+#### Installing Dependencies
+
+**Arch Linux and derivatives:**
+
+```bash
+sudo pacman -S base-devel cmake qt6-base pacman
+```
 
 ### Simple Build
+
+After installing the dependencies:
+
 ```bash
-# Make sure you have the required dependencies
-sudo pacman -S cmake qt6-base pacman
-
 # Clone the repository
-git clone https://github.com/yourusername/pacman-gui.git
-cd pacman-gui
+git clone https://github.com/yourusername/PacmanGui.git
+cd PacmanGui
 
-# Build
-mkdir build && cd build
+# Create build directory and build the application
+mkdir -p build && cd build
 cmake ..
 make -j$(nproc)
 
-# Run
+# Run the application
 ./pacmangui
 ```
 
-### Troubleshooting Build Issues
-
-If you encounter build issues:
-
-1. Make sure pacman is installed:
-   ```bash
-   sudo pacman -S pacman
-   ```
-
-2. If CMake fails to find ALPM:
-   ```bash
-   # Create a symlink if needed
-   sudo mkdir -p /usr/include/alpm
-   sudo ln -s /usr/include/alpm.h /usr/include/alpm/alpm.h
-   ```
-
-3. Clear your build directory and try again:
-   ```bash
-   rm -rf build/
-   mkdir build && cd build
-   cmake ..
-   make -j$(nproc) VERBOSE=1
-   ```
-
-4. Check for API compatibility:
-   ```bash
-   # Check pacman version
-   pacman -V
-   ```
 ## Testing
 If you want to run tests:
 
@@ -548,3 +530,40 @@ make test
 
 ## Contributing
 Contributions are welcome! Please follow the project's coding style and submit pull requests for review.
+
+### Troubleshooting Build Issues
+
+If you encounter build issues on Arch Linux:
+
+1. **Missing dependencies:**
+   ```bash
+   # Make sure you have all required dependencies
+   sudo pacman -S base-devel cmake qt6-base pacman
+   ```
+
+2. **Missing libalpm or ALPM not found:**
+   ```bash
+   # Ensure pacman is installed
+   sudo pacman -S pacman
+   
+   # Create symlinks if CMake can't find the headers
+   sudo mkdir -p /usr/include/alpm
+   sudo ln -s /usr/include/alpm.h /usr/include/alpm/alpm.h
+   ```
+
+3. **Clean rebuild:**
+   ```bash
+   rm -rf build/
+   mkdir build && cd build
+   cmake ..
+   make -j$(nproc) VERBOSE=1
+   ```
+
+### System-wide Installation
+
+To install PacmanGUI system-wide (requires administrator privileges):
+
+```bash
+cd build
+sudo make install
+```
