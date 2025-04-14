@@ -1131,8 +1131,8 @@ void MainWindow::onInstallPackage() {
     QStringList packageNames;
     QStringList packageDetails;
     for (const QModelIndex& index : selected) {
-        QModelIndex nameIndex = m_packagesModel->index(index.row(), 0); // Name column
-        QModelIndex versionIndex = m_packagesModel->index(index.row(), 1); // Version column
+        QModelIndex nameIndex = m_packagesModel->index(index.row(), 1); // Name column (was incorrectly 0)
+        QModelIndex versionIndex = m_packagesModel->index(index.row(), 2); // Version column (was incorrectly 1)
         QModelIndex repoIndex = m_packagesModel->index(index.row(), 3); // Repository column
         
         QString name = m_packagesModel->data(nameIndex).toString();
@@ -1214,8 +1214,8 @@ void MainWindow::onRemovePackage() {
     QStandardItemModel* model = m_tabWidget->currentIndex() == 0 ? m_packagesModel : m_installedModel;
     
     for (const QModelIndex& index : selected) {
-        QModelIndex nameIndex = model->index(index.row(), 0); // Name column
-        QModelIndex versionIndex = model->index(index.row(), 1); // Version column
+        QModelIndex nameIndex = model->index(index.row(), 1); // Name column (was incorrectly 0)
+        QModelIndex versionIndex = model->index(index.row(), 2); // Version column (was incorrectly 1)
         
         QString name = model->data(nameIndex).toString();
         QString version = model->data(versionIndex).toString();
@@ -1437,10 +1437,10 @@ void MainWindow::checkForUpdatesAfterSync() {
             
             // Find the package in the installed packages model
             for (int i = 0; i < m_installedModel->rowCount(); ++i) {
-                QString name = m_installedModel->item(i, 0)->text();
+                QString name = m_installedModel->item(i, 1)->text(); // Name column (was incorrectly 0)
                 if (name == pkgName) {
-                    currentVersion = m_installedModel->item(i, 1)->text();
-                    repoName = m_installedModel->item(i, 3)->text();
+                    currentVersion = m_installedModel->item(i, 2)->text(); // Version column (was incorrectly 1)
+                    repoName = m_installedModel->item(i, 3)->text(); // Repository column
                     break;
                 }
             }
