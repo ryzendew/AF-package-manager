@@ -81,10 +81,19 @@ void FlatpakManagerTab::setupUi()
     leftLayout->setSpacing(4);
     
     // Search input
+    QHBoxLayout* topBarLayout = new QHBoxLayout();
+    
     m_searchInput = new QLineEdit(leftPanel);
     m_searchInput->setPlaceholderText(tr("Filter Flatpaks..."));
     m_searchInput->setMinimumHeight(26);
-    leftLayout->addWidget(m_searchInput);
+    
+    m_installNewButton = new QPushButton(tr("Install New"), leftPanel);
+    m_installNewButton->setToolTip(tr("Install a new Flatpak application"));
+    
+    topBarLayout->addWidget(m_searchInput);
+    topBarLayout->addWidget(m_installNewButton);
+    
+    leftLayout->addLayout(topBarLayout);
     
     // Flatpak list view
     m_listView = new QTreeView(leftPanel);
@@ -293,6 +302,7 @@ void FlatpakManagerTab::connectSignals()
     connect(m_removeRemoteButton, &QPushButton::clicked, this, &FlatpakManagerTab::onRemoveRemote);
     connect(m_batchOperationButton, &QPushButton::clicked, this, &FlatpakManagerTab::onBatchOperation);
     connect(m_scanOrphanedButton, &QPushButton::clicked, this, &FlatpakManagerTab::scanForOrphanedData);
+    connect(m_installNewButton, &QPushButton::clicked, this, &FlatpakManagerTab::onInstallNew);
 }
 
 void FlatpakManagerTab::refreshFlatpakList()
@@ -459,8 +469,35 @@ void FlatpakManagerTab::onUninstall() {
     QString appId = getCurrentAppId();
     if (appId.isEmpty()) return;
     
-    emit statusMessage(tr("Uninstalling %1").arg(appId), 3000);
-    // Real implementation would call m_packageManager->remove_flatpak_package(appId.toStdString())
+    // Confirm with the user
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, tr("Confirm Uninstall"),
+                                 tr("Are you sure you want to uninstall %1?").arg(appId),
+                                 QMessageBox::Yes | QMessageBox::No);
+    
+    if (reply != QMessageBox::Yes) {
+        return;
+    }
+    
+    // Show progress dialog
+    QProgressDialog progress(tr("Uninstalling %1...").arg(appId), tr("Cancel"), 0, 0, this);
+    progress.setWindowModality(Qt::WindowModal);
+    progress.show();
+    QApplication::processEvents();
+    
+    // Perform the uninstallation
+    bool success = m_packageManager->remove_flatpak_package(appId.toStdString());
+    
+    progress.close();
+    
+    if (success) {
+        emit statusMessage(tr("Successfully uninstalled %1").arg(appId), 3000);
+        refreshFlatpakList();
+    } else {
+        QMessageBox::critical(this, tr("Uninstall Failed"),
+                             tr("Failed to uninstall %1. Check the console for errors.").arg(appId));
+        emit statusMessage(tr("Failed to uninstall %1").arg(appId), 3000);
+    }
 }
 
 void FlatpakManagerTab::onRemoveUserData() {
@@ -595,6 +632,65 @@ QString FlatpakManagerTab::getCurrentAppId() const {
     
     QModelIndex appIdIndex = m_listModel->index(current.row(), 1);
     return m_listModel->data(appIdIndex).toString();
+}
+
+// Add a new method to install Flatpak packages
+void FlatpakManagerTab::installFlatpak(const QString& appId, const QString& remote) {
+    if (appId.isEmpty() || remote.isEmpty()) {
+        QMessageBox::warning(this, tr("Installation Error"), 
+                            tr("Application ID and remote are required for installation."));
+        return;
+    }
+    
+    // Confirm with the user
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, tr("Confirm Installation"),
+                                 tr("Are you sure you want to install %1 from %2?").arg(appId).arg(remote),
+                                 QMessageBox::Yes | QMessageBox::No);
+    
+    if (reply != QMessageBox::Yes) {
+        return;
+    }
+    
+    // Show progress dialog
+    QProgressDialog progress(tr("Installing %1 from %2...").arg(appId).arg(remote), tr("Cancel"), 0, 0, this);
+    progress.setWindowModality(Qt::WindowModal);
+    progress.show();
+    QApplication::processEvents();
+    
+    // Perform the installation
+    bool success = m_packageManager->install_flatpak_package(appId.toStdString(), remote.toStdString());
+    
+    progress.close();
+    
+    if (success) {
+        emit statusMessage(tr("Successfully installed %1").arg(appId), 3000);
+        refreshFlatpakList();
+    } else {
+        QMessageBox::critical(this, tr("Installation Failed"),
+                             tr("Failed to install %1. Check the console for errors.").arg(appId));
+        emit statusMessage(tr("Failed to install %1").arg(appId), 3000);
+    }
+}
+
+// Add a method to handle adding a new Flatpak
+void FlatpakManagerTab::onInstallNew() {
+    QString appId = QInputDialog::getText(this, tr("Install Flatpak"),
+                                         tr("Enter the Application ID to install:"),
+                                         QLineEdit::Normal,
+                                         "org.example.App");
+    
+    if (appId.isEmpty()) return;
+    
+    // Get remote
+    QString remote;
+    if (m_remotesCombo->count() > 0) {
+        remote = m_remotesCombo->currentText();
+    } else {
+        remote = "flathub";  // Default to flathub if no remotes are available
+    }
+    
+    installFlatpak(appId, remote);
 }
 
 } // namespace gui

@@ -32,6 +32,8 @@ public slots:
     void refreshFlatpakRemotes();
     void filterFlatpakList(const QString& filter);
     void onFlatpakSelected(const QModelIndex& current, const QModelIndex& previous);
+    void installFlatpak(const QString& appId, const QString& remote);
+    void onInstallNew();
 
 private slots:
     void onManageUserData();
@@ -60,6 +62,7 @@ private:
     QLineEdit* m_searchInput = nullptr;
     QTreeView* m_listView = nullptr;
     QStandardItemModel* m_listModel = nullptr;
+    QPushButton* m_installNewButton = nullptr;
     
     // Details panel
     QLabel* m_nameLabel = nullptr;

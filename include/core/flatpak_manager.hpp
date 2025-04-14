@@ -45,9 +45,9 @@ public:
     /**
      * @brief Search for Flatpak packages by name
      * @param name Package name to search for
-     * @return std::vector<FlatpakPackage> List of matching Flatpak packages
+     * @return std::vector<std::shared_ptr<FlatpakPackage>> List of matching Flatpak packages
      */
-    std::vector<FlatpakPackage> search_by_name(const std::string& name) const;
+    std::vector<std::shared_ptr<FlatpakPackage>> search_by_name(const std::string& name) const;
     
     /**
      * @brief Install a Flatpak package
@@ -103,6 +103,18 @@ public:
      * @return std::string The last error message
      */
     std::string get_last_error() const;
+    
+    /**
+     * @brief Check for updates
+     * @return std::vector<std::string> List of updates
+     */
+    std::vector<std::string> check_for_updates() const;
+    
+    /**
+     * @brief Get available remotes
+     * @return std::vector<std::string> List of available remotes
+     */
+    std::vector<std::string> list_remotes() const;
 
 private:
     /**
@@ -118,6 +130,12 @@ private:
      * @return std::vector<FlatpakPackage> List of Flatpak packages
      */
     std::vector<FlatpakPackage> parse_json_output(const std::string& json_output) const;
+    
+    /**
+     * @brief Get the application name and description for a Flatpak package
+     * @param package The Flatpak package to update with name and description
+     */
+    void getAppNameAndDescription(FlatpakPackage& package) const;
     
     bool m_is_available;              ///< Flag indicating if Flatpak is available
     mutable std::string m_last_error; ///< Last error message

@@ -1721,7 +1721,21 @@ std::vector<FlatpakPackage> PackageManager::get_installed_flatpak_packages() con
 
 std::vector<FlatpakPackage> PackageManager::search_flatpak_by_name(const std::string& name) const
 {
-    return m_flatpak_manager.search_by_name(name);
+    if (!is_flatpak_available()) {
+        return {};
+    }
+    
+    auto shared_packages = m_flatpak_manager.search_by_name(name);
+    std::vector<FlatpakPackage> packages;
+    
+    // Convert shared_ptr vector to regular vector
+    for (const auto& pkg_ptr : shared_packages) {
+        if (pkg_ptr) {
+            packages.push_back(*pkg_ptr);
+        }
+    }
+    
+    return packages;
 }
 
 bool PackageManager::install_flatpak_package(const std::string& app_id, const std::string& remote)

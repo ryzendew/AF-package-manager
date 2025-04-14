@@ -1044,7 +1044,25 @@ void MainWindow::performAsyncSearch(const QString& searchTerm) {
             
             QStandardItem* nameItem = new QStandardItem(QString::fromStdString(pkg.get_name()));
             QStandardItem* versionItem = new QStandardItem(QString::fromStdString(pkg.get_version()));
-            QStandardItem* repoItem = new QStandardItem(QString::fromStdString(pkg.get_repository()));
+            
+            // Get repository name
+            QString repo = QString::fromStdString(pkg.get_repository());
+            
+            // Handle repository display
+            if (repo.toLower() == "aur") {
+                // Mark AUR packages
+                checkItem->setData("aur", Qt::UserRole + 1);
+                nameItem->setData("aur", Qt::UserRole + 1);
+                repo = "AUR";
+            } else if (repo.toLower().contains("cachyos")) {
+                // Handle CachyOS repositories
+                repo = repo.toUpper(); // Convert to uppercase for consistency
+            } else if (repo.toLower() == "chaotic-aur") {
+                // Handle Chaotic AUR
+                repo = "Chaotic-AUR";
+            }
+            
+            QStandardItem* repoItem = new QStandardItem(repo);
             QStandardItem* descItem = new QStandardItem(QString::fromStdString(pkg.get_description()));
             
             row << checkItem << nameItem << versionItem << repoItem << descItem;
@@ -1055,7 +1073,7 @@ void MainWindow::performAsyncSearch(const QString& searchTerm) {
         m_packagesTable->setColumnWidth(0, 30);  // Checkbox column
         m_packagesTable->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);  // Name column resize to content
         m_packagesTable->setColumnWidth(2, 100);  // Version column
-        m_packagesTable->setColumnWidth(3, 100);  // Repository column
+        m_packagesTable->setColumnWidth(3, 120);  // Repository column - slightly wider for readability
         m_packagesTable->header()->setSectionResizeMode(4, QHeaderView::Stretch);  // Description column takes remaining space
         
         showStatusMessage(tr("Found %1 packages matching '%2'").arg(results.size()).arg(searchTerm), 3000);
@@ -1119,31 +1137,30 @@ void MainWindow::onSearchTextChanged(const QString& text) {
 }
 
 // Add implementation for onSearchClicked
-void MainWindow::onSearchClicked() {
-    // Get the search text
-    QString searchText = m_searchInput->text();
+void MainWindow::onSearchClicked()
+{
+    QString text = m_searchInput->text();
+    if (text.isEmpty()) {
+        showStatusMessage(tr("Please enter a search term"), 3000);
+        return;
+    }
+    
+    // Clear the model
+    m_packagesModel->removeRows(0, m_packagesModel->rowCount());
+    
+    // Update status bar
+    showStatusMessage(tr("Searching for packages matching '%1'...").arg(text), 0);
     
     // Perform the search
-    if (!searchText.isEmpty()) {
-        // Clear previous results before a new search
-        m_packagesModel->clear();
-        m_packagesModel->setHorizontalHeaderLabels(
-            QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
-            
-        // First perform regular package search
-        performAsyncSearch(searchText);
-        
-        // If Flatpak is enabled, also search for Flatpak packages
-        if (m_flatpakSearchEnabled && m_packageManager.is_flatpak_available()) {
-            qDebug() << "DEBUG: Flatpak search is enabled, searching for Flatpak packages";
-            performAsyncFlatpakSearch(searchText);
-        } else {
-            qDebug() << "DEBUG: Flatpak search is NOT enabled or not available";
-            qDebug() << "DEBUG: m_flatpakSearchEnabled =" << m_flatpakSearchEnabled;
-            qDebug() << "DEBUG: flatpak_available =" << m_packageManager.is_flatpak_available();
-        }
+    qDebug() << "Performing async search for:" << text;
+    performAsyncSearch(text);
+    
+    // If Flatpak support is enabled, also search for Flatpak packages
+    if (m_packageManager.is_flatpak_available() && m_flatpakSearchEnabled) {
+        qDebug() << "Flatpak search is enabled, searching for Flatpak packages";
+        performAsyncFlatpakSearch(text);
     } else {
-        showStatusMessage(tr("Please enter a search term"), 3000);
+        qDebug() << "Flatpak search is disabled or not available";
     }
 }
 
@@ -1156,29 +1173,53 @@ void MainWindow::onInstallPackage() {
         return;
     }
     
-    // Collect package names
+    // Collect package names and separate Flatpak packages
     QStringList packageNames;
+    QStringList flatpakPackages;
     QStringList packageDetails;
+    
     for (const QModelIndex& index : selected) {
-        QModelIndex nameIndex = m_packagesModel->index(index.row(), 1); // Name column (was incorrectly 0)
-        QModelIndex versionIndex = m_packagesModel->index(index.row(), 2); // Version column (was incorrectly 1)
+        QModelIndex nameIndex = m_packagesModel->index(index.row(), 1); // Name column
+        QModelIndex versionIndex = m_packagesModel->index(index.row(), 2); // Version column
         QModelIndex repoIndex = m_packagesModel->index(index.row(), 3); // Repository column
         
         QString name = m_packagesModel->data(nameIndex).toString();
         QString version = m_packagesModel->data(versionIndex).toString();
         QString repo = m_packagesModel->data(repoIndex).toString();
         
-        packageNames.append(name);
-        packageDetails.append(tr("%1 (%2) from %3").arg(name).arg(version).arg(repo));
+        // Check if this is a Flatpak package
+        QVariant packageType = nameIndex.data(Qt::UserRole + 1);
+        bool isFlatpak = (packageType.toString() == "flatpak");
+        
+        // Get app ID for Flatpak packages
+        QString appId = nameIndex.data(Qt::UserRole).toString();
+        if (isFlatpak && appId.isEmpty()) {
+            // If no app ID is stored, use the name
+            appId = name;
+        }
+        
+        if (isFlatpak) {
+            flatpakPackages.append(appId);
+            packageDetails.append(tr("%1 (%2) [Flatpak]").arg(name).arg(version));
+        } else {
+            packageNames.append(name);
+            packageDetails.append(tr("%1 (%2) from %3").arg(name).arg(version).arg(repo));
+        }
+    }
+    
+    // Check if we have any packages to install
+    if (packageNames.isEmpty() && flatpakPackages.isEmpty()) {
+        showStatusMessage(tr("No valid packages selected for installation"), 3000);
+        return;
     }
     
     // Confirm installation
     QString message;
-    if (packageNames.size() == 1) {
+    if (packageNames.size() + flatpakPackages.size() == 1) {
         message = tr("Are you sure you want to install %1?\n\nThis operation will require your password for authentication.").arg(packageDetails.first());
     } else {
         message = tr("Are you sure you want to install the following %1 packages?\n\n%2\n\nThis operation will require your password for authentication.")
-            .arg(packageNames.size())
+            .arg(packageNames.size() + flatpakPackages.size())
             .arg(packageDetails.join("\n"));
     }
     
@@ -1196,27 +1237,58 @@ void MainWindow::onInstallPackage() {
     // Show status message
     showStatusMessage(tr("Installing packages..."), 0);
     
-    // Find available terminal emulator
-    QString terminal = findTerminalEmulator();
-    QStringList args;
-    QString packagesStr = packageNames.join(" ");
-    
-    // Set up the command based on terminal type
-    if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
-        args << "-e" << QString("sudo pacman -S --noconfirm %1; read -p 'Press Enter to close'").arg(packagesStr);
-    } else if (terminal == "kitty" || terminal == "alacritty") {
-        args << "-e" << "sudo" << "pacman" << "-S" << "--noconfirm";
-        args.append(packageNames);
-    } else {
-        // Default for xterm and others
-        args << "-e" << QString("sudo pacman -S --noconfirm %1 && echo 'Press ENTER to close this window' && read").arg(packagesStr);
+    // Install regular packages if any
+    if (!packageNames.isEmpty()) {
+        // Find available terminal emulator
+        QString terminal = findTerminalEmulator();
+        QStringList args;
+        QString packagesStr = packageNames.join(" ");
+        
+        // Set up the command based on terminal type
+        if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
+            args << "-e" << QString("sudo pacman -S --noconfirm %1; read -p 'Press Enter to close'").arg(packagesStr);
+        } else if (terminal == "kitty" || terminal == "alacritty") {
+            args << "-e" << "sudo" << "pacman" << "-S" << "--noconfirm";
+            args.append(packageNames);
+        } else {
+            // Default for xterm and others
+            args << "-e" << QString("sudo pacman -S --noconfirm %1 && echo 'Press ENTER to close this window' && read").arg(packagesStr);
+        }
+        
+        // Run the command in the terminal
+        QProcess::startDetached(terminal, args);
     }
     
-    // Run the command in the terminal
-    QProcess::startDetached(terminal, args);
+    // Install Flatpak packages if any
+    if (!flatpakPackages.isEmpty()) {
+        // Find available terminal emulator
+        QString terminal = findTerminalEmulator();
+        QStringList args;
+        
+        // Build the command to install all Flatpak packages
+        QString flatpakInstallCmd = "flatpak install -y flathub " + flatpakPackages.join(" ");
+        
+        // Set up the command based on terminal type
+        if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
+            args << "-e" << QString("%1; read -p 'Press Enter to close'").arg(flatpakInstallCmd);
+        } else if (terminal == "kitty" || terminal == "alacritty") {
+            args << "-e" << "sh" << "-c" << QString("%1; read -p 'Press Enter to close'").arg(flatpakInstallCmd);
+        } else {
+            // Default for xterm and others
+            args << "-e" << QString("%1 && echo 'Press ENTER to close this window' && read").arg(flatpakInstallCmd);
+        }
+        
+        // Run the command in the terminal
+        QProcess::startDetached(terminal, args);
+    }
     
     // Schedule a refresh of installed packages after some time
     QTimer::singleShot(10000, this, &MainWindow::refreshInstalledPackages);
+    
+    // Also refresh Flatpak list if we installed any Flatpak packages
+    if (!flatpakPackages.isEmpty()) {
+        QTimer::singleShot(10000, this, &MainWindow::refreshFlatpakList);
+    }
 }
 
 // Add implementation for onRemovePackage
@@ -1238,28 +1310,51 @@ void MainWindow::onRemovePackage() {
     
     // Collect package names
     QStringList packageNames;
+    QStringList flatpakPackages;
     QStringList packageDetails;
     
     QStandardItemModel* model = m_tabWidget->currentIndex() == 0 ? m_packagesModel : m_installedModel;
     
     for (const QModelIndex& index : selected) {
-        QModelIndex nameIndex = model->index(index.row(), 1); // Name column (was incorrectly 0)
-        QModelIndex versionIndex = model->index(index.row(), 2); // Version column (was incorrectly 1)
+        QModelIndex nameIndex = model->index(index.row(), 1); // Name column
+        QModelIndex versionIndex = model->index(index.row(), 2); // Version column
         
         QString name = model->data(nameIndex).toString();
         QString version = model->data(versionIndex).toString();
         
-        packageNames.append(name);
-        packageDetails.append(tr("%1 (%2)").arg(name).arg(version));
+        // Check if this is a Flatpak package
+        QVariant packageType = nameIndex.data(Qt::UserRole + 1);
+        bool isFlatpak = (packageType.toString() == "flatpak");
+        
+        // Get app ID for Flatpak packages
+        QString appId = nameIndex.data(Qt::UserRole).toString();
+        if (isFlatpak && appId.isEmpty()) {
+            // If no app ID is stored, use the name
+            appId = name;
+        }
+        
+        if (isFlatpak) {
+            flatpakPackages.append(appId);
+            packageDetails.append(tr("%1 (%2) [Flatpak]").arg(name).arg(version));
+        } else {
+            packageNames.append(name);
+            packageDetails.append(tr("%1 (%2)").arg(name).arg(version));
+        }
+    }
+    
+    // Check if we have any packages to remove
+    if (packageNames.isEmpty() && flatpakPackages.isEmpty()) {
+        showStatusMessage(tr("No valid packages selected for removal"), 3000);
+        return;
     }
     
     // Confirm removal
     QString message;
-    if (packageNames.size() == 1) {
+    if (packageNames.size() + flatpakPackages.size() == 1) {
         message = tr("Are you sure you want to remove %1?\n\nThis operation will require your password for authentication.").arg(packageDetails.first());
     } else {
         message = tr("Are you sure you want to remove the following %1 packages?\n\n%2\n\nThis operation will require your password for authentication.")
-            .arg(packageNames.size())
+            .arg(packageNames.size() + flatpakPackages.size())
             .arg(packageDetails.join("\n"));
     }
     
@@ -1277,27 +1372,58 @@ void MainWindow::onRemovePackage() {
     // Show status message
     showStatusMessage(tr("Removing packages..."), 0);
     
-    // Find available terminal emulator
-    QString terminal = findTerminalEmulator();
-    QStringList args;
-    QString packagesStr = packageNames.join(" ");
-    
-    // Set up the command based on terminal type
-    if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
-        args << "-e" << QString("sudo pacman -R --noconfirm %1; read -p 'Press Enter to close'").arg(packagesStr);
-    } else if (terminal == "kitty" || terminal == "alacritty") {
-        args << "-e" << "sudo" << "pacman" << "-R" << "--noconfirm";
-        args.append(packageNames);
-    } else {
-        // Default for xterm and others
-        args << "-e" << QString("sudo pacman -R --noconfirm %1 && echo 'Press ENTER to close this window' && read").arg(packagesStr);
+    // Remove regular packages if any
+    if (!packageNames.isEmpty()) {
+        // Find available terminal emulator
+        QString terminal = findTerminalEmulator();
+        QStringList args;
+        QString packagesStr = packageNames.join(" ");
+        
+        // Set up the command based on terminal type
+        if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
+            args << "-e" << QString("sudo pacman -R --noconfirm %1; read -p 'Press Enter to close'").arg(packagesStr);
+        } else if (terminal == "kitty" || terminal == "alacritty") {
+            args << "-e" << "sudo" << "pacman" << "-R" << "--noconfirm";
+            args.append(packageNames);
+        } else {
+            // Default for xterm and others
+            args << "-e" << QString("sudo pacman -R --noconfirm %1 && echo 'Press ENTER to close this window' && read").arg(packagesStr);
+        }
+        
+        // Run the command in the terminal
+        QProcess::startDetached(terminal, args);
     }
     
-    // Run the command in the terminal
-    QProcess::startDetached(terminal, args);
+    // Remove Flatpak packages if any
+    if (!flatpakPackages.isEmpty()) {
+        // Find available terminal emulator
+        QString terminal = findTerminalEmulator();
+        QStringList args;
+        
+        // Build the command to remove all Flatpak packages
+        QString flatpakRemoveCmd = "flatpak uninstall -y " + flatpakPackages.join(" ");
+        
+        // Set up the command based on terminal type
+        if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
+            args << "-e" << QString("%1; read -p 'Press Enter to close'").arg(flatpakRemoveCmd);
+        } else if (terminal == "kitty" || terminal == "alacritty") {
+            args << "-e" << "sh" << "-c" << QString("%1; read -p 'Press Enter to close'").arg(flatpakRemoveCmd);
+        } else {
+            // Default for xterm and others
+            args << "-e" << QString("%1 && echo 'Press ENTER to close this window' && read").arg(flatpakRemoveCmd);
+        }
+        
+        // Run the command in the terminal
+        QProcess::startDetached(terminal, args);
+    }
     
     // Schedule a refresh of installed packages after some time
     QTimer::singleShot(10000, this, &MainWindow::refreshInstalledPackages);
+    
+    // Also refresh Flatpak list if we removed any Flatpak packages
+    if (!flatpakPackages.isEmpty()) {
+        QTimer::singleShot(10000, this, &MainWindow::refreshFlatpakList);
+    }
 }
 
 // Add implementation for onUpdatePackage
@@ -2425,158 +2551,70 @@ void MainWindow::searchFlatpakPackages(const QString& searchTerm)
     performAsyncFlatpakSearch(searchTerm);
 }
 
-void MainWindow::performAsyncFlatpakSearch(const QString& searchTerm)
-{
-    // Debug information for troubleshooting
-    qDebug() << "DEBUG: performAsyncFlatpakSearch called with:" << searchTerm;
-    qDebug() << "DEBUG: Flatpak available:" << m_packageManager.is_flatpak_available();
-    qDebug() << "DEBUG: Flatpak search enabled:" << m_flatpakSearchEnabled;
-    
-    if (!m_packageManager.is_flatpak_available() || !m_flatpakSearchEnabled) {
-        qDebug() << "DEBUG: Skipping Flatpak search - not available or not enabled";
+void MainWindow::performAsyncFlatpakSearch(const QString& searchTerm) {
+    if (!m_packageManager.is_flatpak_available()) {
+        showStatusMessage("Flatpak support is not enabled", 3000);
         return;
     }
-    
-    qDebug() << "DEBUG: Performing async Flatpak search for:" << searchTerm;
-    
-    // Ensure model is properly initialized
-    if (!m_flatpakModel) {
-        m_flatpakModel = new QStandardItemModel(0, 5, this);
-        m_flatpakModel->setHorizontalHeaderLabels(
-            QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
-    }
-    
-    // Clear the flatpak search model
-    m_flatpakModel->clear();
-    m_flatpakModel->setHorizontalHeaderLabels(
-        QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
-    
-    // If search term is empty, show nothing
-    if (searchTerm.isEmpty()) {
-        showStatusMessage(tr("Enter a search term to find Flatpak packages"), 3000);
-        return;
-    }
-    
-    // Show searching status
-    showStatusMessage(tr("Searching for Flatpak packages matching '%1'...").arg(searchTerm), 0);
-    
-    // Cancel any previous search
-    if (m_flatpakSearchWatcher) {
-        if (m_flatpakSearchWatcher->isRunning()) {
-            m_flatpakSearchWatcher->cancel();
-            m_flatpakSearchWatcher->waitForFinished();
-        }
-        delete m_flatpakSearchWatcher;
-        m_flatpakSearchWatcher = nullptr;
-    }
-    
-    // Create new watcher for async search
-    m_flatpakSearchWatcher = new QFutureWatcher<std::vector<pacmangui::core::FlatpakPackage>>(this);
-    
+
+    // Show that we're searching
+    showStatusMessage("Searching for Flatpak packages...", 0);
+
+    // Create a QFutureWatcher to handle the async search
+    auto watcher = new QFutureWatcher<std::vector<pacmangui::core::FlatpakPackage>>();
+
     // Connect signals
-    connect(m_flatpakSearchWatcher, &QFutureWatcher<std::vector<pacmangui::core::FlatpakPackage>>::finished, 
-            this, [this, searchTerm]() {
-        if (!m_flatpakSearchWatcher) return;
+    connect(watcher, &QFutureWatcher<std::vector<pacmangui::core::FlatpakPackage>>::finished, this, [=]() {
+        // Get the search results
+        auto results = watcher->result();
         
-        // Get results
-        std::vector<pacmangui::core::FlatpakPackage> searchResults = m_flatpakSearchWatcher->result();
+        qDebug() << "Found" << results.size() << "Flatpak packages matching" << searchTerm;
         
-        qDebug() << "DEBUG: Found" << searchResults.size() << "Flatpak packages matching" << searchTerm;
-        
-        // Clear the flatpak model before adding new results
-        m_flatpakModel->clear();
-        m_flatpakModel->setHorizontalHeaderLabels(
-            QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
-        
-        // Add packages to the models
-        for (const auto& pkg : searchResults) {
-            // Add to flatpak model for reference
-            QList<QStandardItem*> flatpakRow;
+        // Update the model with the results
+        for (const auto& package : results) {
+            // Create checkbox item
+            auto checkbox = new QStandardItem();
+            checkbox->setCheckable(true);
+            checkbox->setCheckState(Qt::Unchecked);
             
-            QStandardItem* flatpakCheckItem = new QStandardItem();
-            flatpakCheckItem->setCheckable(true);
-            flatpakCheckItem->setCheckState(Qt::Unchecked);
-            flatpakCheckItem->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
+            // Create items for other columns
+            auto nameItem = new QStandardItem(QString::fromStdString(package.get_name()));
+            auto versionItem = new QStandardItem(QString::fromStdString(package.get_version()));
+            auto repositoryItem = new QStandardItem("Flatpak");
+            auto descriptionItem = new QStandardItem(QString::fromStdString(package.get_description()));
             
-            QStandardItem* flatpakNameItem = new QStandardItem(QString::fromStdString(pkg.get_name()));
-            flatpakNameItem->setData(QString::fromStdString(pkg.get_app_id()), Qt::UserRole); // Store app_id for later use
+            // Store the package in the first column
+            QVariant v;
+            v.setValue(package);
+            checkbox->setData(v, Qt::UserRole);
             
-            QStandardItem* flatpakVersionItem = new QStandardItem(QString::fromStdString(pkg.get_version()));
-            QStandardItem* flatpakRepoItem = new QStandardItem(QString::fromStdString(pkg.get_repository()));
-            QStandardItem* flatpakDescItem = new QStandardItem(QString::fromStdString(pkg.get_description()));
+            // Mark as Flatpak for later identification
+            checkbox->setData("flatpak", Qt::UserRole + 1);
+            nameItem->setData("flatpak", Qt::UserRole + 1);
             
-            flatpakRow << flatpakCheckItem << flatpakNameItem << flatpakVersionItem << flatpakRepoItem << flatpakDescItem;
-            m_flatpakModel->appendRow(flatpakRow);
-            
-            // Now add to main packages model for display
-            QList<QStandardItem*> displayRow;
-            
-            QStandardItem* checkItem = new QStandardItem();
-            checkItem->setCheckable(true);
-            checkItem->setCheckState(Qt::Unchecked);
-            checkItem->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
-            checkItem->setData("flatpak", Qt::UserRole + 1); // Mark as flatpak
-            
-            QStandardItem* nameItem = new QStandardItem(QString::fromStdString(pkg.get_name()));
-            nameItem->setData(QString::fromStdString(pkg.get_app_id()), Qt::UserRole); // Store app_id for later use
-            nameItem->setData("flatpak", Qt::UserRole + 1); // Mark as flatpak
-            
-            QStandardItem* versionItem = new QStandardItem(QString::fromStdString(pkg.get_version()));
-            
-            // Mark repository as Flatpak
-            QStandardItem* repoItem = new QStandardItem(QString::fromStdString(pkg.get_repository()) + " (Flatpak)");
-            repoItem->setData("flatpak", Qt::UserRole + 1);
-            
-            QStandardItem* descItem = new QStandardItem(QString::fromStdString(pkg.get_description()));
-            
-            displayRow << checkItem << nameItem << versionItem << repoItem << descItem;
-            m_packagesModel->appendRow(displayRow);
+            // Add the row to the main model
+            QList<QStandardItem*> items;
+            items << checkbox << nameItem << versionItem << repositoryItem << descriptionItem;
+            m_packagesModel->appendRow(items);
         }
         
-        // If we have results, update the view
-        if (searchResults.size() > 0) {
-            // Set column widths after populating data
-            m_packagesTable->setColumnWidth(0, 30);  // Checkbox column
-            m_packagesTable->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);  // Name column resize to content
-            m_packagesTable->setColumnWidth(2, 100);  // Version column
-            m_packagesTable->setColumnWidth(3, 120);  // Repository column - wider for Flatpak annotation
-            m_packagesTable->header()->setSectionResizeMode(4, QHeaderView::Stretch);  // Description column takes remaining space
-            
-            // Make sure the table is visible
-            m_packagesTable->show();
-            
-            // Enable Flatpak install button
-            if (m_installFlatpakButton) {
-                m_installFlatpakButton->setEnabled(true);
-            }
-            
-            // Update status bar
-            showStatusMessage(tr("Found %1 Flatpak packages matching '%2'")
-                            .arg(searchResults.size())
-                            .arg(searchTerm), 3000);
+        // Update status
+        if (results.empty()) {
+            showStatusMessage("No Flatpak packages found matching '" + searchTerm + "'", 3000);
         } else {
-            // No results
-            showStatusMessage(tr("No Flatpak packages found matching '%1'").arg(searchTerm), 3000);
-            
-            // Disable Flatpak install button
-            if (m_installFlatpakButton) {
-                m_installFlatpakButton->setEnabled(false);
-            }
+            showStatusMessage("Found " + QString::number(results.size()) + " Flatpak package(s) matching '" + searchTerm + "'", 3000);
         }
         
-        // Clean up
-        m_flatpakSearchWatcher->deleteLater();
-        m_flatpakSearchWatcher = nullptr;
+        // Clean up the watcher
+        watcher->deleteLater();
+    });
+
+    // Start the search
+    auto future = QtConcurrent::run([=]() {
+        return m_packageManager.search_flatpak_by_name(searchTerm.toStdString());
     });
     
-    // Run the search in background
-    QFuture<std::vector<pacmangui::core::FlatpakPackage>> future = QtConcurrent::run(
-        [this, searchTerm]() {
-            return m_packageManager.search_flatpak_by_name(searchTerm.toStdString());
-        }
-    );
-    
-    m_flatpakSearchWatcher->setFuture(future);
+    watcher->setFuture(future);
 }
 
 void MainWindow::onInstallFlatpakPackage()

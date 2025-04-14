@@ -52,6 +52,10 @@ template <> constexpr inline auto pacmangui::gui::FlatpakManagerTab::qt_create_m
         "QModelIndex",
         "current",
         "previous",
+        "installFlatpak",
+        "appId",
+        "remote",
+        "onInstallNew",
         "onManageUserData",
         "onManageVersions",
         "onUninstall",
@@ -81,26 +85,32 @@ template <> constexpr inline auto pacmangui::gui::FlatpakManagerTab::qt_create_m
         QtMocHelpers::SlotData<void(const QModelIndex &, const QModelIndex &)>(9, 2, QMC::AccessPublic, QMetaType::Void, {{
             { 0x80000000 | 10, 11 }, { 0x80000000 | 10, 12 },
         }}),
+        // Slot 'installFlatpak'
+        QtMocHelpers::SlotData<void(const QString &, const QString &)>(13, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 14 }, { QMetaType::QString, 15 },
+        }}),
+        // Slot 'onInstallNew'
+        QtMocHelpers::SlotData<void()>(16, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'onManageUserData'
-        QtMocHelpers::SlotData<void()>(13, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onManageVersions'
-        QtMocHelpers::SlotData<void()>(14, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onUninstall'
-        QtMocHelpers::SlotData<void()>(15, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onRemoveUserData'
-        QtMocHelpers::SlotData<void()>(16, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onCreateSnapshot'
         QtMocHelpers::SlotData<void()>(17, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onRestoreSnapshot'
+        // Slot 'onManageVersions'
         QtMocHelpers::SlotData<void()>(18, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onAddRemote'
+        // Slot 'onUninstall'
         QtMocHelpers::SlotData<void()>(19, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onRemoveRemote'
+        // Slot 'onRemoveUserData'
         QtMocHelpers::SlotData<void()>(20, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onBatchOperation'
+        // Slot 'onCreateSnapshot'
         QtMocHelpers::SlotData<void()>(21, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'scanForOrphanedData'
+        // Slot 'onRestoreSnapshot'
         QtMocHelpers::SlotData<void()>(22, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onAddRemote'
+        QtMocHelpers::SlotData<void()>(23, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onRemoveRemote'
+        QtMocHelpers::SlotData<void()>(24, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onBatchOperation'
+        QtMocHelpers::SlotData<void()>(25, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'scanForOrphanedData'
+        QtMocHelpers::SlotData<void()>(26, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -129,16 +139,18 @@ void pacmangui::gui::FlatpakManagerTab::qt_static_metacall(QObject *_o, QMetaObj
         case 2: _t->refreshFlatpakRemotes(); break;
         case 3: _t->filterFlatpakList((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         case 4: _t->onFlatpakSelected((*reinterpret_cast< std::add_pointer_t<QModelIndex>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QModelIndex>>(_a[2]))); break;
-        case 5: _t->onManageUserData(); break;
-        case 6: _t->onManageVersions(); break;
-        case 7: _t->onUninstall(); break;
-        case 8: _t->onRemoveUserData(); break;
-        case 9: _t->onCreateSnapshot(); break;
-        case 10: _t->onRestoreSnapshot(); break;
-        case 11: _t->onAddRemote(); break;
-        case 12: _t->onRemoveRemote(); break;
-        case 13: _t->onBatchOperation(); break;
-        case 14: _t->scanForOrphanedData(); break;
+        case 5: _t->installFlatpak((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
+        case 6: _t->onInstallNew(); break;
+        case 7: _t->onManageUserData(); break;
+        case 8: _t->onManageVersions(); break;
+        case 9: _t->onUninstall(); break;
+        case 10: _t->onRemoveUserData(); break;
+        case 11: _t->onCreateSnapshot(); break;
+        case 12: _t->onRestoreSnapshot(); break;
+        case 13: _t->onAddRemote(); break;
+        case 14: _t->onRemoveRemote(); break;
+        case 15: _t->onBatchOperation(); break;
+        case 16: _t->scanForOrphanedData(); break;
         default: ;
         }
     }
@@ -167,14 +179,14 @@ int pacmangui::gui::FlatpakManagerTab::qt_metacall(QMetaObject::Call _c, int _id
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 15)
+        if (_id < 17)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 15;
+        _id -= 17;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 15)
+        if (_id < 17)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 15;
+        _id -= 17;
     }
     return _id;
 }
