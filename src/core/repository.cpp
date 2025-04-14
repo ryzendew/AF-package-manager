@@ -91,6 +91,7 @@ std::vector<Package> Repository::get_packages() const
         Package package;
         package.set_name(name);
         package.set_version(version);
+        package.set_repository(m_name);
         
         // Description is optional
         if (desc) {
@@ -138,6 +139,7 @@ Package Repository::find_package(const std::string& name) const
     Package result;
     result.set_name(pkg_name);
     result.set_version(pkg_version);
+    result.set_repository(m_name);
     
     // Description is optional
     if (pkg_desc) {

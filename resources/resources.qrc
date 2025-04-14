@@ -5,6 +5,11 @@
         <file>icons/cog.png</file>
     </qresource>
     <qresource prefix="/styles">
-        <!-- Style sheets will be added here later -->
+        <!-- Theme stylesheets -->
+        <file>styles/dynamic.qss</file>
+        <file>styles/dark_colorful.qss</file>
+        <file>styles/dark.qss</file>
+        <file>styles/light_colorful.qss</file>
+        <file>styles/light.qss</file>
     </qresource>
 </RCC> 

@@ -7,7 +7,15 @@
 	"CROSS_CONFIG" : false,
 	"GENERATOR" : "Unix Makefiles",
 	"INCLUDE_DIR" : "/home/matt/PacmanGui-new/build/pacmangui_autogen/include",
-	"INPUTS" : [ "/home/matt/PacmanGui-new/resources/icons/cog.png" ],
+	"INPUTS" : 
+	[
+		"/home/matt/PacmanGui-new/resources/styles/dark.qss",
+		"/home/matt/PacmanGui-new/resources/styles/dynamic.qss",
+		"/home/matt/PacmanGui-new/resources/styles/light_colorful.qss",
+		"/home/matt/PacmanGui-new/resources/styles/light.qss",
+		"/home/matt/PacmanGui-new/resources/styles/dark_colorful.qss",
+		"/home/matt/PacmanGui-new/resources/icons/cog.png"
+	],
 	"LOCK_FILE" : "/home/matt/PacmanGui-new/build/CMakeFiles/pacmangui_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Lock.lock",
 	"MULTI_CONFIG" : false,
 	"OPTIONS" : [ "-name", "resources" ],

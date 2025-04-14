@@ -39,6 +39,10 @@
 #include <QRadioButton>
 #include <QScrollArea>
 #include <QVBoxLayout>
+#include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>
+#include <QEasingCurve>
+#include <iostream>
 
 namespace pacmangui {
 namespace gui {
@@ -72,6 +76,10 @@ MainWindow::MainWindow(QWidget* parent)
     , m_darkTheme(false)
     , m_settingsDialog(new SettingsDialog(this))
     , m_packageManager()
+    , m_detailPanel(nullptr)
+    , m_slideAnimation(nullptr)
+    , m_opacityEffect(nullptr)
+    , m_detailPanelVisible(false)
 {
     setWindowTitle("PacmanGUI - Package Manager");
     setMinimumSize(1000, 600);
@@ -143,14 +151,22 @@ MainWindow::MainWindow(QWidget* parent)
             }
         }
     });
+    
+    // Setup the detail panel
+    setupDetailPanel();
 }
 
 MainWindow::~MainWindow()
 {
-    // Clean up
+    // Clean up allocated resources
+    if (m_slideAnimation) {
+        m_slideAnimation->stop();
+    }
+    
     delete m_packagesModel;
     delete m_installedModel;
     delete m_systemUpdatesModel;
+    delete m_settingsDialog;
 }
 
 void MainWindow::checkAurHelper()
@@ -404,7 +420,7 @@ void MainWindow::setupUi()
     m_packagesView = new QTableView();
     m_packagesView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_packagesView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_packagesView->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_packagesView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     m_packagesView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_packagesView->setAlternatingRowColors(true);
     m_packagesView->verticalHeader()->setVisible(false);
@@ -448,7 +464,7 @@ void MainWindow::setupUi()
     m_installedView = new QTableView();
     m_installedView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_installedView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_installedView->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_installedView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     m_installedView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_installedView->setAlternatingRowColors(true);
     m_installedView->verticalHeader()->setVisible(false);
@@ -1037,7 +1053,13 @@ void MainWindow::setupMenus()
     QAction* themeAction = settingsMenu->addAction("&Dark Theme");
     themeAction->setCheckable(true);
     themeAction->setChecked(m_darkTheme);
-    connect(themeAction, &QAction::toggled, this, &MainWindow::toggleTheme);
+    
+    // Fix the connection by using a lambda to handle the toggle
+    std::cout << "MainWindow::setupMenus - Setting up theme toggle action" << std::endl;
+    connect(themeAction, &QAction::toggled, this, [this](bool checked) {
+        std::cout << "MainWindow::setupMenus - Theme action toggled: " << (checked ? "true" : "false") << std::endl;
+        toggleTheme(checked);
+    });
     
     settingsMenu->addSeparator();
     settingsMenu->addAction(m_actions["settings"]);
@@ -1049,6 +1071,9 @@ void MainWindow::setupMenus()
 
 void MainWindow::setupConnections()
 {
+    // Add debug log to show we're setting up connections
+    std::cout << "MainWindow::setupConnections - Setting up signal/slot connections" << std::endl;
+    
     // Connect search box and button
     connect(m_searchBox, &QLineEdit::returnPressed, this, &MainWindow::onSearchClicked);
     connect(m_searchBox, &QLineEdit::textChanged, this, &MainWindow::onSearchTextChanged);
@@ -1067,51 +1092,13 @@ void MainWindow::setupConnections()
     // Connect batch install button
     connect(m_batchInstallButton, &QPushButton::clicked, this, &MainWindow::onBatchInstall);
     
-    // Handle row clicks for displaying package details
-    connect(m_packagesView, &QTableView::clicked, [this](const QModelIndex &index) {
-        // Show details for the clicked package
-        int row = index.row();
-        QString packageName = m_packagesModel->data(m_packagesModel->index(row, 1)).toString();
-        QString version = m_packagesModel->data(m_packagesModel->index(row, 2)).toString();
-        QString repository = m_packagesModel->data(m_packagesModel->index(row, 3)).toString();
-        QString description = m_packagesModel->data(m_packagesModel->index(row, 4)).toString();
-        
-        m_packageNameLabel->setText(packageName);
-        m_packageVersionLabel->setText("Version: " + version + " (" + repository + ")");
-        m_packageDescLabel->setText(description);
-        
-        // Set action button based on installation status
-        bool isInstalled = m_packageManager.is_package_installed(packageName.toStdString());
-        if (isInstalled) {
-            m_actionButton->setText("Remove");
-            connect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onRemovePackage, Qt::UniqueConnection);
-        } else {
-            m_actionButton->setText("Install");
-            connect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onInstallPackage, Qt::UniqueConnection);
-        }
-        
-        m_detailsWidget->setVisible(true);
-    });
+    // Connect models for handling checkbox changes
+    connect(m_packagesModel, &QStandardItemModel::itemChanged, this, &MainWindow::onPackageItemChanged);
+    connect(m_installedModel, &QStandardItemModel::itemChanged, this, &MainWindow::onPackageItemChanged);
     
-    // Also handle row clicks for installed packages view
-    connect(m_installedView, &QTableView::clicked, [this](const QModelIndex &index) {
-        // Show details for the clicked package
-        int row = index.row();
-        QString packageName = m_installedModel->data(m_installedModel->index(row, 1)).toString();
-        QString version = m_installedModel->data(m_installedModel->index(row, 2)).toString();
-        QString repository = m_installedModel->data(m_installedModel->index(row, 3)).toString();
-        QString description = m_installedModel->data(m_installedModel->index(row, 4)).toString();
-        
-        m_packageNameLabel->setText(packageName);
-        m_packageVersionLabel->setText("Version: " + version + " (" + repository + ")");
-        m_packageDescLabel->setText(description);
-        
-        // For installed packages, always show Remove button
-        m_actionButton->setText("Remove");
-        connect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onRemovePackage, Qt::UniqueConnection);
-        
-        m_detailsWidget->setVisible(true);
-    });
+    // Handle row clicks for displaying package details
+    connect(m_packagesView, &QTableView::clicked, this, &MainWindow::onPackageSelected);
+    connect(m_installedView, &QTableView::clicked, this, &MainWindow::onInstalledPackageSelected);
     
     // Connect system update table double click
     connect(m_systemUpdatesView, &QTableView::doubleClicked, [this](const QModelIndex& index) {
@@ -1346,6 +1333,11 @@ void MainWindow::setupConnections()
             m_backupPathEdit->setText(fileName);
         }
     });
+    
+    // Connect to settings dialog for theme changes
+    std::cout << "MainWindow::setupConnections - Setting up connections for settings dialog" << std::endl;
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    std::cout << "MainWindow::setupConnections - Current theme: " << settings.value("appearance/theme", "dark_colorful").toString().toStdString() << std::endl;
 }
 
 void MainWindow::onBackupDatabase()
@@ -1602,8 +1594,40 @@ void MainWindow::onSyncAll()
 
 void MainWindow::onTabChanged(int index)
 {
-    // Update UI based on the selected tab
-    statusBar()->showMessage(QString("Tab changed to index %1").arg(index), 2000);
+    qDebug() << "Tab changed to index:" << index;
+    statusBar()->showMessage("Current tab: " + m_tabWidget->tabText(index), 2000);
+
+    // Show/hide detail panel based on tab index
+    if (index < 2) { // All Packages (0) or Installed (1)
+        // Only show if a package is currently selected
+        if (index == 0 && m_packagesView->selectionModel()->hasSelection()) {
+            m_detailsWidget->setVisible(true);
+            // Ensure sidebar panel is open for selected package
+            if (m_detailPanelVisible) {
+                m_detailPanel->setVisible(true);
+            }
+        } else if (index == 1 && m_installedView->selectionModel()->hasSelection()) {
+            m_detailsWidget->setVisible(true);
+            // Ensure sidebar panel is open for selected package
+            if (m_detailPanelVisible) {
+                m_detailPanel->setVisible(true);
+            }
+        } else {
+            m_detailsWidget->setVisible(false);
+            // Close sidebar panel if no selection
+            if (m_detailPanelVisible) {
+                closeDetailPanel();
+                m_detailPanelVisible = false;
+            }
+        }
+    } else {
+        // For other tabs, always hide the detail panel and sliding panel
+        m_detailsWidget->setVisible(false);
+        if (m_detailPanelVisible) {
+            closeDetailPanel();
+            m_detailPanelVisible = false;
+        }
+    }
 }
 
 void MainWindow::onSearchTextChanged(const QString& text)
@@ -1790,9 +1814,93 @@ void MainWindow::onBatchInstall()
         return;
     }
     
-    // TODO: Implement batch install functionality
+    // Ask for password
+    bool ok;
+    QString password = QInputDialog::getText(
+        this, 
+        "Authentication Required",
+        "Enter your password to install packages:",
+        QLineEdit::Password, 
+        "", 
+        &ok);
     
-    statusBar()->showMessage("Batch install not implemented yet", 3000);
+    if (!ok || password.isEmpty()) {
+        statusBar()->showMessage("Batch installation cancelled", 3000);
+        return;
+    }
+    
+    // Check if overwrite is enabled
+    bool useOverwrite = m_packageOverwriteCheckbox->isChecked();
+    
+    // Create progress dialog
+    QProgressDialog progress("Installing packages...", "Cancel", 0, packageList.size(), this);
+    progress.setWindowModality(Qt::WindowModal);
+    progress.setMinimumDuration(0);
+    progress.setValue(0);
+    
+    // Initialize success counter
+    int successCount = 0;
+    
+    // Set cursor
+    setCursor(Qt::WaitCursor);
+    
+    // Install each package
+    for (int i = 0; i < packageList.size(); ++i) {
+        QString packageName = packageList.at(i);
+        
+        // Update progress dialog
+        progress.setValue(i);
+        progress.setLabelText(QString("Installing package %1 of %2: %3")
+                             .arg(i+1)
+                             .arg(packageList.size())
+                             .arg(packageName));
+        QApplication::processEvents();
+        
+        // Check if user cancelled the operation
+        if (progress.wasCanceled()) {
+            break;
+        }
+        
+        // Install the package
+        bool success = m_packageManager.install_package(
+            packageName.toStdString(), 
+            password.toStdString(), 
+            useOverwrite);
+        
+        if (success) {
+            successCount++;
+        } else {
+            QString errorMessage = QString::fromStdString(m_packageManager.get_last_error());
+            QMessageBox::warning(
+                this, 
+                "Installation Failed",
+                QString("Failed to install package %1:\n\n%2")
+                .arg(packageName)
+                .arg(errorMessage));
+        }
+    }
+    
+    // Reset cursor
+    setCursor(Qt::ArrowCursor);
+    
+    // Close progress dialog
+    progress.setValue(packageList.size());
+    
+    // Show result message
+    if (successCount == packageList.size()) {
+        statusBar()->showMessage(QString("Successfully installed all %1 packages").arg(successCount), 3000);
+    } else if (successCount > 0) {
+        statusBar()->showMessage(QString("Installed %1 of %2 packages").arg(successCount).arg(packageList.size()), 3000);
+    } else {
+        statusBar()->showMessage("Failed to install packages", 3000);
+    }
+    
+    // Refresh installed packages view
+    refreshInstalledPackages();
+    
+    // Clear selection
+    m_selectedPackages.clear();
+    updateBatchInstallButton();
 }
 
 void MainWindow::onSystemUpdate()
@@ -2158,7 +2266,49 @@ void MainWindow::onCheckDatabase()
 
 void MainWindow::openSettings()
 {
-    m_settingsDialog->exec();
+    std::cout << "MainWindow::openSettings - Opening settings dialog" << std::endl;
+    
+    // Create settings dialog
+    SettingsDialog dialog(this);
+    
+    // Connect signals for theme changes
+    connect(&dialog, &SettingsDialog::themeChanged, this, [this](bool isDark) {
+        std::cout << "MainWindow::openSettings - Theme changed signal received, isDark: " << (isDark ? "true" : "false") << std::endl;
+        applyTheme(isDark);
+    });
+    
+    // Execute dialog
+    int result = dialog.exec();
+    std::cout << "MainWindow::openSettings - Dialog closed with result: " << result << std::endl;
+    
+    if (result == QDialog::Accepted) {
+        std::cout << "MainWindow::openSettings - Settings accepted" << std::endl;
+        
+        // Update dark theme state
+        bool darkTheme = dialog.isDarkThemeEnabled();
+        std::cout << "MainWindow::openSettings - Dark theme enabled: " << (darkTheme ? "true" : "false") << std::endl;
+        
+        // Apply theme if it changed
+        if (m_darkTheme != darkTheme) {
+            std::cout << "MainWindow::openSettings - Theme changed, applying new theme" << std::endl;
+            toggleTheme(darkTheme);
+        } else {
+            std::cout << "MainWindow::openSettings - Theme unchanged" << std::endl;
+        }
+        
+        // Update AUR state
+        bool aurEnabled = dialog.isAurEnabled();
+        QSettings settings("PacmanGUI", "PacmanGUI");
+        settings.setValue("aur/enabled", aurEnabled);
+        
+        // Update AUR actions enable state
+        m_actions["aurInstall"]->setEnabled(aurEnabled);
+        m_actions["aurUpdate"]->setEnabled(aurEnabled);
+        
+        // Show confirmation message
+        std::cout << "MainWindow::openSettings - Settings applied successfully" << std::endl;
+        statusBar()->showMessage("Settings updated successfully", 3000);
+    }
 }
 
 void MainWindow::onAbout()
@@ -2172,18 +2322,38 @@ void MainWindow::onAbout()
 
 void MainWindow::toggleTheme()
 {
-    m_darkTheme = !m_darkTheme;
+    std::cout << "MainWindow::toggleTheme() - Toggling theme" << std::endl;
+    toggleTheme(!m_darkTheme);
+}
+
+void MainWindow::toggleTheme(bool isDark)
+{
+    std::cout << "MainWindow::toggleTheme(bool) - Setting dark theme to: " << (isDark ? "true" : "false") << std::endl;
+    m_darkTheme = isDark;
     applyTheme(m_darkTheme);
     
     // Save the setting
     QSettings settings("PacmanGUI", "PacmanGUI");
     settings.setValue("appearance/darkTheme", m_darkTheme);
+    
+    // Also update the theme name setting for consistency
+    QString themeName;
+    if (isDark) {
+        bool colorful = settings.value("appearance/darkColorfulTheme", true).toBool();
+        themeName = colorful ? "dark_colorful" : "dark";
+    } else {
+        bool colorful = settings.value("appearance/lightColorfulTheme", false).toBool();
+        themeName = colorful ? "light_colorful" : "light";
+    }
+    
+    std::cout << "MainWindow::toggleTheme(bool) - Setting theme name to: " << themeName.toStdString() << std::endl;
+    settings.setValue("appearance/theme", themeName);
 }
 
 void MainWindow::loadSettings()
 {
     QSettings settings("PacmanGUI", "PacmanGUI");
-    m_darkTheme = settings.value("appearance/darkTheme", false).toBool();
+    m_darkTheme = settings.value("appearance/darkTheme", true).toBool();
 }
 
 void MainWindow::saveSettings()
@@ -2194,37 +2364,95 @@ void MainWindow::saveSettings()
 
 void MainWindow::applyTheme(bool isDark)
 {
-    if (isDark) {
-        // Apply dark theme
-        qApp->setStyle("Fusion");
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    QString selectedTheme = settings.value("appearance/theme", "dark_colorful").toString();
+    
+    std::cout << "MainWindow::applyTheme - Applying theme: " << selectedTheme.toStdString() << std::endl;
+    
+    // Set Fusion style as the base style
+    qApp->setStyle("Fusion");
+    std::cout << "MainWindow::applyTheme - Set base style to Fusion" << std::endl;
+    
+    // Apply color palette based on the selected theme
+    QPalette palette;
+    
+    if (selectedTheme == "dark" || selectedTheme == "dark_colorful") {
+        std::cout << "MainWindow::applyTheme - Applying dark palette" << std::endl;
+        // Dark or Dark Colorful theme
+        QColor darkColor = QColor(30, 30, 46); // Match #1e1e2e
+        QColor disabledColor = QColor(166, 173, 200); // Match #a6adc8
+        QColor baseColor = QColor(24, 24, 37); // Match #181825
+        QColor textColor = QColor(248, 248, 242); // Match #f8f8f2
+        QColor accentColor = QColor(30, 102, 245); // Match #1e66f5
         
-        QPalette darkPalette;
-        QColor darkColor = QColor(45, 45, 45);
-        QColor disabledColor = QColor(127, 127, 127);
-        
-        darkPalette.setColor(QPalette::Window, darkColor);
-        darkPalette.setColor(QPalette::WindowText, Qt::white);
-        darkPalette.setColor(QPalette::Base, QColor(18, 18, 18));
-        darkPalette.setColor(QPalette::AlternateBase, darkColor);
-        darkPalette.setColor(QPalette::ToolTipBase, Qt::white);
-        darkPalette.setColor(QPalette::ToolTipText, Qt::white);
-        darkPalette.setColor(QPalette::Text, Qt::white);
-        darkPalette.setColor(QPalette::Disabled, QPalette::Text, disabledColor);
-        darkPalette.setColor(QPalette::Button, darkColor);
-        darkPalette.setColor(QPalette::ButtonText, Qt::white);
-        darkPalette.setColor(QPalette::Disabled, QPalette::ButtonText, disabledColor);
-        darkPalette.setColor(QPalette::BrightText, Qt::red);
-        darkPalette.setColor(QPalette::Link, QColor(42, 130, 218));
-        darkPalette.setColor(QPalette::Highlight, QColor(42, 130, 218));
-        darkPalette.setColor(QPalette::HighlightedText, Qt::black);
-        darkPalette.setColor(QPalette::Disabled, QPalette::HighlightedText, disabledColor);
-        
-        qApp->setPalette(darkPalette);
+        palette.setColor(QPalette::Window, darkColor);
+        palette.setColor(QPalette::WindowText, textColor);
+        palette.setColor(QPalette::Base, baseColor);
+        palette.setColor(QPalette::AlternateBase, darkColor);
+        palette.setColor(QPalette::ToolTipBase, textColor);
+        palette.setColor(QPalette::ToolTipText, textColor);
+        palette.setColor(QPalette::Text, textColor);
+        palette.setColor(QPalette::Disabled, QPalette::Text, disabledColor);
+        palette.setColor(QPalette::Button, darkColor);
+        palette.setColor(QPalette::ButtonText, textColor);
+        palette.setColor(QPalette::Disabled, QPalette::ButtonText, disabledColor);
+        palette.setColor(QPalette::BrightText, textColor);
+        palette.setColor(QPalette::Link, accentColor);
+        palette.setColor(QPalette::Highlight, accentColor);
+        palette.setColor(QPalette::HighlightedText, textColor);
+        palette.setColor(QPalette::Disabled, QPalette::HighlightedText, disabledColor);
     } else {
-        // Apply light theme (default)
-        qApp->setStyle("Fusion");
-        qApp->setPalette(QPalette());
+        std::cout << "MainWindow::applyTheme - Applying light palette" << std::endl;
+        // Light or Light Colorful theme
+        QColor lightColor = QColor(242, 244, 248); // Match #f2f4f8
+        QColor textColor = QColor(24, 24, 37); // Match #181825
+        QColor baseColor = QColor(255, 255, 255); // White
+        QColor disabledColor = QColor(88, 91, 112); // Match #585b70
+        QColor accentColor = QColor(30, 102, 245); // Match #1e66f5
+        
+        palette.setColor(QPalette::Window, lightColor);
+        palette.setColor(QPalette::WindowText, textColor);
+        palette.setColor(QPalette::Base, baseColor);
+        palette.setColor(QPalette::AlternateBase, lightColor);
+        palette.setColor(QPalette::ToolTipBase, baseColor);
+        palette.setColor(QPalette::ToolTipText, textColor);
+        palette.setColor(QPalette::Text, textColor);
+        palette.setColor(QPalette::Disabled, QPalette::Text, disabledColor);
+        palette.setColor(QPalette::Button, lightColor);
+        palette.setColor(QPalette::ButtonText, textColor);
+        palette.setColor(QPalette::Disabled, QPalette::ButtonText, disabledColor);
+        palette.setColor(QPalette::BrightText, textColor);
+        palette.setColor(QPalette::Link, accentColor);
+        palette.setColor(QPalette::Highlight, accentColor);
+        palette.setColor(QPalette::HighlightedText, baseColor);
+        palette.setColor(QPalette::Disabled, QPalette::HighlightedText, disabledColor);
     }
+    
+    // Apply the palette
+    qApp->setPalette(palette);
+    std::cout << "MainWindow::applyTheme - Applied palette to application" << std::endl;
+    
+    // Save the dark theme state for backward compatibility
+    m_darkTheme = (selectedTheme == "dark" || selectedTheme == "dark_colorful");
+    
+    // Load the appropriate QSS file based on theme selection
+    QString qssFile;
+    if (selectedTheme == "dark_colorful") {
+        qssFile = "dark_colorful.qss";
+    } else if (selectedTheme == "light_colorful") {
+        qssFile = "light_colorful.qss";
+    } else if (selectedTheme == "dark") {
+        qssFile = "dark.qss";
+    } else { // light
+        qssFile = "light.qss";
+    }
+    
+    std::cout << "MainWindow::applyTheme - Selected QSS file: " << qssFile.toStdString() << std::endl;
+    
+    // Try to load the selected theme from various paths
+    loadThemeStylesheet(qssFile);
+    
+    std::cout << "MainWindow::applyTheme - Theme application completed" << std::endl;
 }
 
 void MainWindow::searchPackages(const QString& searchTerm)
@@ -2255,13 +2483,17 @@ void MainWindow::searchPackages(const QString& searchTerm)
             for (const auto& pkg : results) {
                 QList<QStandardItem*> items;
                 
-                // Installed indicator
-                QStandardItem* installedItem = new QStandardItem();
+                // Checkbox column for package selection
+                QStandardItem* checkItem = new QStandardItem();
+                checkItem->setCheckable(true);
+                checkItem->setCheckState(Qt::Unchecked);
+                
+                // If already installed, add a visual indicator but keep it checkable
                 if (m_packageManager.is_package_installed(pkg.get_name())) {
-                    installedItem->setText("✓");
-                    installedItem->setTextAlignment(Qt::AlignCenter);
+                    checkItem->setText("✓");
+                    checkItem->setTextAlignment(Qt::AlignCenter);
                 }
-                items.append(installedItem);
+                items.append(checkItem);
                 
                 // Package information
                 items.append(new QStandardItem(QString::fromStdString(pkg.get_name())));
@@ -2306,10 +2538,13 @@ void MainWindow::refreshInstalledPackages()
             for (const auto& pkg : installedPackages) {
                 QList<QStandardItem*> items;
                 
-                // Installed indicator
-                QStandardItem* installedItem = new QStandardItem("✓");
-                installedItem->setTextAlignment(Qt::AlignCenter);
-                items.append(installedItem);
+                // Checkbox column for package selection
+                QStandardItem* checkItem = new QStandardItem();
+                checkItem->setCheckable(true);
+                checkItem->setCheckState(Qt::Unchecked);
+                checkItem->setText("✓");
+                checkItem->setTextAlignment(Qt::AlignCenter);
+                items.append(checkItem);
                 
                 // Package information
                 items.append(new QStandardItem(QString::fromStdString(pkg.get_name())));
@@ -2494,6 +2729,416 @@ void MainWindow::onFindPacnewFiles()
             }
         }, Qt::QueuedConnection);
     });
+}
+
+void MainWindow::setupDetailPanel()
+{
+    // Create the detail panel widget that will slide in from the right
+    m_detailPanel = new QWidget(this);
+    m_detailPanel->setObjectName("detailPanel");
+    m_detailPanel->setAutoFillBackground(true);
+    
+    // Set up opacity effect for fade-in animation
+    m_opacityEffect = new QGraphicsOpacityEffect(m_detailPanel);
+    m_opacityEffect->setOpacity(0.0);
+    m_detailPanel->setGraphicsEffect(m_opacityEffect);
+    
+    // Calculate panel width (25% of main window width)
+    int panelWidth = width() * SLIDE_PANEL_WIDTH_PERCENT / 100;
+    
+    // Position the panel initially outside the visible area
+    m_detailPanel->setGeometry(width(), 0, panelWidth, height());
+    m_detailPanel->setMinimumWidth(panelWidth);
+    m_detailPanel->setMaximumWidth(panelWidth);
+    
+    // Style the panel with a border and background
+    QPalette palette = m_detailPanel->palette();
+    palette.setColor(QPalette::Window, QColor(240, 240, 240));
+    if (m_darkTheme) {
+        palette.setColor(QPalette::Window, QColor(45, 45, 45));
+        palette.setColor(QPalette::WindowText, Qt::white);
+    }
+    m_detailPanel->setPalette(palette);
+    
+    // Create a layout for the panel content
+    QVBoxLayout* panelLayout = new QVBoxLayout(m_detailPanel);
+    panelLayout->setContentsMargins(15, 15, 15, 15);
+    panelLayout->setSpacing(10);
+    
+    // Add a scroll area for the panel content
+    m_detailScrollArea = new QScrollArea();
+    m_detailScrollArea->setWidgetResizable(true);
+    m_detailScrollArea->setFrameShape(QFrame::NoFrame);
+    
+    QWidget* scrollContent = new QWidget();
+    QVBoxLayout* scrollLayout = new QVBoxLayout(scrollContent);
+    scrollLayout->setContentsMargins(0, 0, 0, 0);
+    scrollLayout->setSpacing(15);
+    
+    // Add close button at the top
+    QHBoxLayout* headerLayout = new QHBoxLayout();
+    m_detailCloseButton = new QPushButton("×");
+    m_detailCloseButton->setObjectName("detailCloseButton");
+    m_detailCloseButton->setFixedSize(28, 28);
+    m_detailCloseButton->setToolTip("Close detail panel");
+    m_detailCloseButton->setCursor(Qt::PointingHandCursor);
+    headerLayout->addStretch();
+    headerLayout->addWidget(m_detailCloseButton);
+    scrollLayout->addLayout(headerLayout);
+    
+    // Add package icon
+    m_detailIcon = new QLabel();
+    m_detailIcon->setAlignment(Qt::AlignCenter);
+    m_detailIcon->setFixedSize(96, 96);
+    m_detailIcon->setScaledContents(true);
+    QIcon defaultIcon = QIcon::fromTheme("package", QIcon::fromTheme("application-x-executable"));
+    m_detailIcon->setPixmap(defaultIcon.pixmap(96, 96));
+    
+    QHBoxLayout* iconLayout = new QHBoxLayout();
+    iconLayout->addStretch();
+    iconLayout->addWidget(m_detailIcon);
+    iconLayout->addStretch();
+    scrollLayout->addLayout(iconLayout);
+    
+    // Add package title
+    m_detailTitle = new QLabel();
+    m_detailTitle->setObjectName("detailTitle");
+    m_detailTitle->setAlignment(Qt::AlignCenter);
+    m_detailTitle->setWordWrap(true);
+    QFont titleFont = m_detailTitle->font();
+    titleFont.setBold(true);
+    titleFont.setPointSize(titleFont.pointSize() + 2);
+    m_detailTitle->setFont(titleFont);
+    scrollLayout->addWidget(m_detailTitle);
+    
+    // Add package version
+    m_detailVersion = new QLabel();
+    m_detailVersion->setObjectName("detailVersion");
+    m_detailVersion->setAlignment(Qt::AlignCenter);
+    scrollLayout->addWidget(m_detailVersion);
+    
+    // Add repository
+    m_detailRepo = new QLabel();
+    m_detailRepo->setObjectName("detailRepo");
+    m_detailRepo->setAlignment(Qt::AlignCenter);
+    scrollLayout->addWidget(m_detailRepo);
+    
+    // Add separator line
+    QFrame* line = new QFrame();
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    scrollLayout->addWidget(line);
+    
+    // Add description
+    m_detailDescription = new QLabel();
+    m_detailDescription->setObjectName("detailDescription");
+    m_detailDescription->setWordWrap(true);
+    m_detailDescription->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    m_detailDescription->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    scrollLayout->addWidget(m_detailDescription);
+    
+    // Add spacing at the bottom
+    scrollLayout->addStretch();
+    
+    // Set the scroll content
+    m_detailScrollArea->setWidget(scrollContent);
+    panelLayout->addWidget(m_detailScrollArea);
+    
+    // Create the slide animation
+    m_slideAnimation = new QPropertyAnimation(m_detailPanel, "geometry");
+    m_slideAnimation->setDuration(300);
+    m_slideAnimation->setEasingCurve(QEasingCurve::OutCubic);
+    
+    // Connect signals for the detail panel
+    connect(m_detailCloseButton, &QPushButton::clicked, this, &MainWindow::closeDetailPanel);
+    connect(m_slideAnimation, &QPropertyAnimation::finished, this, &MainWindow::onDetailPanelAnimationFinished);
+    
+    // Initially hide the panel
+    m_detailPanel->setVisible(false);
+}
+
+void MainWindow::showDetailPanel(const QString& packageName, const QString& version, const QString& repo, const QString& description)
+{
+    // Stop any running animations
+    if (m_slideAnimation->state() == QPropertyAnimation::Running) {
+        m_slideAnimation->stop();
+    }
+    
+    // Update panel contents
+    m_detailTitle->setText(packageName);
+    m_detailVersion->setText("Version: " + version);
+    m_detailRepo->setText("Repository: " + repo);
+    m_detailDescription->setText(description);
+    
+    // Try to load package icon - using safe fallbacks
+    QIcon packageIcon;
+    QString iconName = packageName.toLower();
+    
+    if (QIcon::hasThemeIcon(iconName)) {
+        packageIcon = QIcon::fromTheme(iconName);
+    } else if (QIcon::hasThemeIcon("package")) {
+        packageIcon = QIcon::fromTheme("package");
+    } else if (QIcon::hasThemeIcon("application-x-executable")) {
+        packageIcon = QIcon::fromTheme("application-x-executable");
+    } else {
+        // Last resort, create a simple colored square
+        QPixmap pixmap(96, 96);
+        pixmap.fill(m_darkTheme ? QColor(64, 81, 181) : QColor(41, 121, 255));
+        packageIcon = QIcon(pixmap);
+    }
+    
+    // Set the icon pixmap safely
+    m_detailIcon->setPixmap(packageIcon.pixmap(96, 96));
+    
+    // Make sure panel is the correct size
+    int panelWidth = width() * SLIDE_PANEL_WIDTH_PERCENT / 100;
+    m_detailPanel->setMinimumWidth(panelWidth);
+    m_detailPanel->setMaximumWidth(panelWidth);
+    
+    // Prepare the animation
+    QRect startGeometry = QRect(width(), 0, panelWidth, height());
+    QRect endGeometry = QRect(width() - panelWidth, 0, panelWidth, height());
+    
+    m_detailPanel->setGeometry(startGeometry);
+    m_detailPanel->setVisible(true);
+    
+    // Start the slide animation
+    m_slideAnimation->setStartValue(startGeometry);
+    m_slideAnimation->setEndValue(endGeometry);
+    m_slideAnimation->start();
+    
+    // Animate opacity separately (safely)
+    m_opacityEffect->setOpacity(0.0);
+    QPropertyAnimation* fadeAnimation = new QPropertyAnimation(m_opacityEffect, "opacity", this);
+    fadeAnimation->setDuration(300);
+    fadeAnimation->setStartValue(0.0);
+    fadeAnimation->setEndValue(1.0);
+    fadeAnimation->start(QPropertyAnimation::DeleteWhenStopped);
+    
+    m_detailPanelVisible = true;
+}
+
+void MainWindow::closeDetailPanel()
+{
+    if (!m_detailPanelVisible) return;
+    
+    // Stop any running animations
+    if (m_slideAnimation->state() == QPropertyAnimation::Running) {
+        m_slideAnimation->stop();
+    }
+    
+    // Prepare the animation
+    int panelWidth = m_detailPanel->width();
+    QRect startGeometry = m_detailPanel->geometry();
+    QRect endGeometry = QRect(width(), 0, panelWidth, height());
+    
+    // Start the slide animation
+    m_slideAnimation->setStartValue(startGeometry);
+    m_slideAnimation->setEndValue(endGeometry);
+    m_slideAnimation->start();
+    
+    // Animate opacity separately (safely)
+    QPropertyAnimation* fadeAnimation = new QPropertyAnimation(m_opacityEffect, "opacity", this);
+    fadeAnimation->setDuration(300);
+    fadeAnimation->setStartValue(m_opacityEffect->opacity());
+    fadeAnimation->setEndValue(0.0);
+    fadeAnimation->start(QPropertyAnimation::DeleteWhenStopped);
+    
+    m_detailPanelVisible = false;
+}
+
+void MainWindow::onDetailPanelAnimationFinished()
+{
+    // Hide the panel if the animation was closing it
+    if (!m_detailPanelVisible) {
+        m_detailPanel->setVisible(false);
+    }
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+    
+    // Adjust detail panel size and position when window is resized
+    if (m_detailPanel) {
+        int panelWidth = width() * SLIDE_PANEL_WIDTH_PERCENT / 100;
+        m_detailPanel->setMinimumWidth(panelWidth);
+        m_detailPanel->setMaximumWidth(panelWidth);
+        
+        if (m_detailPanelVisible) {
+            // Reposition the panel so it stays visible at the right edge
+            m_detailPanel->setGeometry(width() - panelWidth, 0, panelWidth, height());
+        } else {
+            // Keep the panel outside the visible area
+            m_detailPanel->setGeometry(width(), 0, panelWidth, height());
+        }
+    }
+}
+
+// Implement package selection handlers
+void MainWindow::onPackageSelected(const QModelIndex& index)
+{
+    if (!index.isValid()) return;
+    
+    // Get the row of the selected item
+    int row = index.row();
+    
+    // Get package information from the model
+    QString packageName = m_packagesModel->index(row, 1).data().toString();
+    QString version = m_packagesModel->index(row, 2).data().toString();
+    QString repo = m_packagesModel->index(row, 3).data().toString();
+    QString description = m_packagesModel->index(row, 4).data().toString();
+    
+    // Show the package detail in the sliding panel only if we're in the All Packages tab
+    if (m_tabWidget->currentIndex() == 0) {
+        showDetailPanel(packageName, version, repo, description);
+        
+        // Show the bottom details panel
+        m_packageNameLabel->setText(packageName);
+        m_packageVersionLabel->setText("Version: " + version);
+        m_packageDescLabel->setText(description);
+        
+        // Disconnect previous connections
+        disconnect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onInstallPackage);
+        disconnect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onRemovePackage);
+        disconnect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onUpdatePackage);
+        
+        bool isInstalled = !m_packagesModel->index(row, 0).data().toString().isEmpty();
+        if (isInstalled) {
+            m_actionButton->setText("Remove");
+            m_actionButton->setIcon(QIcon::fromTheme("edit-delete"));
+            connect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onRemovePackage, Qt::UniqueConnection);
+        } else {
+            m_actionButton->setText("Install");
+            m_actionButton->setIcon(QIcon::fromTheme("system-software-install"));
+            connect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onInstallPackage, Qt::UniqueConnection);
+        }
+        
+        m_detailsWidget->setVisible(true);
+    }
+}
+
+void MainWindow::onInstalledPackageSelected(const QModelIndex& index)
+{
+    if (!index.isValid()) return;
+    
+    // Get the row of the selected item
+    int row = index.row();
+    
+    // Get package information from the model
+    QString packageName = m_installedModel->index(row, 1).data().toString();
+    QString version = m_installedModel->index(row, 2).data().toString();
+    QString repo = m_installedModel->index(row, 3).data().toString();
+    QString description = m_installedModel->index(row, 4).data().toString();
+    
+    // Show the package detail in the sliding panel only if we're in the Installed tab
+    if (m_tabWidget->currentIndex() == 1) {
+        showDetailPanel(packageName, version, repo, description);
+        
+        // Show the bottom details panel
+        m_packageNameLabel->setText(packageName);
+        m_packageVersionLabel->setText("Version: " + version);
+        m_packageDescLabel->setText(description);
+        
+        // Disconnect previous connections
+        disconnect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onInstallPackage);
+        disconnect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onRemovePackage);
+        disconnect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onUpdatePackage);
+        
+        m_actionButton->setText("Remove");
+        m_actionButton->setIcon(QIcon::fromTheme("edit-delete"));
+        connect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onRemovePackage, Qt::UniqueConnection);
+        
+        m_detailsWidget->setVisible(true);
+    }
+}
+
+void MainWindow::loadThemeStylesheet(const QString& fileName)
+{
+    std::cout << "MainWindow::loadThemeStylesheet - Loading stylesheet: " << fileName.toStdString() << std::endl;
+    
+    // Try to load from resource
+    QFile styleFile(":/styles/" + fileName);
+    std::cout << "MainWindow::loadThemeStylesheet - Attempting to load from resource path: :/styles/" << fileName.toStdString() << std::endl;
+    if (styleFile.open(QFile::ReadOnly | QFile::Text)) {
+        QString style = styleFile.readAll();
+        qApp->setStyleSheet(style);
+        styleFile.close();
+        std::cout << "Successfully loaded " << fileName.toStdString() << " stylesheet from resource" << std::endl;
+        return;
+    } else {
+        std::cerr << "MainWindow::loadThemeStylesheet - Failed to load from resource: " << styleFile.errorString().toStdString() << std::endl;
+    }
+    
+    // First fallback: Try with different resource path
+    QFile alternativeStyleFile(":/resources/styles/" + fileName);
+    std::cout << "MainWindow::loadThemeStylesheet - Attempting to load from alternative resource path: :/resources/styles/" << fileName.toStdString() << std::endl;
+    if (alternativeStyleFile.open(QFile::ReadOnly | QFile::Text)) {
+        QString style = alternativeStyleFile.readAll();
+        qApp->setStyleSheet(style);
+        alternativeStyleFile.close();
+        std::cout << "Successfully loaded " << fileName.toStdString() << " stylesheet from alternative resource path" << std::endl;
+        return;
+    } else {
+        std::cerr << "MainWindow::loadThemeStylesheet - Failed to load from alternative resource: " << alternativeStyleFile.errorString().toStdString() << std::endl;
+    }
+    
+    // Second fallback: Try loading from the file system relative to executable
+    QFile localStyleFile("resources/styles/" + fileName);
+    std::cout << "MainWindow::loadThemeStylesheet - Attempting to load from local file: resources/styles/" << fileName.toStdString() << std::endl;
+    if (localStyleFile.open(QFile::ReadOnly | QFile::Text)) {
+        QString style = localStyleFile.readAll();
+        qApp->setStyleSheet(style);
+        localStyleFile.close();
+        std::cout << "Successfully loaded " << fileName.toStdString() << " stylesheet from local file" << std::endl;
+        return;
+    } else {
+        std::cerr << "MainWindow::loadThemeStylesheet - Failed to load from local file: " << localStyleFile.errorString().toStdString() << std::endl;
+    }
+    
+    // Third fallback: Try absolute path
+    QString sourcePath = QDir::currentPath() + "/../resources/styles/" + fileName;
+    std::cout << "MainWindow::loadThemeStylesheet - Attempting to load from source path: " << sourcePath.toStdString() << std::endl;
+    QFile sourceStyleFile(sourcePath);
+    if (sourceStyleFile.open(QFile::ReadOnly | QFile::Text)) {
+        QString style = sourceStyleFile.readAll();
+        qApp->setStyleSheet(style);
+        sourceStyleFile.close();
+        std::cout << "Successfully loaded " << fileName.toStdString() << " stylesheet from source path: " << sourcePath.toStdString() << std::endl;
+        return;
+    } else {
+        std::cerr << "MainWindow::loadThemeStylesheet - Failed to load from source path: " << sourceStyleFile.errorString().toStdString() << std::endl;
+    }
+    
+    // If all fails, try loading dark_colorful.qss as a fallback
+    if (fileName != "dark_colorful.qss") {
+        std::cerr << "Failed to load " << fileName.toStdString() << " stylesheet from all paths, trying dark_colorful.qss as fallback" << std::endl;
+        loadThemeStylesheet("dark_colorful.qss");
+    } else {
+        std::cerr << "Failed to load all stylesheets" << std::endl;
+    }
+}
+
+void MainWindow::onPackageItemChanged(QStandardItem *item)
+{
+    // Only process checkbox column (column 0)
+    if (item->column() != 0) return;
+    
+    // Get the package name from column 1 (same row)
+    QStandardItemModel* model = qobject_cast<QStandardItemModel*>(sender());
+    if (!model) return;
+    
+    QString packageName = model->item(item->row(), 1)->text();
+    
+    // Handle the checkbox state
+    if (item->checkState() == Qt::Checked) {
+        m_selectedPackages.insert(packageName);
+    } else {
+        m_selectedPackages.remove(packageName);
+    }
+    
+    // Update batch install button state
+    updateBatchInstallButton();
 }
 
 } // namespace gui

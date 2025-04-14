@@ -47,6 +47,24 @@ public:
     QString getAurHelper() const;
     
     /**
+     * @brief Get whether dark theme is enabled
+     * @return bool True if dark theme is enabled
+     */
+    bool isDarkThemeEnabled() const;
+    
+    /**
+     * @brief Get whether dark colorful theme is enabled
+     * @return bool True if dark colorful theme is enabled
+     */
+    bool isDarkColorfulThemeEnabled() const;
+    
+    /**
+     * @brief Get the UI scaling factor
+     * @return double The scaling factor (e.g., 1.0, 1.25, 1.5)
+     */
+    double getScalingFactor() const;
+    
+    /**
      * @brief Save settings to QSettings
      */
     void saveSettings();
@@ -55,6 +73,19 @@ public:
      * @brief Load settings from QSettings
      */
     void loadSettings();
+
+signals:
+    /**
+     * @brief Signal emitted when theme is changed
+     * @param isDark Whether dark theme is enabled
+     */
+    void themeChanged(bool isDark);
+    
+    /**
+     * @brief Signal emitted when AUR status is changed
+     * @param enabled Whether AUR is enabled
+     */
+    void aurStatusChanged(bool enabled);
 
 private slots:
     /**
@@ -99,7 +130,10 @@ private:
     
     // Appearance tab
     QWidget* m_appearanceTab;
-    QCheckBox* m_darkThemeCheckbox;
+    QComboBox* m_themeComboBox;
+    QLabel* m_themeLabel;
+    QComboBox* m_scalingFactorComboBox;
+    QLabel* m_scalingFactorLabel;
     
     // Button box
     QPushButton* m_okButton;
@@ -109,7 +143,8 @@ private:
     // Settings
     bool m_aurEnabled;
     QString m_aurHelper;
-    bool m_darkTheme;
+    QString m_selectedTheme;
+    double m_scalingFactor;
 };
 
 } // namespace gui

@@ -253,6 +253,72 @@ public:
      * @return bool True if command executed successfully
      */
     bool execute_with_sudo(const std::string& command);
+    
+    /**
+     * @brief Clear the package cache (pacman -Sc)
+     * 
+     * @param clean_all Whether to remove all packages (true) or just uninstalled packages (false)
+     * @param password The password to use for sudo authentication
+     * @param output_callback Callback function to receive real-time output
+     * @return bool True if operation was successful
+     */
+    bool clear_package_cache(bool clean_all, const std::string& password, 
+                           std::function<void(const std::string&)> output_callback = nullptr);
+    
+    /**
+     * @brief Remove orphaned packages (not required by any other package)
+     * 
+     * @param password The password to use for sudo authentication
+     * @param output_callback Callback function to receive real-time output
+     * @return bool True if operation was successful
+     */
+    bool remove_orphaned_packages(const std::string& password,
+                                std::function<void(const std::string&)> output_callback = nullptr);
+    
+    /**
+     * @brief Get a list of orphaned packages (not required by any other package)
+     * 
+     * @return std::vector<std::string> List of orphaned package names
+     */
+    std::vector<std::string> get_orphaned_packages() const;
+    
+    /**
+     * @brief Check pacman database for errors
+     * 
+     * @param check_sync_dbs Whether to check sync databases as well (true) or just local database (false)
+     * @param output_callback Callback function to receive real-time output
+     * @return bool True if no errors were found
+     */
+    bool check_database(bool check_sync_dbs = false,
+                      std::function<void(const std::string&)> output_callback = nullptr);
+    
+    /**
+     * @brief Find pacnew/pacsave files
+     * 
+     * @return std::vector<std::string> List of paths to pacnew/pacsave files
+     */
+    std::vector<std::string> find_pacnew_files() const;
+    
+    /**
+     * @brief Backup pacman database
+     * 
+     * @param backup_path Path where the backup will be saved
+     * @param output_callback Callback function to receive real-time output
+     * @return bool True if backup was successful
+     */
+    bool backup_database(const std::string& backup_path,
+                       std::function<void(const std::string&)> output_callback = nullptr);
+    
+    /**
+     * @brief Restore pacman database from backup
+     * 
+     * @param backup_path Path to the backup file
+     * @param password The password to use for sudo authentication
+     * @param output_callback Callback function to receive real-time output
+     * @return bool True if restore was successful
+     */
+    bool restore_database(const std::string& backup_path, const std::string& password,
+                        std::function<void(const std::string&)> output_callback = nullptr);
 
 private:
     alpm_handle_t* m_handle;                          ///< ALPM handle

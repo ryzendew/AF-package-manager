@@ -40,8 +40,12 @@ template <> constexpr inline auto pacmangui::gui::SettingsDialog::qt_create_meta
     namespace QMC = QtMocConstants;
     QtMocHelpers::StringRefStorage qt_stringData {
         "pacmangui::gui::SettingsDialog",
-        "onAurEnabledChanged",
+        "themeChanged",
         "",
+        "isDark",
+        "aurStatusChanged",
+        "enabled",
+        "onAurEnabledChanged",
         "state",
         "onOkClicked",
         "onCancelClicked",
@@ -50,18 +54,26 @@ template <> constexpr inline auto pacmangui::gui::SettingsDialog::qt_create_meta
     };
 
     QtMocHelpers::UintData qt_methods {
+        // Signal 'themeChanged'
+        QtMocHelpers::SignalData<void(bool)>(1, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Bool, 3 },
+        }}),
+        // Signal 'aurStatusChanged'
+        QtMocHelpers::SignalData<void(bool)>(4, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Bool, 5 },
+        }}),
         // Slot 'onAurEnabledChanged'
-        QtMocHelpers::SlotData<void(int)>(1, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 3 },
+        QtMocHelpers::SlotData<void(int)>(6, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 7 },
         }}),
         // Slot 'onOkClicked'
-        QtMocHelpers::SlotData<void()>(4, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(8, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'onCancelClicked'
-        QtMocHelpers::SlotData<void()>(5, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(9, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'onApplyClicked'
-        QtMocHelpers::SlotData<void()>(6, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(10, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'detectAurHelpers'
-        QtMocHelpers::SlotData<void()>(7, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(11, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -85,13 +97,21 @@ void pacmangui::gui::SettingsDialog::qt_static_metacall(QObject *_o, QMetaObject
     auto *_t = static_cast<SettingsDialog *>(_o);
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
-        case 0: _t->onAurEnabledChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
-        case 1: _t->onOkClicked(); break;
-        case 2: _t->onCancelClicked(); break;
-        case 3: _t->onApplyClicked(); break;
-        case 4: _t->detectAurHelpers(); break;
+        case 0: _t->themeChanged((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 1: _t->aurStatusChanged((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 2: _t->onAurEnabledChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 3: _t->onOkClicked(); break;
+        case 4: _t->onCancelClicked(); break;
+        case 5: _t->onApplyClicked(); break;
+        case 6: _t->detectAurHelpers(); break;
         default: ;
         }
+    }
+    if (_c == QMetaObject::IndexOfMethod) {
+        if (QtMocHelpers::indexOfMethod<void (SettingsDialog::*)(bool )>(_a, &SettingsDialog::themeChanged, 0))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (SettingsDialog::*)(bool )>(_a, &SettingsDialog::aurStatusChanged, 1))
+            return;
     }
 }
 
@@ -114,15 +134,27 @@ int pacmangui::gui::SettingsDialog::qt_metacall(QMetaObject::Call _c, int _id, v
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 5)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 5;
+        _id -= 7;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 5)
+        if (_id < 7)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 5;
+        _id -= 7;
     }
     return _id;
+}
+
+// SIGNAL 0
+void pacmangui::gui::SettingsDialog::themeChanged(bool _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 0, nullptr, _t1);
+}
+
+// SIGNAL 1
+void pacmangui::gui::SettingsDialog::aurStatusChanged(bool _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 1, nullptr, _t1);
 }
 QT_WARNING_POP

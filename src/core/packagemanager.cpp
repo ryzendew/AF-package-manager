@@ -304,7 +304,7 @@ std::vector<Package> PackageManager::search_by_name(const std::string& name) con
             
             if (pkg_name.find(search_term) != std::string::npos) {
             results.push_back(pkg);
-            }
+        }
         }
         
         std::cout << "PackageManager: Found " << results.size() << " matching installed packages" << std::endl;
@@ -500,7 +500,7 @@ bool PackageManager::remove_package(const std::string& package_name, const std::
     
     if (success) {
         std::cout << "PackageManager: Package removed successfully: " << package_name << std::endl;
-        return true;
+    return true;
     } else {
         set_last_error("Failed to remove package: " + package_name + ". Authentication may have failed.");
         return false;
@@ -631,7 +631,7 @@ bool PackageManager::install_aur_package(const std::string& package_name)
     
     if (result == 0) {
         std::cout << "PackageManager: AUR Package installed successfully: " << package_name << std::endl;
-        return true;
+    return true;
     } else {
         set_last_error("Failed to install AUR package: " + package_name);
         return false;
@@ -675,7 +675,7 @@ bool PackageManager::install_aur_package(const std::string& package_name, const 
     
     if (success) {
         std::cout << "PackageManager: AUR Package installed successfully: " << package_name << std::endl;
-        return true;
+    return true;
     } else {
         set_last_error("Failed to install AUR package: " + package_name + ". Authentication may have failed.");
         return false;
@@ -1216,6 +1216,497 @@ bool PackageManager::execute_with_sudo(const std::string& command)
 {
     // Call the free function
     return ::pacmangui::core::execute_with_sudo(command);
+}
+
+bool PackageManager::clear_package_cache(bool clean_all, const std::string& password, 
+                                      std::function<void(const std::string&)> output_callback)
+{
+    std::cout << "PackageManager: Clearing package cache" << std::endl;
+    if (output_callback) {
+        output_callback("Starting package cache cleanup...\n");
+    }
+    
+    // Create the command based on the clean_all flag
+    std::string cmd = "pacman -S" + std::string(clean_all ? "cc" : "c") + " --noconfirm";
+    
+    // Create a temporary file to capture output
+    std::string temp_output_file = "/tmp/pacmangui_cache_cleanup_output.txt";
+    cmd += " | tee " + temp_output_file;
+    
+    // Start a background thread to monitor the output file and send updates
+    std::atomic<bool> running(true);
+    std::thread output_thread;
+    
+    if (output_callback) {
+        output_thread = std::thread([temp_output_file, &output_callback, &running]() {
+            std::ifstream output_file(temp_output_file);
+            if (!output_file.is_open()) {
+                return;
+            }
+            
+            std::string line;
+            while (running) {
+                if (std::getline(output_file, line)) {
+                    output_callback(line + "\n");
+                } else {
+                    // Wait a bit before checking for more output
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                }
+            }
+            
+            // Read any remaining output
+            while (std::getline(output_file, line)) {
+                output_callback(line + "\n");
+            }
+            
+            output_file.close();
+        });
+    }
+    
+    // Execute the command
+    bool success = execute_with_sudo(cmd, password);
+    
+    // Stop the output thread and wait for it to finish
+    if (output_callback && output_thread.joinable()) {
+        running = false;
+        output_thread.join();
+    }
+    
+    // Clean up the temporary file
+    std::remove(temp_output_file.c_str());
+    
+    if (success) {
+        std::string msg = "Package cache cleanup " + std::string(clean_all ? "(all packages)" : "(unused packages)") + " completed successfully";
+        std::cout << "PackageManager: " << msg << std::endl;
+        if (output_callback) {
+            output_callback(msg + "\n");
+        }
+        return true;
+    } else {
+        std::string error_message = "Failed to clean package cache. Authentication may have failed.";
+        set_last_error(error_message);
+        if (output_callback) {
+            output_callback("ERROR: " + error_message + "\n");
+        }
+        return false;
+    }
+}
+
+std::vector<std::string> PackageManager::get_orphaned_packages() const
+{
+    std::vector<std::string> orphaned_packages;
+    
+    std::cout << "PackageManager: Finding orphaned packages" << std::endl;
+    
+    // Use popen to capture the output of the command
+    std::string cmd = "pacman -Qtdq";
+    FILE* pipe = popen(cmd.c_str(), "r");
+    
+    if (!pipe) {
+        std::cerr << "PackageManager: Error executing command: " << cmd << std::endl;
+        return orphaned_packages;
+    }
+    
+    // Read the output line by line
+    char buffer[256];
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        // Remove newline characters
+        std::string line(buffer);
+        line.erase(std::remove(line.begin(), line.end(), '\n'), line.end());
+        
+        // Add the package name to the list
+        if (!line.empty()) {
+            orphaned_packages.push_back(line);
+        }
+    }
+    
+    pclose(pipe);
+    
+    std::cout << "PackageManager: Found " << orphaned_packages.size() << " orphaned packages" << std::endl;
+    return orphaned_packages;
+}
+
+bool PackageManager::remove_orphaned_packages(const std::string& password,
+                                           std::function<void(const std::string&)> output_callback)
+{
+    std::cout << "PackageManager: Removing orphaned packages" << std::endl;
+    if (output_callback) {
+        output_callback("Finding and removing orphaned packages...\n");
+    }
+    
+    // First, get the list of orphaned packages
+    std::vector<std::string> orphaned = get_orphaned_packages();
+    
+    if (orphaned.empty()) {
+        std::string msg = "No orphaned packages found.";
+        std::cout << "PackageManager: " << msg << std::endl;
+        if (output_callback) {
+            output_callback(msg + "\n");
+        }
+        return true;
+    }
+    
+    if (output_callback) {
+        output_callback("Found " + std::to_string(orphaned.size()) + " orphaned packages.\n");
+    }
+    
+    // Create a temporary file to list orphaned packages
+    std::string temp_file = "/tmp/pacmangui_orphaned_packages.txt";
+    std::ofstream ofs(temp_file);
+    if (!ofs.is_open()) {
+        std::string error_message = "Failed to create temporary file for orphaned packages list";
+        set_last_error(error_message);
+        if (output_callback) {
+            output_callback("ERROR: " + error_message + "\n");
+        }
+        return false;
+    }
+    
+    for (const auto& pkg : orphaned) {
+        ofs << pkg << std::endl;
+    }
+    ofs.close();
+    
+    // Create the command to remove orphaned packages
+    std::string cmd = "cat " + temp_file + " | pacman -Rns - --noconfirm";
+    
+    // Create a temporary file to capture output
+    std::string temp_output_file = "/tmp/pacmangui_remove_orphans_output.txt";
+    cmd += " | tee " + temp_output_file;
+    
+    // Start a background thread to monitor the output file and send updates
+    std::atomic<bool> running(true);
+    std::thread output_thread;
+    
+    if (output_callback) {
+        output_thread = std::thread([temp_output_file, &output_callback, &running]() {
+            std::ifstream output_file(temp_output_file);
+            if (!output_file.is_open()) {
+                return;
+            }
+            
+            std::string line;
+            while (running) {
+                if (std::getline(output_file, line)) {
+                    output_callback(line + "\n");
+                } else {
+                    // Wait a bit before checking for more output
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                }
+            }
+            
+            // Read any remaining output
+            while (std::getline(output_file, line)) {
+                output_callback(line + "\n");
+            }
+            
+            output_file.close();
+        });
+    }
+    
+    // Execute the command
+    bool success = execute_with_sudo(cmd, password);
+    
+    // Stop the output thread and wait for it to finish
+    if (output_callback && output_thread.joinable()) {
+        running = false;
+        output_thread.join();
+    }
+    
+    // Clean up temporary files
+    std::remove(temp_file.c_str());
+    std::remove(temp_output_file.c_str());
+    
+    if (success) {
+        std::string msg = "Successfully removed " + std::to_string(orphaned.size()) + " orphaned packages";
+        std::cout << "PackageManager: " << msg << std::endl;
+        if (output_callback) {
+            output_callback(msg + "\n");
+        }
+        return true;
+    } else {
+        std::string error_message = "Failed to remove orphaned packages. Authentication may have failed.";
+        set_last_error(error_message);
+        if (output_callback) {
+            output_callback("ERROR: " + error_message + "\n");
+        }
+        return false;
+    }
+}
+
+bool PackageManager::check_database(bool check_sync_dbs,
+                                 std::function<void(const std::string&)> output_callback)
+{
+    std::cout << "PackageManager: Checking database for errors" << std::endl;
+    if (output_callback) {
+        output_callback("Checking pacman database for errors...\n");
+    }
+    
+    // Create the command based on the check_sync_dbs flag
+    std::string cmd = "pacman -D" + std::string(check_sync_dbs ? "kk" : "k");
+    
+    // Create a temporary file to capture output
+    std::string temp_output_file = "/tmp/pacmangui_db_check_output.txt";
+    
+    // Use popen to execute the command and capture the output
+    std::string full_cmd = cmd + " > " + temp_output_file + " 2>&1";
+    int result = system(full_cmd.c_str());
+    bool success = (result == 0);
+    
+    // Read the output file and send updates
+    if (output_callback) {
+        std::ifstream output_file(temp_output_file);
+        if (output_file.is_open()) {
+            std::string line;
+            while (std::getline(output_file, line)) {
+                output_callback(line + "\n");
+            }
+            output_file.close();
+        }
+    }
+    
+    // Clean up the temporary file
+    std::remove(temp_output_file.c_str());
+    
+    if (success) {
+        std::string msg = "Database check " + std::string(check_sync_dbs ? "(including sync databases)" : "") + " completed without errors";
+        std::cout << "PackageManager: " << msg << std::endl;
+        if (output_callback) {
+            output_callback(msg + "\n");
+        }
+        return true;
+    } else {
+        std::string error_message = "Database check found errors. Please check the output for details.";
+        set_last_error(error_message);
+        if (output_callback) {
+            output_callback("ERROR: " + error_message + "\n");
+        }
+        return false;
+    }
+}
+
+std::vector<std::string> PackageManager::find_pacnew_files() const
+{
+    std::vector<std::string> pacnew_files;
+    
+    std::cout << "PackageManager: Finding .pacnew and .pacsave files" << std::endl;
+    
+    // Check if pacdiff is available
+    FILE* which_pipe = popen("which pacdiff 2>/dev/null", "r");
+    if (!which_pipe || pclose(which_pipe) != 0) {
+        std::cerr << "PackageManager: pacdiff not found, using find command instead" << std::endl;
+        
+        // If pacdiff is not available, use find directly
+        std::string cmd = "find /etc -name \"*.pacnew\" -o -name \"*.pacsave\" 2>/dev/null";
+        FILE* pipe = popen(cmd.c_str(), "r");
+        
+        if (!pipe) {
+            std::cerr << "PackageManager: Error executing command: " << cmd << std::endl;
+            return pacnew_files;
+        }
+        
+        // Read the output line by line
+        char buffer[256];
+        while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+            // Remove newline characters
+            std::string line(buffer);
+            line.erase(std::remove(line.begin(), line.end(), '\n'), line.end());
+            
+            // Add the file path to the list
+            if (!line.empty()) {
+                pacnew_files.push_back(line);
+            }
+        }
+        
+        pclose(pipe);
+    } else {
+        // If pacdiff is available, use it
+        std::string cmd = "pacdiff -o";
+        FILE* pipe = popen(cmd.c_str(), "r");
+        
+        if (!pipe) {
+            std::cerr << "PackageManager: Error executing command: " << cmd << std::endl;
+            return pacnew_files;
+        }
+        
+        // Read the output line by line
+        char buffer[256];
+        while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+            // Remove newline characters
+            std::string line(buffer);
+            line.erase(std::remove(line.begin(), line.end(), '\n'), line.end());
+            
+            // Process lines to extract file paths
+            if (line.find("pacnew") != std::string::npos || line.find("pacsave") != std::string::npos) {
+                // Parse the file path from the pacdiff output
+                size_t pos = line.find('/');
+                if (pos != std::string::npos) {
+                    std::string file_path = line.substr(pos);
+                    
+                    // Extract path until space or end of line
+                    size_t end_pos = file_path.find(' ');
+                    if (end_pos != std::string::npos) {
+                        file_path = file_path.substr(0, end_pos);
+                    }
+                    
+                    if (!file_path.empty()) {
+                        pacnew_files.push_back(file_path);
+                    }
+                }
+            }
+        }
+        
+        pclose(pipe);
+    }
+    
+    std::cout << "PackageManager: Found " << pacnew_files.size() << " .pacnew/.pacsave files" << std::endl;
+    return pacnew_files;
+}
+
+bool PackageManager::backup_database(const std::string& backup_path,
+                                  std::function<void(const std::string&)> output_callback)
+{
+    std::cout << "PackageManager: Backing up pacman database to " << backup_path << std::endl;
+    if (output_callback) {
+        output_callback("Starting pacman database backup...\n");
+    }
+    
+    // Create the backup command
+    std::string cmd = "tar -czf " + backup_path + " /var/lib/pacman/local";
+    
+    // Create a temporary file to capture output
+    std::string temp_output_file = "/tmp/pacmangui_backup_output.txt";
+    cmd += " 2>&1 | tee " + temp_output_file;
+    
+    // Execute the command
+    int result = system(cmd.c_str());
+    bool success = (result == 0);
+    
+    // Read the output file and send updates
+    if (output_callback) {
+        std::ifstream output_file(temp_output_file);
+        if (output_file.is_open()) {
+            std::string line;
+            while (std::getline(output_file, line)) {
+                output_callback(line + "\n");
+            }
+            output_file.close();
+        }
+    }
+    
+    // Clean up the temporary file
+    std::remove(temp_output_file.c_str());
+    
+    if (success) {
+        std::string msg = "Pacman database backup completed successfully to " + backup_path;
+        std::cout << "PackageManager: " << msg << std::endl;
+        if (output_callback) {
+            output_callback(msg + "\n");
+        }
+        return true;
+    } else {
+        std::string error_message = "Failed to backup pacman database";
+        set_last_error(error_message);
+        if (output_callback) {
+            output_callback("ERROR: " + error_message + "\n");
+        }
+        return false;
+    }
+}
+
+bool PackageManager::restore_database(const std::string& backup_path, const std::string& password,
+                                   std::function<void(const std::string&)> output_callback)
+{
+    std::cout << "PackageManager: Restoring pacman database from " << backup_path << std::endl;
+    if (output_callback) {
+        output_callback("Starting pacman database restore from backup...\n");
+    }
+    
+    // Check if the backup file exists
+    std::ifstream backup_file(backup_path);
+    if (!backup_file.good()) {
+        std::string error_message = "Backup file does not exist or is not accessible: " + backup_path;
+        set_last_error(error_message);
+        if (output_callback) {
+            output_callback("ERROR: " + error_message + "\n");
+        }
+        return false;
+    }
+    backup_file.close();
+    
+    // Create a temporary directory
+    std::string temp_dir = "/tmp/pacmangui_restore_temp";
+    std::string mkdir_cmd = "mkdir -p " + temp_dir;
+    system(mkdir_cmd.c_str());
+    
+    // Command to restore the database
+    std::string cmd = "rm -rf " + temp_dir + "/* && "
+                     "tar -xzf " + backup_path + " -C " + temp_dir + " && "
+                     "rm -rf /var/lib/pacman/local && "
+                     "cp -a " + temp_dir + "/var/lib/pacman/local /var/lib/pacman/ && "
+                     "rm -rf " + temp_dir;
+    
+    // Create a temporary file to capture output
+    std::string temp_output_file = "/tmp/pacmangui_restore_output.txt";
+    cmd += " 2>&1 | tee " + temp_output_file;
+    
+    // Start a background thread to monitor the output file and send updates
+    std::atomic<bool> running(true);
+    std::thread output_thread;
+    
+    if (output_callback) {
+        output_thread = std::thread([temp_output_file, &output_callback, &running]() {
+            std::ifstream output_file(temp_output_file);
+            if (!output_file.is_open()) {
+                return;
+            }
+            
+            std::string line;
+            while (running) {
+                if (std::getline(output_file, line)) {
+                    output_callback(line + "\n");
+                } else {
+                    // Wait a bit before checking for more output
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                }
+            }
+            
+            // Read any remaining output
+            while (std::getline(output_file, line)) {
+                output_callback(line + "\n");
+            }
+            
+            output_file.close();
+        });
+    }
+    
+    // Execute the command
+    bool success = execute_with_sudo(cmd, password);
+    
+    // Stop the output thread and wait for it to finish
+    if (output_callback && output_thread.joinable()) {
+        running = false;
+        output_thread.join();
+    }
+    
+    // Clean up temporary files
+    std::remove(temp_output_file.c_str());
+    
+    if (success) {
+        std::string msg = "Pacman database restored successfully from " + backup_path;
+        std::cout << "PackageManager: " << msg << std::endl;
+        if (output_callback) {
+            output_callback(msg + "\n");
+        }
+        return true;
+    } else {
+        std::string error_message = "Failed to restore pacman database. Authentication may have failed.";
+        set_last_error(error_message);
+        if (output_callback) {
+            output_callback("ERROR: " + error_message + "\n");
+        }
+        return false;
+    }
 }
 
 } // namespace core

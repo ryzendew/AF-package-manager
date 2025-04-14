@@ -84,6 +84,30 @@ public:
     void set_installed(bool installed);
 
     /**
+     * @brief Get package repository
+     * @return Repository name
+     */
+    std::string get_repository() const;
+
+    /**
+     * @brief Set package repository
+     * @param repository Repository name
+     */
+    void set_repository(const std::string& repository);
+
+    /**
+     * @brief Get AUR package information
+     * @return AUR information string
+     */
+    std::string get_aur_info() const;
+
+    /**
+     * @brief Set AUR package information
+     * @param aur_info AUR information string
+     */
+    void set_aur_info(const std::string& aur_info);
+
+    /**
      * @brief Equality operator
      * @param other Package to compare to
      * @return True if packages are equal
@@ -101,6 +125,8 @@ private:
     std::string m_name;                ///< Package name
     std::string m_version;             ///< Package version
     std::string m_description;         ///< Package description
+    std::string m_repository;          ///< Repository name
+    std::string m_aur_info;            ///< AUR information (if from AUR)
     bool m_installed;                  ///< True if package is installed
 };
 

@@ -78,6 +78,11 @@ pacmangui_autogen/timestamp: CMakeFiles/pacmangui.dir/compiler_depend.ts
 
 pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp: /home/matt/PacmanGui-new/resources/resources.qrc
 pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp: CMakeFiles/pacmangui_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Info.json
+pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp: /home/matt/PacmanGui-new/resources/styles/dark.qss
+pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp: /home/matt/PacmanGui-new/resources/styles/dynamic.qss
+pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp: /home/matt/PacmanGui-new/resources/styles/light_colorful.qss
+pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp: /home/matt/PacmanGui-new/resources/styles/light.qss
+pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp: /home/matt/PacmanGui-new/resources/styles/dark_colorful.qss
 pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp: /home/matt/PacmanGui-new/resources/icons/cog.png
 pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp: /usr/lib/qt6/rcc
 pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp: /usr/lib/qt6/rcc

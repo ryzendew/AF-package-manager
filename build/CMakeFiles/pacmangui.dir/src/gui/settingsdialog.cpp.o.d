@@ -417,4 +417,5 @@ CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o: \
  /usr/include/qt6/QtCore/qtimezone.h \
  /usr/include/qt6/QtWidgets/QFormLayout \
  /usr/include/qt6/QtWidgets/qformlayout.h \
- /usr/include/qt6/QtWidgets/QLayout /usr/include/qt6/QtWidgets/qlayout.h
+ /usr/include/qt6/QtWidgets/QLayout /usr/include/qt6/QtWidgets/qlayout.h \
+ /usr/include/c++/14.2.1/iostream

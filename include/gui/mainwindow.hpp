@@ -20,6 +20,16 @@
 #include <QCheckBox>
 #include <QSet>
 #include <QToolButton>
+#include <QMap>
+#include <QRadioButton>
+#include <QGroupBox>
+#include <QListWidget>
+#include <QComboBox>
+#include <QProgressBar>
+#include <QFileDialog>
+#include <QPropertyAnimation>
+#include <QGraphicsOpacityEffect>
+#include <QScrollArea>
 #include "core/packagemanager.hpp"
 
 // Forward declaration
@@ -28,6 +38,9 @@ namespace gui {
     class SettingsDialog;
 }
 }
+
+// Constants for the slide panel
+#define SLIDE_PANEL_WIDTH_PERCENT 25
 
 namespace pacmangui {
 namespace gui {
@@ -58,6 +71,13 @@ protected:
      * @param event Close event
      */
     void closeEvent(QCloseEvent *event) override;
+    
+    /**
+     * @brief Resize event handler
+     * 
+     * @param event Resize event
+     */
+    void resizeEvent(QResizeEvent *event) override;
 
 private slots:
     // Navigation
@@ -74,28 +94,65 @@ private slots:
     void onSyncAll();
     void onBatchInstall();
     
+    // Package selection
+    void onPackageSelected(const QModelIndex& index);
+    void onInstalledPackageSelected(const QModelIndex& index);
+    void onPackageItemChanged(QStandardItem *item);
+    
+    // AUR operations
+    void onInstallAurPackage();
+    void onUpdateAurPackages();
+    
     // System update
     void onSystemUpdate();
     void onCheckForUpdates();
     
+    // System maintenance
+    void onClearPackageCache();
+    void onRemoveOrphans();
+    void onCheckDatabase();
+    void onFindPacnewFiles();
+    void onBackupDatabase();
+    void onRestoreDatabase();
+    void onMaintenanceTaskFinished(bool success, const QString& message);
+    
     // Theme
     void toggleTheme();
+    void toggleTheme(bool isDark);
     
     // Settings
     void openSettings();
+    
+    // About
+    void onAbout();
+    
+    // Detail panel
+    void onDetailPanelAnimationFinished();
+    void closeDetailPanel();
 
 private:
     void setupUi();
     void setupActions();
     void setupMenus();
     void setupConnections();
+    void setupSystemUpdateTab();
+    void setupMaintenanceTab();
+    void setupDetailPanel();
     void loadSettings();
     void saveSettings();
     void applyTheme(bool isDark);
+    void loadThemeStylesheet(const QString& fileName);
+    void createMenus();
     void searchPackages(const QString& searchTerm);
     void refreshInstalledPackages();
     void refreshUpdatesList();
     void updateBatchInstallButton();
+    void checkAurHelper();
+    void downloadYayHelper();
+    void showDetailPanel(const QString& packageName, const QString& version, const QString& repo, const QString& description);
+    
+    // Callable from other threads
+    Q_INVOKABLE void showStatusMessage(const QString& message, int timeout = 0);
     
     // UI components
     QTabWidget* m_tabWidget;
@@ -121,6 +178,40 @@ private:
     QStandardItemModel* m_systemUpdatesModel;
     QCheckBox* m_systemUpdateOverwriteCheckbox;
     
+    // System maintenance tab
+    QWidget* m_maintenanceTab;
+    QTextEdit* m_maintenanceLogView;
+    
+    // Package cache cleaning
+    QGroupBox* m_cacheClearGroup;
+    QRadioButton* m_clearUnusedCacheRadio;
+    QRadioButton* m_clearAllCacheRadio;
+    QPushButton* m_clearCacheButton;
+    
+    // Orphaned packages
+    QGroupBox* m_orphansGroup;
+    QPushButton* m_findOrphansButton;
+    QPushButton* m_removeOrphansButton;
+    
+    // Database check
+    QGroupBox* m_databaseCheckGroup;
+    QCheckBox* m_checkSyncDbsCheckbox;
+    QPushButton* m_checkDatabaseButton;
+    
+    // Pacnew files
+    QGroupBox* m_pacnewGroup;
+    QPushButton* m_findPacnewButton;
+    
+    // Database backup/restore
+    QGroupBox* m_databaseBackupGroup;
+    QLineEdit* m_backupPathEdit;
+    QPushButton* m_selectBackupPathButton;
+    QPushButton* m_backupButton;
+    QPushButton* m_restoreButton;
+    
+    // Progress indicator for maintenance operations
+    QProgressBar* m_maintenanceProgressBar;
+    
     // Package detail view
     QWidget* m_detailsWidget;
     QLabel* m_packageNameLabel;
@@ -129,9 +220,25 @@ private:
     QPushButton* m_actionButton;
     QCheckBox* m_packageOverwriteCheckbox;
     
+    // Slide-in detail panel
+    QWidget* m_detailPanel;
+    QScrollArea* m_detailScrollArea;
+    QLabel* m_detailTitle;
+    QLabel* m_detailVersion;
+    QLabel* m_detailRepo;
+    QLabel* m_detailDescription;
+    QLabel* m_detailIcon;
+    QPushButton* m_detailCloseButton;
+    QPropertyAnimation* m_slideAnimation;
+    QGraphicsOpacityEffect* m_opacityEffect;
+    bool m_detailPanelVisible;
+    
     // Models for tables
     QStandardItemModel* m_packagesModel;
     QStandardItemModel* m_installedModel;
+    
+    // Actions map for menu setup
+    QMap<QString, QAction*> m_actions;
     
     // Core functionality
     core::PackageManager m_packageManager;

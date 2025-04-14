@@ -1,7 +1,12 @@
 #include <iostream>
 #include <QApplication>
+#include <QGuiApplication>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
+#include <QSettings>
+#include <QFile>
+#include <QFont>
+#include <QDir>
 #include "gui/mainwindow.hpp"
 #include "core/packagemanager.hpp"
 
@@ -194,6 +199,14 @@ int main(int argc, char *argv[])
     if (useCliMode) {
         return startCli(argc, argv);
     } else {
+        // Enable High DPI scaling
+        QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+        QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+        
+        // Set high DPI scale factor rounding policy to PassThrough for fractional scaling
+        QGuiApplication::setHighDpiScaleFactorRoundingPolicy(
+            Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+        
         // Initialize Qt application
         QApplication app(argc, argv);
         
@@ -203,14 +216,120 @@ int main(int argc, char *argv[])
         app.setOrganizationName("PacmanGUI");
         app.setOrganizationDomain("pacmangui.org");
         
+        // Apply custom scaling factor from settings if available
+        QSettings settings("PacmanGUI", "PacmanGUI");
+        double scalingFactor = settings.value("appearance/scalingFactor", 1.0).toDouble();
+        if (scalingFactor != 1.0) {
+            qputenv("QT_SCALE_FACTOR", QByteArray::number(scalingFactor));
+            
+            // Adjust default font size based on scaling factor
+            QFont defaultFont = QApplication::font();
+            int scaledFontSize = qRound(defaultFont.pointSize() * scalingFactor);
+            defaultFont.setPointSize(scaledFontSize);
+            QApplication::setFont(defaultFont);
+        }
+        
+        // Get selected theme
+        QString selectedTheme = settings.value("appearance/theme", "dark_colorful").toString();
+        std::cout << "main.cpp - Selected theme from settings: " << selectedTheme.toStdString() << std::endl;
+        
+        // Determine which stylesheet file to load
+        QString qssFileName;
+        if (selectedTheme == "dark_colorful") {
+            qssFileName = "dark_colorful.qss";
+        } else if (selectedTheme == "dark") {
+            qssFileName = "dark.qss";
+        } else if (selectedTheme == "light_colorful") {
+            qssFileName = "light_colorful.qss";
+        } else {
+            qssFileName = "light.qss";
+        }
+        
+        std::cout << "main.cpp - Will attempt to load stylesheet: " << qssFileName.toStdString() << std::endl;
+        
+        // Load stylesheet from various paths
+        bool styleLoaded = false;
+        
+        // Try resource path
+        QFile styleFile(":/styles/" + qssFileName);
+        std::cout << "main.cpp - Attempting to load from resource path: :/styles/" << qssFileName.toStdString() << std::endl;
+        if (styleFile.open(QFile::ReadOnly | QFile::Text)) {
+            QString style = styleFile.readAll();
+            app.setStyleSheet(style);
+            styleFile.close();
+            std::cout << "Successfully loaded " << qssFileName.toStdString() << " stylesheet from resource" << std::endl;
+            styleLoaded = true;
+        } else {
+            std::cerr << "main.cpp - Failed to load from resource: " << styleFile.errorString().toStdString() << std::endl;
+            
+            // Try alternative resource path
+            QFile alternativeStyleFile(":/resources/styles/" + qssFileName);
+            std::cout << "main.cpp - Attempting to load from alternative resource path: :/resources/styles/" << qssFileName.toStdString() << std::endl;
+            if (alternativeStyleFile.open(QFile::ReadOnly | QFile::Text)) {
+                QString style = alternativeStyleFile.readAll();
+                app.setStyleSheet(style);
+                alternativeStyleFile.close();
+                std::cout << "Successfully loaded " << qssFileName.toStdString() << " stylesheet from alternative resource path" << std::endl;
+                styleLoaded = true;
+            } else {
+                std::cerr << "main.cpp - Failed to load from alternative resource: " << alternativeStyleFile.errorString().toStdString() << std::endl;
+                
+                // Try file system relative to executable
+                QFile localStyleFile("resources/styles/" + qssFileName);
+                std::cout << "main.cpp - Attempting to load from local file: resources/styles/" << qssFileName.toStdString() << std::endl;
+                if (localStyleFile.open(QFile::ReadOnly | QFile::Text)) {
+                    QString style = localStyleFile.readAll();
+                    app.setStyleSheet(style);
+                    localStyleFile.close();
+                    std::cout << "Successfully loaded " << qssFileName.toStdString() << " stylesheet from local file" << std::endl;
+                    styleLoaded = true;
+                } else {
+                    std::cerr << "main.cpp - Failed to load from local file: " << localStyleFile.errorString().toStdString() << std::endl;
+                    
+                    // Try absolute path
+                    QString sourcePath = QDir::currentPath() + "/../resources/styles/" + qssFileName;
+                    std::cout << "main.cpp - Attempting to load from source path: " << sourcePath.toStdString() << std::endl;
+                    QFile sourceStyleFile(sourcePath);
+                    if (sourceStyleFile.open(QFile::ReadOnly | QFile::Text)) {
+                        QString style = sourceStyleFile.readAll();
+                        app.setStyleSheet(style);
+                        sourceStyleFile.close();
+                        std::cout << "Successfully loaded " << qssFileName.toStdString() << " stylesheet from source path: " << sourcePath.toStdString() << std::endl;
+                        styleLoaded = true;
+                    } else {
+                        std::cerr << "main.cpp - Failed to load from source path: " << sourceStyleFile.errorString().toStdString() << std::endl;
+                    }
+                }
+            }
+        }
+        
+        // If all paths failed, try dark_colorful.qss as fallback
+        if (!styleLoaded && qssFileName != "dark_colorful.qss") {
+            std::cerr << "Failed to load " << qssFileName.toStdString() << " stylesheet, trying dark_colorful.qss as fallback" << std::endl;
+            
+            // Try absolute path for dark_colorful.qss
+            QString sourcePath = QDir::currentPath() + "/../resources/styles/dark_colorful.qss";
+            QFile sourceStyleFile(sourcePath);
+            if (sourceStyleFile.open(QFile::ReadOnly | QFile::Text)) {
+                QString style = sourceStyleFile.readAll();
+                app.setStyleSheet(style);
+                sourceStyleFile.close();
+                std::cout << "Successfully loaded dark_colorful.qss stylesheet from source path as fallback" << std::endl;
+            } else {
+                std::cerr << "Failed to load any stylesheet" << std::endl;
+            }
+        }
+        
         // Set application style
         app.setStyle("Fusion");
         
         // Create main window
         MainWindow mainWindow;
-        mainWindow.show();
+        
+        // Set window to maximize by default
+        mainWindow.showMaximized();
         
         // Run the application
-        return app.exec();
+    return app.exec();
     }
 } 

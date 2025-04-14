@@ -51,10 +51,33 @@ template <> constexpr inline auto pacmangui::gui::MainWindow::qt_create_metaobje
         "onUpdatePackage",
         "onSyncAll",
         "onBatchInstall",
+        "onPackageSelected",
+        "QModelIndex",
+        "onInstalledPackageSelected",
+        "onPackageItemChanged",
+        "QStandardItem*",
+        "item",
+        "onInstallAurPackage",
+        "onUpdateAurPackages",
         "onSystemUpdate",
         "onCheckForUpdates",
+        "onClearPackageCache",
+        "onRemoveOrphans",
+        "onCheckDatabase",
+        "onFindPacnewFiles",
+        "onBackupDatabase",
+        "onRestoreDatabase",
+        "onMaintenanceTaskFinished",
+        "success",
+        "message",
         "toggleTheme",
-        "openSettings"
+        "isDark",
+        "openSettings",
+        "onAbout",
+        "onDetailPanelAnimationFinished",
+        "closeDetailPanel",
+        "showStatusMessage",
+        "timeout"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -78,14 +101,64 @@ template <> constexpr inline auto pacmangui::gui::MainWindow::qt_create_metaobje
         QtMocHelpers::SlotData<void()>(10, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'onBatchInstall'
         QtMocHelpers::SlotData<void()>(11, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onPackageSelected'
+        QtMocHelpers::SlotData<void(const QModelIndex &)>(12, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 13, 3 },
+        }}),
+        // Slot 'onInstalledPackageSelected'
+        QtMocHelpers::SlotData<void(const QModelIndex &)>(14, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 13, 3 },
+        }}),
+        // Slot 'onPackageItemChanged'
+        QtMocHelpers::SlotData<void(QStandardItem *)>(15, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 16, 17 },
+        }}),
+        // Slot 'onInstallAurPackage'
+        QtMocHelpers::SlotData<void()>(18, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onUpdateAurPackages'
+        QtMocHelpers::SlotData<void()>(19, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'onSystemUpdate'
-        QtMocHelpers::SlotData<void()>(12, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(20, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'onCheckForUpdates'
-        QtMocHelpers::SlotData<void()>(13, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(21, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onClearPackageCache'
+        QtMocHelpers::SlotData<void()>(22, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onRemoveOrphans'
+        QtMocHelpers::SlotData<void()>(23, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onCheckDatabase'
+        QtMocHelpers::SlotData<void()>(24, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onFindPacnewFiles'
+        QtMocHelpers::SlotData<void()>(25, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onBackupDatabase'
+        QtMocHelpers::SlotData<void()>(26, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onRestoreDatabase'
+        QtMocHelpers::SlotData<void()>(27, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onMaintenanceTaskFinished'
+        QtMocHelpers::SlotData<void(bool, const QString &)>(28, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Bool, 29 }, { QMetaType::QString, 30 },
+        }}),
         // Slot 'toggleTheme'
-        QtMocHelpers::SlotData<void()>(14, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(31, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'toggleTheme'
+        QtMocHelpers::SlotData<void(bool)>(31, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Bool, 32 },
+        }}),
         // Slot 'openSettings'
-        QtMocHelpers::SlotData<void()>(15, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(33, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onAbout'
+        QtMocHelpers::SlotData<void()>(34, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onDetailPanelAnimationFinished'
+        QtMocHelpers::SlotData<void()>(35, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'closeDetailPanel'
+        QtMocHelpers::SlotData<void()>(36, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Method 'showStatusMessage'
+        QtMocHelpers::MethodData<void(const QString &, int)>(37, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::QString, 30 }, { QMetaType::Int, 38 },
+        }}),
+        // Method 'showStatusMessage'
+        QtMocHelpers::MethodData<void(const QString &)>(37, 2, QMC::AccessPrivate | QMC::MethodCloned, QMetaType::Void, {{
+            { QMetaType::QString, 30 },
+        }}),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -117,10 +190,28 @@ void pacmangui::gui::MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Ca
         case 5: _t->onUpdatePackage(); break;
         case 6: _t->onSyncAll(); break;
         case 7: _t->onBatchInstall(); break;
-        case 8: _t->onSystemUpdate(); break;
-        case 9: _t->onCheckForUpdates(); break;
-        case 10: _t->toggleTheme(); break;
-        case 11: _t->openSettings(); break;
+        case 8: _t->onPackageSelected((*reinterpret_cast< std::add_pointer_t<QModelIndex>>(_a[1]))); break;
+        case 9: _t->onInstalledPackageSelected((*reinterpret_cast< std::add_pointer_t<QModelIndex>>(_a[1]))); break;
+        case 10: _t->onPackageItemChanged((*reinterpret_cast< std::add_pointer_t<QStandardItem*>>(_a[1]))); break;
+        case 11: _t->onInstallAurPackage(); break;
+        case 12: _t->onUpdateAurPackages(); break;
+        case 13: _t->onSystemUpdate(); break;
+        case 14: _t->onCheckForUpdates(); break;
+        case 15: _t->onClearPackageCache(); break;
+        case 16: _t->onRemoveOrphans(); break;
+        case 17: _t->onCheckDatabase(); break;
+        case 18: _t->onFindPacnewFiles(); break;
+        case 19: _t->onBackupDatabase(); break;
+        case 20: _t->onRestoreDatabase(); break;
+        case 21: _t->onMaintenanceTaskFinished((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
+        case 22: _t->toggleTheme(); break;
+        case 23: _t->toggleTheme((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 24: _t->openSettings(); break;
+        case 25: _t->onAbout(); break;
+        case 26: _t->onDetailPanelAnimationFinished(); break;
+        case 27: _t->closeDetailPanel(); break;
+        case 28: _t->showStatusMessage((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
+        case 29: _t->showStatusMessage((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         default: ;
         }
     }
@@ -145,14 +236,14 @@ int pacmangui::gui::MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void 
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 12)
+        if (_id < 30)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 12;
+        _id -= 30;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 12)
+        if (_id < 30)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 12;
+        _id -= 30;
     }
     return _id;
 }

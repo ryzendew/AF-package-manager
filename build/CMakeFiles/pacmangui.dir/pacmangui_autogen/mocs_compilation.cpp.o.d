@@ -398,7 +398,59 @@ CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o: \
  /usr/include/qt6/QtWidgets/QCheckBox \
  /usr/include/qt6/QtWidgets/qcheckbox.h /usr/include/qt6/QtCore/QSet \
  /usr/include/qt6/QtCore/qset.h /usr/include/qt6/QtWidgets/QToolButton \
- /usr/include/qt6/QtWidgets/qtoolbutton.h \
+ /usr/include/qt6/QtWidgets/qtoolbutton.h /usr/include/qt6/QtCore/QMap \
+ /usr/include/qt6/QtCore/qmap.h /usr/include/qt6/QtWidgets/QRadioButton \
+ /usr/include/qt6/QtWidgets/qradiobutton.h \
+ /usr/include/qt6/QtWidgets/QGroupBox \
+ /usr/include/qt6/QtWidgets/qgroupbox.h \
+ /usr/include/qt6/QtWidgets/QListWidget \
+ /usr/include/qt6/QtWidgets/qlistwidget.h \
+ /usr/include/qt6/QtWidgets/qlistview.h \
+ /usr/include/qt6/QtWidgets/QComboBox \
+ /usr/include/qt6/QtWidgets/qcombobox.h \
+ /usr/include/qt6/QtWidgets/QProgressBar \
+ /usr/include/qt6/QtWidgets/qprogressbar.h \
+ /usr/include/qt6/QtWidgets/QFileDialog \
+ /usr/include/qt6/QtWidgets/qfiledialog.h /usr/include/qt6/QtCore/qdir.h \
+ /usr/include/qt6/QtCore/qdirlisting.h \
+ /usr/include/qt6/QtCore/qfiledevice.h \
+ /usr/include/qt6/QtCore/qdatetime.h /usr/include/qt6/QtCore/qcalendar.h \
+ /usr/include/qt6/QtCore/qfile.h /usr/include/c++/14.2.1/filesystem \
+ /usr/include/c++/14.2.1/bits/fs_fwd.h \
+ /usr/include/c++/14.2.1/bits/fs_path.h /usr/include/c++/14.2.1/locale \
+ /usr/include/c++/14.2.1/bits/locale_facets.h \
+ /usr/include/c++/14.2.1/cwctype /usr/include/wctype.h \
+ /usr/include/bits/wctype-wchar.h \
+ /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/ctype_base.h \
+ /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/ctype_inline.h \
+ /usr/include/c++/14.2.1/bits/locale_facets.tcc \
+ /usr/include/c++/14.2.1/bits/locale_facets_nonio.h \
+ /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/time_members.h \
+ /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/messages_members.h \
+ /usr/include/libintl.h /usr/include/c++/14.2.1/bits/codecvt.h \
+ /usr/include/c++/14.2.1/bits/locale_facets_nonio.tcc \
+ /usr/include/c++/14.2.1/bits/locale_conv.h \
+ /usr/include/c++/14.2.1/iomanip \
+ /usr/include/c++/14.2.1/bits/quoted_string.h \
+ /usr/include/c++/14.2.1/sstream /usr/include/c++/14.2.1/istream \
+ /usr/include/c++/14.2.1/ios /usr/include/c++/14.2.1/bits/basic_ios.h \
+ /usr/include/c++/14.2.1/bits/basic_ios.tcc \
+ /usr/include/c++/14.2.1/ostream /usr/include/c++/14.2.1/bits/ostream.tcc \
+ /usr/include/c++/14.2.1/bits/istream.tcc \
+ /usr/include/c++/14.2.1/bits/sstream.tcc /usr/include/c++/14.2.1/codecvt \
+ /usr/include/c++/14.2.1/bits/fs_dir.h \
+ /usr/include/c++/14.2.1/bits/fs_ops.h \
+ /usr/include/qt6/QtCore/qfileinfo.h /usr/include/qt6/QtCore/qtimezone.h \
+ /usr/include/qt6/QtWidgets/qdialog.h \
+ /usr/include/qt6/QtCore/QPropertyAnimation \
+ /usr/include/qt6/QtCore/qpropertyanimation.h \
+ /usr/include/qt6/QtCore/qvariantanimation.h \
+ /usr/include/qt6/QtCore/qabstractanimation.h \
+ /usr/include/qt6/QtCore/qeasingcurve.h \
+ /usr/include/qt6/QtWidgets/QGraphicsOpacityEffect \
+ /usr/include/qt6/QtWidgets/qgraphicseffect.h \
+ /usr/include/qt6/QtWidgets/QScrollArea \
+ /usr/include/qt6/QtWidgets/qscrollarea.h \
  /home/matt/PacmanGui-new/include/core/packagemanager.hpp \
  /usr/include/alpm.h /usr/include/archive.h /usr/include/sys/stat.h \
  /usr/include/bits/stat.h /usr/include/bits/struct_stat.h \
@@ -421,10 +473,4 @@ CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o: \
  /home/matt/PacmanGui-new/build/pacmangui_autogen/BMPI5EA7AM/moc_settingsdialog.cpp \
  /home/matt/PacmanGui-new/build/pacmangui_autogen/BMPI5EA7AM/../../../include/gui/settingsdialog.hpp \
  /usr/include/qt6/QtWidgets/QDialog /usr/include/qt6/QtWidgets/qdialog.h \
- /usr/include/qt6/QtWidgets/QComboBox \
- /usr/include/qt6/QtWidgets/qcombobox.h \
- /usr/include/qt6/QtWidgets/QGroupBox \
- /usr/include/qt6/QtWidgets/qgroupbox.h \
- /usr/include/qt6/QtWidgets/QRadioButton \
- /usr/include/qt6/QtWidgets/qradiobutton.h \
  /usr/include/qt6/QtCore/QSettings /usr/include/qt6/QtCore/qsettings.h
