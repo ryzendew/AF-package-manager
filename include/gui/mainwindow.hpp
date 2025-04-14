@@ -35,6 +35,8 @@
 #include <QFutureWatcher>
 #include <QProgressDialog>
 #include "core/packagemanager.hpp"
+#include "core/flatpak_package.hpp"
+#include "gui/flatpak_manager_tab.hpp"
 #include <functional>
 
 // Forward declarations
@@ -162,6 +164,13 @@ private slots:
     void onWaylandSecurityEvent(const QString& eventType, const QString& details);
     void onWaylandHardwareAccelerationStatusChanged(bool available);
     void onWaylandPerformanceMetricsUpdated(const QVariantMap& metrics);
+    
+    // Flatpak-related slots
+    void onInstallFlatpakPackage();
+    void onRemoveFlatpakPackage();
+    void onSearchFlatpakPackages();
+    void onToggleFlatpakSearch(bool enabled);
+    void onFlatpakStatusMessage(const QString& message, int timeout);
 
 private:
     void setupUi();
@@ -380,6 +389,29 @@ private:
 
     // Async search variables
     QFutureWatcher<std::vector<pacmangui::core::Package>>* m_searchWatcher;
+
+    // Flatpak functionality
+    void setupFlatpakSupport();
+    void searchFlatpakPackages(const QString& searchTerm);
+    void refreshInstalledFlatpakPackages();
+    void performAsyncFlatpakSearch(const QString& searchTerm);
+    void setupFlatpakTab();
+    void refreshFlatpakList();
+    void refreshFlatpakRemotes();
+    
+    // Flatpak related members
+    QStandardItemModel* m_flatpakModel;
+    QStandardItemModel* m_installedFlatpakModel;
+    QFutureWatcher<std::vector<pacmangui::core::FlatpakPackage>>* m_flatpakSearchWatcher;
+    
+    // Flatpak UI elements
+    QCheckBox* m_flatpakSearchCheckbox;
+    QPushButton* m_installFlatpakButton;
+    QPushButton* m_removeFlatpakButton;
+    bool m_flatpakSearchEnabled;
+
+    // Flatpak Management Tab
+    FlatpakManagerTab* m_flatpakManagerTab;
 };
 
 } // namespace gui

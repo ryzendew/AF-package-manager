@@ -1,5 +1,6 @@
 #include "gui/mainwindow.hpp"
 #include "gui/settingsdialog.hpp"
+#include "gui/flatpak_manager_tab.hpp"
 #include "wayland/wayland_backend.hpp"
 #include "wayland/wayland_protocols.hpp"
 #include "wayland/wayland_security.hpp"
@@ -37,6 +38,7 @@
 #include <QGridLayout>
 #include <QSizePolicy>
 #include <QSpacerItem>
+#include <QCheckBox>
 
 #include <iostream>
 #include <functional>
@@ -56,9 +58,16 @@ MainWindow::MainWindow(QWidget* parent)
     m_systemUpdatesModel(nullptr),
     m_updatesModel(nullptr),
     m_searchWatcher(nullptr),
-    m_updateButton(nullptr),           // Explicitly set to nullptr since we're not creating it
-    m_installAurButton(nullptr),       // Explicitly set to nullptr since we're not creating it
-    m_updateInstalledButton(nullptr)   // Explicitly set to nullptr since we're not creating it
+    m_updateButton(nullptr),
+    m_installAurButton(nullptr),
+    m_updateInstalledButton(nullptr),
+    m_flatpakModel(nullptr),
+    m_installedFlatpakModel(nullptr),
+    m_flatpakSearchWatcher(nullptr),
+    m_flatpakSearchCheckbox(nullptr),
+    m_installFlatpakButton(nullptr),
+    m_removeFlatpakButton(nullptr),
+    m_flatpakSearchEnabled(false)
 {
     setWindowTitle(tr("PacmanGUI"));
     setMinimumSize(800, 600);
@@ -80,12 +89,22 @@ MainWindow::MainWindow(QWidget* parent)
     m_updatesModel->setHorizontalHeaderLabels(
         QStringList() << tr("") << tr("Name") << tr("Current Version") << tr("New Version") << tr("Repository"));
         
+    // Initialize Flatpak models
+    m_flatpakModel = new QStandardItemModel(0, 5, this);
+    m_flatpakModel->setHorizontalHeaderLabels(
+        QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
+        
+    m_installedFlatpakModel = new QStandardItemModel(0, 5, this);
+    m_installedFlatpakModel->setHorizontalHeaderLabels(
+        QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
+    
     // Set up UI components in the correct order
     setupUi();
     setupActions();
     setupMenus();
     setupSystemUpdateTab(); // Create the tab and its buttons before connecting signals
     setupMaintenanceTab();  // Create maintenance buttons before connecting them
+    setupFlatpakSupport(); // Initialize Flatpak support
     
     // Initialize Wayland support, if available and enabled
 #if defined(ENABLE_WAYLAND_SUPPORT) && ENABLE_WAYLAND_SUPPORT == 1
@@ -122,6 +141,9 @@ MainWindow::MainWindow(QWidget* parent)
 
 MainWindow::~MainWindow()
 {
+    // Save settings before closing
+    saveSettings();
+    
     // Clean up allocated resources
     if (m_slideAnimation) {
         m_slideAnimation->stop();
@@ -144,6 +166,19 @@ MainWindow::~MainWindow()
     delete m_systemUpdatesModel;
     delete m_updatesModel;
     delete m_settingsDialog;
+    
+    // Clean up Flatpak resources
+    if (m_flatpakSearchWatcher) {
+        if (m_flatpakSearchWatcher->isRunning()) {
+            m_flatpakSearchWatcher->cancel();
+            m_flatpakSearchWatcher->waitForFinished();
+        }
+        delete m_flatpakSearchWatcher;
+        m_flatpakSearchWatcher = nullptr;
+    }
+    
+    delete m_flatpakModel;
+    delete m_installedFlatpakModel;
 }
 
 void MainWindow::setupWaylandSupport()
@@ -289,40 +324,41 @@ void MainWindow::setupUi() {
     m_searchLayout->addLayout(m_packageActionsLayout);
     
     // Create packages table
-    qDebug() << "DEBUG: Creating package table";
+    qDebug() << "DEBUG: Creating packages table";
     m_packagesTable = new QTreeView(m_searchTab);
     m_packagesTable->setAlternatingRowColors(true);
     m_packagesTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
     m_packagesTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     applyTableStyle(m_packagesTable);
     
-    // Set model for the package table
+    // Set model for packages table
     m_packagesTable->setModel(m_packagesModel);
     
     // Set column sizes for packages table
     m_packagesTable->header()->setSectionResizeMode(0, QHeaderView::Fixed); // Checkbox column - fixed width
-    m_packagesTable->header()->setSectionResizeMode(1, QHeaderView::Interactive); // Name column - make interactive
-    m_packagesTable->header()->setStretchLastSection(true); // Make last column stretch
+    m_packagesTable->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents); // Name column - resize to contents
+    m_packagesTable->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents); // Version column - resize to contents
+    m_packagesTable->header()->setSectionResizeMode(3, QHeaderView::ResizeToContents); // Repository column - resize to contents
+    m_packagesTable->header()->setSectionResizeMode(4, QHeaderView::Stretch); // Description column - stretch
     
     // Set minimum sizes - special handling for checkbox column
     m_packagesTable->header()->setMinimumSectionSize(2); // Allow extremely small sections
-    m_packagesTable->setColumnWidth(0, 2); // Set checkbox column to absolute minimum 2px
-    m_packagesTable->setColumnWidth(1, 250); // Set name column width explicitly
+    m_packagesTable->setColumnWidth(0, 30); // Checkbox column - wider for better visibility
     
     m_searchLayout->addWidget(m_packagesTable);
     
     // Add tab
     qDebug() << "DEBUG: Adding search tab to main tab widget";
-    m_tabWidget->addTab(m_searchTab, tr("Search Packages"));
+    m_tabWidget->addTab(m_searchTab, tr("Search"));
     
     // Create Installed tab
-    qDebug() << "DEBUG: Creating installed packages tab";
     m_installedTab = new QWidget();
+    qDebug() << "DEBUG: Creating installed packages tab";
     m_installedLayout = new QVBoxLayout(m_installedTab);
     m_installedLayout->setContentsMargins(10, 10, 10, 10);
     m_installedLayout->setSpacing(10);
     
-    // Create package actions layout for installed tab
+    // Create installed packages actions layout
     qDebug() << "DEBUG: Creating installed packages action buttons";
     m_installedActionsLayout = new QHBoxLayout();
     m_removeInstalledButton = new QPushButton(tr("Remove"), m_installedTab);
@@ -345,13 +381,14 @@ void MainWindow::setupUi() {
     
     // Set column sizes for installed packages table
     m_installedTable->header()->setSectionResizeMode(0, QHeaderView::Fixed); // Checkbox column - fixed width
-    m_installedTable->header()->setSectionResizeMode(1, QHeaderView::Interactive); // Name column - make interactive
-    m_installedTable->header()->setStretchLastSection(true); // Make last column stretch
+    m_installedTable->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents); // Name column - resize to contents
+    m_installedTable->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents); // Version column - resize to contents
+    m_installedTable->header()->setSectionResizeMode(3, QHeaderView::ResizeToContents); // Repository column - resize to contents
+    m_installedTable->header()->setSectionResizeMode(4, QHeaderView::Stretch); // Description column - stretch
     
     // Set minimum sizes - special handling for checkbox column
     m_installedTable->header()->setMinimumSectionSize(2); // Allow extremely small sections
-    m_installedTable->setColumnWidth(0, 2); // Set checkbox column to absolute minimum 2px
-    m_installedTable->setColumnWidth(1, 250); // Set name column width explicitly
+    m_installedTable->setColumnWidth(0, 30); // Checkbox column - wider for better visibility
     
     m_installedLayout->addWidget(m_installedTable);
     
@@ -364,6 +401,9 @@ void MainWindow::setupUi() {
     
     // Create a status bar
     statusBar()->showMessage(tr("Ready"));
+    
+    // Add flatpak management tab
+    setupFlatpakTab();
     
     qDebug() << "DEBUG: Exiting setupUi()";
 }
@@ -837,24 +877,25 @@ void MainWindow::loadSettings() {
     QSettings settings("PacmanGUI", "PacmanGUI");
     
     // Load window geometry
-    if (settings.contains("mainwindow/geometry")) {
-        restoreGeometry(settings.value("mainwindow/geometry").toByteArray());
+    QByteArray geometry = settings.value("window/geometry").toByteArray();
+    if (!geometry.isEmpty()) {
+        restoreGeometry(geometry);
     }
     
-    // Load window state
-    if (settings.contains("mainwindow/state")) {
-        restoreState(settings.value("mainwindow/state").toByteArray());
-    }
+    // Load theme settings
+    m_darkTheme = settings.value("appearance/darkTheme", true).toBool();
     
-    // Load theme preference
-    bool isDark = settings.value("appearance/darkTheme", true).toBool();
-    applyTheme(isDark);
+    // Load Flatpak settings
+    if (m_packageManager.is_flatpak_available()) {
+        m_flatpakSearchEnabled = settings.value("flatpak/enabled", false).toBool();
+    } else {
+        m_flatpakSearchEnabled = false;
+    }
 }
 
 // Add implementation for isDarkThemeEnabled
 bool MainWindow::isDarkThemeEnabled() const {
-    QSettings settings("PacmanGUI", "PacmanGUI");
-    return settings.value("appearance/darkTheme", true).toBool();
+    return m_darkTheme;
 }
 
 // Add implementation for applyTheme
@@ -926,22 +967,11 @@ void MainWindow::showStatusMessage(const QString& message, int timeout) {
 
 // Add implementation for refreshInstalledPackages
 void MainWindow::refreshInstalledPackages() {
-    // Ensure model is properly initialized
-    if (!m_installedModel) {
-        m_installedModel = new QStandardItemModel(0, 5, this);
-        m_installedModel->setHorizontalHeaderLabels(
-            QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
-    }
-    
-    // Clear the installed packages model
+    qDebug() << "Refreshing installed packages";
     m_installedModel->clear();
-    m_installedModel->setHorizontalHeaderLabels(
-        QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
-    
-    // Get installed packages from the package manager
+    m_installedModel->setHorizontalHeaderLabels(QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
+
     std::vector<pacmangui::core::Package> installedPackages = m_packageManager.get_installed_packages();
-    
-    // Add packages to the model
     for (const auto& pkg : installedPackages) {
         QList<QStandardItem*> row;
         
@@ -959,8 +989,14 @@ void MainWindow::refreshInstalledPackages() {
         row << checkItem << nameItem << versionItem << repoItem << descItem;
         m_installedModel->appendRow(row);
     }
-    
-    // Update status bar
+
+    // Set column widths after populating data
+    m_installedTable->setColumnWidth(0, 30);  // Checkbox column
+    m_installedTable->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);  // Name column resize to content
+    m_installedTable->setColumnWidth(2, 100);  // Version column
+    m_installedTable->setColumnWidth(3, 100);  // Repository column
+    m_installedTable->header()->setSectionResizeMode(4, QHeaderView::Stretch);  // Description column takes remaining space
+
     showStatusMessage(tr("Loaded %1 installed packages").arg(installedPackages.size()), 3000);
 }
 
@@ -972,55 +1008,32 @@ void MainWindow::searchPackages(const QString& searchTerm) {
 
 // Implementation of async search
 void MainWindow::performAsyncSearch(const QString& searchTerm) {
-    // Ensure model is properly initialized
-    if (!m_packagesModel) {
-        m_packagesModel = new QStandardItemModel(0, 5, this);
-        m_packagesModel->setHorizontalHeaderLabels(
-            QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
-    }
+    qDebug() << "Performing async search for:" << searchTerm;
     
-    // Clear the search packages model
+    // Initialize model
     m_packagesModel->clear();
-    m_packagesModel->setHorizontalHeaderLabels(
-        QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
+    m_packagesModel->setHorizontalHeaderLabels(QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
     
-    // If search term is empty, show nothing
     if (searchTerm.isEmpty()) {
-        showStatusMessage(tr("Enter a search term to find packages"), 3000);
+        showStatusMessage(tr("Please enter a search term"), 3000);
         return;
     }
-            
-    // Show searching status
+    
     showStatusMessage(tr("Searching for packages matching '%1'...").arg(searchTerm), 0);
     
-    // Cancel any previous search
-    if (m_searchWatcher) {
-        if (m_searchWatcher->isRunning()) {
-            m_searchWatcher->cancel();
-            m_searchWatcher->waitForFinished();
+    QFuture<std::vector<pacmangui::core::Package>> future = QtConcurrent::run(
+        [this, searchTerm]() {
+            return m_packageManager.search_by_name(searchTerm.toStdString());
         }
-        delete m_searchWatcher;
-        m_searchWatcher = nullptr;
-    }
+    );
     
-    // Create new watcher for async search
-    m_searchWatcher = new QFutureWatcher<std::vector<pacmangui::core::Package>>(this);
+    QFutureWatcher<std::vector<pacmangui::core::Package>>* watcher = new QFutureWatcher<std::vector<pacmangui::core::Package>>();
     
-    // Connect signals
-    connect(m_searchWatcher, &QFutureWatcher<std::vector<pacmangui::core::Package>>::finished, 
-            this, [this, searchTerm]() {
-        if (!m_searchWatcher) return;
+    connect(watcher, &QFutureWatcher<std::vector<pacmangui::core::Package>>::finished, this, [this, watcher, searchTerm]() {
+        std::vector<pacmangui::core::Package> results = watcher->result();
         
-        // Get results
-        std::vector<pacmangui::core::Package> searchResults = m_searchWatcher->result();
-        
-        // Clear the model first
-        m_packagesModel->clear();
-        m_packagesModel->setHorizontalHeaderLabels(
-            QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
-        
-        // Add packages to the model
-        for (const auto& pkg : searchResults) {
+        // Add packages to model
+        for (const auto& pkg : results) {
             QList<QStandardItem*> row;
             
             // Add checkbox item
@@ -1038,24 +1051,19 @@ void MainWindow::performAsyncSearch(const QString& searchTerm) {
             m_packagesModel->appendRow(row);
         }
         
-        // Clean up
-        m_searchWatcher->deleteLater();
-        m_searchWatcher = nullptr;
+        // Set column widths after populating data
+        m_packagesTable->setColumnWidth(0, 30);  // Checkbox column
+        m_packagesTable->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);  // Name column resize to content
+        m_packagesTable->setColumnWidth(2, 100);  // Version column
+        m_packagesTable->setColumnWidth(3, 100);  // Repository column
+        m_packagesTable->header()->setSectionResizeMode(4, QHeaderView::Stretch);  // Description column takes remaining space
         
-        // Update status bar
-        showStatusMessage(tr("Found %1 packages matching '%2'")
-                         .arg(searchResults.size())
-                         .arg(searchTerm), 3000);
+        showStatusMessage(tr("Found %1 packages matching '%2'").arg(results.size()).arg(searchTerm), 3000);
+        
+        watcher->deleteLater();
     });
     
-    // Run the search in background
-    QFuture<std::vector<pacmangui::core::Package>> future = QtConcurrent::run(
-        [this, searchTerm]() {
-            return m_packageManager.search_by_name(searchTerm.toStdString());
-        }
-    );
-    
-    m_searchWatcher->setFuture(future);
+    watcher->setFuture(future);
 }
 
 // Add implementation for checkAurHelper
@@ -1097,11 +1105,16 @@ void MainWindow::onSearchTextChanged(const QString& text) {
         // Don't immediately search on each keystroke, let the user finish typing
         // We can add a timer for debouncing if needed
         performAsyncSearch(text);
+        
+        // If Flatpak search is enabled, also search for Flatpak packages
+        if (m_flatpakSearchEnabled && m_packageManager.is_flatpak_available()) {
+            performAsyncFlatpakSearch(text);
+        }
     } else if (text.isEmpty()) {
         // Clear the search results
         m_packagesModel->clear();
         m_packagesModel->setHorizontalHeaderLabels(
-            QStringList() << tr("Name") << tr("Version") << tr("Description") << tr("Repository"));
+            QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
     }
 }
 
@@ -1112,8 +1125,24 @@ void MainWindow::onSearchClicked() {
     
     // Perform the search
     if (!searchText.isEmpty()) {
+        // Clear previous results before a new search
+        m_packagesModel->clear();
+        m_packagesModel->setHorizontalHeaderLabels(
+            QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
+            
+        // First perform regular package search
         performAsyncSearch(searchText);
-                    } else {
+        
+        // If Flatpak is enabled, also search for Flatpak packages
+        if (m_flatpakSearchEnabled && m_packageManager.is_flatpak_available()) {
+            qDebug() << "DEBUG: Flatpak search is enabled, searching for Flatpak packages";
+            performAsyncFlatpakSearch(searchText);
+        } else {
+            qDebug() << "DEBUG: Flatpak search is NOT enabled or not available";
+            qDebug() << "DEBUG: m_flatpakSearchEnabled =" << m_flatpakSearchEnabled;
+            qDebug() << "DEBUG: flatpak_available =" << m_packageManager.is_flatpak_available();
+        }
+    } else {
         showStatusMessage(tr("Please enter a search term"), 3000);
     }
 }
@@ -1774,39 +1803,43 @@ void MainWindow::openSettings() {
     if (!m_settingsDialog) {
         m_settingsDialog = new SettingsDialog(this);
         
-        // Connect theme changed signal using lambda
+        // Connect theme changed signal
         connect(m_settingsDialog, &SettingsDialog::themeChanged, 
                 [this](bool isDark) { this->toggleTheme(isDark); });
         
         // Connect AUR status changed signal
         connect(m_settingsDialog, &SettingsDialog::aurStatusChanged, [this](bool enabled) {
-            // Update UI based on AUR status
-            if (m_installAurButton) {
-                m_installAurButton->setEnabled(enabled && !m_aurHelper.isEmpty());
-            }
-            
-            // Refresh AUR helper if enabled
+            // If AUR is enabled, check if we have a helper
             if (enabled) {
                 checkAurHelper();
+            } else {
+                // If disabled, disable AUR button
+                if (m_installAurButton) {
+                    m_installAurButton->setEnabled(false);
+                }
+            }
+        });
+        
+        // Connect Flatpak status changed signal
+        connect(m_settingsDialog, &SettingsDialog::flatpakStatusChanged, [this](bool enabled) {
+            // Update Flatpak search enabled flag
+            m_flatpakSearchEnabled = enabled;
+            
+            // If Flatpak is enabled and we have it available, refresh packages
+            if (enabled && m_packageManager.is_flatpak_available()) {
+                refreshInstalledFlatpakPackages();
+                
+                // If we have a search term, search for Flatpak packages
+                QString searchText = m_searchInput->text();
+                if (!searchText.isEmpty()) {
+                    performAsyncFlatpakSearch(searchText);
+                }
             }
         });
     }
     
-    // Show dialog
-    m_settingsDialog->loadSettings();
+    // Show the dialog
     m_settingsDialog->exec();
-    
-    // Handle result
-    if (m_settingsDialog->result() == QDialog::Accepted) {
-        // Save settings
-        m_settingsDialog->saveSettings();
-        
-        // Update AUR helper
-        checkAurHelper();
-        
-        // Show status message
-        showStatusMessage(tr("Settings saved successfully"), 2000);
-    }
 }
 
 // Add implementation for onAbout
@@ -1837,8 +1870,13 @@ void MainWindow::resizeEvent(QResizeEvent* event) {
 }
 
 // Add implementation for closeEvent
-void MainWindow::closeEvent(QCloseEvent* event) {
-    QMainWindow::closeEvent(event); // Call base implementation
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    // Save settings before closing
+    saveSettings();
+    
+    // Accept the close event
+    event->accept();
 }
 
 // Add implementation for updateInstallButtonText
@@ -2268,5 +2306,585 @@ QString MainWindow::findTerminalEmulator() {
     return "xterm";
 }
 
+// At the end of the file, add the Flatpak methods implementation
+void MainWindow::setupFlatpakSupport()
+{
+    qDebug() << "DEBUG: Entering setupFlatpakSupport()";
+    
+    // Check if Flatpak is available
+    bool flatpakAvailable = m_packageManager.is_flatpak_available();
+    
+    // Initialize Flatpak related variables
+    m_flatpakSearchEnabled = false;
+    
+    if (flatpakAvailable) {
+        qDebug() << "DEBUG: Flatpak is available on this system";
+        
+        // Create Flatpak install button
+        m_installFlatpakButton = new QPushButton(tr("Install (Flatpak)"), m_searchTab);
+        m_installFlatpakButton->setEnabled(false);
+        m_packageActionsLayout->addWidget(m_installFlatpakButton);
+        
+        // Connect signal for installation
+        connect(m_installFlatpakButton, &QPushButton::clicked, this, &MainWindow::onInstallFlatpakPackage);
+        
+        // Also add Flatpak removal for installed packages tab
+        m_removeFlatpakButton = new QPushButton(tr("Remove (Flatpak)"), m_installedTab);
+        m_removeFlatpakButton->setEnabled(false);
+        m_installedActionsLayout->addWidget(m_removeFlatpakButton);
+        
+        // Connect signal for removal
+        connect(m_removeFlatpakButton, &QPushButton::clicked, this, &MainWindow::onRemoveFlatpakPackage);
+     
+        // Load settings to check if Flatpak is enabled
+        QSettings settings("PacmanGUI", "PacmanGUI");
+        m_flatpakSearchEnabled = settings.value("flatpak/enabled", false).toBool();
+        
+        // If Flatpak is enabled, load installed Flatpak packages
+        if (m_flatpakSearchEnabled) {
+            refreshInstalledFlatpakPackages();
+        }
+    } else {
+        qDebug() << "DEBUG: Flatpak is not available on this system";
+    }
+    
+    qDebug() << "DEBUG: Exiting setupFlatpakSupport()";
+}
+
+void MainWindow::onToggleFlatpakSearch(bool enabled)
+{
+    qDebug() << "DEBUG: Flatpak search toggled:" << enabled;
+    m_flatpakSearchEnabled = enabled;
+    
+    if (enabled) {
+        // If search is enabled and we have search text, perform search
+        QString searchText = m_searchInput->text();
+        if (!searchText.isEmpty()) {
+            performAsyncFlatpakSearch(searchText);
+        }
+    } else {
+        // If search is disabled, clear any Flatpak results
+        m_flatpakModel->clear();
+        m_flatpakModel->setHorizontalHeaderLabels(
+            QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
+        
+        // Disable Flatpak install button
+        if (m_installFlatpakButton) {
+            m_installFlatpakButton->setEnabled(false);
+        }
+    }
+}
+
+void MainWindow::refreshInstalledFlatpakPackages()
+{
+    if (!m_packageManager.is_flatpak_available()) {
+        return;
+    }
+    
+    // Clear the model
+    m_installedFlatpakModel->clear();
+    m_installedFlatpakModel->setHorizontalHeaderLabels(
+        QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
+    
+    // Get installed packages
+    std::vector<pacmangui::core::FlatpakPackage> installedPackages = m_packageManager.get_installed_flatpak_packages();
+    
+    // Add packages to the model
+    for (const auto& pkg : installedPackages) {
+        QList<QStandardItem*> row;
+        
+        // Add checkbox item
+        QStandardItem* checkItem = new QStandardItem();
+        checkItem->setCheckable(true);
+        checkItem->setCheckState(Qt::Unchecked);
+        checkItem->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
+        
+        QStandardItem* nameItem = new QStandardItem(QString::fromStdString(pkg.get_name()));
+        nameItem->setData(QString::fromStdString(pkg.get_app_id()), Qt::UserRole); // Store app_id for later use
+        
+        QStandardItem* versionItem = new QStandardItem(QString::fromStdString(pkg.get_version()));
+        QStandardItem* repoItem = new QStandardItem(QString::fromStdString(pkg.get_repository()));
+        QStandardItem* descItem = new QStandardItem(QString::fromStdString(pkg.get_description()));
+        
+        row << checkItem << nameItem << versionItem << repoItem << descItem;
+        m_installedFlatpakModel->appendRow(row);
+    }
+    
+    // Update status bar
+    showStatusMessage(tr("Loaded %1 installed Flatpak packages").arg(installedPackages.size()), 3000);
+    
+    // Enable/disable remove button based on package count
+    if (m_removeFlatpakButton) {
+        m_removeFlatpakButton->setEnabled(!installedPackages.empty());
+    }
+}
+
+void MainWindow::searchFlatpakPackages(const QString& searchTerm)
+{
+    // This is now a wrapper around performAsyncFlatpakSearch
+    performAsyncFlatpakSearch(searchTerm);
+}
+
+void MainWindow::performAsyncFlatpakSearch(const QString& searchTerm)
+{
+    // Debug information for troubleshooting
+    qDebug() << "DEBUG: performAsyncFlatpakSearch called with:" << searchTerm;
+    qDebug() << "DEBUG: Flatpak available:" << m_packageManager.is_flatpak_available();
+    qDebug() << "DEBUG: Flatpak search enabled:" << m_flatpakSearchEnabled;
+    
+    if (!m_packageManager.is_flatpak_available() || !m_flatpakSearchEnabled) {
+        qDebug() << "DEBUG: Skipping Flatpak search - not available or not enabled";
+        return;
+    }
+    
+    qDebug() << "DEBUG: Performing async Flatpak search for:" << searchTerm;
+    
+    // Ensure model is properly initialized
+    if (!m_flatpakModel) {
+        m_flatpakModel = new QStandardItemModel(0, 5, this);
+        m_flatpakModel->setHorizontalHeaderLabels(
+            QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
+    }
+    
+    // Clear the flatpak search model
+    m_flatpakModel->clear();
+    m_flatpakModel->setHorizontalHeaderLabels(
+        QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
+    
+    // If search term is empty, show nothing
+    if (searchTerm.isEmpty()) {
+        showStatusMessage(tr("Enter a search term to find Flatpak packages"), 3000);
+        return;
+    }
+    
+    // Show searching status
+    showStatusMessage(tr("Searching for Flatpak packages matching '%1'...").arg(searchTerm), 0);
+    
+    // Cancel any previous search
+    if (m_flatpakSearchWatcher) {
+        if (m_flatpakSearchWatcher->isRunning()) {
+            m_flatpakSearchWatcher->cancel();
+            m_flatpakSearchWatcher->waitForFinished();
+        }
+        delete m_flatpakSearchWatcher;
+        m_flatpakSearchWatcher = nullptr;
+    }
+    
+    // Create new watcher for async search
+    m_flatpakSearchWatcher = new QFutureWatcher<std::vector<pacmangui::core::FlatpakPackage>>(this);
+    
+    // Connect signals
+    connect(m_flatpakSearchWatcher, &QFutureWatcher<std::vector<pacmangui::core::FlatpakPackage>>::finished, 
+            this, [this, searchTerm]() {
+        if (!m_flatpakSearchWatcher) return;
+        
+        // Get results
+        std::vector<pacmangui::core::FlatpakPackage> searchResults = m_flatpakSearchWatcher->result();
+        
+        qDebug() << "DEBUG: Found" << searchResults.size() << "Flatpak packages matching" << searchTerm;
+        
+        // Clear the flatpak model before adding new results
+        m_flatpakModel->clear();
+        m_flatpakModel->setHorizontalHeaderLabels(
+            QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
+        
+        // Add packages to the models
+        for (const auto& pkg : searchResults) {
+            // Add to flatpak model for reference
+            QList<QStandardItem*> flatpakRow;
+            
+            QStandardItem* flatpakCheckItem = new QStandardItem();
+            flatpakCheckItem->setCheckable(true);
+            flatpakCheckItem->setCheckState(Qt::Unchecked);
+            flatpakCheckItem->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
+            
+            QStandardItem* flatpakNameItem = new QStandardItem(QString::fromStdString(pkg.get_name()));
+            flatpakNameItem->setData(QString::fromStdString(pkg.get_app_id()), Qt::UserRole); // Store app_id for later use
+            
+            QStandardItem* flatpakVersionItem = new QStandardItem(QString::fromStdString(pkg.get_version()));
+            QStandardItem* flatpakRepoItem = new QStandardItem(QString::fromStdString(pkg.get_repository()));
+            QStandardItem* flatpakDescItem = new QStandardItem(QString::fromStdString(pkg.get_description()));
+            
+            flatpakRow << flatpakCheckItem << flatpakNameItem << flatpakVersionItem << flatpakRepoItem << flatpakDescItem;
+            m_flatpakModel->appendRow(flatpakRow);
+            
+            // Now add to main packages model for display
+            QList<QStandardItem*> displayRow;
+            
+            QStandardItem* checkItem = new QStandardItem();
+            checkItem->setCheckable(true);
+            checkItem->setCheckState(Qt::Unchecked);
+            checkItem->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
+            checkItem->setData("flatpak", Qt::UserRole + 1); // Mark as flatpak
+            
+            QStandardItem* nameItem = new QStandardItem(QString::fromStdString(pkg.get_name()));
+            nameItem->setData(QString::fromStdString(pkg.get_app_id()), Qt::UserRole); // Store app_id for later use
+            nameItem->setData("flatpak", Qt::UserRole + 1); // Mark as flatpak
+            
+            QStandardItem* versionItem = new QStandardItem(QString::fromStdString(pkg.get_version()));
+            
+            // Mark repository as Flatpak
+            QStandardItem* repoItem = new QStandardItem(QString::fromStdString(pkg.get_repository()) + " (Flatpak)");
+            repoItem->setData("flatpak", Qt::UserRole + 1);
+            
+            QStandardItem* descItem = new QStandardItem(QString::fromStdString(pkg.get_description()));
+            
+            displayRow << checkItem << nameItem << versionItem << repoItem << descItem;
+            m_packagesModel->appendRow(displayRow);
+        }
+        
+        // If we have results, update the view
+        if (searchResults.size() > 0) {
+            // Set column widths after populating data
+            m_packagesTable->setColumnWidth(0, 30);  // Checkbox column
+            m_packagesTable->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);  // Name column resize to content
+            m_packagesTable->setColumnWidth(2, 100);  // Version column
+            m_packagesTable->setColumnWidth(3, 120);  // Repository column - wider for Flatpak annotation
+            m_packagesTable->header()->setSectionResizeMode(4, QHeaderView::Stretch);  // Description column takes remaining space
+            
+            // Make sure the table is visible
+            m_packagesTable->show();
+            
+            // Enable Flatpak install button
+            if (m_installFlatpakButton) {
+                m_installFlatpakButton->setEnabled(true);
+            }
+            
+            // Update status bar
+            showStatusMessage(tr("Found %1 Flatpak packages matching '%2'")
+                            .arg(searchResults.size())
+                            .arg(searchTerm), 3000);
+        } else {
+            // No results
+            showStatusMessage(tr("No Flatpak packages found matching '%1'").arg(searchTerm), 3000);
+            
+            // Disable Flatpak install button
+            if (m_installFlatpakButton) {
+                m_installFlatpakButton->setEnabled(false);
+            }
+        }
+        
+        // Clean up
+        m_flatpakSearchWatcher->deleteLater();
+        m_flatpakSearchWatcher = nullptr;
+    });
+    
+    // Run the search in background
+    QFuture<std::vector<pacmangui::core::FlatpakPackage>> future = QtConcurrent::run(
+        [this, searchTerm]() {
+            return m_packageManager.search_flatpak_by_name(searchTerm.toStdString());
+        }
+    );
+    
+    m_flatpakSearchWatcher->setFuture(future);
+}
+
+void MainWindow::onInstallFlatpakPackage()
+{
+    // Get selected packages
+    QModelIndexList selected = m_packagesTable->selectionModel()->selectedRows();
+    if (selected.isEmpty()) {
+        showStatusMessage(tr("No Flatpak packages selected for installation"), 3000);
+        return;
+    }
+    
+    // Collect package names and app IDs
+    QStringList packageNames;
+    QStringList packageAppIds;
+    QStringList packageDetails;
+    QStringList packageRemotes;
+    
+    for (const QModelIndex& index : selected) {
+        // Check if the selected row is a Flatpak package
+        QModelIndex typeIndex = m_packagesModel->index(index.row(), 1); // Name column contains type data
+        QVariant packageType = m_packagesModel->data(typeIndex, Qt::UserRole + 1);
+        
+        // Skip if not a Flatpak package
+        if (packageType.toString() != "flatpak") {
+            continue;
+        }
+        
+        // Get app ID from the name column's user role
+        QModelIndex nameIndex = m_packagesModel->index(index.row(), 1); // Name column
+        QString name = m_packagesModel->data(nameIndex).toString();
+        QString appId = m_packagesModel->data(nameIndex, Qt::UserRole).toString();
+        
+        if (appId.isEmpty()) {
+            // If no app ID stored, fall back to using the name
+            appId = name;
+        }
+        
+        QModelIndex versionIndex = m_packagesModel->index(index.row(), 2); // Version column
+        QModelIndex repoIndex = m_packagesModel->index(index.row(), 3); // Repository column
+        
+        QString version = m_packagesModel->data(versionIndex).toString();
+        QString repo = m_packagesModel->data(repoIndex).toString();
+        
+        // Remove " (Flatpak)" suffix from repository name
+        repo.remove(" (Flatpak)");
+        
+        packageNames.append(name);
+        packageAppIds.append(appId);
+        packageRemotes.append(repo);
+        packageDetails.append(tr("%1 (%2) [%3]").arg(name).arg(version).arg(repo));
+    }
+    
+    // Check if we found any Flatpak packages
+    if (packageNames.isEmpty()) {
+        showStatusMessage(tr("No Flatpak packages selected for installation"), 3000);
+        return;
+    }
+    
+    // Confirm installation
+    QString message;
+    if (packageNames.size() == 1) {
+        message = tr("Do you want to install the following Flatpak package?\n\n%1").arg(packageDetails.first());
+    } else {
+        message = tr("Do you want to install the following %1 Flatpak packages?\n\n%2")
+            .arg(packageNames.size())
+            .arg(packageDetails.join("\n"));
+    }
+    
+    QMessageBox::StandardButton reply = QMessageBox::question(
+        this, 
+        tr("Confirm Flatpak Installation"),
+        message,
+        QMessageBox::Yes|QMessageBox::No
+    );
+    
+    if (reply != QMessageBox::Yes) {
+        return;
+    }
+    
+    // Show progress dialog
+    QProgressDialog progress(tr("Installing Flatpak packages..."), tr("Cancel"), 0, packageAppIds.size(), this);
+    progress.setWindowModality(Qt::WindowModal);
+    progress.setMinimumDuration(0);
+    progress.setValue(0);
+    
+    // Install packages one by one
+    bool allSuccessful = true;
+    for (int i = 0; i < packageAppIds.size(); i++) {
+        QString appId = packageAppIds[i];
+        QString name = packageNames[i];
+        QString remote = packageRemotes[i];
+        
+        progress.setLabelText(tr("Installing %1...").arg(name));
+        progress.setValue(i);
+        
+        if (progress.wasCanceled()) {
+            break;
+        }
+        
+        // Install the package
+        bool success = m_packageManager.install_flatpak_package(appId.toStdString(), remote.toStdString());
+        
+        if (!success) {
+            allSuccessful = false;
+            QMessageBox::warning(
+                this,
+                tr("Installation Failed"),
+                tr("Failed to install %1: %2")
+                    .arg(name)
+                    .arg(QString::fromStdString(m_packageManager.get_last_error())),
+                QMessageBox::Ok
+            );
+        }
+    }
+    
+    progress.setValue(packageAppIds.size());
+    
+    // Show status message
+    if (allSuccessful) {
+        showStatusMessage(tr("Successfully installed Flatpak packages"), 3000);
+    } else {
+        showStatusMessage(tr("Some Flatpak packages failed to install"), 3000);
+    }
+    
+    // Refresh installed packages list
+    refreshInstalledFlatpakPackages();
+}
+
+void MainWindow::onRemoveFlatpakPackage()
+{
+    // Get selected packages from installed table
+    QModelIndexList selected = m_installedTable->selectionModel()->selectedRows();
+    if (selected.isEmpty()) {
+        showStatusMessage(tr("No Flatpak packages selected for removal"), 3000);
+        return;
+    }
+    
+    // Collect package names and app IDs
+    QStringList packageNames;
+    QStringList packageAppIds;
+    QStringList packageDetails;
+    
+    for (const QModelIndex& index : selected) {
+        // Get the repository column to check if it's a Flatpak
+        QModelIndex repoIndex = m_installedModel->index(index.row(), 3); // Repository column
+        QString repo = m_installedModel->data(repoIndex).toString();
+        
+        // Skip if not a Flatpak package (should contain "Flatpak" in the repository name)
+        if (!repo.contains("Flatpak", Qt::CaseInsensitive)) {
+            continue;
+        }
+        
+        // Get app ID from the name column's user role
+        QModelIndex nameIndex = m_installedModel->index(index.row(), 1); // Name column
+        QString name = m_installedModel->data(nameIndex).toString();
+        QString appId = m_installedModel->data(nameIndex, Qt::UserRole).toString();
+        
+        if (appId.isEmpty()) {
+            // If no app ID stored, fall back to using the name
+            appId = name;
+        }
+        
+        QModelIndex versionIndex = m_installedModel->index(index.row(), 2); // Version column
+        QString version = m_installedModel->data(versionIndex).toString();
+        
+        packageNames.append(name);
+        packageAppIds.append(appId);
+        packageDetails.append(tr("%1 (%2)").arg(name).arg(version));
+    }
+    
+    // Check if we found any Flatpak packages
+    if (packageNames.isEmpty()) {
+        showStatusMessage(tr("No Flatpak packages selected for removal"), 3000);
+        return;
+    }
+    
+    // Confirm removal
+    QString message;
+    if (packageNames.size() == 1) {
+        message = tr("Do you want to remove the following Flatpak package?\n\n%1").arg(packageDetails.first());
+    } else {
+        message = tr("Do you want to remove the following %1 Flatpak packages?\n\n%2")
+            .arg(packageNames.size())
+            .arg(packageDetails.join("\n"));
+    }
+    
+    QMessageBox::StandardButton reply = QMessageBox::question(
+        this, 
+        tr("Confirm Flatpak Removal"),
+        message,
+        QMessageBox::Yes|QMessageBox::No
+    );
+    
+    if (reply != QMessageBox::Yes) {
+        return;
+    }
+    
+    // Show progress dialog
+    QProgressDialog progress(tr("Removing Flatpak packages..."), tr("Cancel"), 0, packageAppIds.size(), this);
+    progress.setWindowModality(Qt::WindowModal);
+    progress.setMinimumDuration(0);
+    progress.setValue(0);
+    
+    // Remove packages one by one
+    bool allSuccessful = true;
+    for (int i = 0; i < packageAppIds.size(); i++) {
+        QString appId = packageAppIds[i];
+        QString name = packageNames[i];
+        
+        progress.setLabelText(tr("Removing %1...").arg(name));
+        progress.setValue(i);
+        
+        if (progress.wasCanceled()) {
+            break;
+        }
+        
+        // Remove the package
+        bool success = m_packageManager.remove_flatpak_package(appId.toStdString());
+        
+        if (!success) {
+            allSuccessful = false;
+            QMessageBox::warning(
+                this,
+                tr("Removal Failed"),
+                tr("Failed to remove %1: %2")
+                    .arg(name)
+                    .arg(QString::fromStdString(m_packageManager.get_last_error())),
+                QMessageBox::Ok
+            );
+        }
+    }
+    
+    progress.setValue(packageAppIds.size());
+    
+    // Show status message
+    if (allSuccessful) {
+        showStatusMessage(tr("Successfully removed Flatpak packages"), 3000);
+    } else {
+        showStatusMessage(tr("Some Flatpak packages failed to remove"), 3000);
+    }
+    
+    // Refresh installed packages list
+    refreshInstalledFlatpakPackages();
+}
+
+// Add Flatpak search functions
+void MainWindow::onSearchFlatpakPackages()
+{
+    // Get the search text
+    QString searchText = m_searchInput->text();
+    
+    // Perform the Flatpak search
+    if (!searchText.isEmpty()) {
+        performAsyncFlatpakSearch(searchText);
+    } else {
+        showStatusMessage(tr("Please enter a search term"), 3000);
+    }
+}
+
+void MainWindow::saveSettings()
+{
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    
+    // Save window geometry
+    settings.setValue("window/geometry", saveGeometry());
+    
+    // Save theme settings
+    settings.setValue("appearance/darkTheme", m_darkTheme);
+    
+    // Ensure settings are written to disk
+    settings.sync();
+}
+
+// Add implementation for setupFlatpakTab using our new FlatpakManagerTab class
+void MainWindow::setupFlatpakTab() {
+    // Only setup if Flatpak is available
+    if (!m_packageManager.is_flatpak_available()) {
+        return;
+    }
+    
+    qDebug() << "Setting up Flatpak management tab using FlatpakManagerTab class";
+    
+    // Create the Flatpak manager tab
+    m_flatpakManagerTab = new FlatpakManagerTab(this, &m_packageManager);
+    
+    // Connect signals
+    connect(m_flatpakManagerTab, &FlatpakManagerTab::statusMessage, 
+            this, &MainWindow::onFlatpakStatusMessage);
+    
+    // Add tab to main tab widget
+    m_tabWidget->addTab(m_flatpakManagerTab, tr("Flatpak Manager"));
+}
+
+void MainWindow::onFlatpakStatusMessage(const QString& message, int timeout) {
+    showStatusMessage(message, timeout);
+}
+
+// Replace refreshFlatpakList with a method that delegates to our FlatpakManagerTab
+void MainWindow::refreshFlatpakList() {
+    if (m_flatpakManagerTab) {
+        m_flatpakManagerTab->refreshFlatpakList();
+    }
+}
+
+void MainWindow::refreshFlatpakRemotes() {
+    if (m_flatpakManagerTab) {
+        m_flatpakManagerTab->refreshFlatpakRemotes();
+    }
+}
 } // namespace gui
 } // namespace pacmangui

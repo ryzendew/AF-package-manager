@@ -7,10 +7,13 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
   pacmangui_autogen/moc_predefs.h \
   /home/matt/PacmanGui-new/cmake/cmake_uninstall.cmake.in \
   /home/matt/PacmanGui-new/cmake/modules/FindALPM.cmake \
+  /home/matt/PacmanGui-new/include/core/flatpak_manager.hpp \
+  /home/matt/PacmanGui-new/include/core/flatpak_package.hpp \
   /home/matt/PacmanGui-new/include/core/package.hpp \
   /home/matt/PacmanGui-new/include/core/packagemanager.hpp \
   /home/matt/PacmanGui-new/include/core/repository.hpp \
   /home/matt/PacmanGui-new/include/core/transaction.hpp \
+  /home/matt/PacmanGui-new/include/gui/flatpak_manager_tab.hpp \
   /home/matt/PacmanGui-new/include/gui/mainwindow.hpp \
   /home/matt/PacmanGui-new/include/gui/settingsdialog.hpp \
   /home/matt/PacmanGui-new/include/wayland/wayland_backend.hpp \
@@ -18,10 +21,13 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
   /home/matt/PacmanGui-new/include/wayland/wayland_protocols.hpp \
   /home/matt/PacmanGui-new/include/wayland/wayland_security.hpp \
   /home/matt/PacmanGui-new/resources/resources.qrc \
+  /home/matt/PacmanGui-new/src/core/flatpak_manager.cpp \
+  /home/matt/PacmanGui-new/src/core/flatpak_package.cpp \
   /home/matt/PacmanGui-new/src/core/package.cpp \
   /home/matt/PacmanGui-new/src/core/packagemanager.cpp \
   /home/matt/PacmanGui-new/src/core/repository.cpp \
   /home/matt/PacmanGui-new/src/core/transaction.cpp \
+  /home/matt/PacmanGui-new/src/gui/flatpak_manager_tab.cpp \
   /home/matt/PacmanGui-new/src/gui/mainwindow.cpp \
   /home/matt/PacmanGui-new/src/gui/settingsdialog.cpp \
   /home/matt/PacmanGui-new/src/gui/util.cpp \
@@ -516,6 +522,7 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
   /usr/include/qt6/QtGui/qtransform.h \
   /usr/include/qt6/QtGui/qvalidator.h \
   /usr/include/qt6/QtGui/qwindowdefs.h \
+  /usr/include/qt6/QtWidgets/QButtonGroup \
   /usr/include/qt6/QtWidgets/QCheckBox \
   /usr/include/qt6/QtWidgets/QComboBox \
   /usr/include/qt6/QtWidgets/QDialog \
@@ -545,6 +552,7 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
   /usr/include/qt6/QtWidgets/QToolButton \
   /usr/include/qt6/QtWidgets/QTreeView \
   /usr/include/qt6/QtWidgets/QVBoxLayout \
+  /usr/include/qt6/QtWidgets/QWidget \
   /usr/include/qt6/QtWidgets/qabstractbutton.h \
   /usr/include/qt6/QtWidgets/qabstractitemdelegate.h \
   /usr/include/qt6/QtWidgets/qabstractitemview.h \
@@ -552,6 +560,7 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
   /usr/include/qt6/QtWidgets/qabstractslider.h \
   /usr/include/qt6/QtWidgets/qabstractspinbox.h \
   /usr/include/qt6/QtWidgets/qboxlayout.h \
+  /usr/include/qt6/QtWidgets/qbuttongroup.h \
   /usr/include/qt6/QtWidgets/qcheckbox.h \
   /usr/include/qt6/QtWidgets/qcombobox.h \
   /usr/include/qt6/QtWidgets/qdialog.h \
@@ -1175,8 +1184,6 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 
 /usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandEglClientBufferPluginConfig.cmake:
 
-/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandBradientDecorationPluginTargets-relwithdebinfo.cmake:
-
 /usr/lib/cmake/Qt6WaylandClient/Qt6DrmEglServerBufferPluginConfig.cmake:
 
 /usr/lib/cmake/Qt6WaylandClient/Qt6DrmEglServerBufferPluginAdditionalTargetInfo.cmake:
@@ -1312,8 +1319,6 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 /usr/lib/cmake/Qt6Gui/Qt6QLibInputPluginAdditionalTargetInfo.cmake:
 
 /usr/lib/cmake/Qt6Gui/Qt6QJpegPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QJpegPluginTargets-relwithdebinfo.cmake:
 
 /usr/lib/cmake/Qt6Gui/Qt6QJpegPluginConfig.cmake:
 
@@ -1551,8 +1556,6 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 
 /usr/lib/cmake/Qt6/FindWrapAtomic.cmake:
 
-/usr/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules/ECMFindModuleHelpersStub.cmake:
-
 /usr/include/wchar.h:
 
 /usr/include/sys/select.h:
@@ -1665,6 +1668,8 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 
 /usr/include/qt6/QtWidgets/qcheckbox.h:
 
+/usr/include/qt6/QtWidgets/qbuttongroup.h:
+
 /usr/include/qt6/QtWidgets/qboxlayout.h:
 
 /usr/include/qt6/QtWidgets/qabstractspinbox.h:
@@ -1672,6 +1677,26 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 /usr/include/qt6/QtWidgets/qabstractscrollarea.h:
 
 /usr/include/qt6/QtWidgets/qabstractitemview.h:
+
+/usr/include/qt6/QtWidgets/QWidget:
+
+/usr/lib/cmake/Qt6Gui/Qt6QPdfPluginTargets-relwithdebinfo.cmake:
+
+/usr/include/qt6/QtWidgets/QToolBar:
+
+/usr/include/qt6/QtWidgets/QTextEdit:
+
+/usr/lib/cmake/Qt6Gui/Qt6QICNSPluginTargets-relwithdebinfo.cmake:
+
+/usr/include/qt6/QtWidgets/QTableView:
+
+/usr/lib/cmake/Qt6/QtPublicSbomHelpers.cmake:
+
+/usr/include/qt6/QtWidgets/QTabWidget:
+
+/usr/include/qt6/QtWidgets/QStatusBar:
+
+/usr/include/qt6/QtWidgets/QStackedWidget:
 
 /usr/include/c++/14.2.1/functional:
 
@@ -1715,10 +1740,6 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 
 /usr/include/qt6/QtWidgets/QMenu:
 
-/usr/lib/cmake/Qt6/QtPublicSbomHelpers.cmake:
-
-/usr/include/qt6/QtWidgets/QTabWidget:
-
 /usr/include/c++/14.2.1/bits/streambuf_iterator.h:
 
 /usr/include/stdlib.h:
@@ -1726,10 +1747,6 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 /usr/include/qt6/QtWidgets/qslider.h:
 
 /usr/include/qt6/QtCore/qrect.h:
-
-/usr/include/c++/14.2.1/iosfwd:
-
-/usr/include/c++/14.2.1/bits/streambuf.tcc:
 
 /usr/include/c++/14.2.1/variant:
 
@@ -1740,6 +1757,10 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 /usr/include/c++/14.2.1/bits/stl_numeric.h:
 
 /usr/include/c++/14.2.1/bits/stl_multiset.h:
+
+/usr/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules/ECMFindModuleHelpersStub.cmake:
+
+/home/matt/PacmanGui-new/include/gui/flatpak_manager_tab.hpp:
 
 /usr/include/c++/14.2.1/bits/stl_multimap.h:
 
@@ -1781,8 +1802,6 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 
 /usr/include/c++/14.2.1/bits/postypes.h:
 
-/usr/include/bits/timesize.h:
-
 /usr/include/c++/14.2.1/bits/locale_classes.tcc:
 
 /usr/include/bits/struct_mutex.h:
@@ -1800,8 +1819,6 @@ pacmangui_autogen/moc_predefs.h:
 /usr/include/qt6/QtCore/qexception.h:
 
 /usr/include/qt6/QtCore/qttypetraits.h:
-
-/usr/include/c++/14.2.1/bits/functional_hash.h:
 
 /usr/include/bits/types/__locale_t.h:
 
@@ -1859,10 +1876,6 @@ pacmangui_autogen/moc_predefs.h:
 
 /usr/include/qt6/QtGui/qicon.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QPdfPluginTargets-relwithdebinfo.cmake:
-
-/usr/include/qt6/QtWidgets/QToolBar:
-
 /usr/include/qt6/QtCore/qvarlengtharray.h:
 
 /usr/lib/cmake/Qt6/Qt6Targets.cmake:
@@ -1907,55 +1920,13 @@ pacmangui_autogen/moc_predefs.h:
 
 /usr/include/c++/14.2.1/pstl/glue_numeric_defs.h:
 
-/usr/include/bits/getopt_core.h:
+/usr/include/bits/xopen_lim.h:
 
-/usr/include/qt6/QtGui/qtguiexports.h:
+/usr/lib/cmake/Qt6WaylandScannerTools/Qt6WaylandScannerToolsConfigVersion.cmake:
 
-/usr/include/bits/types.h:
+/usr/include/qt6/QtCore/qiodevicebase.h:
 
-/usr/lib/cmake/Qt6GuiPrivate/Qt6GuiPrivateConfigVersion.cmake:
-
-/home/matt/PacmanGui-new/src/main.cpp:
-
-/usr/include/c++/14.2.1/numeric:
-
-/usr/include/c++/14.2.1/bits/unordered_map.h:
-
-/usr/include/c++/14.2.1/algorithm:
-
-/usr/include/qt6/QtCore/qiodevice.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QXcbGlxIntegrationPluginConfig.cmake:
-
-/usr/include/qt6/QtCore/qtaggedpointer.h:
-
-/usr/include/c++/14.2.1/bits/cxxabi_init_exception.h:
-
-/usr/include/bits/floatn.h:
-
-/usr/include/c++/14.2.1/bits/shared_ptr_base.h:
-
-/usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsConfigVersion.cmake:
-
-/usr/include/c++/14.2.1/bits/parse_numbers.h:
-
-/usr/include/c++/14.2.1/bits/hash_bytes.h:
-
-/usr/include/qt6/QtGui/qvalidator.h:
-
-/usr/include/c++/14.2.1/vector:
-
-/usr/lib/cmake/Qt6Gui/Qt6QWaylandEglPlatformIntegrationPluginConfig.cmake:
-
-/usr/include/bits/environments.h:
-
-/usr/include/bits/types/struct_FILE.h:
-
-/usr/lib/cmake/Qt6DBus/Qt6DBusConfig.cmake:
-
-/usr/lib/cmake/Qt6/QtPublicSbomCpeHelpers.cmake:
-
-/home/matt/PacmanGui-new/include/gui/mainwindow.hpp:
+/usr/include/c++/14.2.1/ext/string_conversions.h:
 
 /usr/include/c++/14.2.1/concepts:
 
@@ -1970,8 +1941,6 @@ pacmangui_autogen/moc_predefs.h:
 /usr/lib/cmake/Qt6Gui/Qt6QMinimalEglIntegrationPluginConfig.cmake:
 
 /usr/include/bits/cpu-set.h:
-
-/usr/include/bits/typesizes.h:
 
 /usr/include/bits/uintn-identity.h:
 
@@ -2011,6 +1980,14 @@ pacmangui_autogen/moc_predefs.h:
 
 /usr/include/asm/posix_types_64.h:
 
+/usr/include/c++/14.2.1/bits/enable_special_members.h:
+
+/usr/lib/cmake/Qt6Core/Qt6CoreMacros.cmake:
+
+/usr/include/c++/14.2.1/atomic:
+
+/usr/include/asm-generic/posix_types.h:
+
 /usr/include/c++/14.2.1/bit:
 
 /usr/include/c++/14.2.1/condition_variable:
@@ -2020,6 +1997,16 @@ pacmangui_autogen/moc_predefs.h:
 /usr/lib/cmake/Qt6Gui/Qt6QWbmpPluginConfig.cmake:
 
 /usr/include/asm-generic/errno-base.h:
+
+/usr/include/c++/14.2.1/cstddef:
+
+/usr/include/bits/wchar.h:
+
+/usr/share/cmake/Modules/FindOpenGL.cmake:
+
+/usr/include/bits/types/struct___jmp_buf_tag.h:
+
+/usr/include/bits/waitstatus.h:
 
 /usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandXdgShellIntegrationPluginTargets-relwithdebinfo.cmake:
 
@@ -2033,10 +2020,6 @@ pacmangui_autogen/moc_predefs.h:
 
 /usr/include/archive_entry.h:
 
-/usr/include/qt6/QtWidgets/qlayout.h:
-
-/usr/include/c++/14.2.1/future:
-
 /usr/include/c++/14.2.1/cassert:
 
 /usr/include/bits/endianness.h:
@@ -2049,51 +2032,13 @@ pacmangui_autogen/moc_predefs.h:
 
 /usr/include/alloca.h:
 
-/usr/include/bits/stat.h:
+/usr/include/c++/14.2.1/bits/move.h:
 
-/usr/include/c++/14.2.1/ext/type_traits.h:
+/home/matt/PacmanGui-new/src/wayland/wayland_security.cpp:
 
-/usr/lib/cmake/Qt6Core/Qt6CoreConfig.cmake:
+/usr/lib/cmake/Qt6Core/Qt6CoreVersionlessAliasTargets.cmake:
 
-/usr/include/asm/types.h:
-
-/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsConfigVersion.cmake:
-
-/usr/include/c++/14.2.1/initializer_list:
-
-/usr/include/qt6/QtCore/qhash.h:
-
-/usr/include/archive.h:
-
-/usr/include/bits/types/struct_timespec.h:
-
-/usr/include/qt6/QtCore/qiterable.h:
-
-/home/matt/PacmanGui-new/src/core/repository.cpp:
-
-/usr/include/qt6/QtCore/qtextstream.h:
-
-/home/matt/PacmanGui-new/include/gui/settingsdialog.hpp:
-
-/usr/lib/cmake/Qt6Gui/Qt6QPdfPluginAdditionalTargetInfo.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QEvdevTouchScreenPluginAdditionalTargetInfo.cmake:
-
-/usr/include/qt6/QtGui/qpen.h:
-
-/usr/include/qt6/QtGui/qrgba64.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QXcbGlxIntegrationPluginAdditionalTargetInfo.cmake:
-
-/usr/include/c++/14.2.1/ext/aligned_buffer.h:
-
-/usr/include/c++/14.2.1/bits/node_handle.h:
-
-/usr/lib/cmake/Qt6WaylandClient/Qt6DrmEglServerBufferPluginTargets.cmake:
-
-/usr/include/c++/14.2.1/bits/new_allocator.h:
-
-/home/matt/PacmanGui-new/src/core/package.cpp:
+/home/matt/PacmanGui-new/src/wayland/wayland_backend.cpp:
 
 /usr/include/qt6/QtCore/qtcoreglobal.h:
 
@@ -2103,13 +2048,23 @@ pacmangui_autogen/moc_predefs.h:
 
 /usr/include/qt6/QtCore/qarraydataops.h:
 
-/usr/lib/cmake/Qt6WaylandClient/Qt6ShmServerBufferPluginAdditionalTargetInfo.cmake:
+/usr/lib/cmake/Qt6GuiPrivate/Qt6GuiPrivateConfigVersion.cmake:
 
-/usr/lib/cmake/Qt6Gui/Qt6QWaylandEglPlatformIntegrationPluginTargets-relwithdebinfo.cmake:
+/home/matt/PacmanGui-new/src/main.cpp:
 
-/usr/include/c++/14.2.1/bits/unique_lock.h:
+/usr/include/bits/types.h:
 
-/usr/include/qt6/QtCore/qflags.h:
+/usr/include/c++/14.2.1/numeric:
+
+/usr/include/c++/14.2.1/bits/unordered_map.h:
+
+/usr/include/c++/14.2.1/algorithm:
+
+/usr/include/qt6/QtCore/qiodevice.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QXcbGlxIntegrationPluginConfig.cmake:
+
+/usr/include/qt6/QtCore/qtaggedpointer.h:
 
 /usr/include/c++/14.2.1/exception:
 
@@ -2125,34 +2080,6 @@ pacmangui_autogen/moc_predefs.h:
 
 /usr/include/qt6/QtGui/qtextdocument.h:
 
-/usr/share/cmake/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake:
-
-/usr/include/c++/14.2.1/cwchar:
-
-/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandFullScreenShellV1IntegrationPluginConfig.cmake:
-
-/usr/include/qt6/QtCore/qmalloc.h:
-
-/usr/include/c++/14.2.1/tr1/poly_laguerre.tcc:
-
-/usr/lib/cmake/Qt6Gui/Qt6QLinuxFbIntegrationPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6/QtFeatureCommon.cmake:
-
-/usr/include/bits/posix2_lim.h:
-
-/usr/include/c++/14.2.1/bits/move.h:
-
-/home/matt/PacmanGui-new/src/wayland/wayland_security.cpp:
-
-/usr/include/c++/14.2.1/bits/atomic_futex.h:
-
-/usr/include/bits/types/struct_statx.h:
-
-/usr/lib/cmake/Qt6WaylandClient/Qt6ShmServerBufferPluginConfig.cmake:
-
-/usr/include/bits/types/sigset_t.h:
-
 /home/matt/PacmanGui-new/cmake/modules/FindALPM.cmake:
 
 /usr/include/qt6/QtWidgets/QToolButton:
@@ -2167,11 +2094,77 @@ pacmangui_autogen/moc_predefs.h:
 
 /usr/include/bits/setjmp.h:
 
-/usr/include/alpm.h:
+/usr/include/bits/stat.h:
 
-/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandIviShellIntegrationPluginTargets.cmake:
+/usr/include/c++/14.2.1/ext/type_traits.h:
 
-/usr/include/bits/types/struct_timeval.h:
+/usr/lib/cmake/Qt6Core/Qt6CoreConfig.cmake:
+
+/usr/include/asm/types.h:
+
+/usr/include/bits/types/struct_FILE.h:
+
+/usr/lib/cmake/Qt6DBus/Qt6DBusConfig.cmake:
+
+/usr/lib/cmake/Qt6/QtPublicSbomCpeHelpers.cmake:
+
+/home/matt/PacmanGui-new/include/gui/mainwindow.hpp:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWaylandEglPlatformIntegrationPluginConfig.cmake:
+
+/usr/include/bits/environments.h:
+
+/usr/include/archive.h:
+
+/usr/include/bits/types/struct_statx.h:
+
+/usr/include/c++/14.2.1/bits/atomic_futex.h:
+
+/usr/include/bits/types/struct_timespec.h:
+
+/usr/include/qt6/QtCore/qiterable.h:
+
+/usr/lib/cmake/Qt6WaylandClient/Qt6ShmServerBufferPluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QWaylandEglPlatformIntegrationPluginTargets-relwithdebinfo.cmake:
+
+/usr/include/qt6/QtCore/qflags.h:
+
+/usr/include/c++/14.2.1/bits/unique_lock.h:
+
+/usr/include/qt6/QtCore/qcompare_impl.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QXcbGlxIntegrationPluginAdditionalTargetInfo.cmake:
+
+/usr/include/c++/14.2.1/ext/aligned_buffer.h:
+
+/usr/include/c++/14.2.1/bits/node_handle.h:
+
+/usr/lib/cmake/Qt6WaylandClient/Qt6DrmEglServerBufferPluginTargets.cmake:
+
+/usr/include/c++/14.2.1/bits/new_allocator.h:
+
+/home/matt/PacmanGui-new/src/core/package.cpp:
+
+/usr/lib/cmake/Qt6Gui/Qt6QLinuxFbIntegrationPluginTargets.cmake:
+
+/usr/lib/cmake/Qt6/QtFeatureCommon.cmake:
+
+/usr/include/bits/posix2_lim.h:
+
+/home/matt/PacmanGui-new/include/core/transaction.hpp:
+
+/usr/include/c++/14.2.1/array:
+
+/usr/include/c++/14.2.1/type_traits:
+
+/usr/include/asm/bitsperlong.h:
+
+/usr/include/c++/14.2.1/bits/cxxabi_forced.h:
+
+/usr/lib/cmake/Qt6WaylandClient/Qt6ShmServerBufferPluginConfig.cmake:
+
+/usr/include/bits/types/sigset_t.h:
 
 /usr/lib/cmake/Qt6Gui/Qt6QSvgPluginAdditionalTargetInfo.cmake:
 
@@ -2179,15 +2172,37 @@ pacmangui_autogen/moc_predefs.h:
 
 CMakeFiles/4.0.1/CMakeSystem.cmake:
 
-/usr/include/c++/14.2.1/iterator:
+/home/matt/PacmanGui-new/src/wayland/wayland_optimization.cpp:
 
-/usr/include/c++/14.2.1/bits/stl_uninitialized.h:
+/usr/share/cmake/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake:
 
-/usr/include/bits/types/struct_sched_param.h:
+/usr/include/c++/14.2.1/cwchar:
 
-/home/matt/PacmanGui-new/cmake/cmake_uninstall.cmake.in:
+/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandBradientDecorationPluginTargets-relwithdebinfo.cmake:
 
-/usr/include/bits/types/cookie_io_functions_t.h:
+/home/matt/PacmanGui-new/include/core/flatpak_package.hpp:
+
+/usr/include/bits/local_lim.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEglFSEmulatorIntegrationPluginTargets-relwithdebinfo.cmake:
+
+/usr/include/qt6/QtCore/qtcoreexports.h:
+
+/usr/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules/FindWaylandScanner.cmake:
+
+/home/matt/PacmanGui-new/include/wayland/wayland_security.hpp:
+
+/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandAdwaitaDecorationPluginTargets.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QTgaPluginConfig.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QIbusPlatformInputContextPluginConfig.cmake:
+
+/usr/include/qt6/QtCore/qcontainertools_impl.h:
+
+/usr/include/bits/wordsize.h:
+
+/home/matt/PacmanGui-new/include/wayland/wayland_protocols.hpp:
 
 /usr/include/c++/14.2.1/bits/erase_if.h:
 
@@ -2223,19 +2238,61 @@ CMakeFiles/4.0.1/CMakeSystem.cmake:
 
 /usr/include/qt6/QtCore/qbytearray.h:
 
-/usr/include/bits/confname.h:
+/usr/include/qt6/QtWidgets/QDialog:
 
-/usr/include/bits/long-double.h:
+/usr/include/c++/14.2.1/bits/stream_iterator.h:
 
-/usr/include/c++/14.2.1/bits/cxxabi_forced.h:
+/usr/include/alpm.h:
 
-/usr/include/asm/bitsperlong.h:
+/usr/include/c++/14.2.1/bits/predefined_ops.h:
+
+/usr/include/bits/types/__mbstate_t.h:
+
+/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandIviShellIntegrationPluginTargets.cmake:
+
+/usr/include/bits/types/struct_timeval.h:
+
+/usr/include/c++/14.2.1/bits/stl_uninitialized.h:
+
+/usr/include/bits/types/struct_sched_param.h:
+
+/usr/include/bits/types/cookie_io_functions_t.h:
+
+/home/matt/PacmanGui-new/cmake/cmake_uninstall.cmake.in:
 
 /home/matt/PacmanGui-new/src/gui/mainwindow.cpp:
 
 /usr/include/qt6/QtGui/qpixmap.h:
 
 /usr/include/qt6/QtCore/qstringconverter_base.h:
+
+/usr/include/bits/long-double.h:
+
+/home/matt/PacmanGui-new/src/core/repository.cpp:
+
+/usr/include/qt6/QtCore/qtextstream.h:
+
+/usr/include/bits/typesizes.h:
+
+/home/matt/PacmanGui-new/src/gui/flatpak_manager_tab.cpp:
+
+/home/matt/PacmanGui-new/include/gui/settingsdialog.hpp:
+
+/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandFullScreenShellV1IntegrationPluginConfig.cmake:
+
+/usr/include/c++/14.2.1/tr1/poly_laguerre.tcc:
+
+/usr/include/qt6/QtCore/qmalloc.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QPdfPluginAdditionalTargetInfo.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QEvdevTouchScreenPluginAdditionalTargetInfo.cmake:
+
+/usr/include/qt6/QtGui/qpen.h:
+
+/usr/include/qt6/QtGui/qrgba64.h:
+
+/usr/include/bits/confname.h:
 
 /home/matt/PacmanGui-new/src/gui/settingsdialog.cpp:
 
@@ -2245,43 +2302,35 @@ CMakeFiles/4.0.1/CMakeSystem.cmake:
 
 /usr/include/qt6/QtCore/qstringtokenizer.h:
 
-/usr/include/bits/types/clock_t.h:
-
 /usr/include/bits/types/__fpos_t.h:
 
-/usr/lib/cmake/Qt6Core/Qt6CoreVersionlessAliasTargets.cmake:
+/usr/include/bits/types/clock_t.h:
 
-/home/matt/PacmanGui-new/src/wayland/wayland_backend.cpp:
+/usr/include/c++/14.2.1/bits/shared_ptr_base.h:
+
+/usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsConfigVersion.cmake:
+
+/usr/include/c++/14.2.1/bits/parse_numbers.h:
+
+/usr/include/c++/14.2.1/bits/hash_bytes.h:
+
+/home/matt/PacmanGui-new/src/core/flatpak_manager.cpp:
+
+/usr/include/qt6/QtGui/qvalidator.h:
+
+/usr/include/c++/14.2.1/vector:
+
+/usr/include/c++/14.2.1/bits/cxxabi_init_exception.h:
+
+/usr/include/bits/floatn.h:
+
+/usr/include/bits/getopt_core.h:
+
+/usr/include/qt6/QtGui/qtguiexports.h:
 
 /usr/include/bits/unistd_ext.h:
 
 /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++locale.h:
-
-/usr/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules/FindWaylandScanner.cmake:
-
-/home/matt/PacmanGui-new/include/wayland/wayland_security.hpp:
-
-/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandAdwaitaDecorationPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QTgaPluginConfig.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QIbusPlatformInputContextPluginConfig.cmake:
-
-/usr/include/qt6/QtCore/qcontainertools_impl.h:
-
-/usr/include/qt6/QtWidgets/QTextEdit:
-
-/home/matt/PacmanGui-new/src/wayland/wayland_optimization.cpp:
-
-/usr/include/bits/local_lim.h:
-
-/usr/lib/cmake/Qt6Gui/Qt6QEglFSEmulatorIntegrationPluginTargets-relwithdebinfo.cmake:
-
-/usr/include/qt6/QtCore/qtcoreexports.h:
-
-/usr/include/c++/14.2.1/bits/predefined_ops.h:
-
-/usr/include/bits/types/__mbstate_t.h:
 
 /usr/lib/cmake/Qt6Core/Qt6CoreDependencies.cmake:
 
@@ -2327,16 +2376,6 @@ CMakeFiles/4.0.1/CMakeSystem.cmake:
 
 /usr/include/locale.h:
 
-/usr/share/cmake/Modules/FindOpenGL.cmake:
-
-/usr/include/bits/types/struct___jmp_buf_tag.h:
-
-/usr/include/c++/14.2.1/cstddef:
-
-/usr/include/bits/wchar.h:
-
-/usr/include/bits/waitstatus.h:
-
 /usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandFullScreenShellV1IntegrationPluginTargets-relwithdebinfo.cmake:
 
 /usr/include/c++/14.2.1/bits/stl_iterator_base_types.h:
@@ -2368,6 +2407,10 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 /usr/include/bits/thread-shared-types.h:
 
 /usr/include/qt6/QtCore/qeasingcurve.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QJpegPluginTargets-relwithdebinfo.cmake:
+
+/home/matt/PacmanGui-new/include/core/flatpak_manager.hpp:
 
 /usr/include/qt6/QtCore/qstdlibdetection.h:
 
@@ -2417,11 +2460,11 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 
 /usr/lib/cmake/Qt6/Qt6ConfigVersionImpl.cmake:
 
-/usr/include/qt6/QtCore/qshareddata_impl.h:
-
 /usr/include/qt6/QtCore/qconfig.h:
 
 /usr/include/bits/sched.h:
+
+/usr/include/qt6/QtCore/qshareddata_impl.h:
 
 /usr/include/bits/struct_rwlock.h:
 
@@ -2463,6 +2506,8 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 
 /usr/include/bits/types/struct_tm.h:
 
+/home/matt/PacmanGui-new/src/core/flatpak_package.cpp:
+
 /usr/include/c++/14.2.1/bits/localefwd.h:
 
 /usr/include/bits/types/timer_t.h:
@@ -2493,35 +2538,23 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 
 /usr/include/qt6/QtWidgets/QComboBox:
 
-/usr/lib/cmake/Qt6WaylandScannerTools/Qt6WaylandScannerToolsConfigVersion.cmake:
+/usr/include/bits/timesize.h:
 
-/usr/include/qt6/QtCore/qiodevicebase.h:
+/usr/include/qt6/QtWidgets/qlayout.h:
 
-/usr/include/c++/14.2.1/ext/string_conversions.h:
+/usr/include/c++/14.2.1/future:
 
-/home/matt/PacmanGui-new/include/wayland/wayland_protocols.hpp:
+/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsConfigVersion.cmake:
 
-/usr/include/bits/wordsize.h:
+/usr/include/c++/14.2.1/initializer_list:
 
-/usr/include/bits/xopen_lim.h:
+/usr/include/qt6/QtCore/qhash.h:
 
-/home/matt/PacmanGui-new/include/core/transaction.hpp:
+/usr/include/c++/14.2.1/bits/streambuf.tcc:
 
-/usr/include/c++/14.2.1/array:
+/usr/include/c++/14.2.1/iosfwd:
 
-/usr/include/c++/14.2.1/type_traits:
-
-/usr/include/c++/14.2.1/bits/enable_special_members.h:
-
-/usr/include/c++/14.2.1/bits/stream_iterator.h:
-
-/usr/include/qt6/QtWidgets/QDialog:
-
-/usr/include/asm-generic/posix_types.h:
-
-/usr/lib/cmake/Qt6Core/Qt6CoreMacros.cmake:
-
-/usr/include/c++/14.2.1/atomic:
+/usr/include/c++/14.2.1/iterator:
 
 /usr/lib/cmake/Qt6WaylandClient/Qt6DmaBufServerBufferPluginConfig.cmake:
 
@@ -2561,9 +2594,9 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 
 /usr/lib/cmake/Qt6Gui/Qt6QGifPluginTargets-relwithdebinfo.cmake:
 
-/usr/include/c++/14.2.1/bits/nested_exception.h:
-
 /usr/include/qt6/QtCore/qnumeric.h:
+
+/usr/include/c++/14.2.1/bits/nested_exception.h:
 
 /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/error_constants.h:
 
@@ -2736,8 +2769,6 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 /usr/lib/cmake/Qt6/QtPublicTestHelpers.cmake:
 
 /usr/include/qt6/QtCore/qdir.h:
-
-/usr/include/qt6/QtCore/qcompare_impl.h:
 
 /usr/include/qt6/QtCore/qcomparehelpers.h:
 
@@ -3095,6 +3126,10 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 
 /usr/include/qt6/QtGui/qtgui-config.h:
 
+/usr/include/c++/14.2.1/bits/functional_hash.h:
+
+/usr/include/qt6/QtWidgets/QButtonGroup:
+
 /usr/include/qt6/QtWidgets/QGraphicsOpacityEffect:
 
 /usr/include/bits/types/__FILE.h:
@@ -3102,11 +3137,3 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 /usr/include/qt6/QtWidgets/QLabel:
 
 /usr/include/qt6/QtWidgets/QMainWindow:
-
-/usr/include/qt6/QtWidgets/QStackedWidget:
-
-/usr/include/qt6/QtWidgets/QStatusBar:
-
-/usr/lib/cmake/Qt6Gui/Qt6QICNSPluginTargets-relwithdebinfo.cmake:
-
-/usr/include/qt6/QtWidgets/QTableView:

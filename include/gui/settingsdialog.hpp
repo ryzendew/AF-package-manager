@@ -65,6 +65,12 @@ public:
     double getScalingFactor() const;
     
     /**
+     * @brief Get whether Flatpak support is enabled
+     * @return bool True if Flatpak support is enabled
+     */
+    bool isFlatpakEnabled() const;
+    
+    /**
      * @brief Save settings to QSettings
      */
     void saveSettings();
@@ -86,6 +92,12 @@ signals:
      * @param enabled Whether AUR is enabled
      */
     void aurStatusChanged(bool enabled);
+    
+    /**
+     * @brief Signal emitted when Flatpak status is changed
+     * @param enabled Whether Flatpak is enabled
+     */
+    void flatpakStatusChanged(bool enabled);
 
 private slots:
     /**
@@ -107,11 +119,17 @@ private slots:
      * @brief Detection of AUR helpers
      */
     void detectAurHelpers();
+    
+    /**
+     * @brief Detection of Flatpak
+     */
+    void detectFlatpak();
 
 private:
     void setupUi();
     void setupConnections();
     bool checkHelperExists(const QString& helper);
+    bool checkFlatpakExists();
     
     // UI components
     QTabWidget* m_tabWidget;
@@ -119,6 +137,10 @@ private:
     // AUR tab
     QWidget* m_aurTab;
     QCheckBox* m_enableAurCheckbox;
+    
+    // Flatpak tab
+    QWidget* m_flatpakTab;
+    QCheckBox* m_enableFlatpakCheckbox;
     
     // Appearance tab
     QWidget* m_appearanceTab;
@@ -134,6 +156,7 @@ private:
     
     // Settings
     bool m_aurEnabled;
+    bool m_flatpakEnabled;
     QString m_selectedTheme;
     double m_scalingFactor;
 };

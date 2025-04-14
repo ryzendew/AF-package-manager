@@ -89,12 +89,12 @@ CMakeFiles/pacmangui.dir/all: CMakeFiles/pacmangui_autogen_timestamp_deps.dir/al
 CMakeFiles/pacmangui.dir/all: CMakeFiles/pacmangui_autogen.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 "Built target pacmangui"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20 "Built target pacmangui"
 .PHONY : CMakeFiles/pacmangui.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/pacmangui.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/matt/PacmanGui-new/build/CMakeFiles 18
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/matt/PacmanGui-new/build/CMakeFiles 21
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/pacmangui.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/matt/PacmanGui-new/build/CMakeFiles 0
 .PHONY : CMakeFiles/pacmangui.dir/rule
@@ -106,7 +106,7 @@ pacmangui: CMakeFiles/pacmangui.dir/rule
 # codegen rule for target.
 CMakeFiles/pacmangui.dir/codegen: CMakeFiles/pacmangui_autogen_timestamp_deps.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 "Finished codegen for target pacmangui"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20 "Finished codegen for target pacmangui"
 .PHONY : CMakeFiles/pacmangui.dir/codegen
 
 # clean rule for target.
@@ -185,7 +185,7 @@ CMakeFiles/pacmangui_autogen_timestamp_deps.dir/clean:
 CMakeFiles/pacmangui_autogen.dir/all: CMakeFiles/pacmangui_autogen_timestamp_deps.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui_autogen.dir/build.make CMakeFiles/pacmangui_autogen.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui_autogen.dir/build.make CMakeFiles/pacmangui_autogen.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=18 "Built target pacmangui_autogen"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=21 "Built target pacmangui_autogen"
 .PHONY : CMakeFiles/pacmangui_autogen.dir/all
 
 # Build rule for subdir invocation for target.
@@ -202,7 +202,7 @@ pacmangui_autogen: CMakeFiles/pacmangui_autogen.dir/rule
 # codegen rule for target.
 CMakeFiles/pacmangui_autogen.dir/codegen: CMakeFiles/pacmangui_autogen_timestamp_deps.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui_autogen.dir/build.make CMakeFiles/pacmangui_autogen.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=18 "Finished codegen for target pacmangui_autogen"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=21 "Finished codegen for target pacmangui_autogen"
 .PHONY : CMakeFiles/pacmangui_autogen.dir/codegen
 
 # clean rule for target.

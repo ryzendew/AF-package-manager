@@ -41,6 +41,8 @@ set(CORE_SOURCES
     src/core/repository.cpp
     src/core/transaction.cpp
     src/core/packagemanager.cpp
+    src/core/flatpak_package.cpp
+    src/core/flatpak_manager.cpp
 )
 
 # Source files - GUI components
@@ -48,6 +50,7 @@ set(GUI_SOURCES
     src/gui/mainwindow.cpp
     src/gui/settingsdialog.cpp
     src/gui/util.cpp
+    src/gui/flatpak_manager_tab.cpp
 )
 
 # Source files - Wayland components
@@ -70,6 +73,7 @@ set(WAYLAND_HEADERS
 set(MOC_HEADERS
     include/gui/mainwindow.hpp
     include/gui/settingsdialog.hpp
+    include/gui/flatpak_manager_tab.hpp
     ${WAYLAND_HEADERS}
 )
 

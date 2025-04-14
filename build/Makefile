@@ -261,6 +261,54 @@ pacmangui_autogen/mocs_compilation.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.s
 .PHONY : pacmangui_autogen/mocs_compilation.cpp.s
 
+src/core/flatpak_manager.o: src/core/flatpak_manager.cpp.o
+.PHONY : src/core/flatpak_manager.o
+
+# target to build an object file
+src/core/flatpak_manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.o
+.PHONY : src/core/flatpak_manager.cpp.o
+
+src/core/flatpak_manager.i: src/core/flatpak_manager.cpp.i
+.PHONY : src/core/flatpak_manager.i
+
+# target to preprocess a source file
+src/core/flatpak_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.i
+.PHONY : src/core/flatpak_manager.cpp.i
+
+src/core/flatpak_manager.s: src/core/flatpak_manager.cpp.s
+.PHONY : src/core/flatpak_manager.s
+
+# target to generate assembly for a file
+src/core/flatpak_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.s
+.PHONY : src/core/flatpak_manager.cpp.s
+
+src/core/flatpak_package.o: src/core/flatpak_package.cpp.o
+.PHONY : src/core/flatpak_package.o
+
+# target to build an object file
+src/core/flatpak_package.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.o
+.PHONY : src/core/flatpak_package.cpp.o
+
+src/core/flatpak_package.i: src/core/flatpak_package.cpp.i
+.PHONY : src/core/flatpak_package.i
+
+# target to preprocess a source file
+src/core/flatpak_package.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.i
+.PHONY : src/core/flatpak_package.cpp.i
+
+src/core/flatpak_package.s: src/core/flatpak_package.cpp.s
+.PHONY : src/core/flatpak_package.s
+
+# target to generate assembly for a file
+src/core/flatpak_package.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.s
+.PHONY : src/core/flatpak_package.cpp.s
+
 src/core/package.o: src/core/package.cpp.o
 .PHONY : src/core/package.o
 
@@ -356,6 +404,30 @@ src/core/transaction.s: src/core/transaction.cpp.s
 src/core/transaction.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/core/transaction.cpp.s
 .PHONY : src/core/transaction.cpp.s
+
+src/gui/flatpak_manager_tab.o: src/gui/flatpak_manager_tab.cpp.o
+.PHONY : src/gui/flatpak_manager_tab.o
+
+# target to build an object file
+src/gui/flatpak_manager_tab.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.o
+.PHONY : src/gui/flatpak_manager_tab.cpp.o
+
+src/gui/flatpak_manager_tab.i: src/gui/flatpak_manager_tab.cpp.i
+.PHONY : src/gui/flatpak_manager_tab.i
+
+# target to preprocess a source file
+src/gui/flatpak_manager_tab.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.i
+.PHONY : src/gui/flatpak_manager_tab.cpp.i
+
+src/gui/flatpak_manager_tab.s: src/gui/flatpak_manager_tab.cpp.s
+.PHONY : src/gui/flatpak_manager_tab.s
+
+# target to generate assembly for a file
+src/gui/flatpak_manager_tab.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.s
+.PHONY : src/gui/flatpak_manager_tab.cpp.s
 
 src/gui/mainwindow.o: src/gui/mainwindow.cpp.o
 .PHONY : src/gui/mainwindow.o
@@ -571,6 +643,12 @@ help:
 	@echo "... pacmangui_autogen/mocs_compilation.o"
 	@echo "... pacmangui_autogen/mocs_compilation.i"
 	@echo "... pacmangui_autogen/mocs_compilation.s"
+	@echo "... src/core/flatpak_manager.o"
+	@echo "... src/core/flatpak_manager.i"
+	@echo "... src/core/flatpak_manager.s"
+	@echo "... src/core/flatpak_package.o"
+	@echo "... src/core/flatpak_package.i"
+	@echo "... src/core/flatpak_package.s"
 	@echo "... src/core/package.o"
 	@echo "... src/core/package.i"
 	@echo "... src/core/package.s"
@@ -583,6 +661,9 @@ help:
 	@echo "... src/core/transaction.o"
 	@echo "... src/core/transaction.i"
 	@echo "... src/core/transaction.s"
+	@echo "... src/gui/flatpak_manager_tab.o"
+	@echo "... src/gui/flatpak_manager_tab.i"
+	@echo "... src/gui/flatpak_manager_tab.s"
 	@echo "... src/gui/mainwindow.o"
 	@echo "... src/gui/mainwindow.i"
 	@echo "... src/gui/mainwindow.s"

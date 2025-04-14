@@ -15,6 +15,8 @@ SettingsDialog::SettingsDialog(QWidget* parent)
     , m_tabWidget(nullptr)
     , m_aurTab(nullptr)
     , m_enableAurCheckbox(nullptr)
+    , m_flatpakTab(nullptr)
+    , m_enableFlatpakCheckbox(nullptr)
     , m_appearanceTab(nullptr)
     , m_themeComboBox(nullptr)
     , m_themeLabel(nullptr)
@@ -24,6 +26,7 @@ SettingsDialog::SettingsDialog(QWidget* parent)
     , m_cancelButton(nullptr)
     , m_applyButton(nullptr)
     , m_aurEnabled(false)
+    , m_flatpakEnabled(false)
     , m_selectedTheme("dark_colorful")
     , m_scalingFactor(1.0)
 {
@@ -34,6 +37,7 @@ SettingsDialog::SettingsDialog(QWidget* parent)
     setupConnections();
     loadSettings();
     detectAurHelpers();
+    detectFlatpak();
 }
 
 SettingsDialog::~SettingsDialog()
@@ -44,6 +48,11 @@ SettingsDialog::~SettingsDialog()
 bool SettingsDialog::isAurEnabled() const
 {
     return m_aurEnabled;
+}
+
+bool SettingsDialog::isFlatpakEnabled() const
+{
+    return m_flatpakEnabled;
 }
 
 QString SettingsDialog::getAurHelper() const
@@ -94,8 +103,6 @@ void SettingsDialog::setupUi()
     m_enableAurCheckbox = new QCheckBox("Enable AUR Support", aurGroupBox);
     aurGroupLayout->addWidget(m_enableAurCheckbox);
     
-    // Remove AUR helper dropdown completely
-    
     // Add a note about AUR support
     QLabel* aurNoteLabel = new QLabel("Note: Enabling AUR support allows installing packages from the Arch User Repository. "
                                      "AUR packages are user-produced content and may be less stable than official packages.", 
@@ -106,6 +113,27 @@ void SettingsDialog::setupUi()
     
     aurLayout->addWidget(aurGroupBox);
     aurLayout->addStretch(1);
+    
+    // Flatpak Tab
+    m_flatpakTab = new QWidget(m_tabWidget);
+    QVBoxLayout* flatpakLayout = new QVBoxLayout(m_flatpakTab);
+    
+    QGroupBox* flatpakGroupBox = new QGroupBox("Flatpak Support", m_flatpakTab);
+    QVBoxLayout* flatpakGroupLayout = new QVBoxLayout(flatpakGroupBox);
+    
+    m_enableFlatpakCheckbox = new QCheckBox("Enable Flatpak Support", flatpakGroupBox);
+    flatpakGroupLayout->addWidget(m_enableFlatpakCheckbox);
+    
+    // Add a note about Flatpak support
+    QLabel* flatpakNoteLabel = new QLabel("Note: Enabling Flatpak support allows searching, installing, and managing Flatpak packages. "
+                                     "Flatpak provides sandboxed applications that can run on any Linux distribution.", 
+                                     flatpakGroupBox);
+    flatpakNoteLabel->setWordWrap(true);
+    flatpakNoteLabel->setStyleSheet("font-style: italic; color: gray;");
+    flatpakGroupLayout->addWidget(flatpakNoteLabel);
+    
+    flatpakLayout->addWidget(flatpakGroupBox);
+    flatpakLayout->addStretch(1);
     
     // Appearance Tab
     m_appearanceTab = new QWidget(m_tabWidget);
@@ -159,6 +187,7 @@ void SettingsDialog::setupUi()
     
     // Add tabs to tab widget
     m_tabWidget->addTab(m_aurTab, "AUR");
+    m_tabWidget->addTab(m_flatpakTab, "Flatpak");
     m_tabWidget->addTab(m_appearanceTab, "Appearance");
     
     // Button layout
@@ -180,9 +209,6 @@ void SettingsDialog::setupUi()
 
 void SettingsDialog::setupConnections()
 {
-    // AUR checkbox connection - no longer needs to enable/disable the dropdown
-    // since we've removed the dropdown
-    
     // Connect buttons
     connect(m_okButton, &QPushButton::clicked, this, &SettingsDialog::onOkClicked);
     connect(m_cancelButton, &QPushButton::clicked, this, &SettingsDialog::onCancelClicked);
@@ -207,6 +233,7 @@ void SettingsDialog::onApplyClicked()
     // Store the current settings
     QString previousTheme = m_selectedTheme;
     bool previousAurEnabled = m_aurEnabled;
+    bool previousFlatpakEnabled = m_flatpakEnabled;
     std::cout << "SettingsDialog::onApplyClicked - Previous theme: " << previousTheme.toStdString() << std::endl;
     
     // Save settings
@@ -225,6 +252,11 @@ void SettingsDialog::onApplyClicked()
         emit aurStatusChanged(m_aurEnabled);
     }
     
+    // If Flatpak status changed, emit signal
+    if (previousFlatpakEnabled != m_flatpakEnabled) {
+        emit flatpakStatusChanged(m_flatpakEnabled);
+    }
+    
     std::cout << "SettingsDialog::onApplyClicked - Settings applied successfully" << std::endl;
 }
 
@@ -232,11 +264,13 @@ void SettingsDialog::saveSettings()
 {
     QSettings settings("PacmanGUI", "PacmanGUI");
     
-    // Save AUR settings - only enable/disable state
+    // Save AUR settings
     m_aurEnabled = m_enableAurCheckbox->isChecked();
     settings.setValue("aur/enabled", m_aurEnabled);
     
-    // No longer saving AUR helper selection
+    // Save Flatpak settings
+    m_flatpakEnabled = m_enableFlatpakCheckbox->isChecked();
+    settings.setValue("flatpak/enabled", m_flatpakEnabled);
     
     // Save appearance settings
     m_selectedTheme = m_themeComboBox->currentData().toString();
@@ -266,11 +300,13 @@ void SettingsDialog::loadSettings()
 {
     QSettings settings("PacmanGUI", "PacmanGUI");
     
-    // Load AUR settings - only enable/disable state
+    // Load AUR settings
     m_aurEnabled = settings.value("aur/enabled", false).toBool();
     m_enableAurCheckbox->setChecked(m_aurEnabled);
     
-    // No longer loading AUR helper selection
+    // Load Flatpak settings
+    m_flatpakEnabled = settings.value("flatpak/enabled", false).toBool();
+    m_enableFlatpakCheckbox->setChecked(m_flatpakEnabled);
     
     // Load appearance settings
     m_selectedTheme = settings.value("appearance/theme", "dark_colorful").toString();
@@ -350,10 +386,52 @@ void SettingsDialog::detectAurHelpers() {
     }
 }
 
+void SettingsDialog::detectFlatpak() {
+    // Check if Flatpak is installed
+    bool flatpakFound = checkFlatpakExists();
+    
+    // If Flatpak is not found, disable the checkbox
+    if (!flatpakFound) {
+        m_enableFlatpakCheckbox->setChecked(false);
+        m_enableFlatpakCheckbox->setEnabled(false);
+        
+        // Add a placeholder label if not already done
+        QLabel* flatpakInstallLabel = m_flatpakTab->findChild<QLabel*>("flatpakInstallLabel");
+        if (!flatpakInstallLabel) {
+            flatpakInstallLabel = new QLabel(
+                "Flatpak is not installed on this system. Please install flatpak "
+                "to enable Flatpak support.", m_flatpakTab);
+            flatpakInstallLabel->setObjectName("flatpakInstallLabel");
+            flatpakInstallLabel->setWordWrap(true);
+            flatpakInstallLabel->setStyleSheet("color: red;");
+            
+            // Find the layout of flatpakTab
+            if (QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(m_flatpakTab->layout())) {
+                layout->addWidget(flatpakInstallLabel);
+            }
+        }
+    } else {
+        m_enableFlatpakCheckbox->setEnabled(true);
+        
+        // Remove warning label if it exists
+        QLabel* flatpakInstallLabel = m_flatpakTab->findChild<QLabel*>("flatpakInstallLabel");
+        if (flatpakInstallLabel) {
+            flatpakInstallLabel->deleteLater();
+        }
+    }
+}
+
 bool SettingsDialog::checkHelperExists(const QString& helper)
 {
     // Check if the command exists in the system
     QString path = QStandardPaths::findExecutable(helper);
+    return !path.isEmpty();
+}
+
+bool SettingsDialog::checkFlatpakExists()
+{
+    // Check if flatpak is installed
+    QString path = QStandardPaths::findExecutable("flatpak");
     return !path.isEmpty();
 }
 

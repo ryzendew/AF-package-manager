@@ -176,10 +176,38 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/PacmanGui-new/src/core/packagemanager.cpp -o CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.s
 
+CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.o: CMakeFiles/pacmangui.dir/flags.make
+CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.o: /home/matt/PacmanGui-new/src/core/flatpak_package.cpp
+CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.o: CMakeFiles/pacmangui.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.o -MF CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.o.d -o CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.o -c /home/matt/PacmanGui-new/src/core/flatpak_package.cpp
+
+CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/PacmanGui-new/src/core/flatpak_package.cpp > CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.i
+
+CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/PacmanGui-new/src/core/flatpak_package.cpp -o CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.s
+
+CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.o: CMakeFiles/pacmangui.dir/flags.make
+CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.o: /home/matt/PacmanGui-new/src/core/flatpak_manager.cpp
+CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.o: CMakeFiles/pacmangui.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.o -MF CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.o.d -o CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.o -c /home/matt/PacmanGui-new/src/core/flatpak_manager.cpp
+
+CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/PacmanGui-new/src/core/flatpak_manager.cpp > CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.i
+
+CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/PacmanGui-new/src/core/flatpak_manager.cpp -o CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.s
+
 CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o: CMakeFiles/pacmangui.dir/flags.make
 CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o: /home/matt/PacmanGui-new/src/gui/mainwindow.cpp
 CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o: CMakeFiles/pacmangui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o -MF CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o.d -o CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o -c /home/matt/PacmanGui-new/src/gui/mainwindow.cpp
 
 CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.i: cmake_force
@@ -193,7 +221,7 @@ CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.s: cmake_force
 CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o: CMakeFiles/pacmangui.dir/flags.make
 CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o: /home/matt/PacmanGui-new/src/gui/settingsdialog.cpp
 CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o: CMakeFiles/pacmangui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o -MF CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o.d -o CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o -c /home/matt/PacmanGui-new/src/gui/settingsdialog.cpp
 
 CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.i: cmake_force
@@ -207,7 +235,7 @@ CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.s: cmake_force
 CMakeFiles/pacmangui.dir/src/gui/util.cpp.o: CMakeFiles/pacmangui.dir/flags.make
 CMakeFiles/pacmangui.dir/src/gui/util.cpp.o: /home/matt/PacmanGui-new/src/gui/util.cpp
 CMakeFiles/pacmangui.dir/src/gui/util.cpp.o: CMakeFiles/pacmangui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/pacmangui.dir/src/gui/util.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/pacmangui.dir/src/gui/util.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/pacmangui.dir/src/gui/util.cpp.o -MF CMakeFiles/pacmangui.dir/src/gui/util.cpp.o.d -o CMakeFiles/pacmangui.dir/src/gui/util.cpp.o -c /home/matt/PacmanGui-new/src/gui/util.cpp
 
 CMakeFiles/pacmangui.dir/src/gui/util.cpp.i: cmake_force
@@ -218,10 +246,24 @@ CMakeFiles/pacmangui.dir/src/gui/util.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/pacmangui.dir/src/gui/util.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/PacmanGui-new/src/gui/util.cpp -o CMakeFiles/pacmangui.dir/src/gui/util.cpp.s
 
+CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.o: CMakeFiles/pacmangui.dir/flags.make
+CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.o: /home/matt/PacmanGui-new/src/gui/flatpak_manager_tab.cpp
+CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.o: CMakeFiles/pacmangui.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.o -MF CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.o.d -o CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.o -c /home/matt/PacmanGui-new/src/gui/flatpak_manager_tab.cpp
+
+CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/PacmanGui-new/src/gui/flatpak_manager_tab.cpp > CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.i
+
+CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/PacmanGui-new/src/gui/flatpak_manager_tab.cpp -o CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.s
+
 CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.o: CMakeFiles/pacmangui.dir/flags.make
 CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.o: /home/matt/PacmanGui-new/src/wayland/wayland_backend.cpp
 CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.o: CMakeFiles/pacmangui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.o -MF CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.o.d -o CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.o -c /home/matt/PacmanGui-new/src/wayland/wayland_backend.cpp
 
 CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.i: cmake_force
@@ -235,7 +277,7 @@ CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.s: cmake_force
 CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.o: CMakeFiles/pacmangui.dir/flags.make
 CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.o: /home/matt/PacmanGui-new/src/wayland/wayland_protocols.cpp
 CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.o: CMakeFiles/pacmangui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.o -MF CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.o.d -o CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.o -c /home/matt/PacmanGui-new/src/wayland/wayland_protocols.cpp
 
 CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.i: cmake_force
@@ -249,7 +291,7 @@ CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.s: cmake_force
 CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.o: CMakeFiles/pacmangui.dir/flags.make
 CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.o: /home/matt/PacmanGui-new/src/wayland/wayland_security.cpp
 CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.o: CMakeFiles/pacmangui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.o -MF CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.o.d -o CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.o -c /home/matt/PacmanGui-new/src/wayland/wayland_security.cpp
 
 CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.i: cmake_force
@@ -263,7 +305,7 @@ CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.s: cmake_force
 CMakeFiles/pacmangui.dir/src/wayland/wayland_optimization.cpp.o: CMakeFiles/pacmangui.dir/flags.make
 CMakeFiles/pacmangui.dir/src/wayland/wayland_optimization.cpp.o: /home/matt/PacmanGui-new/src/wayland/wayland_optimization.cpp
 CMakeFiles/pacmangui.dir/src/wayland/wayland_optimization.cpp.o: CMakeFiles/pacmangui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/pacmangui.dir/src/wayland/wayland_optimization.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/pacmangui.dir/src/wayland/wayland_optimization.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/pacmangui.dir/src/wayland/wayland_optimization.cpp.o -MF CMakeFiles/pacmangui.dir/src/wayland/wayland_optimization.cpp.o.d -o CMakeFiles/pacmangui.dir/src/wayland/wayland_optimization.cpp.o -c /home/matt/PacmanGui-new/src/wayland/wayland_optimization.cpp
 
 CMakeFiles/pacmangui.dir/src/wayland/wayland_optimization.cpp.i: cmake_force
@@ -277,7 +319,7 @@ CMakeFiles/pacmangui.dir/src/wayland/wayland_optimization.cpp.s: cmake_force
 CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o: CMakeFiles/pacmangui.dir/flags.make
 CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o: pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp
 CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o: CMakeFiles/pacmangui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o -MF CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o.d -o CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o -c /home/matt/PacmanGui-new/build/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp
 
 CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.i: cmake_force
@@ -296,9 +338,12 @@ pacmangui_OBJECTS = \
 "CMakeFiles/pacmangui.dir/src/core/repository.cpp.o" \
 "CMakeFiles/pacmangui.dir/src/core/transaction.cpp.o" \
 "CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o" \
+"CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.o" \
+"CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.o" \
 "CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o" \
 "CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o" \
 "CMakeFiles/pacmangui.dir/src/gui/util.cpp.o" \
+"CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.o" \
 "CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.o" \
 "CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.o" \
 "CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.o" \
@@ -314,9 +359,12 @@ pacmangui: CMakeFiles/pacmangui.dir/src/core/package.cpp.o
 pacmangui: CMakeFiles/pacmangui.dir/src/core/repository.cpp.o
 pacmangui: CMakeFiles/pacmangui.dir/src/core/transaction.cpp.o
 pacmangui: CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o
+pacmangui: CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.o
+pacmangui: CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.o
 pacmangui: CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o
 pacmangui: CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o
 pacmangui: CMakeFiles/pacmangui.dir/src/gui/util.cpp.o
+pacmangui: CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.o
 pacmangui: CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.o
 pacmangui: CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.o
 pacmangui: CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.o
@@ -331,7 +379,7 @@ pacmangui: /usr/lib/libGLX.so
 pacmangui: /usr/lib/libOpenGL.so
 pacmangui: /usr/lib/libQt6Core.so.6.9.0
 pacmangui: CMakeFiles/pacmangui.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Linking CXX executable pacmangui"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Linking CXX executable pacmangui"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/pacmangui.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

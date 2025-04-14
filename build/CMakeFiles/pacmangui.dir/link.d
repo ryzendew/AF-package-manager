@@ -8,9 +8,12 @@ pacmangui: \
   CMakeFiles/pacmangui.dir/src/core/repository.cpp.o \
   CMakeFiles/pacmangui.dir/src/core/transaction.cpp.o \
   CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o \
+  CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.o \
+  CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.o \
   CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o \
   CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o \
   CMakeFiles/pacmangui.dir/src/gui/util.cpp.o \
+  CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.o \
   CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.o \
   CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.o \
   CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.o \
@@ -124,11 +127,17 @@ CMakeFiles/pacmangui.dir/src/core/transaction.cpp.o:
 
 CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o:
 
+CMakeFiles/pacmangui.dir/src/core/flatpak_package.cpp.o:
+
+CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.o:
+
 CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o:
 
 CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o:
 
 CMakeFiles/pacmangui.dir/src/gui/util.cpp.o:
+
+CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.o:
 
 CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.o:
 

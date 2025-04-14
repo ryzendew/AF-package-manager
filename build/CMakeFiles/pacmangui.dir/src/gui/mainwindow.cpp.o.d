@@ -489,6 +489,12 @@ CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o: \
  /home/matt/PacmanGui-new/include/core/package.hpp \
  /home/matt/PacmanGui-new/include/core/repository.hpp \
  /home/matt/PacmanGui-new/include/core/transaction.hpp \
+ /home/matt/PacmanGui-new/include/core/flatpak_manager.hpp \
+ /home/matt/PacmanGui-new/include/core/flatpak_package.hpp \
+ /home/matt/PacmanGui-new/include/gui/flatpak_manager_tab.hpp \
+ /usr/include/qt6/QtWidgets/QWidget /usr/include/qt6/QtWidgets/qwidget.h \
+ /usr/include/qt6/QtWidgets/QButtonGroup \
+ /usr/include/qt6/QtWidgets/qbuttongroup.h \
  /home/matt/PacmanGui-new/include/gui/settingsdialog.hpp \
  /usr/include/qt6/QtWidgets/QDialog /usr/include/qt6/QtWidgets/qdialog.h \
  /usr/include/qt6/QtCore/QSettings /usr/include/qt6/QtCore/qsettings.h \

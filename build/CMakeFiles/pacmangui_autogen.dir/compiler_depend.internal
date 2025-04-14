@@ -8,10 +8,13 @@
  /home/matt/PacmanGui-new/build/pacmangui_autogen/moc_predefs.h
  /home/matt/PacmanGui-new/cmake/cmake_uninstall.cmake.in
  /home/matt/PacmanGui-new/cmake/modules/FindALPM.cmake
+ /home/matt/PacmanGui-new/include/core/flatpak_manager.hpp
+ /home/matt/PacmanGui-new/include/core/flatpak_package.hpp
  /home/matt/PacmanGui-new/include/core/package.hpp
  /home/matt/PacmanGui-new/include/core/packagemanager.hpp
  /home/matt/PacmanGui-new/include/core/repository.hpp
  /home/matt/PacmanGui-new/include/core/transaction.hpp
+ /home/matt/PacmanGui-new/include/gui/flatpak_manager_tab.hpp
  /home/matt/PacmanGui-new/include/gui/mainwindow.hpp
  /home/matt/PacmanGui-new/include/gui/settingsdialog.hpp
  /home/matt/PacmanGui-new/include/wayland/wayland_backend.hpp
@@ -19,10 +22,13 @@
  /home/matt/PacmanGui-new/include/wayland/wayland_protocols.hpp
  /home/matt/PacmanGui-new/include/wayland/wayland_security.hpp
  /home/matt/PacmanGui-new/resources/resources.qrc
+ /home/matt/PacmanGui-new/src/core/flatpak_manager.cpp
+ /home/matt/PacmanGui-new/src/core/flatpak_package.cpp
  /home/matt/PacmanGui-new/src/core/package.cpp
  /home/matt/PacmanGui-new/src/core/packagemanager.cpp
  /home/matt/PacmanGui-new/src/core/repository.cpp
  /home/matt/PacmanGui-new/src/core/transaction.cpp
+ /home/matt/PacmanGui-new/src/gui/flatpak_manager_tab.cpp
  /home/matt/PacmanGui-new/src/gui/mainwindow.cpp
  /home/matt/PacmanGui-new/src/gui/settingsdialog.cpp
  /home/matt/PacmanGui-new/src/gui/util.cpp
@@ -517,6 +523,7 @@
  /usr/include/qt6/QtGui/qtransform.h
  /usr/include/qt6/QtGui/qvalidator.h
  /usr/include/qt6/QtGui/qwindowdefs.h
+ /usr/include/qt6/QtWidgets/QButtonGroup
  /usr/include/qt6/QtWidgets/QCheckBox
  /usr/include/qt6/QtWidgets/QComboBox
  /usr/include/qt6/QtWidgets/QDialog
@@ -546,6 +553,7 @@
  /usr/include/qt6/QtWidgets/QToolButton
  /usr/include/qt6/QtWidgets/QTreeView
  /usr/include/qt6/QtWidgets/QVBoxLayout
+ /usr/include/qt6/QtWidgets/QWidget
  /usr/include/qt6/QtWidgets/qabstractbutton.h
  /usr/include/qt6/QtWidgets/qabstractitemdelegate.h
  /usr/include/qt6/QtWidgets/qabstractitemview.h
@@ -553,6 +561,7 @@
  /usr/include/qt6/QtWidgets/qabstractslider.h
  /usr/include/qt6/QtWidgets/qabstractspinbox.h
  /usr/include/qt6/QtWidgets/qboxlayout.h
+ /usr/include/qt6/QtWidgets/qbuttongroup.h
  /usr/include/qt6/QtWidgets/qcheckbox.h
  /usr/include/qt6/QtWidgets/qcombobox.h
  /usr/include/qt6/QtWidgets/qdialog.h

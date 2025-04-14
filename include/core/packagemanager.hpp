@@ -7,6 +7,8 @@
 #include "core/package.hpp"
 #include "core/repository.hpp"
 #include "core/transaction.hpp"
+#include "core/flatpak_manager.hpp"
+#include "core/flatpak_package.hpp"
 #include <functional>
 
 namespace pacmangui {
@@ -319,6 +321,67 @@ public:
      */
     bool restore_database(const std::string& backup_path, const std::string& password,
                         std::function<void(const std::string&)> output_callback = nullptr);
+    
+    /**
+     * @brief Get all installed Flatpak packages
+     * 
+     * @return std::vector<FlatpakPackage> List of installed Flatpak packages
+     */
+    std::vector<FlatpakPackage> get_installed_flatpak_packages() const;
+    
+    /**
+     * @brief Search for Flatpak packages by name
+     * 
+     * @param name Package name to search for
+     * @return std::vector<FlatpakPackage> List of matching Flatpak packages
+     */
+    std::vector<FlatpakPackage> search_flatpak_by_name(const std::string& name) const;
+    
+    /**
+     * @brief Install a Flatpak package
+     * 
+     * @param app_id Application ID of the Flatpak package to install
+     * @param remote Remote name (e.g., "flathub")
+     * @return bool True if installation successful
+     */
+    bool install_flatpak_package(const std::string& app_id, const std::string& remote = "flathub");
+    
+    /**
+     * @brief Remove a Flatpak package
+     * 
+     * @param app_id Application ID of the Flatpak package to remove
+     * @return bool True if removal successful
+     */
+    bool remove_flatpak_package(const std::string& app_id);
+    
+    /**
+     * @brief Update a Flatpak package
+     * 
+     * @param app_id Application ID of the Flatpak package to update
+     * @return bool True if update successful
+     */
+    bool update_flatpak_package(const std::string& app_id);
+    
+    /**
+     * @brief Update all Flatpak packages
+     * 
+     * @return bool True if update successful
+     */
+    bool update_all_flatpak_packages();
+    
+    /**
+     * @brief Check if Flatpak is available on the system
+     * 
+     * @return bool True if Flatpak is available
+     */
+    bool is_flatpak_available() const;
+    
+    /**
+     * @brief Get available Flatpak remotes
+     * 
+     * @return std::vector<std::string> List of available remotes
+     */
+    std::vector<std::string> get_flatpak_remotes() const;
 
 private:
     alpm_handle_t* m_handle;                          ///< ALPM handle
@@ -339,6 +402,9 @@ private:
      * @return bool True if registration successful
      */
     bool register_sync_databases();
+    
+    // Flatpak manager
+    FlatpakManager m_flatpak_manager;
 };
 
 } // namespace core

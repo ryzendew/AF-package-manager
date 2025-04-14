@@ -94,8 +94,14 @@ template <> constexpr inline auto pacmangui::gui::MainWindow::qt_create_metaobje
         "onWaylandPerformanceMetricsUpdated",
         "QVariantMap",
         "metrics",
-        "showStatusMessage",
-        "timeout"
+        "onInstallFlatpakPackage",
+        "onRemoveFlatpakPackage",
+        "onSearchFlatpakPackages",
+        "onToggleFlatpakSearch",
+        "enabled",
+        "onFlatpakStatusMessage",
+        "timeout",
+        "showStatusMessage"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -201,12 +207,26 @@ template <> constexpr inline auto pacmangui::gui::MainWindow::qt_create_metaobje
         QtMocHelpers::SlotData<void(const QVariantMap &)>(52, 2, QMC::AccessPrivate, QMetaType::Void, {{
             { 0x80000000 | 53, 54 },
         }}),
-        // Method 'showStatusMessage'
-        QtMocHelpers::MethodData<void(const QString &, int)>(55, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::QString, 30 }, { QMetaType::Int, 56 },
+        // Slot 'onInstallFlatpakPackage'
+        QtMocHelpers::SlotData<void()>(55, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onRemoveFlatpakPackage'
+        QtMocHelpers::SlotData<void()>(56, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onSearchFlatpakPackages'
+        QtMocHelpers::SlotData<void()>(57, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onToggleFlatpakSearch'
+        QtMocHelpers::SlotData<void(bool)>(58, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Bool, 59 },
+        }}),
+        // Slot 'onFlatpakStatusMessage'
+        QtMocHelpers::SlotData<void(const QString &, int)>(60, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::QString, 30 }, { QMetaType::Int, 61 },
         }}),
         // Method 'showStatusMessage'
-        QtMocHelpers::MethodData<void(const QString &)>(55, 2, QMC::AccessPrivate | QMC::MethodCloned, QMetaType::Void, {{
+        QtMocHelpers::MethodData<void(const QString &, int)>(62, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::QString, 30 }, { QMetaType::Int, 61 },
+        }}),
+        // Method 'showStatusMessage'
+        QtMocHelpers::MethodData<void(const QString &)>(62, 2, QMC::AccessPrivate | QMC::MethodCloned, QMetaType::Void, {{
             { QMetaType::QString, 30 },
         }}),
     };
@@ -271,8 +291,13 @@ void pacmangui::gui::MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Ca
         case 36: _t->onWaylandSecurityEvent((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
         case 37: _t->onWaylandHardwareAccelerationStatusChanged((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
         case 38: _t->onWaylandPerformanceMetricsUpdated((*reinterpret_cast< std::add_pointer_t<QVariantMap>>(_a[1]))); break;
-        case 39: _t->showStatusMessage((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
-        case 40: _t->showStatusMessage((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 39: _t->onInstallFlatpakPackage(); break;
+        case 40: _t->onRemoveFlatpakPackage(); break;
+        case 41: _t->onSearchFlatpakPackages(); break;
+        case 42: _t->onToggleFlatpakSearch((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 43: _t->onFlatpakStatusMessage((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
+        case 44: _t->showStatusMessage((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
+        case 45: _t->showStatusMessage((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         default: ;
         }
     }
@@ -297,14 +322,14 @@ int pacmangui::gui::MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void 
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 41)
+        if (_id < 46)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 41;
+        _id -= 46;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 41)
+        if (_id < 46)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 41;
+        _id -= 46;
     }
     return _id;
 }

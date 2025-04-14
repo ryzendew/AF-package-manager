@@ -631,6 +631,12 @@
 	"HEADERS" : 
 	[
 		[
+			"/home/matt/PacmanGui-new/include/gui/flatpak_manager_tab.hpp",
+			"MU",
+			"BMPI5EA7AM/moc_flatpak_manager_tab.cpp",
+			null
+		],
+		[
 			"/home/matt/PacmanGui-new/include/gui/mainwindow.hpp",
 			"MU",
 			"BMPI5EA7AM/moc_mainwindow.cpp",
@@ -740,10 +746,17 @@
 	"SETTINGS_FILE" : "/home/matt/PacmanGui-new/build/CMakeFiles/pacmangui_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
+		[ "/home/matt/PacmanGui-new/src/core/flatpak_manager.cpp", "MU", null ],
+		[ "/home/matt/PacmanGui-new/src/core/flatpak_package.cpp", "MU", null ],
 		[ "/home/matt/PacmanGui-new/src/core/package.cpp", "MU", null ],
 		[ "/home/matt/PacmanGui-new/src/core/packagemanager.cpp", "MU", null ],
 		[ "/home/matt/PacmanGui-new/src/core/repository.cpp", "MU", null ],
 		[ "/home/matt/PacmanGui-new/src/core/transaction.cpp", "MU", null ],
+		[
+			"/home/matt/PacmanGui-new/src/gui/flatpak_manager_tab.cpp",
+			"MU",
+			null
+		],
 		[ "/home/matt/PacmanGui-new/src/gui/mainwindow.cpp", "MU", null ],
 		[ "/home/matt/PacmanGui-new/src/gui/settingsdialog.cpp", "MU", null ],
 		[ "/home/matt/PacmanGui-new/src/gui/util.cpp", "MU", null ],

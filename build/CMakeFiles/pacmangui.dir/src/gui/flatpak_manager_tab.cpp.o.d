@@ -1,8 +1,7 @@
-CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o: \
- /home/matt/PacmanGui-new/build/pacmangui_autogen/mocs_compilation.cpp \
+CMakeFiles/pacmangui.dir/src/gui/flatpak_manager_tab.cpp.o: \
+ /home/matt/PacmanGui-new/src/gui/flatpak_manager_tab.cpp \
  /usr/include/stdc-predef.h \
- /home/matt/PacmanGui-new/build/pacmangui_autogen/BMPI5EA7AM/moc_flatpak_manager_tab.cpp \
- /home/matt/PacmanGui-new/build/pacmangui_autogen/BMPI5EA7AM/../../../include/gui/flatpak_manager_tab.hpp \
+ /home/matt/PacmanGui-new/include/gui/flatpak_manager_tab.hpp \
  /usr/include/qt6/QtWidgets/QWidget /usr/include/qt6/QtWidgets/qwidget.h \
  /usr/include/qt6/QtWidgets/qtwidgetsglobal.h \
  /usr/include/qt6/QtGui/qtguiglobal.h /usr/include/qt6/QtCore/qglobal.h \
@@ -399,18 +398,6 @@ CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o: \
  /home/matt/PacmanGui-new/include/core/transaction.hpp \
  /home/matt/PacmanGui-new/include/core/flatpak_manager.hpp \
  /home/matt/PacmanGui-new/include/core/flatpak_package.hpp \
- /usr/include/qt6/QtCore/qtmochelpers.h \
- /usr/include/qt6/QtCore/qtmocconstants.h \
- /usr/include/qt6/QtCore/q20algorithm.h \
- /usr/include/qt6/QtCore/q23type_traits.h \
- /home/matt/PacmanGui-new/build/pacmangui_autogen/BMPI5EA7AM/moc_mainwindow.cpp \
- /home/matt/PacmanGui-new/build/pacmangui_autogen/BMPI5EA7AM/../../../include/gui/mainwindow.hpp \
- /usr/include/qt6/QtWidgets/QMainWindow \
- /usr/include/qt6/QtWidgets/qmainwindow.h \
- /usr/include/qt6/QtWidgets/QTabWidget \
- /usr/include/qt6/QtWidgets/qtabwidget.h \
- /usr/include/qt6/QtWidgets/QStackedWidget \
- /usr/include/qt6/QtWidgets/qstackedwidget.h \
  /usr/include/qt6/QtWidgets/QVBoxLayout \
  /usr/include/qt6/QtWidgets/qboxlayout.h \
  /usr/include/qt6/QtWidgets/qlayout.h \
@@ -418,25 +405,17 @@ CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o: \
  /usr/include/qt6/QtWidgets/qboxlayout.h \
  /usr/include/qt6/QtWidgets/qgridlayout.h \
  /usr/include/qt6/QtWidgets/QHBoxLayout \
- /usr/include/qt6/QtWidgets/QTableView \
- /usr/include/qt6/QtWidgets/qtableview.h /usr/include/qt6/QtGui/QAction \
- /usr/include/qt6/QtGui/qaction.h /usr/include/qt6/QtWidgets/QToolBar \
- /usr/include/qt6/QtWidgets/qtoolbar.h /usr/include/qt6/QtWidgets/QMenu \
- /usr/include/qt6/QtWidgets/qmenu.h /usr/include/qt6/QtWidgets/QStatusBar \
- /usr/include/qt6/QtWidgets/qstatusbar.h \
- /usr/include/qt6/QtWidgets/QListView \
- /usr/include/qt6/QtWidgets/qlistview.h \
- /usr/include/qt6/QtWidgets/QCheckBox \
- /usr/include/qt6/QtWidgets/qcheckbox.h /usr/include/qt6/QtCore/QSet \
- /usr/include/qt6/QtCore/qset.h /usr/include/qt6/QtWidgets/QToolButton \
- /usr/include/qt6/QtWidgets/qtoolbutton.h /usr/include/qt6/QtCore/QMap \
- /usr/include/qt6/QtCore/qmap.h /usr/include/qt6/QtWidgets/QGroupBox \
+ /usr/include/qt6/QtWidgets/QHeaderView \
+ /usr/include/qt6/QtWidgets/qheaderview.h \
+ /usr/include/qt6/QtWidgets/QGroupBox \
  /usr/include/qt6/QtWidgets/qgroupbox.h \
- /usr/include/qt6/QtWidgets/QListWidget \
- /usr/include/qt6/QtWidgets/qlistwidget.h \
- /usr/include/qt6/QtWidgets/qlistview.h \
- /usr/include/qt6/QtWidgets/QProgressBar \
- /usr/include/qt6/QtWidgets/qprogressbar.h \
+ /usr/include/qt6/QtWidgets/QMessageBox \
+ /usr/include/qt6/QtWidgets/qmessagebox.h \
+ /usr/include/qt6/QtWidgets/qdialog.h \
+ /usr/include/qt6/QtWidgets/qdialogbuttonbox.h \
+ /usr/include/qt6/QtWidgets/QInputDialog \
+ /usr/include/qt6/QtWidgets/qinputdialog.h \
+ /usr/include/qt6/QtWidgets/qlineedit.h \
  /usr/include/qt6/QtWidgets/QFileDialog \
  /usr/include/qt6/QtWidgets/qfiledialog.h /usr/include/qt6/QtCore/qdir.h \
  /usr/include/qt6/QtCore/qdirlisting.h \
@@ -468,40 +447,44 @@ CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o: \
  /usr/include/c++/14.2.1/bits/fs_dir.h \
  /usr/include/c++/14.2.1/bits/fs_ops.h \
  /usr/include/qt6/QtCore/qfileinfo.h /usr/include/qt6/QtCore/qtimezone.h \
- /usr/include/qt6/QtWidgets/qdialog.h \
- /usr/include/qt6/QtCore/QPropertyAnimation \
- /usr/include/qt6/QtCore/qpropertyanimation.h \
- /usr/include/qt6/QtCore/qvariantanimation.h \
- /usr/include/qt6/QtCore/qabstractanimation.h \
- /usr/include/qt6/QtCore/qeasingcurve.h \
- /usr/include/qt6/QtWidgets/QGraphicsOpacityEffect \
- /usr/include/qt6/QtWidgets/qgraphicseffect.h \
- /usr/include/qt6/QtWidgets/QScrollArea \
- /usr/include/qt6/QtWidgets/qscrollarea.h \
- /usr/include/qt6/QtWidgets/QScrollBar \
- /usr/include/qt6/QtWidgets/qscrollbar.h \
- /usr/include/qt6/QtCore/QFutureWatcher \
- /usr/include/qt6/QtCore/qfuturewatcher.h \
- /usr/include/qt6/QtCore/qfuture.h \
- /usr/include/qt6/QtCore/qfutureinterface.h \
- /usr/include/qt6/QtCore/qmutex.h \
+ /usr/include/qt6/QtGui/QDesktopServices \
+ /usr/include/qt6/QtGui/qdesktopservices.h /usr/include/qt6/QtCore/QDir \
+ /usr/include/qt6/QtCore/qdir.h /usr/include/qt6/QtCore/QProcess \
+ /usr/include/qt6/QtCore/qprocess.h /usr/include/qt6/QtCore/QUrl \
+ /usr/include/qt6/QtCore/qurl.h /usr/include/qt6/QtWidgets/QApplication \
+ /usr/include/qt6/QtWidgets/qapplication.h \
+ /usr/include/qt6/QtCore/qcoreapplication.h \
+ /usr/include/qt6/QtCore/qcoreevent.h \
+ /usr/include/qt6/QtCore/qbasictimer.h \
+ /usr/include/qt6/QtCore/qabstracteventdispatcher.h \
+ /usr/include/qt6/QtCore/qeventloop.h \
  /usr/include/qt6/QtCore/qdeadlinetimer.h \
  /usr/include/qt6/QtCore/qelapsedtimer.h \
- /usr/include/qt6/QtCore/qtsan_impl.h \
- /usr/include/qt6/QtCore/qresultstore.h \
- /usr/include/qt6/QtCore/qfuture_impl.h \
- /usr/include/qt6/QtCore/qthreadpool.h /usr/include/qt6/QtCore/qthread.h \
- /usr/include/c++/14.2.1/future /usr/include/c++/14.2.1/mutex \
- /usr/include/c++/14.2.1/bits/std_mutex.h \
- /usr/include/c++/14.2.1/bits/unique_lock.h \
- /usr/include/c++/14.2.1/condition_variable \
- /usr/include/c++/14.2.1/bits/atomic_futex.h \
- /usr/include/c++/14.2.1/bits/std_thread.h \
- /usr/include/qt6/QtCore/qrunnable.h /usr/include/qt6/QtCore/qexception.h \
- /usr/include/qt6/QtCore/qpromise.h \
+ /usr/include/qt6/QtCore/qnativeinterface.h \
+ /usr/include/qt6/QtCore/qcoreapplication_platform.h \
+ /usr/include/qt6/QtGui/qguiapplication.h \
+ /usr/include/qt6/QtGui/qinputmethod.h \
+ /usr/include/qt6/QtGui/qguiapplication_platform.h \
+ /usr/include/qt6/QtGui/QClipboard /usr/include/qt6/QtGui/qclipboard.h \
  /usr/include/qt6/QtWidgets/QProgressDialog \
  /usr/include/qt6/QtWidgets/qprogressdialog.h \
- /home/matt/PacmanGui-new/build/pacmangui_autogen/BMPI5EA7AM/moc_settingsdialog.cpp \
- /home/matt/PacmanGui-new/build/pacmangui_autogen/BMPI5EA7AM/../../../include/gui/settingsdialog.hpp \
- /usr/include/qt6/QtWidgets/QDialog /usr/include/qt6/QtWidgets/qdialog.h \
- /usr/include/qt6/QtCore/QSettings /usr/include/qt6/QtCore/qsettings.h
+ /usr/include/qt6/QtCore/QDateTime /usr/include/qt6/QtCore/qdatetime.h \
+ /usr/include/qt6/QtWidgets/QFormLayout \
+ /usr/include/qt6/QtWidgets/qformlayout.h \
+ /usr/include/qt6/QtWidgets/QLayout /usr/include/qt6/QtWidgets/qlayout.h \
+ /usr/include/qt6/QtWidgets/QListWidget \
+ /usr/include/qt6/QtWidgets/qlistwidget.h \
+ /usr/include/qt6/QtWidgets/qlistview.h \
+ /usr/include/qt6/QtWidgets/QDialogButtonBox \
+ /usr/include/qt6/QtWidgets/qdialogbuttonbox.h \
+ /usr/include/qt6/QtWidgets/QMenu /usr/include/qt6/QtWidgets/qmenu.h \
+ /usr/include/qt6/QtGui/QAction /usr/include/qt6/QtGui/qaction.h \
+ /usr/include/qt6/QtCore/QStandardPaths \
+ /usr/include/qt6/QtCore/qstandardpaths.h /usr/include/qt6/QtCore/QDebug \
+ /usr/include/qt6/QtCore/qdebug.h \
+ /usr/include/qt6/QtCore/QRegularExpression \
+ /usr/include/qt6/QtCore/qregularexpression.h \
+ /usr/include/qt6/QtWidgets/QScrollArea \
+ /usr/include/qt6/QtWidgets/qscrollarea.h \
+ /usr/include/qt6/QtWidgets/QGridLayout \
+ /usr/include/qt6/QtWidgets/qgridlayout.h

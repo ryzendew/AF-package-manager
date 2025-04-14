@@ -88,6 +88,8 @@ PackageManager::~PackageManager()
 
 bool PackageManager::initialize(const std::string& root_dir, const std::string& db_path)
 {
+    std::cout << "PackageManager: Initializing with root path '" << root_dir << "' and DB path '" << db_path << "'" << std::endl;
+    
     // Initialize alpm library
     alpm_errno_t err;
     m_handle = alpm_initialize(root_dir.c_str(), db_path.c_str(), &err);
@@ -117,6 +119,9 @@ bool PackageManager::initialize(const std::string& root_dir, const std::string& 
         set_last_error("Failed to register sync databases");
         return false;
     }
+    
+    // Initialize Flatpak manager
+    m_flatpak_manager.initialize();
     
     std::cout << "PackageManager: Initialized successfully" << std::endl;
     return true;
@@ -1707,6 +1712,46 @@ bool PackageManager::restore_database(const std::string& backup_path, const std:
         }
         return false;
     }
+}
+
+std::vector<FlatpakPackage> PackageManager::get_installed_flatpak_packages() const
+{
+    return m_flatpak_manager.get_installed_packages();
+}
+
+std::vector<FlatpakPackage> PackageManager::search_flatpak_by_name(const std::string& name) const
+{
+    return m_flatpak_manager.search_by_name(name);
+}
+
+bool PackageManager::install_flatpak_package(const std::string& app_id, const std::string& remote)
+{
+    return m_flatpak_manager.install_package(app_id, remote);
+}
+
+bool PackageManager::remove_flatpak_package(const std::string& app_id)
+{
+    return m_flatpak_manager.remove_package(app_id);
+}
+
+bool PackageManager::update_flatpak_package(const std::string& app_id)
+{
+    return m_flatpak_manager.update_package(app_id);
+}
+
+bool PackageManager::update_all_flatpak_packages()
+{
+    return m_flatpak_manager.update_all();
+}
+
+bool PackageManager::is_flatpak_available() const
+{
+    return m_flatpak_manager.is_available();
+}
+
+std::vector<std::string> PackageManager::get_flatpak_remotes() const
+{
+    return m_flatpak_manager.get_remotes();
 }
 
 } // namespace core

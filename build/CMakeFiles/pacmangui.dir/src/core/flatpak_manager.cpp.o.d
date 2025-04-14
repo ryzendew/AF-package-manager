@@ -1,7 +1,7 @@
-CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: \
- /home/matt/PacmanGui-new/src/core/packagemanager.cpp \
+CMakeFiles/pacmangui.dir/src/core/flatpak_manager.cpp.o: \
+ /home/matt/PacmanGui-new/src/core/flatpak_manager.cpp \
  /usr/include/stdc-predef.h \
- /home/matt/PacmanGui-new/include/core/packagemanager.hpp \
+ /home/matt/PacmanGui-new/include/core/flatpak_manager.hpp \
  /usr/include/c++/14.2.1/string \
  /usr/include/c++/14.2.1/bits/requires_hosted.h \
  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
@@ -149,22 +149,7 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: \
  /usr/include/c++/14.2.1/bits/atomic_lockfree_defines.h \
  /usr/include/c++/14.2.1/backward/auto_ptr.h \
  /usr/include/c++/14.2.1/pstl/glue_memory_defs.h \
- /usr/include/c++/14.2.1/pstl/execution_defs.h /usr/include/alpm.h \
- /usr/include/archive.h /usr/include/sys/stat.h /usr/include/bits/stat.h \
- /usr/include/bits/struct_stat.h /usr/include/bits/statx.h \
- /usr/include/linux/stat.h /usr/include/bits/statx-generic.h \
- /usr/include/bits/types/struct_statx_timestamp.h \
- /usr/include/bits/types/struct_statx.h /usr/include/inttypes.h \
- /usr/include/unistd.h /usr/include/bits/posix_opt.h \
- /usr/include/bits/environments.h /usr/include/bits/confname.h \
- /usr/include/bits/getopt_posix.h /usr/include/bits/getopt_core.h \
- /usr/include/bits/unistd_ext.h /usr/include/linux/close_range.h \
- /usr/include/archive_entry.h /usr/include/alpm_list.h \
- /usr/include/c++/14.2.1/stdlib.h \
- /home/matt/PacmanGui-new/include/core/package.hpp \
- /usr/include/c++/14.2.1/cstdint \
- /home/matt/PacmanGui-new/include/core/repository.hpp \
- /home/matt/PacmanGui-new/include/core/transaction.hpp \
+ /usr/include/c++/14.2.1/pstl/execution_defs.h \
  /usr/include/c++/14.2.1/functional \
  /usr/include/c++/14.2.1/bits/std_function.h \
  /usr/include/c++/14.2.1/unordered_map \
@@ -175,10 +160,11 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: \
  /usr/include/c++/14.2.1/bits/node_handle.h \
  /usr/include/c++/14.2.1/bits/erase_if.h /usr/include/c++/14.2.1/array \
  /usr/include/c++/14.2.1/compare \
- /home/matt/PacmanGui-new/include/core/flatpak_manager.hpp \
  /home/matt/PacmanGui-new/include/core/flatpak_package.hpp \
- /usr/include/c++/14.2.1/iostream /usr/include/c++/14.2.1/ostream \
- /usr/include/c++/14.2.1/ios /usr/include/c++/14.2.1/bits/ios_base.h \
+ /home/matt/PacmanGui-new/include/core/package.hpp \
+ /usr/include/c++/14.2.1/cstdint /usr/include/c++/14.2.1/iostream \
+ /usr/include/c++/14.2.1/ostream /usr/include/c++/14.2.1/ios \
+ /usr/include/c++/14.2.1/bits/ios_base.h \
  /usr/include/c++/14.2.1/bits/locale_classes.h \
  /usr/include/c++/14.2.1/bits/locale_classes.tcc \
  /usr/include/c++/14.2.1/system_error \
@@ -195,28 +181,10 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: \
  /usr/include/c++/14.2.1/bits/locale_facets.tcc \
  /usr/include/c++/14.2.1/bits/basic_ios.tcc \
  /usr/include/c++/14.2.1/bits/ostream.tcc /usr/include/c++/14.2.1/istream \
- /usr/include/c++/14.2.1/bits/istream.tcc /usr/include/c++/14.2.1/fstream \
- /usr/include/c++/14.2.1/bits/codecvt.h \
- /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/basic_file.h \
- /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++io.h \
- /usr/include/c++/14.2.1/bits/fstream.tcc /usr/include/c++/14.2.1/sstream \
- /usr/include/c++/14.2.1/bits/sstream.tcc /usr/include/c++/14.2.1/cstring \
- /usr/include/string.h /usr/include/strings.h \
- /usr/include/c++/14.2.1/algorithm \
- /usr/include/c++/14.2.1/bits/stl_algo.h \
- /usr/include/c++/14.2.1/bits/algorithmfwd.h \
- /usr/include/c++/14.2.1/bits/stl_heap.h \
- /usr/include/c++/14.2.1/bits/uniform_int_dist.h \
- /usr/include/c++/14.2.1/pstl/glue_algorithm_defs.h \
- /usr/include/c++/14.2.1/atomic /usr/include/c++/14.2.1/thread \
- /usr/include/c++/14.2.1/bits/std_thread.h \
- /usr/include/c++/14.2.1/bits/this_thread_sleep.h \
- /usr/include/c++/14.2.1/bits/chrono.h /usr/include/c++/14.2.1/ratio \
- /usr/include/c++/14.2.1/limits /usr/include/c++/14.2.1/ctime \
- /usr/include/c++/14.2.1/bits/parse_numbers.h \
- /usr/include/qt6/QtCore/QSettings /usr/include/qt6/QtCore/qsettings.h \
- /usr/include/qt6/QtCore/qobject.h /usr/include/qt6/QtCore/qobjectdefs.h \
- /usr/include/qt6/QtCore/qnamespace.h /usr/include/qt6/QtCore/qglobal.h \
+ /usr/include/c++/14.2.1/bits/istream.tcc /usr/include/c++/14.2.1/sstream \
+ /usr/include/c++/14.2.1/bits/sstream.tcc \
+ /usr/include/qt6/QtCore/QProcess /usr/include/qt6/QtCore/qprocess.h \
+ /usr/include/qt6/QtCore/qcompare.h /usr/include/qt6/QtCore/qglobal.h \
  /usr/include/c++/14.2.1/utility \
  /usr/include/c++/14.2.1/bits/stl_relops.h /usr/include/assert.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdbool.h \
@@ -237,19 +205,26 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: \
  /usr/include/qt6/QtCore/qassert.h /usr/include/qt6/QtCore/qtnoop.h \
  /usr/include/qt6/QtCore/qtypes.h /usr/include/qt6/QtCore/qtversion.h \
  /usr/include/qt6/QtCore/qtypeinfo.h \
- /usr/include/qt6/QtCore/qcontainerfwd.h \
+ /usr/include/qt6/QtCore/qcontainerfwd.h /usr/include/c++/14.2.1/limits \
  /usr/include/qt6/QtCore/qsysinfo.h /usr/include/qt6/QtCore/qlogging.h \
  /usr/include/qt6/QtCore/qflags.h /usr/include/qt6/QtCore/qcompare_impl.h \
+ /usr/include/c++/14.2.1/algorithm \
+ /usr/include/c++/14.2.1/bits/stl_algo.h \
+ /usr/include/c++/14.2.1/bits/algorithmfwd.h \
+ /usr/include/c++/14.2.1/bits/stl_heap.h \
+ /usr/include/c++/14.2.1/bits/uniform_int_dist.h \
+ /usr/include/c++/14.2.1/pstl/glue_algorithm_defs.h \
  /usr/include/qt6/QtCore/qatomic.h /usr/include/qt6/QtCore/qbasicatomic.h \
  /usr/include/qt6/QtCore/qatomic_cxx11.h \
  /usr/include/qt6/QtCore/qgenericatomic.h \
- /usr/include/qt6/QtCore/qyieldcpu.h \
+ /usr/include/qt6/QtCore/qyieldcpu.h /usr/include/c++/14.2.1/atomic \
  /usr/include/qt6/QtCore/qconstructormacros.h \
  /usr/include/qt6/QtCore/qdarwinhelpers.h \
  /usr/include/qt6/QtCore/qexceptionhandling.h \
  /usr/include/qt6/QtCore/qforeach.h \
  /usr/include/qt6/QtCore/qttypetraits.h /usr/include/c++/14.2.1/optional \
  /usr/include/c++/14.2.1/variant \
+ /usr/include/c++/14.2.1/bits/parse_numbers.h \
  /usr/include/qt6/QtCore/qfunctionpointer.h \
  /usr/include/qt6/QtCore/qglobalstatic.h \
  /usr/include/qt6/QtCore/qmalloc.h /usr/include/qt6/QtCore/qminmax.h \
@@ -278,10 +253,13 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: \
  /usr/include/qt6/QtCore/qtresource.h \
  /usr/include/qt6/QtCore/qttranslation.h \
  /usr/include/qt6/QtCore/qversiontagging.h \
- /usr/include/qt6/QtCore/qcompare.h \
  /usr/include/qt6/QtCore/qstdlibdetection.h \
  /usr/include/qt6/QtCore/qcomparehelpers.h \
  /usr/include/qt6/QtCore/q20type_traits.h \
+ /usr/include/qt6/QtCore/qiodevice.h \
+ /usr/include/qt6/QtCore/qiodevicebase.h \
+ /usr/include/qt6/QtCore/qobject.h /usr/include/qt6/QtCore/qobjectdefs.h \
+ /usr/include/qt6/QtCore/qnamespace.h \
  /usr/include/qt6/QtCore/qtmetamacros.h \
  /usr/include/qt6/QtCore/qobjectdefs_impl.h \
  /usr/include/qt6/QtCore/qfunctionaltools_impl.h \
@@ -289,17 +267,18 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: \
  /usr/include/qt6/QtCore/qstringview.h \
  /usr/include/qt6/QtCore/qbytearray.h /usr/include/qt6/QtCore/qrefcount.h \
  /usr/include/qt6/QtCore/qarraydata.h /usr/include/qt6/QtCore/qpair.h \
+ /usr/include/string.h /usr/include/strings.h \
  /usr/include/qt6/QtCore/qarraydatapointer.h \
  /usr/include/qt6/QtCore/qarraydataops.h \
  /usr/include/qt6/QtCore/qcontainertools_impl.h \
- /usr/include/qt6/QtCore/qxptype_traits.h \
+ /usr/include/qt6/QtCore/qxptype_traits.h /usr/include/c++/14.2.1/cstring \
  /usr/include/c++/14.2.1/iterator \
  /usr/include/c++/14.2.1/bits/stream_iterator.h \
  /usr/include/qt6/QtCore/q20functional.h \
  /usr/include/qt6/QtCore/q20memory.h /usr/include/qt6/QtCore/q17memory.h \
  /usr/include/qt6/QtCore/qbytearrayalgorithms.h \
  /usr/include/qt6/QtCore/qbytearrayview.h \
- /usr/include/qt6/QtCore/qstringfwd.h \
+ /usr/include/qt6/QtCore/qstringfwd.h /usr/include/c++/14.2.1/stdlib.h \
  /usr/include/qt6/QtCore/qstringliteral.h \
  /usr/include/qt6/QtCore/qstringalgorithms.h \
  /usr/include/qt6/QtCore/qlatin1stringview.h \
@@ -320,10 +299,8 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: \
  /usr/include/qt6/QtCore/qstringmatcher.h \
  /usr/include/qt6/QtCore/qscopedpointer.h \
  /usr/include/qt6/QtCore/qmetatype.h \
- /usr/include/qt6/QtCore/qdatastream.h \
- /usr/include/qt6/QtCore/qiodevicebase.h \
- /usr/include/qt6/QtCore/qfloat16.h /usr/include/qt6/QtCore/qmath.h \
- /usr/include/qt6/QtCore/qtformat_impl.h \
+ /usr/include/qt6/QtCore/qdatastream.h /usr/include/qt6/QtCore/qfloat16.h \
+ /usr/include/qt6/QtCore/qmath.h /usr/include/qt6/QtCore/qtformat_impl.h \
  /usr/include/qt6/QtCore/qiterable.h \
  /usr/include/qt6/QtCore/qmetacontainer.h \
  /usr/include/qt6/QtCore/qcontainerinfo.h \
@@ -336,8 +313,21 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: \
  /usr/include/c++/14.2.1/bits/stl_multimap.h \
  /usr/include/qt6/QtCore/qobject_impl.h \
  /usr/include/qt6/QtCore/qbindingstorage.h /usr/include/c++/14.2.1/chrono \
- /usr/include/qt6/QtCore/qvariant.h /usr/include/qt6/QtCore/qdebug.h \
- /usr/include/qt6/QtCore/qtextstream.h \
+ /usr/include/c++/14.2.1/bits/chrono.h /usr/include/c++/14.2.1/ratio \
+ /usr/include/c++/14.2.1/ctime /usr/include/qt6/QtCore/qspan.h \
+ /usr/include/c++/14.2.1/cassert /usr/include/qt6/QtCore/q20iterator.h \
+ /usr/include/qt6/QtCore/qshareddata.h \
+ /usr/include/qt6/QtCore/QJsonDocument \
+ /usr/include/qt6/QtCore/qjsondocument.h \
+ /usr/include/qt6/QtCore/qjsonparseerror.h \
+ /usr/include/qt6/QtCore/QJsonObject \
+ /usr/include/qt6/QtCore/qjsonobject.h \
+ /usr/include/qt6/QtCore/qjsonvalue.h \
+ /usr/include/qt6/QtCore/qcborvalue.h \
+ /usr/include/qt6/QtCore/qcborcommon.h \
+ /usr/include/qt6/QtCore/qdatetime.h /usr/include/qt6/QtCore/qcalendar.h \
+ /usr/include/qt6/QtCore/qlocale.h /usr/include/qt6/QtCore/qvariant.h \
+ /usr/include/qt6/QtCore/qdebug.h /usr/include/qt6/QtCore/qtextstream.h \
  /usr/include/qt6/QtCore/qcontiguouscache.h \
  /usr/include/c++/14.2.1/climits \
  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/limits.h \
@@ -346,7 +336,6 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: \
  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
  /usr/include/bits/posix2_lim.h /usr/include/bits/xopen_lim.h \
  /usr/include/bits/uio_lim.h /usr/include/qt6/QtCore/qsharedpointer.h \
- /usr/include/qt6/QtCore/qshareddata.h \
  /usr/include/qt6/QtCore/qsharedpointer_impl.h \
  /usr/include/c++/14.2.1/set /usr/include/c++/14.2.1/bits/stl_set.h \
  /usr/include/c++/14.2.1/bits/stl_multiset.h \
@@ -357,4 +346,12 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o: \
  /usr/include/qt6/QtCore/qset.h /usr/include/qt6/QtCore/qhash.h \
  /usr/include/qt6/QtCore/qvarlengtharray.h \
  /usr/include/qt6/QtCore/q23utility.h \
- /usr/include/qt6/QtCore/q20utility.h
+ /usr/include/qt6/QtCore/q20utility.h \
+ /usr/include/qt6/QtCore/qregularexpression.h \
+ /usr/include/qt6/QtCore/qurl.h /usr/include/qt6/QtCore/quuid.h \
+ /usr/include/qt6/QtCore/qendian.h \
+ /usr/include/qt6/QtCore/qjsondocument.h \
+ /usr/include/qt6/QtCore/QJsonArray /usr/include/qt6/QtCore/qjsonarray.h \
+ /usr/include/qt6/QtCore/QDebug /usr/include/qt6/QtCore/qdebug.h \
+ /usr/include/qt6/QtCore/QRegularExpression \
+ /usr/include/qt6/QtCore/qregularexpression.h
