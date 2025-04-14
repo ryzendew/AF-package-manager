@@ -947,7 +947,7 @@ void MainWindow::applyTheme(bool isDark) {
                            "QMainWindow { background-color: #1E1E1E; }"
                            "QTreeView, QTableView { background-color: #252526; alternate-background-color: #2D2D30; color: #E0E0E0; }"
                            "QLineEdit { background-color: #333337; color: #E0E0E0; border: 1px solid #3F3F46; }";
-        } else {
+                } else {
             styleContent = "QWidget { background-color: #F0F0F0; color: #202020; }"
                            "QMainWindow { background-color: #FFFFFF; }"
                            "QTreeView, QTableView { background-color: #FFFFFF; alternate-background-color: #F5F5F5; color: #202020; }"
@@ -1142,9 +1142,9 @@ void MainWindow::onSearchClicked()
     QString text = m_searchInput->text();
     if (text.isEmpty()) {
         showStatusMessage(tr("Please enter a search term"), 3000);
-        return;
-    }
-    
+                return;
+            }
+            
     // Clear the model
     m_packagesModel->removeRows(0, m_packagesModel->rowCount());
     
@@ -1217,23 +1217,23 @@ void MainWindow::onInstallPackage() {
     QString message;
     if (packageNames.size() + flatpakPackages.size() == 1) {
         message = tr("Are you sure you want to install %1?\n\nThis operation will require your password for authentication.").arg(packageDetails.first());
-    } else {
+                } else {
         message = tr("Are you sure you want to install the following %1 packages?\n\n%2\n\nThis operation will require your password for authentication.")
             .arg(packageNames.size() + flatpakPackages.size())
             .arg(packageDetails.join("\n"));
     }
     
     QMessageBox::StandardButton reply = QMessageBox::question(
-        this, 
+            this,
         tr("Confirm Installation"),
         message,
         QMessageBox::Yes|QMessageBox::No
     );
     
     if (reply != QMessageBox::Yes) {
-        return;
-    }
-    
+                return;
+            }
+            
     // Show status message
     showStatusMessage(tr("Installing packages..."), 0);
     
@@ -1250,7 +1250,7 @@ void MainWindow::onInstallPackage() {
         } else if (terminal == "kitty" || terminal == "alacritty") {
             args << "-e" << "sudo" << "pacman" << "-S" << "--noconfirm";
             args.append(packageNames);
-        } else {
+                    } else {
             // Default for xterm and others
             args << "-e" << QString("sudo pacman -S --noconfirm %1 && echo 'Press ENTER to close this window' && read").arg(packagesStr);
         }
@@ -1273,7 +1273,7 @@ void MainWindow::onInstallPackage() {
             args << "-e" << QString("%1; read -p 'Press Enter to close'").arg(flatpakInstallCmd);
         } else if (terminal == "kitty" || terminal == "alacritty") {
             args << "-e" << "sh" << "-c" << QString("%1; read -p 'Press Enter to close'").arg(flatpakInstallCmd);
-        } else {
+                } else {
             // Default for xterm and others
             args << "-e" << QString("%1 && echo 'Press ENTER to close this window' && read").arg(flatpakInstallCmd);
         }
@@ -1521,7 +1521,7 @@ void MainWindow::onSystemUpdate() {
 void MainWindow::onCheckForUpdates() {
     // First, confirm with the user
     QMessageBox::StandardButton confirm = QMessageBox::question(
-        this, 
+            this, 
         tr("Confirm Check for Updates"), 
         tr("Are you sure you want to check for system updates?\n\nThis operation will sync the package database and may require your password for authentication."),
         QMessageBox::Yes | QMessageBox::No
@@ -1561,7 +1561,7 @@ void MainWindow::onCheckForUpdates() {
         args << "-e" << "sudo pacman -Sy; read -p 'Press Enter to close'";
     } else if (terminal == "kitty" || terminal == "alacritty") {
         args << "-e" << "sudo" << "pacman" << "-Sy";
-    } else {
+        } else {
         // Default for xterm and others
         args << "-e" << "sudo pacman -Sy && echo 'Press ENTER to close this window' && read";
     }
@@ -1614,7 +1614,7 @@ void MainWindow::checkForUpdatesAfterSync() {
             m_systemUpdateInfoLabel->setText(tr("Your system is up to date."));
             showStatusMessage(tr("Your system is up to date"), 5000);
             m_systemUpdateLogView->append(tr("No updates available."));
-        } else {
+    } else {
             m_systemUpdateInfoLabel->setText(tr("Found %1 updates available.").arg(updates.size()));
             showStatusMessage(tr("Found %1 updates").arg(updates.size()), 5000);
             m_systemUpdateLogView->append(tr("Found %1 updates available.").arg(updates.size()));
@@ -1686,7 +1686,7 @@ void MainWindow::onClearPackageCache() {
         QString dfOutput = dfProcess.readAllStandardOutput();
         m_maintenanceLogView->append(tr("\nDisk space after cleanup:"));
         m_maintenanceLogView->append(dfOutput);
-            } else {
+    } else {
         showStatusMessage(tr("Error clearing package cache"), 5000);
         m_maintenanceLogView->append(tr("Error: Package cache cleanup failed with exit code %1.").arg(process.exitCode()));
         m_maintenanceLogView->append(process.readAllStandardError());
@@ -1739,7 +1739,7 @@ void MainWindow::onRemoveOrphans() {
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, tr("Remove Orphaned Packages"),
                                   tr("Do you want to remove %1 orphaned packages?").arg(orphans.size()),
-                                  QMessageBox::Yes | QMessageBox::No);
+        QMessageBox::Yes | QMessageBox::No);
     
     if (reply == QMessageBox::No) {
         showStatusMessage(tr("Orphan removal canceled"), 5000);
@@ -1778,7 +1778,7 @@ void MainWindow::onRemoveOrphans() {
     if (exitCode == 0) {
         showStatusMessage(tr("Orphaned packages removed successfully"), 5000);
         m_maintenanceLogView->append(tr("Orphaned packages removed successfully."));
-                } else {
+        } else {
         showStatusMessage(tr("Failed to remove orphaned packages"), 5000);
         m_maintenanceLogView->append(tr("Error: Failed to remove orphaned packages."));
     }
@@ -1792,7 +1792,7 @@ void MainWindow::onRemoveOrphans() {
 void MainWindow::onCheckDatabase() {
     // Show confirmation dialog
     QMessageBox::StandardButton reply = QMessageBox::question(
-        this,
+        this, 
         tr("Confirm Database Check"),
         tr("Are you sure you want to check the package database? This will verify the integrity of all installed packages."),
         QMessageBox::Yes|QMessageBox::No
@@ -1938,7 +1938,7 @@ void MainWindow::openSettings() {
             // If AUR is enabled, check if we have a helper
             if (enabled) {
                 checkAurHelper();
-            } else {
+                } else {
                 // If disabled, disable AUR button
                 if (m_installAurButton) {
                     m_installAurButton->setEnabled(false);
@@ -2026,7 +2026,7 @@ void MainWindow::onCleanCache() {
             << tr("Keep only the latest version of each package")
             << tr("Keep currently installed packages only");
     
-        bool ok;
+    bool ok;
     QString selected = QInputDialog::getItem(this, tr("Clean Package Cache"),
                                             tr("Select cache cleaning option:"), options, 
                                             1, false, &ok);
@@ -2034,9 +2034,9 @@ void MainWindow::onCleanCache() {
     if (!ok || selected.isEmpty()) {
         showStatusMessage(tr("Cache cleaning canceled"), 5000);
         m_maintenanceLogView->append(tr("Package cache cleaning was canceled."));
-            return;
-        }
-        
+        return;
+    }
+    
     // Prepare the command based on selection
     QStringList args;
     
@@ -2078,7 +2078,7 @@ void MainWindow::onCleanCache() {
     QString output = process.readAllStandardOutput();
     
     int exitCode = process.exitCode();
-    if (exitCode == 0) {
+            if (exitCode == 0) {
         // Get the cache size after cleaning
         QProcess sizeProcess;
         sizeProcess.start("du", QStringList() << "-sh" << "/var/cache/pacman/pkg/");
@@ -2089,7 +2089,7 @@ void MainWindow::onCleanCache() {
         showStatusMessage(tr("Package cache cleaned successfully"), 5000);
         m_maintenanceLogView->append(tr("Package cache cleaned successfully."));
         m_maintenanceLogView->append(tr("Current cache size: %1").arg(currentSize));
-    } else {
+            } else {
         showStatusMessage(tr("Failed to clean package cache"), 5000);
         m_maintenanceLogView->append(tr("Error: Failed to clean package cache."));
     }
@@ -2121,11 +2121,11 @@ void MainWindow::onClearPackageLock() {
     m_maintenanceLogView->append(tr("Attempting to remove package manager lock..."));
     
     // Execute command to remove the lock file with elevated privileges
-    QProcess process;
+        QProcess process;
     process.setProcessChannelMode(QProcess::MergedChannels);
     
     // Use pkexec to get root privileges
-    QStringList args;
+        QStringList args;
     args << "rm" << "-f" << "/var/lib/pacman/db.lck";
     
     process.start("pkexec", args);
@@ -2139,11 +2139,11 @@ void MainWindow::onClearPackageLock() {
     process.waitForFinished(-1);
     QString output = process.readAllStandardOutput();
     
-    int exitCode = process.exitCode();
-    if (exitCode == 0) {
+        int exitCode = process.exitCode();
+            if (exitCode == 0) {
         showStatusMessage(tr("Package lock removed successfully"), 5000);
         m_maintenanceLogView->append(tr("Package manager lock was successfully removed."));
-    } else {
+                } else {
         showStatusMessage(tr("Failed to remove package lock"), 5000);
         m_maintenanceLogView->append(tr("Error: Failed to remove package manager lock."));
         m_maintenanceLogView->append(tr("Exit code: %1").arg(exitCode));
@@ -2163,7 +2163,7 @@ void MainWindow::onClearPackageLock() {
     
     if (checkExitCode != 0) {
         m_maintenanceLogView->append(tr("Confirmed: Lock file no longer exists."));
-    } else {
+            } else {
         m_maintenanceLogView->append(tr("Warning: Lock file may still exist despite removal attempt."));
     }
 }
@@ -2203,7 +2203,7 @@ void MainWindow::onCheckIntegrityAllPackages() {
         // Use paccheck which is more thorough
         args << "paccheck" << "--md5sum" << "--files" << "--backup" << "--quiet";
         process.start("pkexec", args);
-    } else {
+        } else {
         // Fallback to pacman's verification
         args << "pacman" << "-Qk";
         process.start("pkexec", args);
@@ -2260,7 +2260,7 @@ void MainWindow::onCheckIntegrityAllPackages() {
                        line.contains("failed", Qt::CaseInsensitive)) {
                 formattedLine = "<span style='color:red'>" + line + "</span>";
                 m_maintenanceLogView->append(formattedLine);
-        } else {
+    } else {
                 m_maintenanceLogView->append(line);
             }
         }
@@ -2337,9 +2337,9 @@ void MainWindow::onRefreshMirrorList() {
             if (!installProcess.waitForStarted()) {
                 showStatusMessage(tr("Failed to start reflector installation"), 5000);
                 m_maintenanceLogView->append(tr("Error: Failed to start reflector installation."));
-                return;
-            }
-            
+        return;
+    }
+    
             installProcess.waitForFinished(-1);
             QString installOutput = installProcess.readAllStandardOutput();
             
@@ -2488,7 +2488,7 @@ void MainWindow::onToggleFlatpakSearch(bool enabled)
         if (!searchText.isEmpty()) {
             performAsyncFlatpakSearch(searchText);
         }
-    } else {
+                } else {
         // If search is disabled, clear any Flatpak results
         m_flatpakModel->clear();
         m_flatpakModel->setHorizontalHeaderLabels(
@@ -2735,7 +2735,7 @@ void MainWindow::onInstallFlatpakPackage()
     // Show status message
     if (allSuccessful) {
         showStatusMessage(tr("Successfully installed Flatpak packages"), 3000);
-    } else {
+        } else {
         showStatusMessage(tr("Some Flatpak packages failed to install"), 3000);
     }
     
