@@ -175,6 +175,19 @@ pacmangui/fast:
 .PHONY : pacmangui/fast
 
 #=============================================================================
+# Target rules for targets named uninstall
+
+# Build rule for target.
+uninstall: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 uninstall
+.PHONY : uninstall
+
+# fast build rule for target.
+uninstall/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uninstall.dir/build.make CMakeFiles/uninstall.dir/build
+.PHONY : uninstall/fast
+
+#=============================================================================
 # Target rules for targets named pacmangui_autogen_timestamp_deps
 
 # Build rule for target.
@@ -550,6 +563,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... pacmangui_autogen"
 	@echo "... pacmangui_autogen_timestamp_deps"
+	@echo "... uninstall"
 	@echo "... pacmangui"
 	@echo "... pacmangui_autogen/3YJK5W5UP7/qrc_resources.o"
 	@echo "... pacmangui_autogen/3YJK5W5UP7/qrc_resources.i"

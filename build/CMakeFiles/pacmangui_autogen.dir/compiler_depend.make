@@ -5,6 +5,7 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
   CMakeFiles/4.0.1/CMakeCXXCompiler.cmake \
   CMakeFiles/4.0.1/CMakeSystem.cmake \
   pacmangui_autogen/moc_predefs.h \
+  /home/matt/PacmanGui-new/cmake/cmake_uninstall.cmake.in \
   /home/matt/PacmanGui-new/cmake/modules/FindALPM.cmake \
   /home/matt/PacmanGui-new/include/core/package.hpp \
   /home/matt/PacmanGui-new/include/core/packagemanager.hpp \
@@ -996,79 +997,22 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdarg.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdbool.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stddef.h \
-  /usr/share/cmake/Modules/CMakeCXXCompiler.cmake.in \
-  /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp \
   /usr/share/cmake/Modules/CMakeCXXInformation.cmake \
   /usr/share/cmake/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake \
   /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake \
-  /usr/share/cmake/Modules/CMakeCompilerIdDetection.cmake \
-  /usr/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake \
-  /usr/share/cmake/Modules/CMakeDetermineCompiler.cmake \
-  /usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake \
-  /usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake \
-  /usr/share/cmake/Modules/CMakeDetermineCompilerSupport.cmake \
-  /usr/share/cmake/Modules/CMakeDetermineSystem.cmake \
-  /usr/share/cmake/Modules/CMakeFindBinUtils.cmake \
   /usr/share/cmake/Modules/CMakeFindDependencyMacro.cmake \
   /usr/share/cmake/Modules/CMakeGenericSystem.cmake \
   /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake \
   /usr/share/cmake/Modules/CMakeLanguageInformation.cmake \
-  /usr/share/cmake/Modules/CMakeParseImplicitIncludeInfo.cmake \
-  /usr/share/cmake/Modules/CMakeParseImplicitLinkInfo.cmake \
-  /usr/share/cmake/Modules/CMakeParseLibraryArchitecture.cmake \
-  /usr/share/cmake/Modules/CMakeSystem.cmake.in \
   /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake \
   /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake \
-  /usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake \
-  /usr/share/cmake/Modules/CMakeTestCompilerCommon.cmake \
-  /usr/share/cmake/Modules/CMakeUnixFindMake.cmake \
   /usr/share/cmake/Modules/CheckCXXCompilerFlag.cmake \
   /usr/share/cmake/Modules/CheckCXXSourceCompiles.cmake \
   /usr/share/cmake/Modules/CheckIncludeFileCXX.cmake \
   /usr/share/cmake/Modules/CheckLibraryExists.cmake \
-  /usr/share/cmake/Modules/Compiler/ADSP-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/ARMCC-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/ARMClang-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/AppleClang-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Borland-DetermineCompiler.cmake \
   /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake \
-  /usr/share/cmake/Modules/Compiler/Clang-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Clang-DetermineCompilerInternal.cmake \
-  /usr/share/cmake/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Cray-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/CrayClang-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Embarcadero-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Fujitsu-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/GHS-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake \
   /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake \
-  /usr/share/cmake/Modules/Compiler/GNU-FindBinUtils.cmake \
   /usr/share/cmake/Modules/Compiler/GNU.cmake \
-  /usr/share/cmake/Modules/Compiler/HP-CXX-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/IAR-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake \
-  /usr/share/cmake/Modules/Compiler/IBMClang-CXX-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Intel-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/LCC-CXX-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/MSVC-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/NVHPC-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/NVIDIA-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/OrangeC-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/PGI-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/PathScale-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/SCO-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/TI-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/TIClang-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Tasking-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Watcom-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/XL-CXX-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake \
   /usr/share/cmake/Modules/FeatureSummary.cmake \
   /usr/share/cmake/Modules/FindOpenGL.cmake \
   /usr/share/cmake/Modules/FindPackageHandleStandardArgs.cmake \
@@ -1079,19 +1023,15 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
   /usr/share/cmake/Modules/GNUInstallDirs.cmake \
   /usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake \
   /usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake \
-  /usr/share/cmake/Modules/Internal/CMakeDetermineLinkerId.cmake \
-  /usr/share/cmake/Modules/Internal/CMakeInspectCXXLinker.cmake \
   /usr/share/cmake/Modules/Internal/CheckCompilerFlag.cmake \
   /usr/share/cmake/Modules/Internal/CheckFlagCommonConfig.cmake \
   /usr/share/cmake/Modules/Internal/CheckSourceCompiles.cmake \
-  /usr/share/cmake/Modules/Internal/FeatureTesting.cmake \
   /usr/share/cmake/Modules/Linker/GNU-CXX.cmake \
   /usr/share/cmake/Modules/Linker/GNU.cmake \
   /usr/share/cmake/Modules/MacroAddFileDependencies.cmake \
   /usr/share/cmake/Modules/Platform/Linker/GNU.cmake \
   /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake \
   /usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake \
-  /usr/share/cmake/Modules/Platform/Linux-Determine-CXX.cmake \
   /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake \
   /usr/share/cmake/Modules/Platform/Linux-GNU.cmake \
   /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake \
@@ -1121,39 +1061,11 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 
 /usr/share/cmake/Modules/FindPackageHandleStandardArgs.cmake:
 
-/usr/share/cmake/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/SCO-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/NVIDIA-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/NVHPC-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/LCC-CXX-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/IBMClang-CXX-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/HP-CXX-DetermineCompiler.cmake:
-
 /usr/share/cmake/Modules/Compiler/GNU.cmake:
 
 /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake:
 
-/usr/share/cmake/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/Fujitsu-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/OrangeC-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/Clang-DetermineCompilerInternal.cmake:
-
-/usr/share/cmake/Modules/Compiler/Clang-DetermineCompiler.cmake:
-
 /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake:
-
-/usr/share/cmake/Modules/Compiler/ADSP-DetermineCompiler.cmake:
 
 /usr/share/cmake/Modules/CheckLibraryExists.cmake:
 
@@ -1161,37 +1073,11 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 
 /usr/share/cmake/Modules/CheckCXXCompilerFlag.cmake:
 
-/usr/share/cmake/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake:
-
-/usr/share/cmake/Modules/Compiler/AppleClang-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/CMakeUnixFindMake.cmake:
-
-/usr/share/cmake/Modules/Compiler/Intel-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/CMakeSystem.cmake.in:
-
-/usr/share/cmake/Modules/CMakeParseLibraryArchitecture.cmake:
-
-/usr/share/cmake/Modules/CMakeParseImplicitLinkInfo.cmake:
-
 /usr/share/cmake/Modules/CMakeLanguageInformation.cmake:
 
 /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake:
 
-/usr/share/cmake/Modules/CMakeDetermineCompilerSupport.cmake:
-
-/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:
-
-/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:
-
-/usr/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake:
-
-/usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp:
-
 /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stddef.h:
-
-/usr/share/cmake/Modules/Compiler/Cray-DetermineCompiler.cmake:
 
 /usr/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsDependencies.cmake:
 
@@ -1223,8 +1109,6 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 
 /usr/lib/cmake/Qt6WaylandScannerTools/Qt6WaylandScannerToolsConfigVersionImpl.cmake:
 
-/usr/share/cmake/Modules/Compiler/Tasking-DetermineCompiler.cmake:
-
 /usr/lib/cmake/Qt6WaylandScannerTools/Qt6WaylandScannerToolsConfig.cmake:
 
 /usr/lib/cmake/Qt6WaylandGlobalPrivate/Qt6WaylandGlobalPrivateVersionlessAliasTargets.cmake:
@@ -1243,19 +1127,11 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 
 /usr/lib/cmake/Qt6WaylandClientPrivate/Qt6WaylandClientPrivateDependencies.cmake:
 
-/usr/share/cmake/Modules/Compiler/IAR-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake:
-
 /usr/lib/cmake/Qt6WaylandClientPrivate/Qt6WaylandClientPrivateConfigVersion.cmake:
-
-/usr/share/cmake/Modules/Compiler/TI-DetermineCompiler.cmake:
 
 /usr/lib/cmake/Qt6WaylandClientPrivate/Qt6WaylandClientPrivateConfig.cmake:
 
 /usr/lib/cmake/Qt6WaylandClientPrivate/Qt6WaylandClientPrivateAdditionalTargetInfo.cmake:
-
-/usr/share/cmake/Modules/Internal/CMakeDetermineLinkerId.cmake:
 
 /usr/lib/cmake/Qt6WaylandClient/Qt6WaylandClientVersionlessAliasTargets.cmake:
 
@@ -1292,8 +1168,6 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 /usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandIviShellIntegrationPluginAdditionalTargetInfo.cmake:
 
 /usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandEglClientBufferPluginTargets.cmake:
-
-/usr/share/cmake/Modules/Compiler/Borland-DetermineCompiler.cmake:
 
 /usr/lib/cmake/Qt6Widgets/Qt6WidgetsDependencies.cmake:
 
@@ -1359,8 +1233,6 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 
 /usr/lib/cmake/Qt6Gui/Qt6QVncIntegrationPluginAdditionalTargetInfo.cmake:
 
-/usr/share/cmake/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake:
-
 /usr/lib/cmake/Qt6Gui/Qt6QVkKhrDisplayIntegrationPluginTargets-relwithdebinfo.cmake:
 
 /usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandXdgShellIntegrationPluginAdditionalTargetInfo.cmake:
@@ -1409,8 +1281,6 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 
 /usr/lib/cmake/Qt6Gui/Qt6QOffscreenIntegrationPluginTargets-relwithdebinfo.cmake:
 
-/usr/share/cmake/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake:
-
 /usr/lib/cmake/Qt6Gui/Qt6QOffscreenIntegrationPluginConfig.cmake:
 
 /usr/lib/cmake/Qt6Gui/Qt6QOffscreenIntegrationPluginAdditionalTargetInfo.cmake:
@@ -1427,11 +1297,7 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 
 /usr/lib/cmake/Qt6Gui/Qt6QMinimalEglIntegrationPluginTargets-relwithdebinfo.cmake:
 
-/usr/share/cmake/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake:
-
 /usr/lib/cmake/Qt6Gui/Qt6QMinimalEglIntegrationPluginAdditionalTargetInfo.cmake:
-
-/usr/share/cmake/Modules/Compiler/XL-CXX-DetermineCompiler.cmake:
 
 /usr/lib/cmake/Qt6Gui/Qt6QLinuxFbIntegrationPluginAdditionalTargetInfo.cmake:
 
@@ -1478,8 +1344,6 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 /usr/lib/cmake/Qt6Gui/Qt6QGifPluginTargets.cmake:
 
 /usr/lib/cmake/Qt6Gui/Qt6QGifPluginConfig.cmake:
-
-/usr/share/cmake/Modules/Compiler/GNU-FindBinUtils.cmake:
 
 /usr/lib/cmake/Qt6Gui/Qt6QGifPluginAdditionalTargetInfo.cmake:
 
@@ -1651,8 +1515,6 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 
 /usr/lib/cmake/Qt6/QtPublicPluginHelpers.cmake:
 
-/usr/share/cmake/Modules/Compiler/ARMClang-DetermineCompiler.cmake:
-
 /usr/lib/cmake/Qt6/QtPublicGitHelpers.cmake:
 
 /usr/lib/cmake/Qt6/QtPublicFindPackageHelpers.cmake:
@@ -1763,8 +1625,6 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 
 /usr/include/qt6/QtWidgets/qmenu.h:
 
-/usr/share/cmake/Modules/Internal/FeatureTesting.cmake:
-
 /usr/lib/cmake/Qt6Gui/Qt6QXdgDesktopPortalThemePluginTargets-relwithdebinfo.cmake:
 
 /usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateAdditionalTargetInfo.cmake:
@@ -1824,8 +1684,6 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 /usr/lib/cmake/Qt6Gui/Qt6QGtk3ThemePluginTargets-relwithdebinfo.cmake:
 
 /usr/include/bits/time.h:
-
-/usr/share/cmake/Modules/CMakeFindBinUtils.cmake:
 
 /usr/lib/cmake/Qt6Gui/Qt6QTiffPluginTargets-relwithdebinfo.cmake:
 
@@ -1895,8 +1753,6 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 
 /usr/include/c++/14.2.1/compare:
 
-/usr/share/cmake/Modules/Compiler/Watcom-DetermineCompiler.cmake:
-
 /usr/lib/cmake/Qt6Gui/Qt6QSvgIconPluginConfig.cmake:
 
 /usr/include/c++/14.2.1/bits/stl_algo.h:
@@ -1912,8 +1768,6 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 /usr/lib/cmake/Qt6Gui/Qt6QTgaPluginTargets-relwithdebinfo.cmake:
 
 /usr/include/qt6/QtWidgets/QPushButton:
-
-/usr/share/cmake/Modules/CMakeTestCompilerCommon.cmake:
 
 /usr/include/c++/14.2.1/bits/range_access.h:
 
@@ -1939,8 +1793,6 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 
 /usr/include/c++/14.2.1/bits/invoke.h:
 
-/usr/share/cmake/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake:
-
 pacmangui_autogen/moc_predefs.h:
 
 /usr/include/c++/14.2.1/bits/hashtable.h:
@@ -1964,12 +1816,6 @@ pacmangui_autogen/moc_predefs.h:
 /usr/include/bits/atomic_wide_counter.h:
 
 /usr/include/c++/14.2.1/bits/specfun.h:
-
-/usr/lib/cmake/Qt6WaylandClient/Qt6DmaBufServerBufferPluginConfig.cmake:
-
-/usr/include/c++/14.2.1/map:
-
-/usr/include/c++/14.2.1/bits/exception.h:
 
 /usr/include/qt6/QtCore/qarraydatapointer.h:
 
@@ -2053,9 +1899,13 @@ pacmangui_autogen/moc_predefs.h:
 
 /usr/include/c++/14.2.1/backward/binders.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QXcbGlxIntegrationPluginAdditionalTargetInfo.cmake:
+/usr/include/c++/14.2.1/cerrno:
 
-/usr/include/c++/14.2.1/ext/aligned_buffer.h:
+/usr/include/c++/14.2.1/debug/assertions.h:
+
+/usr/include/qt6/QtWidgets/QCheckBox:
+
+/usr/include/c++/14.2.1/pstl/glue_numeric_defs.h:
 
 /usr/include/bits/getopt_core.h:
 
@@ -2089,8 +1939,6 @@ pacmangui_autogen/moc_predefs.h:
 
 /usr/include/c++/14.2.1/bits/parse_numbers.h:
 
-/usr/share/cmake/Modules/Compiler/PGI-DetermineCompiler.cmake:
-
 /usr/include/c++/14.2.1/bits/hash_bytes.h:
 
 /usr/include/qt6/QtGui/qvalidator.h:
@@ -2112,8 +1960,6 @@ pacmangui_autogen/moc_predefs.h:
 /usr/include/c++/14.2.1/concepts:
 
 /usr/include/bits/endian.h:
-
-/usr/share/cmake/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake:
 
 /usr/include/c++/14.2.1/bits/ostream_insert.h:
 
@@ -2197,23 +2043,11 @@ pacmangui_autogen/moc_predefs.h:
 
 /usr/include/c++/14.2.1/typeinfo:
 
-/usr/share/cmake/Modules/Internal/CMakeInspectCXXLinker.cmake:
-
 /usr/lib/cmake/Qt6Gui/Qt6QXcbGlxIntegrationPluginTargets-relwithdebinfo.cmake:
 
 /usr/include/qt6/QtWidgets/QListWidget:
 
 /usr/include/alloca.h:
-
-/usr/share/cmake/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake:
-
-/usr/include/c++/14.2.1/cwchar:
-
-/usr/lib/cmake/Qt6Gui/Qt6QLinuxFbIntegrationPluginTargets.cmake:
-
-/usr/lib/cmake/Qt6/QtFeatureCommon.cmake:
-
-/usr/include/bits/posix2_lim.h:
 
 /usr/include/bits/stat.h:
 
@@ -2237,17 +2071,9 @@ pacmangui_autogen/moc_predefs.h:
 
 /home/matt/PacmanGui-new/src/core/repository.cpp:
 
-/usr/share/cmake/Modules/Compiler/MSVC-DetermineCompiler.cmake:
-
 /usr/include/qt6/QtCore/qtextstream.h:
 
 /home/matt/PacmanGui-new/include/gui/settingsdialog.hpp:
-
-/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandFullScreenShellV1IntegrationPluginConfig.cmake:
-
-/usr/include/c++/14.2.1/tr1/poly_laguerre.tcc:
-
-/usr/include/qt6/QtCore/qmalloc.h:
 
 /usr/lib/cmake/Qt6Gui/Qt6QPdfPluginAdditionalTargetInfo.cmake:
 
@@ -2256,6 +2082,10 @@ pacmangui_autogen/moc_predefs.h:
 /usr/include/qt6/QtGui/qpen.h:
 
 /usr/include/qt6/QtGui/qrgba64.h:
+
+/usr/lib/cmake/Qt6Gui/Qt6QXcbGlxIntegrationPluginAdditionalTargetInfo.cmake:
+
+/usr/include/c++/14.2.1/ext/aligned_buffer.h:
 
 /usr/include/c++/14.2.1/bits/node_handle.h:
 
@@ -2281,8 +2111,6 @@ pacmangui_autogen/moc_predefs.h:
 
 /usr/include/qt6/QtCore/qflags.h:
 
-/usr/share/cmake/Modules/Platform/Linux-Determine-CXX.cmake:
-
 /usr/include/c++/14.2.1/exception:
 
 /usr/include/bits/types/error_t.h:
@@ -2297,21 +2125,47 @@ pacmangui_autogen/moc_predefs.h:
 
 /usr/include/qt6/QtGui/qtextdocument.h:
 
+/usr/share/cmake/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake:
+
+/usr/include/c++/14.2.1/cwchar:
+
+/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandFullScreenShellV1IntegrationPluginConfig.cmake:
+
+/usr/include/qt6/QtCore/qmalloc.h:
+
+/usr/include/c++/14.2.1/tr1/poly_laguerre.tcc:
+
+/usr/lib/cmake/Qt6Gui/Qt6QLinuxFbIntegrationPluginTargets.cmake:
+
+/usr/lib/cmake/Qt6/QtFeatureCommon.cmake:
+
+/usr/include/bits/posix2_lim.h:
+
+/usr/include/c++/14.2.1/bits/move.h:
+
+/home/matt/PacmanGui-new/src/wayland/wayland_security.cpp:
+
+/usr/include/c++/14.2.1/bits/atomic_futex.h:
+
+/usr/include/bits/types/struct_statx.h:
+
 /usr/lib/cmake/Qt6WaylandClient/Qt6ShmServerBufferPluginConfig.cmake:
 
 /usr/include/bits/types/sigset_t.h:
 
-/usr/include/bits/confname.h:
-
-/usr/include/c++/14.2.1/bits/charconv.h:
-
-/usr/include/bits/setjmp.h:
-
 /home/matt/PacmanGui-new/cmake/modules/FindALPM.cmake:
+
+/usr/include/qt6/QtWidgets/QToolButton:
+
+/usr/include/c++/14.2.1/pstl/execution_defs.h:
 
 /usr/lib/cmake/Qt6Gui/Qt6QEglFSKmsGbmIntegrationPluginTargets-relwithdebinfo.cmake:
 
 /usr/include/qt6/QtCore/qbindingstorage.h:
+
+/usr/include/c++/14.2.1/bits/charconv.h:
+
+/usr/include/bits/setjmp.h:
 
 /usr/include/alpm.h:
 
@@ -2331,9 +2185,9 @@ CMakeFiles/4.0.1/CMakeSystem.cmake:
 
 /usr/include/bits/types/struct_sched_param.h:
 
-/usr/include/bits/types/cookie_io_functions_t.h:
+/home/matt/PacmanGui-new/cmake/cmake_uninstall.cmake.in:
 
-/usr/share/cmake/Modules/CMakeDetermineCompiler.cmake:
+/usr/include/bits/types/cookie_io_functions_t.h:
 
 /usr/include/c++/14.2.1/bits/erase_if.h:
 
@@ -2368,6 +2222,8 @@ CMakeFiles/4.0.1/CMakeSystem.cmake:
 /usr/include/qt6/QtGui/qtextoption.h:
 
 /usr/include/qt6/QtCore/qbytearray.h:
+
+/usr/include/bits/confname.h:
 
 /usr/include/bits/long-double.h:
 
@@ -2417,19 +2273,7 @@ CMakeFiles/4.0.1/CMakeSystem.cmake:
 
 /home/matt/PacmanGui-new/src/wayland/wayland_optimization.cpp:
 
-/usr/include/c++/14.2.1/bits/move.h:
-
-/home/matt/PacmanGui-new/src/wayland/wayland_security.cpp:
-
-/usr/include/c++/14.2.1/bits/atomic_futex.h:
-
-/usr/include/bits/types/struct_statx.h:
-
 /usr/include/bits/local_lim.h:
-
-/usr/share/cmake/Modules/Compiler/PathScale-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/CMakeCXXCompiler.cmake.in:
 
 /usr/lib/cmake/Qt6Gui/Qt6QEglFSEmulatorIntegrationPluginTargets-relwithdebinfo.cmake:
 
@@ -2589,8 +2433,6 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 
 /usr/include/qt6/QtCore/q20type_traits.h:
 
-/usr/share/cmake/Modules/Compiler/CrayClang-DetermineCompiler.cmake:
-
 /usr/include/c++/14.2.1/bits/unordered_set.h:
 
 /home/matt/PacmanGui-new/resources/resources.qrc:
@@ -2604,8 +2446,6 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 /usr/include/bits/waitflags.h:
 
 /usr/include/qt6/QtCore/qcompilerdetection.h:
-
-/usr/share/cmake/Modules/Compiler/TIClang-DetermineCompiler.cmake:
 
 /usr/include/bits/uio_lim.h:
 
@@ -2624,8 +2464,6 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 /usr/include/bits/types/struct_tm.h:
 
 /usr/include/c++/14.2.1/bits/localefwd.h:
-
-/usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake:
 
 /usr/include/bits/types/timer_t.h:
 
@@ -2667,14 +2505,6 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 
 /usr/include/bits/xopen_lim.h:
 
-/usr/include/c++/14.2.1/cerrno:
-
-/usr/include/c++/14.2.1/debug/assertions.h:
-
-/usr/include/qt6/QtWidgets/QCheckBox:
-
-/usr/include/c++/14.2.1/pstl/glue_numeric_defs.h:
-
 /home/matt/PacmanGui-new/include/core/transaction.hpp:
 
 /usr/include/c++/14.2.1/array:
@@ -2693,13 +2523,17 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 
 /usr/include/c++/14.2.1/atomic:
 
+/usr/lib/cmake/Qt6WaylandClient/Qt6DmaBufServerBufferPluginConfig.cmake:
+
+/usr/include/c++/14.2.1/bits/exception.h:
+
+/usr/include/c++/14.2.1/map:
+
 /home/matt/PacmanGui-new/include/core/repository.hpp:
 
 /usr/include/c++/14.2.1/optional:
 
 /usr/include/c++/14.2.1/ratio:
-
-/usr/share/cmake/Modules/Compiler/GHS-DetermineCompiler.cmake:
 
 /usr/include/c++/14.2.1/stdexcept:
 
@@ -2744,8 +2578,6 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 /usr/include/c++/14.2.1/tr1/hypergeometric.tcc:
 
 /usr/include/c++/14.2.1/tr1/legendre_function.tcc:
-
-/usr/share/cmake/Modules/CMakeParseImplicitIncludeInfo.cmake:
 
 /usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandBradientDecorationPluginConfig.cmake:
 
@@ -2820,8 +2652,6 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 /usr/lib/cmake/Qt6WaylandGlobalPrivate/Qt6WaylandGlobalPrivateConfigVersionImpl.cmake:
 
 /usr/include/linux/types.h:
-
-/usr/share/cmake/Modules/Compiler/Embarcadero-DetermineCompiler.cmake:
 
 /usr/lib/cmake/Qt6Gui/Qt6QTiffPluginConfig.cmake:
 
@@ -2909,8 +2739,6 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 
 /usr/include/qt6/QtCore/qcompare_impl.h:
 
-/usr/share/cmake/Modules/CMakeCompilerIdDetection.cmake:
-
 /usr/include/qt6/QtCore/qcomparehelpers.h:
 
 /usr/lib/cmake/Qt6Gui/Qt6QEglFSIntegrationPluginTargets.cmake:
@@ -2972,10 +2800,6 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 /usr/lib/cmake/Qt6Gui/Qt6QWebpPluginAdditionalTargetInfo.cmake:
 
 /usr/include/qt6/QtCore/qfile.h:
-
-/usr/include/c++/14.2.1/pstl/execution_defs.h:
-
-/usr/include/qt6/QtWidgets/QToolButton:
 
 /usr/include/c++/14.2.1/bits/stl_bvector.h:
 
@@ -3046,8 +2870,6 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 /usr/include/qt6/QtCore/qmetatype.h:
 
 /usr/include/qt6/QtCore/qmutex.h:
-
-/usr/share/cmake/Modules/CMakeDetermineSystem.cmake:
 
 /usr/include/qt6/QtCore/qnamespace.h:
 
@@ -3184,8 +3006,6 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 /usr/include/c++/14.2.1/memory:
 
 /usr/include/qt6/QtCore/qtversion.h:
-
-/usr/share/cmake/Modules/Compiler/ARMCC-DetermineCompiler.cmake:
 
 /usr/include/qt6/QtCore/qtconfiginclude.h:
 

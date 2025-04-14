@@ -352,6 +352,27 @@ int main(int argc, char *argv[])
                         styleLoaded = true;
                     } else {
                         std::cerr << "main.cpp - Failed to load from source path: " << sourceStyleFile.errorString().toStdString() << std::endl;
+                        
+                        // Try system installation paths
+                        QStringList systemPaths = {
+                            "/usr/local/share/pacmangui/styles/" + qssFileName,  // Default CMAKE_INSTALL_PREFIX path
+                            "/usr/share/pacmangui/styles/" + qssFileName         // Traditional Linux path
+                        };
+                        
+                        for (const QString& systemPath : systemPaths) {
+                            std::cout << "main.cpp - Attempting to load from system path: " << systemPath.toStdString() << std::endl;
+                            QFile systemStyleFile(systemPath);
+                            if (systemStyleFile.open(QFile::ReadOnly | QFile::Text)) {
+                                QString style = systemStyleFile.readAll();
+                                app.setStyleSheet(style);
+                                systemStyleFile.close();
+                                std::cout << "Successfully loaded " << qssFileName.toStdString() << " stylesheet from system path: " << systemPath.toStdString() << std::endl;
+                                styleLoaded = true;
+                                break;
+                            } else {
+                                std::cerr << "main.cpp - Failed to load from system path: " << systemStyleFile.errorString().toStdString() << std::endl;
+                            }
+                        }
                     }
                 }
             }
@@ -370,7 +391,31 @@ int main(int argc, char *argv[])
                 sourceStyleFile.close();
                 std::cout << "Successfully loaded dark_colorful.qss stylesheet from source path as fallback" << std::endl;
             } else {
-                std::cerr << "Failed to load any stylesheet" << std::endl;
+                std::cerr << "Failed to load fallback stylesheet from source path" << std::endl;
+                
+                // Try system paths as last resort
+                QStringList systemPaths = {
+                    "/usr/local/share/pacmangui/styles/dark_colorful.qss",  // Default CMAKE_INSTALL_PREFIX path
+                    "/usr/share/pacmangui/styles/dark_colorful.qss"         // Traditional Linux path
+                };
+                
+                bool fallbackLoaded = false;
+                for (const QString& systemPath : systemPaths) {
+                    QFile systemStyleFile(systemPath);
+                    if (systemStyleFile.open(QFile::ReadOnly | QFile::Text)) {
+                        QString style = systemStyleFile.readAll();
+                        app.setStyleSheet(style);
+                        systemStyleFile.close();
+                        std::cout << "Successfully loaded dark_colorful.qss stylesheet from system path as fallback: " 
+                                  << systemPath.toStdString() << std::endl;
+                        fallbackLoaded = true;
+                        break;
+                    }
+                }
+                
+                if (!fallbackLoaded) {
+                    std::cerr << "Failed to load any stylesheet, using default Qt style" << std::endl;
+                }
             }
         }
         

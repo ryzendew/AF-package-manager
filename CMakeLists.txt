@@ -107,5 +107,38 @@ target_link_libraries(pacmangui PRIVATE
 #     target_link_libraries(pacmangui PRIVATE Qt6::WaylandClient)
 # endif()
 
+# Installation paths
+include(GNUInstallDirs)
+
 # Install rules
-install(TARGETS pacmangui DESTINATION bin) 
+install(TARGETS pacmangui 
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+# Install desktop file
+install(FILES resources/desktop/pacmangui.desktop
+        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications
+)
+
+# Install icons - use the system-software-install icon 
+# If we had custom icons, we'd install them like this:
+# install(FILES resources/icons/pacmangui.png
+#        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps
+# )
+
+# Install stylesheets
+install(DIRECTORY resources/styles
+        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pacmangui
+        FILES_MATCHING PATTERN "*.qss"
+)
+
+# Add uninstall target
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY
+)
+
+add_custom_target(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
+) 

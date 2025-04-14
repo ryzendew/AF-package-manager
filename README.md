@@ -47,9 +47,36 @@ cmake ..
 make -j$(nproc)
 ```
 
-4. Run the application:
+4. Run the application locally:
 ```bash
 ./pacmangui
+```
+
+### System-wide Installation
+
+To install PacmanGUI system-wide (requires administrator privileges):
+
+```bash
+cd build
+sudo make install
+```
+
+This will:
+- Install the executable to `/usr/local/bin/pacmangui`
+- Install the desktop file to `/usr/local/share/applications/pacmangui.desktop`
+- Install stylesheets to `/usr/local/share/pacmangui/styles/`
+
+After installation, you can:
+- Run the application from the command line with `pacmangui`
+- Find and launch it from your desktop environment's application menu
+
+### Uninstallation
+
+To uninstall PacmanGUI:
+
+```bash
+cd build
+sudo make uninstall
 ```
 
 ### Usage Guide

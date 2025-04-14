@@ -3,6 +3,7 @@ pacmangui_autogen/timestamp: \
 	/home/matt/PacmanGui-new/build/CMakeFiles/4.0.1/CMakeCXXCompiler.cmake \
 	/home/matt/PacmanGui-new/build/CMakeFiles/4.0.1/CMakeSystem.cmake \
 	/home/matt/PacmanGui-new/build/pacmangui_autogen/moc_predefs.h \
+	/home/matt/PacmanGui-new/cmake/cmake_uninstall.cmake.in \
 	/home/matt/PacmanGui-new/cmake/modules/FindALPM.cmake \
 	/home/matt/PacmanGui-new/include/core/package.hpp \
 	/home/matt/PacmanGui-new/include/core/packagemanager.hpp \

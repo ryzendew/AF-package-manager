@@ -76,6 +76,7 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/pacmangui.dir/clean
+clean: CMakeFiles/uninstall.dir/clean
 clean: CMakeFiles/pacmangui_autogen_timestamp_deps.dir/clean
 clean: CMakeFiles/pacmangui_autogen.dir/clean
 .PHONY : clean
@@ -112,6 +113,38 @@ CMakeFiles/pacmangui.dir/codegen: CMakeFiles/pacmangui_autogen_timestamp_deps.di
 CMakeFiles/pacmangui.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/clean
 .PHONY : CMakeFiles/pacmangui.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/uninstall.dir
+
+# All Build rule for target.
+CMakeFiles/uninstall.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uninstall.dir/build.make CMakeFiles/uninstall.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uninstall.dir/build.make CMakeFiles/uninstall.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num= "Built target uninstall"
+.PHONY : CMakeFiles/uninstall.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/uninstall.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/matt/PacmanGui-new/build/CMakeFiles 0
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/uninstall.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/matt/PacmanGui-new/build/CMakeFiles 0
+.PHONY : CMakeFiles/uninstall.dir/rule
+
+# Convenience name for target.
+uninstall: CMakeFiles/uninstall.dir/rule
+.PHONY : uninstall
+
+# codegen rule for target.
+CMakeFiles/uninstall.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uninstall.dir/build.make CMakeFiles/uninstall.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/matt/PacmanGui-new/build/CMakeFiles --progress-num= "Finished codegen for target uninstall"
+.PHONY : CMakeFiles/uninstall.dir/codegen
+
+# clean rule for target.
+CMakeFiles/uninstall.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uninstall.dir/build.make CMakeFiles/uninstall.dir/clean
+.PHONY : CMakeFiles/uninstall.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/pacmangui_autogen_timestamp_deps.dir

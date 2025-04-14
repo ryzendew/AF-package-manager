@@ -10,6 +10,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/home/matt/PacmanGui-new/CMakeLists.txt"
   "CMakeFiles/4.0.1/CMakeCXXCompiler.cmake"
   "CMakeFiles/4.0.1/CMakeSystem.cmake"
+  "/home/matt/PacmanGui-new/cmake/cmake_uninstall.cmake.in"
   "/home/matt/PacmanGui-new/cmake/modules/FindALPM.cmake"
   "/home/matt/PacmanGui-new/resources/resources.qrc"
   "/usr/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules/ECMFindModuleHelpersStub.cmake"
@@ -449,6 +450,7 @@ set(CMAKE_MAKEFILE_OUTPUTS
 
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
+  "cmake_uninstall.cmake"
   "CMakeFiles/pacmangui_autogen.dir/AutogenInfo.json"
   "CMakeFiles/pacmangui_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Info.json"
   ".qt/QtDeploySupport.cmake"
@@ -459,6 +461,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/pacmangui.dir/DependInfo.cmake"
+  "CMakeFiles/uninstall.dir/DependInfo.cmake"
   "CMakeFiles/pacmangui_autogen_timestamp_deps.dir/DependInfo.cmake"
   "CMakeFiles/pacmangui_autogen.dir/DependInfo.cmake"
   )

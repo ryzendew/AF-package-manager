@@ -620,6 +620,8 @@
 		"/home/matt/PacmanGui-new/cmake/modules/FindALPM.cmake",
 		"/usr/share/cmake/Modules/FindPackageHandleStandardArgs.cmake",
 		"/usr/share/cmake/Modules/FindPackageMessage.cmake",
+		"/usr/share/cmake/Modules/GNUInstallDirs.cmake",
+		"/home/matt/PacmanGui-new/cmake/cmake_uninstall.cmake.in",
 		"/home/matt/PacmanGui-new/resources/resources.qrc"
 	],
 	"CMAKE_SOURCE_DIR" : "/home/matt/PacmanGui-new",

@@ -1,4 +1,5 @@
 /home/matt/PacmanGui-new/build/CMakeFiles/pacmangui.dir
+/home/matt/PacmanGui-new/build/CMakeFiles/uninstall.dir
 /home/matt/PacmanGui-new/build/CMakeFiles/edit_cache.dir
 /home/matt/PacmanGui-new/build/CMakeFiles/rebuild_cache.dir
 /home/matt/PacmanGui-new/build/CMakeFiles/list_install_components.dir

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=PacmanGUI
+GenericName=Package Manager
+Comment=Graphical package manager for Arch Linux
+Exec=pacmangui
+Icon=system-software-install
+Terminal=false
+Categories=System;PackageManager;
+Keywords=package;manager;pacman;arch;linux;
+StartupNotify=true 
