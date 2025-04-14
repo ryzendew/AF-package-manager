@@ -533,6 +533,7 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
   /usr/include/qt6/QtWidgets/QPushButton \
   /usr/include/qt6/QtWidgets/QRadioButton \
   /usr/include/qt6/QtWidgets/QScrollArea \
+  /usr/include/qt6/QtWidgets/QScrollBar \
   /usr/include/qt6/QtWidgets/QSplitter \
   /usr/include/qt6/QtWidgets/QStackedWidget \
   /usr/include/qt6/QtWidgets/QStatusBar \
@@ -572,6 +573,7 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
   /usr/include/qt6/QtWidgets/qradiobutton.h \
   /usr/include/qt6/QtWidgets/qrubberband.h \
   /usr/include/qt6/QtWidgets/qscrollarea.h \
+  /usr/include/qt6/QtWidgets/qscrollbar.h \
   /usr/include/qt6/QtWidgets/qsizepolicy.h \
   /usr/include/qt6/QtWidgets/qslider.h \
   /usr/include/qt6/QtWidgets/qsplitter.h \
@@ -1664,6 +1666,7 @@ CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o: pacmangui_aut
   /usr/include/qt6/QtWidgets/QPushButton \
   /usr/include/qt6/QtWidgets/QRadioButton \
   /usr/include/qt6/QtWidgets/QScrollArea \
+  /usr/include/qt6/QtWidgets/QScrollBar \
   /usr/include/qt6/QtWidgets/QSplitter \
   /usr/include/qt6/QtWidgets/QStackedWidget \
   /usr/include/qt6/QtWidgets/QStatusBar \
@@ -1703,6 +1706,7 @@ CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o: pacmangui_aut
   /usr/include/qt6/QtWidgets/qradiobutton.h \
   /usr/include/qt6/QtWidgets/qrubberband.h \
   /usr/include/qt6/QtWidgets/qscrollarea.h \
+  /usr/include/qt6/QtWidgets/qscrollbar.h \
   /usr/include/qt6/QtWidgets/qsizepolicy.h \
   /usr/include/qt6/QtWidgets/qslider.h \
   /usr/include/qt6/QtWidgets/qsplitter.h \
@@ -5513,6 +5517,7 @@ CMakeFiles/pacmangui.dir/src/main.cpp.o: /home/matt/PacmanGui-new/src/main.cpp \
   /usr/include/qt6/QtWidgets/QPushButton \
   /usr/include/qt6/QtWidgets/QRadioButton \
   /usr/include/qt6/QtWidgets/QScrollArea \
+  /usr/include/qt6/QtWidgets/QScrollBar \
   /usr/include/qt6/QtWidgets/QSplitter \
   /usr/include/qt6/QtWidgets/QStackedWidget \
   /usr/include/qt6/QtWidgets/QStatusBar \
@@ -5553,6 +5558,7 @@ CMakeFiles/pacmangui.dir/src/main.cpp.o: /home/matt/PacmanGui-new/src/main.cpp \
   /usr/include/qt6/QtWidgets/qradiobutton.h \
   /usr/include/qt6/QtWidgets/qrubberband.h \
   /usr/include/qt6/QtWidgets/qscrollarea.h \
+  /usr/include/qt6/QtWidgets/qscrollbar.h \
   /usr/include/qt6/QtWidgets/qsizepolicy.h \
   /usr/include/qt6/QtWidgets/qslider.h \
   /usr/include/qt6/QtWidgets/qsplitter.h \
@@ -7602,8 +7608,6 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o:
 
 /usr/include/qt6/QtWidgets/qstylefactory.h:
 
-/usr/include/qt6/QtWidgets/qscrollbar.h:
-
 /usr/include/qt6/QtWidgets/qmenubar.h:
 
 /usr/include/qt6/QtWidgets/qinputdialog.h:
@@ -7613,8 +7617,6 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o:
 /usr/include/qt6/QtWidgets/QStyle:
 
 /usr/include/qt6/QtWidgets/QSpacerItem:
-
-/usr/include/qt6/QtWidgets/QScrollBar:
 
 /usr/include/qt6/QtWidgets/QMessageBox:
 
@@ -7954,11 +7956,11 @@ CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.o:
 
 /usr/include/c++/14.2.1/bits/basic_ios.h:
 
-/usr/include/c++/14.2.1/cstdio:
+/usr/include/c++/14.2.1/bits/locale_facets_nonio.tcc:
 
-/usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateConfigVersion.cmake:
+/usr/include/bits/wctype-wchar.h:
 
-/usr/lib/cmake/Qt6Gui/Qt6QTiffPluginTargets-relwithdebinfo.cmake:
+/usr/include/bits/mathcalls.h:
 
 /usr/include/qt6/QtGui/QIcon:
 
@@ -8608,6 +8610,10 @@ CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o:
 
 /usr/lib/cmake/Qt6/QtPublicSbomPythonHelpers.cmake:
 
+/usr/include/qt6/QtWidgets/QScrollBar:
+
+/usr/include/qt6/QtWidgets/QScrollArea:
+
 /usr/include/qt6/QtCore/qsharedpointer.h:
 
 /usr/lib/cmake/Qt6Gui/Qt6QTsLibPluginTargets.cmake:
@@ -8617,8 +8623,6 @@ CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o:
 /usr/lib/cmake/Qt6Gui/Qt6QEglFSX11IntegrationPluginTargets-relwithdebinfo.cmake:
 
 /usr/lib/cmake/Qt6Gui/Qt6QTsLibPluginAdditionalTargetInfo.cmake:
-
-/usr/include/qt6/QtWidgets/QScrollArea:
 
 /usr/include/bits/timex.h:
 
@@ -9010,10 +9014,6 @@ CMakeFiles/pacmangui.dir/src/core/repository.cpp.o:
 
 /usr/lib/cmake/Qt6Gui/Qt6GuiConfigVersionImpl.cmake:
 
-/usr/include/c++/14.2.1/bits/locale_facets_nonio.tcc:
-
-/usr/include/bits/wctype-wchar.h:
-
 /usr/include/bits/types/clockid_t.h:
 
 /usr/lib/cmake/Qt6/QtInstallPaths.cmake:
@@ -9396,6 +9396,12 @@ CMakeFiles/4.0.1/CMakeSystem.cmake:
 
 /usr/include/bits/posix1_lim.h:
 
+/usr/include/c++/14.2.1/cstdio:
+
+/usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateConfigVersion.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QTiffPluginTargets-relwithdebinfo.cmake:
+
 /usr/include/bits/time.h:
 
 /usr/include/qt6/QtGui/qkeysequence.h:
@@ -9486,6 +9492,8 @@ CMakeFiles/4.0.1/CMakeSystem.cmake:
 
 /usr/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateConfigVersion.cmake:
 
+/usr/include/qt6/QtWidgets/qscrollbar.h:
+
 /usr/lib/libresolv.so.2:
 
 /usr/include/qt6/QtWidgets/qsizepolicy.h:
@@ -9548,9 +9556,9 @@ CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o:
 
 /usr/include/string.h:
 
-/usr/include/qt6/QtWidgets/QTreeView:
-
 /usr/include/c++/14.2.1/limits:
+
+/usr/include/qt6/QtWidgets/QTreeView:
 
 /usr/include/strings.h:
 
@@ -10483,5 +10491,3 @@ pacmangui_autogen/BMPI5EA7AM/moc_settingsdialog.cpp:
 /usr/include/c++/14.2.1/bits/basic_string.h:
 
 /usr/include/bits/mathcalls-macros.h:
-
-/usr/include/bits/mathcalls.h:

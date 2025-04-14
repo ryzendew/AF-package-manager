@@ -31,6 +31,7 @@
 #include <QPropertyAnimation>
 #include <QGraphicsOpacityEffect>
 #include <QScrollArea>
+#include <QScrollBar>
 #include <QFutureWatcher>
 #include <QProgressDialog>
 #include "core/packagemanager.hpp"
@@ -200,6 +201,9 @@ private:
     
     // Theme functions
     bool isDarkThemeEnabled() const;
+    
+    // Helper to find an available terminal emulator
+    QString findTerminalEmulator();
     
     // Callable from other threads
     Q_INVOKABLE void showStatusMessage(const QString& message, int timeout = 0);

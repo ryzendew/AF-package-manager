@@ -452,6 +452,8 @@ CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o: \
  /usr/include/qt6/QtWidgets/qgraphicseffect.h \
  /usr/include/qt6/QtWidgets/QScrollArea \
  /usr/include/qt6/QtWidgets/qscrollarea.h \
+ /usr/include/qt6/QtWidgets/QScrollBar \
+ /usr/include/qt6/QtWidgets/qscrollbar.h \
  /usr/include/qt6/QtCore/QFutureWatcher \
  /usr/include/qt6/QtCore/qfuturewatcher.h \
  /usr/include/qt6/QtCore/qfuture.h \

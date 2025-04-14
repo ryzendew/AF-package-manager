@@ -1167,16 +1167,27 @@ void MainWindow::onInstallPackage() {
     // Show status message
     showStatusMessage(tr("Installing packages..."), 0);
     
-    // Create the command arguments
-    QStringList arguments;
-    arguments << "pacman" << "-S" << "--noconfirm";
-    arguments << packageNames;
+    // Find available terminal emulator
+    QString terminal = findTerminalEmulator();
+    QStringList args;
+    QString packagesStr = packageNames.join(" ");
     
-    // Start the process with pkexec - this should trigger the graphical authentication dialog
-    QProcess::startDetached("pkexec", arguments);
+    // Set up the command based on terminal type
+    if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
+        args << "-e" << QString("sudo pacman -S --noconfirm %1; read -p 'Press Enter to close'").arg(packagesStr);
+    } else if (terminal == "kitty" || terminal == "alacritty") {
+        args << "-e" << "sudo" << "pacman" << "-S" << "--noconfirm";
+        args.append(packageNames);
+    } else {
+        // Default for xterm and others
+        args << "-e" << QString("sudo pacman -S --noconfirm %1 && echo 'Press ENTER to close this window' && read").arg(packagesStr);
+    }
+    
+    // Run the command in the terminal
+    QProcess::startDetached(terminal, args);
     
     // Schedule a refresh of installed packages after some time
-    QTimer::singleShot(5000, this, &MainWindow::refreshInstalledPackages);
+    QTimer::singleShot(10000, this, &MainWindow::refreshInstalledPackages);
 }
 
 // Add implementation for onRemovePackage
@@ -1237,16 +1248,27 @@ void MainWindow::onRemovePackage() {
     // Show status message
     showStatusMessage(tr("Removing packages..."), 0);
     
-    // Create the command arguments
-    QStringList arguments;
-    arguments << "pacman" << "-R" << "--noconfirm";
-    arguments << packageNames;
+    // Find available terminal emulator
+    QString terminal = findTerminalEmulator();
+    QStringList args;
+    QString packagesStr = packageNames.join(" ");
     
-    // Start the process with pkexec - this should trigger the graphical authentication dialog
-    QProcess::startDetached("pkexec", arguments);
+    // Set up the command based on terminal type
+    if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
+        args << "-e" << QString("sudo pacman -R --noconfirm %1; read -p 'Press Enter to close'").arg(packagesStr);
+    } else if (terminal == "kitty" || terminal == "alacritty") {
+        args << "-e" << "sudo" << "pacman" << "-R" << "--noconfirm";
+        args.append(packageNames);
+    } else {
+        // Default for xterm and others
+        args << "-e" << QString("sudo pacman -R --noconfirm %1 && echo 'Press ENTER to close this window' && read").arg(packagesStr);
+    }
+    
+    // Run the command in the terminal
+    QProcess::startDetached(terminal, args);
     
     // Schedule a refresh of installed packages after some time
-    QTimer::singleShot(5000, this, &MainWindow::refreshInstalledPackages);
+    QTimer::singleShot(10000, this, &MainWindow::refreshInstalledPackages);
 }
 
 // Add implementation for onUpdatePackage
@@ -1314,20 +1336,30 @@ void MainWindow::onSystemUpdate() {
     // Clear the update log
     m_systemUpdateLogView->clear();
     m_systemUpdateLogView->append(tr("Starting system update..."));
-    m_systemUpdateLogView->append(tr("An authentication window will appear. Please enter your password to continue."));
+    m_systemUpdateLogView->append(tr("Opening terminal to handle password prompt..."));
     
-    // Use QProcess in detached mode to ensure proper authentication dialogs
-    QStringList arguments;
-    arguments << "pacman" << "-Syu" << "--noconfirm";
+    // Find available terminal emulator
+    QString terminal = findTerminalEmulator();
+    QStringList args;
     
-    // Start the process with pkexec - this should trigger the graphical authentication dialog
-    QProcess::startDetached("pkexec", arguments);
+    // Set up the command based on terminal type
+    if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
+        args << "-e" << "sudo pacman -Syu --noconfirm; read -p 'Press Enter to close'";
+    } else if (terminal == "kitty" || terminal == "alacritty") {
+        args << "-e" << "sudo" << "pacman" << "-Syu" << "--noconfirm";
+    } else {
+        // Default for xterm and others
+        args << "-e" << "sudo pacman -Syu --noconfirm && echo 'Press ENTER to close this window' && read";
+    }
+    
+    // Run the command in the terminal
+    QProcess::startDetached(terminal, args);
     
     // Show status message
     showStatusMessage(tr("Updating system packages..."), 0);
     
     // Schedule a refresh after some time to update the UI with new package info
-    QTimer::singleShot(5000, this, &MainWindow::refreshInstalledPackages);
+    QTimer::singleShot(10000, this, &MainWindow::refreshInstalledPackages);
 }
 
 // Add implementation for onCheckForUpdates
@@ -1351,7 +1383,7 @@ void MainWindow::onCheckForUpdates() {
     // Clear the log view
     m_systemUpdateLogView->clear();
     m_systemUpdateLogView->append(tr("Starting update check..."));
-    m_systemUpdateLogView->append(tr("An authentication window will appear. Please enter your password to continue."));
+    m_systemUpdateLogView->append(tr("Opening terminal to handle password prompt..."));
     
     // Ensure we're using the correct tab for updates
     if (m_tabWidget->indexOf(m_systemUpdateTab) >= 0) {
@@ -1365,15 +1397,25 @@ void MainWindow::onCheckForUpdates() {
             QStringList() << tr("Name") << tr("Current Version") << tr("New Version") << tr("Repository"));
     }
     
-    // Use QProcess in detached mode to ensure proper authentication dialogs
-    QStringList arguments;
-    arguments << "pacman" << "-Sy";
+    // Find available terminal emulator
+    QString terminal = findTerminalEmulator();
+    QStringList args;
     
-    // Start the process with pkexec - this should trigger the graphical authentication dialog
-    QProcess::startDetached("pkexec", arguments);
+    // Set up the command based on terminal type
+    if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
+        args << "-e" << "sudo pacman -Sy; read -p 'Press Enter to close'";
+    } else if (terminal == "kitty" || terminal == "alacritty") {
+        args << "-e" << "sudo" << "pacman" << "-Sy";
+    } else {
+        // Default for xterm and others
+        args << "-e" << "sudo pacman -Sy && echo 'Press ENTER to close this window' && read";
+    }
     
-    // Schedule a check for updates after the sync has had time to complete
-    QTimer::singleShot(5000, this, &MainWindow::checkForUpdatesAfterSync);
+    // Run the command in the terminal
+    QProcess::startDetached(terminal, args);
+    
+    // Schedule a check for updates after some time
+    QTimer::singleShot(8000, this, &MainWindow::checkForUpdatesAfterSync);
 }
 
 // New method to check for updates after sync has completed
@@ -2196,5 +2238,35 @@ void MainWindow::onRefreshMirrorList() {
     }
 }
         
+// Helper to find an available terminal emulator
+QString MainWindow::findTerminalEmulator() {
+    // List of common terminal emulators in order of preference
+    QStringList terminals = {
+        "konsole",
+        "gnome-terminal",
+        "xterm",
+        "terminator",
+        "kitty",
+        "alacritty",
+        "xfce4-terminal",
+        "mate-terminal",
+        "lxterminal"
+    };
+    
+    for (const QString& terminal : terminals) {
+        // Check if the terminal is available in the path
+        QProcess which;
+        which.start("which", QStringList() << terminal);
+        which.waitForFinished();
+        
+        if (which.exitCode() == 0) {
+            return terminal;
+        }
+    }
+    
+    // If no terminal is found, return a default
+    return "xterm";
+}
+
 } // namespace gui
 } // namespace pacmangui

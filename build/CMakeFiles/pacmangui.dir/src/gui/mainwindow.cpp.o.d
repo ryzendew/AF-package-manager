@@ -451,6 +451,8 @@ CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o: \
  /usr/include/qt6/QtWidgets/qgraphicseffect.h \
  /usr/include/qt6/QtWidgets/QScrollArea \
  /usr/include/qt6/QtWidgets/qscrollarea.h \
+ /usr/include/qt6/QtWidgets/QScrollBar \
+ /usr/include/qt6/QtWidgets/qscrollbar.h \
  /usr/include/qt6/QtCore/QFutureWatcher \
  /usr/include/qt6/QtCore/qfuturewatcher.h \
  /usr/include/qt6/QtCore/qfuture.h \
@@ -898,9 +900,7 @@ CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o: \
  /usr/include/qt6/QtCore/QTemporaryDir \
  /usr/include/qt6/QtGui/QDesktopServices \
  /usr/include/qt6/QtGui/qdesktopservices.h /usr/include/qt6/QtCore/QUrl \
- /usr/include/qt6/QtWidgets/QScrollBar \
- /usr/include/qt6/QtWidgets/qscrollbar.h /usr/include/qt6/QtCore/QThread \
- /usr/include/qt6/QtWidgets/QStyleFactory \
+ /usr/include/qt6/QtCore/QThread /usr/include/qt6/QtWidgets/QStyleFactory \
  /usr/include/qt6/QtWidgets/qstylefactory.h \
  /usr/include/qt6/QtWidgets/QStyle /usr/include/qt6/QtWidgets/qstyle.h \
  /usr/include/qt6/QtGui/QPalette /usr/include/qt6/QtGui/qpalette.h \

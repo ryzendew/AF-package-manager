@@ -534,6 +534,7 @@
  /usr/include/qt6/QtWidgets/QPushButton
  /usr/include/qt6/QtWidgets/QRadioButton
  /usr/include/qt6/QtWidgets/QScrollArea
+ /usr/include/qt6/QtWidgets/QScrollBar
  /usr/include/qt6/QtWidgets/QSplitter
  /usr/include/qt6/QtWidgets/QStackedWidget
  /usr/include/qt6/QtWidgets/QStatusBar
@@ -573,6 +574,7 @@
  /usr/include/qt6/QtWidgets/qradiobutton.h
  /usr/include/qt6/QtWidgets/qrubberband.h
  /usr/include/qt6/QtWidgets/qscrollarea.h
+ /usr/include/qt6/QtWidgets/qscrollbar.h
  /usr/include/qt6/QtWidgets/qsizepolicy.h
  /usr/include/qt6/QtWidgets/qslider.h
  /usr/include/qt6/QtWidgets/qsplitter.h

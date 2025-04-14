@@ -533,6 +533,7 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
   /usr/include/qt6/QtWidgets/QPushButton \
   /usr/include/qt6/QtWidgets/QRadioButton \
   /usr/include/qt6/QtWidgets/QScrollArea \
+  /usr/include/qt6/QtWidgets/QScrollBar \
   /usr/include/qt6/QtWidgets/QSplitter \
   /usr/include/qt6/QtWidgets/QStackedWidget \
   /usr/include/qt6/QtWidgets/QStatusBar \
@@ -572,6 +573,7 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
   /usr/include/qt6/QtWidgets/qradiobutton.h \
   /usr/include/qt6/QtWidgets/qrubberband.h \
   /usr/include/qt6/QtWidgets/qscrollarea.h \
+  /usr/include/qt6/QtWidgets/qscrollbar.h \
   /usr/include/qt6/QtWidgets/qsizepolicy.h \
   /usr/include/qt6/QtWidgets/qslider.h \
   /usr/include/qt6/QtWidgets/qsplitter.h \
@@ -1745,6 +1747,8 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 
 /usr/include/qt6/QtWidgets/qsizepolicy.h:
 
+/usr/include/qt6/QtWidgets/qscrollbar.h:
+
 /usr/include/qt6/QtWidgets/qscrollarea.h:
 
 /usr/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateConfigVersion.cmake:
@@ -1820,6 +1824,16 @@ pacmangui_autogen/timestamp: /home/matt/PacmanGui-new/CMakeLists.txt \
 /usr/lib/cmake/Qt6Gui/Qt6QGtk3ThemePluginTargets-relwithdebinfo.cmake:
 
 /usr/include/bits/time.h:
+
+/usr/share/cmake/Modules/CMakeFindBinUtils.cmake:
+
+/usr/lib/cmake/Qt6Gui/Qt6QTiffPluginTargets-relwithdebinfo.cmake:
+
+/usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateConfigVersion.cmake:
+
+/usr/include/qt6/QtWidgets/QTreeView:
+
+/usr/include/c++/14.2.1/cstdio:
 
 /usr/include/bits/posix1_lim.h:
 
@@ -2517,8 +2531,6 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 
 /usr/include/bits/timex.h:
 
-/usr/include/qt6/QtWidgets/QScrollArea:
-
 /usr/lib/cmake/Qt6Gui/Qt6GuiConfigVersion.cmake:
 
 /usr/include/bits/types/__fpos64_t.h:
@@ -2534,6 +2546,10 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 /usr/include/qt6/QtCore/qdarwinhelpers.h:
 
 /usr/include/qt6/QtCore/qsharedpointer.h:
+
+/usr/include/qt6/QtWidgets/QScrollArea:
+
+/usr/include/qt6/QtWidgets/QScrollBar:
 
 /usr/lib/cmake/Qt6Core/Qt6CoreAdditionalTargetInfo.cmake:
 
@@ -3274,13 +3290,3 @@ CMakeFiles/4.0.1/CMakeCXXCompiler.cmake:
 /usr/lib/cmake/Qt6Gui/Qt6QICNSPluginTargets-relwithdebinfo.cmake:
 
 /usr/include/qt6/QtWidgets/QTableView:
-
-/usr/share/cmake/Modules/CMakeFindBinUtils.cmake:
-
-/usr/lib/cmake/Qt6Gui/Qt6QTiffPluginTargets-relwithdebinfo.cmake:
-
-/usr/lib/cmake/Qt6CorePrivate/Qt6CorePrivateConfigVersion.cmake:
-
-/usr/include/c++/14.2.1/cstdio:
-
-/usr/include/qt6/QtWidgets/QTreeView:
