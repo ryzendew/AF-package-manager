@@ -22,26 +22,27 @@ SearchTab::SearchTab(QWidget* parent)
     m_installAurButton(nullptr),
     m_packagesTable(nullptr),
     m_packagesModel(nullptr),
-    m_searchProgressDialog(nullptr),
     m_searchWatcher(nullptr),
     m_packageManager(nullptr),
     m_aurHelper("")
 {
+    qDebug() << "SearchTab constructor called";
+    
     setupUi();
     connectSignals();
 }
 
 SearchTab::~SearchTab()
 {
-    // Clean up any resources that aren't automatically handled
-    if (m_searchWatcher) {
-        m_searchWatcher->cancel();
-        m_searchWatcher->waitForFinished();
-        delete m_searchWatcher;
-    }
+    qDebug() << "SearchTab destructor called";
     
-    if (m_searchProgressDialog) {
-        delete m_searchProgressDialog;
+    // Clean up resources
+    if (m_searchWatcher) {
+        if (m_searchWatcher->isRunning()) {
+            m_searchWatcher->cancel();
+            m_searchWatcher->waitForFinished();
+        }
+        delete m_searchWatcher;
     }
 }
 
@@ -93,6 +94,36 @@ void SearchTab::setupUi()
     m_packagesTable->setSortingEnabled(true);
     m_packagesTable->setAlternatingRowColors(true);
     
+    // Apply custom stylesheet for better alternating colors and checkbox visibility
+    m_packagesTable->setStyleSheet(
+        "QTreeView { "
+        "  background-color: #1e1e2e; "
+        "  alternate-background-color: #2a2a3a; "
+        "  color: #ffffff; "
+        "  selection-background-color: #3daee9; "
+        "  selection-color: #ffffff; "
+        "  border: none; "
+        "} "
+        "QTreeView::item { "
+        "  padding: 4px; "
+        "  border: none; "
+        "} "
+        "QTreeView::item:selected { "
+        "  background-color: #3daee9; "
+        "} "
+        "QTreeView::indicator { "
+        "  width: 18px; "
+        "  height: 18px; "
+        "  background-color: #2a2a3a; "
+        "  border: 2px solid #4a4a5a; "
+        "  border-radius: 3px; "
+        "} "
+        "QTreeView::indicator:checked { "
+        "  background-color: #3daee9; "
+        "  image: url(:/icons/check.png); "
+        "}"
+    );
+    
     // Create the model
     m_packagesModel = new QStandardItemModel(0, 4, this);
     m_packagesModel->setHorizontalHeaderLabels(
@@ -107,13 +138,6 @@ void SearchTab::setupUi()
     m_packagesTable->header()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
     
     m_mainLayout->addWidget(m_packagesTable);
-    
-    // Create progress dialog for async search
-    m_searchProgressDialog = new QProgressDialog(tr("Searching..."), tr("Cancel"), 0, 0, this);
-    m_searchProgressDialog->setWindowModality(Qt::WindowModal);
-    m_searchProgressDialog->setMinimumDuration(500); // Only show if operation takes more than 500ms
-    m_searchProgressDialog->reset();
-    m_searchProgressDialog->hide();
     
     // Set initial button states
     m_installButton->setEnabled(false);
@@ -378,7 +402,6 @@ void SearchTab::onSearchCompleted()
     updateSearchResults(results);
     
     // Clean up
-    m_searchProgressDialog->hide();
     m_searchWatcher->deleteLater();
     m_searchWatcher = nullptr;
     
@@ -426,23 +449,12 @@ void SearchTab::performAsyncSearch(const QString& searchText)
     // Show searching status
     emit statusMessageRequested(tr("Searching for packages..."), 0);
     
-    // Show progress dialog for longer searches
-    m_searchProgressDialog->setLabelText(tr("Searching for '%1'...").arg(searchText));
-    m_searchProgressDialog->reset();
-    
     // Create new watcher for async search
     m_searchWatcher = new QFutureWatcher<std::vector<core::Package>>(this);
     
     // Connect signals
     connect(m_searchWatcher, &QFutureWatcher<std::vector<core::Package>>::finished,
             this, &SearchTab::onSearchCompleted);
-    
-    // Connect cancel button
-    connect(m_searchProgressDialog, &QProgressDialog::canceled, [this]() {
-        if (m_searchWatcher) {
-            m_searchWatcher->cancel();
-        }
-    });
     
     // Start async operation
     QFuture<std::vector<core::Package>> future = QtConcurrent::run(
@@ -452,7 +464,6 @@ void SearchTab::performAsyncSearch(const QString& searchText)
     );
     
     m_searchWatcher->setFuture(future);
-    m_searchProgressDialog->show();
 }
 
 } // namespace gui

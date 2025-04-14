@@ -147,7 +147,6 @@ private:
     QStandardItemModel* m_packagesModel;
 
     // Async search components
-    QProgressDialog* m_searchProgressDialog;
     QFutureWatcher<std::vector<core::Package>>* m_searchWatcher;
 
     // Core components

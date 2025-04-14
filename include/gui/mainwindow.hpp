@@ -138,6 +138,7 @@ private slots:
     void onClearPackageLock();
     void onCheckIntegrityAllPackages();
     void onRefreshMirrorList();
+    void checkForUpdatesAfterSync();
     
     // Theme
     void toggleTheme();
@@ -184,6 +185,9 @@ private:
     void showDetailPanel(const QString& packageName, const QString& version, const QString& repo, const QString& description);
     void checkForUpdates();
     void updateInstallButtonText();
+    
+    // Table styling helper
+    void applyTableStyle(QTreeView* tableView);
     
     // Async search helper method
     void performAsyncSearch(const QString& searchTerm);
@@ -372,7 +376,6 @@ private:
 
     // Async search variables
     QFutureWatcher<std::vector<pacmangui::core::Package>>* m_searchWatcher;
-    QProgressDialog* m_searchProgressDialog;
 };
 
 } // namespace gui

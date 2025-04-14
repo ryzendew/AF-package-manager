@@ -179,9 +179,6 @@ private:
     QTreeView* m_packagesTable;
     QStandardItemModel* m_packagesModel;
     
-    // Progress dialog for search
-    QProgressDialog* m_searchProgressDialog;
-    
     // Future watcher for async search
     QFutureWatcher<std::vector<core::Package>>* m_searchWatcher;
 

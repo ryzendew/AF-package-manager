@@ -18,7 +18,6 @@ InstalledPackagesTab::InstalledPackagesTab(QWidget* parent)
     , m_removeButton(nullptr)
     , m_packagesTable(nullptr)
     , m_packagesModel(nullptr)
-    , m_searchProgressDialog(nullptr)
     , m_searchWatcher(nullptr)
     , m_packageManager(nullptr)
 {
@@ -34,10 +33,6 @@ InstalledPackagesTab::~InstalledPackagesTab()
         m_searchWatcher->cancel();
         m_searchWatcher->waitForFinished();
         delete m_searchWatcher;
-    }
-    
-    if (m_searchProgressDialog) {
-        delete m_searchProgressDialog;
     }
     
     qDebug() << "InstalledPackagesTab destroyed";
@@ -80,6 +75,36 @@ void InstalledPackagesTab::setupUi()
     m_packagesTable->setSortingEnabled(true);
     m_packagesTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     
+    // Apply custom stylesheet for better alternating colors and checkbox visibility
+    m_packagesTable->setStyleSheet(
+        "QTreeView { "
+        "  background-color: #1e1e2e; "
+        "  alternate-background-color: #2a2a3a; "
+        "  color: #ffffff; "
+        "  selection-background-color: #3daee9; "
+        "  selection-color: #ffffff; "
+        "  border: none; "
+        "} "
+        "QTreeView::item { "
+        "  padding: 4px; "
+        "  border: none; "
+        "} "
+        "QTreeView::item:selected { "
+        "  background-color: #3daee9; "
+        "} "
+        "QTreeView::indicator { "
+        "  width: 18px; "
+        "  height: 18px; "
+        "  background-color: #2a2a3a; "
+        "  border: 2px solid #4a4a5a; "
+        "  border-radius: 3px; "
+        "} "
+        "QTreeView::indicator:checked { "
+        "  background-color: #3daee9; "
+        "  image: url(:/icons/check.png); "
+        "}"
+    );
+    
     m_packagesModel = new QStandardItemModel(0, 3, this);
     m_packagesModel->setHorizontalHeaderLabels(QStringList() << "Name" << "Version" << "Description");
     
@@ -89,13 +114,6 @@ void InstalledPackagesTab::setupUi()
     m_packagesTable->header()->setSectionResizeMode(2, QHeaderView::Stretch);
     
     m_mainLayout->addWidget(m_packagesTable);
-    
-    // Search progress dialog
-    m_searchProgressDialog = new QProgressDialog("Searching installed packages...", "Cancel", 0, 0, this);
-    m_searchProgressDialog->setWindowModality(Qt::WindowModal);
-    m_searchProgressDialog->setAutoClose(true);
-    m_searchProgressDialog->setAutoReset(true);
-    m_searchProgressDialog->setMinimumDuration(500);
     
     // Future watcher for async searches
     m_searchWatcher = new QFutureWatcher<std::vector<core::Package>>(this);
@@ -124,7 +142,6 @@ void InstalledPackagesTab::connectSignals()
     // Async search
     connect(m_searchWatcher, &QFutureWatcher<std::vector<core::Package>>::finished, 
             this, &InstalledPackagesTab::onSearchCompleted);
-    connect(m_searchProgressDialog, &QProgressDialog::canceled, m_searchWatcher, &QFutureWatcher<std::vector<core::Package>>::cancel);
     
     qDebug() << "InstalledPackagesTab signals connected";
 }
@@ -214,8 +231,6 @@ void InstalledPackagesTab::performAsyncSearch(const QString& searchText)
     }
     
     qDebug() << "Starting async search for installed packages with filter:" << searchText;
-    m_searchProgressDialog->setLabelText("Searching installed packages...");
-    m_searchProgressDialog->show();
     
     QFuture<std::vector<core::Package>> future = QtConcurrent::run(
         [this, searchText]() -> std::vector<core::Package> {
@@ -233,7 +248,6 @@ void InstalledPackagesTab::performAsyncSearch(const QString& searchText)
 void InstalledPackagesTab::onSearchCompleted()
 {
     qDebug() << "Async search completed";
-    m_searchProgressDialog->hide();
     
     if (!m_searchWatcher->isCanceled()) {
         m_installedPackages = m_searchWatcher->result();
