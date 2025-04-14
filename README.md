@@ -68,11 +68,14 @@ make -j$(nproc)
 5. Monitor the update progress in real-time
 
 #### Batch Installation
-1. Search for packages
-2. Check the checkboxes next to packages you want to install
-3. The "Install Selected Packages" button will show how many packages are selected
-4. Click this button to install all selected packages at once
-5. Enter your password when prompted
+1. Search for packages you want to install
+2. Check the checkboxes in the first column next to the packages you want to install
+3. The "Install Selected Packages" button will become enabled once you select packages
+4. Click the "Install Selected Packages" button to start the batch installation process
+5. Confirm the installation in the dialog that appears, listing all selected packages
+6. Enter your password when prompted
+7. A progress dialog will show the installation status of each package
+8. Once complete, a summary of successful and failed installations will be displayed
 
 #### Package Options
 - Use the "Use --overwrite '*'" checkbox when installing packages that have file conflicts
@@ -334,7 +337,28 @@ git submodule update --init --recursive
 - Memory-efficient table views for large package lists
 - Optimized rendering for scrolling performance
 
-### Phase 3: Advanced Features
+### Phase 3: Advanced UI and User Experience (Ongoing)
+- [x] Multi-package selection with checkboxes
+- [x] Batch installation with progress tracking 
+- [x] Multiple theme options (light, dark, colorful variants)
+- [x] Improved package detail display
+- [x] Tab-specific UI behavior
+- [ ] Advanced search filters
+- [ ] Customizable package views
+- [ ] Package statistics display
+- [ ] Package history tracking
+- [ ] Dependency graph visualization
+
+#### Recent Improvements
+- Added checkbox selection for multiple packages in both the All Packages and Installed views
+- Implemented batch installation functionality with progress tracking and individual package status reporting
+- Fixed detail panel visibility to only show when the appropriate tab is selected
+- Improved sync_all functionality with proper password authentication
+- Added theme customization with multiple style options
+- Applied consistent UI styling across the application
+- Fixed UI responsiveness during long-running operations
+
+### Phase 4: Advanced Features (Planned)
 - [x] Package group management
 - [x] AUR support
 - [x] Update management
@@ -375,7 +399,7 @@ git submodule update --init --recursive
     - [ ] Fedora-specific optimizations
     - [ ] COPR Repository Manager
 
-### Phase 4: Polish and Optimization
+### Phase 5: Polish and Optimization
 - [ ] Performance optimization
 - [ ] UI/UX improvements
 - [ ] Accessibility features
