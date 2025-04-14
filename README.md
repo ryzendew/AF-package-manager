@@ -88,6 +88,7 @@ make -j$(nproc)
 3. Test building
 4. We make sure the GUI does not break and stays stable unless things must be added
 5. When adding third-party packages, add them via a submodule so GitHub can see it properly
+6. WE DON'T DO STUBS
 
 ## Third-Party Dependencies (Submodules)
 

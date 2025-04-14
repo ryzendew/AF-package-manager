@@ -7,8 +7,16 @@
 #include <QFile>
 #include <QFont>
 #include <QDir>
+#include <QDebug>
 #include "gui/mainwindow.hpp"
 #include "core/packagemanager.hpp"
+
+#ifdef ENABLE_WAYLAND_SUPPORT
+#include "wayland/wayland_backend.hpp"
+#include "wayland/wayland_protocols.hpp"
+#include "wayland/wayland_security.hpp"
+#include "wayland/wayland_optimization.hpp"
+#endif
 
 using namespace pacmangui::core;
 using namespace pacmangui::gui;
@@ -199,6 +207,49 @@ int main(int argc, char *argv[])
     if (useCliMode) {
         return startCli(argc, argv);
     } else {
+        // Check if running on Wayland and set appropriate flags
+#if defined(ENABLE_WAYLAND_SUPPORT) && ENABLE_WAYLAND_SUPPORT == 1
+        if (pacmangui::wayland::WaylandBackend::isWaylandAvailable()) {
+            qDebug() << "main.cpp: Running on Wayland, initializing Wayland support";
+            
+            // Initialize the Wayland components
+            if (pacmangui::wayland::WaylandBackend::initialize()) {
+                qDebug() << "main.cpp: Wayland backend initialized successfully";
+                
+                // Initialize Wayland protocols
+                if (pacmangui::wayland::WaylandProtocols::initialize()) {
+                    qDebug() << "main.cpp: Wayland protocols initialized successfully";
+                    
+                    // Display supported protocols
+                    QStringList availableProtocols = pacmangui::wayland::WaylandProtocols::getSupportedProtocols();
+                    qDebug() << "main.cpp: Available Wayland protocols:" << availableProtocols;
+                }
+                
+                // Initialize Wayland security features
+                if (pacmangui::wayland::WaylandSecurity::initialize()) {
+                    qDebug() << "main.cpp: Wayland security features initialized successfully";
+                    pacmangui::wayland::WaylandSecurity::enableSecurityFeatures(true);
+                }
+                
+                // Initialize Wayland optimizations
+                if (pacmangui::wayland::WaylandOptimization::initialize()) {
+                    qDebug() << "main.cpp: Wayland optimizations initialized successfully";
+                    pacmangui::wayland::WaylandOptimization::enableOptimizations(true);
+                }
+                
+                // Display Wayland info
+                QString displayInfo = pacmangui::wayland::WaylandBackend::getDisplayInfo();
+                if (!displayInfo.isEmpty()) {
+                    qDebug() << "main.cpp: Wayland display info:" << displayInfo;
+                }
+            } else {
+                qWarning() << "main.cpp: Failed to initialize Wayland backend";
+            }
+        }
+#else
+        qDebug() << "main.cpp: Wayland support is disabled, skipping initialization";
+#endif
+        
         // Enable High DPI scaling
         QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
         QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
@@ -215,6 +266,9 @@ int main(int argc, char *argv[])
         app.setApplicationVersion("0.1.0");
         app.setOrganizationName("PacmanGUI");
         app.setOrganizationDomain("pacmangui.org");
+        
+        // Create main window
+        MainWindow mainWindow;
         
         // Apply custom scaling factor from settings if available
         QSettings settings("PacmanGUI", "PacmanGUI");
@@ -323,13 +377,10 @@ int main(int argc, char *argv[])
         // Set application style
         app.setStyle("Fusion");
         
-        // Create main window
-        MainWindow mainWindow;
-        
         // Set window to maximize by default
         mainWindow.showMaximized();
         
         // Run the application
-    return app.exec();
+        return app.exec();
     }
 } 

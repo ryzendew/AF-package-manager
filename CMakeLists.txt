@@ -14,7 +14,13 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
 # Find packages
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui)
+find_package(Qt6 OPTIONAL_COMPONENTS WaylandClient)
 find_package(ALPM REQUIRED)
+
+# Wayland support detection
+set(ENABLE_WAYLAND_SUPPORT OFF)
+add_definitions(-DENABLE_WAYLAND_SUPPORT=0)
+message(STATUS "Wayland support manually disabled")
 
 # Following Octopi's approach for handling alpm
 add_definitions(-DALPM_HANDLE=void*)
@@ -25,6 +31,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/core
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gui
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/wayland
     ${ALPM_INCLUDE_DIRS}
 )
 
@@ -40,12 +47,30 @@ set(CORE_SOURCES
 set(GUI_SOURCES
     src/gui/mainwindow.cpp
     src/gui/settingsdialog.cpp
+    src/gui/util.cpp
+)
+
+# Source files - Wayland components
+# Wayland support is disabled but we need stub implementations
+set(WAYLAND_SOURCES
+    src/wayland/wayland_backend.cpp
+    src/wayland/wayland_protocols.cpp
+    src/wayland/wayland_security.cpp
+    src/wayland/wayland_optimization.cpp
+)
+
+set(WAYLAND_HEADERS
+    include/wayland/wayland_backend.hpp
+    include/wayland/wayland_protocols.hpp
+    include/wayland/wayland_security.hpp
+    include/wayland/wayland_optimization.hpp
 )
 
 # Headers with Q_OBJECT macro that need to be processed by MOC
 set(MOC_HEADERS
     include/gui/mainwindow.hpp
     include/gui/settingsdialog.hpp
+    ${WAYLAND_HEADERS}
 )
 
 # Main source
@@ -63,6 +88,7 @@ add_executable(pacmangui
     ${MAIN_SOURCE}
     ${CORE_SOURCES}
     ${GUI_SOURCES}
+    ${WAYLAND_SOURCES}
     ${MOC_HEADERS}
     ${RESOURCE_FILES}
 )
@@ -74,6 +100,12 @@ target_link_libraries(pacmangui PRIVATE
     Qt6::Gui
     ALPM::ALPM
 )
+
+# Add WaylandClient if available
+# Wayland support is disabled
+# if(Qt6WaylandClient_FOUND)
+#     target_link_libraries(pacmangui PRIVATE Qt6::WaylandClient)
+# endif()
 
 # Install rules
 install(TARGETS pacmangui DESTINATION bin) 

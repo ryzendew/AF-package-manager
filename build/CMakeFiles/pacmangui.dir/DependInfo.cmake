@@ -17,7 +17,12 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/matt/PacmanGui-new/src/core/transaction.cpp" "CMakeFiles/pacmangui.dir/src/core/transaction.cpp.o" "gcc" "CMakeFiles/pacmangui.dir/src/core/transaction.cpp.o.d"
   "/home/matt/PacmanGui-new/src/gui/mainwindow.cpp" "CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o" "gcc" "CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o.d"
   "/home/matt/PacmanGui-new/src/gui/settingsdialog.cpp" "CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o" "gcc" "CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o.d"
+  "/home/matt/PacmanGui-new/src/gui/util.cpp" "CMakeFiles/pacmangui.dir/src/gui/util.cpp.o" "gcc" "CMakeFiles/pacmangui.dir/src/gui/util.cpp.o.d"
   "/home/matt/PacmanGui-new/src/main.cpp" "CMakeFiles/pacmangui.dir/src/main.cpp.o" "gcc" "CMakeFiles/pacmangui.dir/src/main.cpp.o.d"
+  "/home/matt/PacmanGui-new/src/wayland/wayland_backend.cpp" "CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.o" "gcc" "CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.o.d"
+  "/home/matt/PacmanGui-new/src/wayland/wayland_optimization.cpp" "CMakeFiles/pacmangui.dir/src/wayland/wayland_optimization.cpp.o" "gcc" "CMakeFiles/pacmangui.dir/src/wayland/wayland_optimization.cpp.o.d"
+  "/home/matt/PacmanGui-new/src/wayland/wayland_protocols.cpp" "CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.o" "gcc" "CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.o.d"
+  "/home/matt/PacmanGui-new/src/wayland/wayland_security.cpp" "CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.o" "gcc" "CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.o.d"
   "" "pacmangui" "gcc" "CMakeFiles/pacmangui.dir/link.d"
   )
 

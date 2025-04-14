@@ -110,6 +110,7 @@
   /usr/include/c++/14.2.1/bits/allocated_ptr.h \
   /usr/include/c++/14.2.1/bits/allocator.h \
   /usr/include/c++/14.2.1/bits/atomic_base.h \
+  /usr/include/c++/14.2.1/bits/atomic_futex.h \
   /usr/include/c++/14.2.1/bits/atomic_lockfree_defines.h \
   /usr/include/c++/14.2.1/bits/basic_string.h \
   /usr/include/c++/14.2.1/bits/basic_string.tcc \
@@ -156,6 +157,8 @@
   /usr/include/c++/14.2.1/bits/specfun.h \
   /usr/include/c++/14.2.1/bits/std_abs.h \
   /usr/include/c++/14.2.1/bits/std_function.h \
+  /usr/include/c++/14.2.1/bits/std_mutex.h \
+  /usr/include/c++/14.2.1/bits/std_thread.h \
   /usr/include/c++/14.2.1/bits/stl_algo.h \
   /usr/include/c++/14.2.1/bits/stl_algobase.h \
   /usr/include/c++/14.2.1/bits/stl_bvector.h \
@@ -184,6 +187,7 @@
   /usr/include/c++/14.2.1/bits/string_view.tcc \
   /usr/include/c++/14.2.1/bits/stringfwd.h \
   /usr/include/c++/14.2.1/bits/uniform_int_dist.h \
+  /usr/include/c++/14.2.1/bits/unique_lock.h \
   /usr/include/c++/14.2.1/bits/unique_ptr.h \
   /usr/include/c++/14.2.1/bits/unordered_map.h \
   /usr/include/c++/14.2.1/bits/unordered_set.h \
@@ -201,6 +205,7 @@
   /usr/include/c++/14.2.1/cmath \
   /usr/include/c++/14.2.1/compare \
   /usr/include/c++/14.2.1/concepts \
+  /usr/include/c++/14.2.1/condition_variable \
   /usr/include/c++/14.2.1/cstddef \
   /usr/include/c++/14.2.1/cstdint \
   /usr/include/c++/14.2.1/cstdio \
@@ -220,6 +225,7 @@
   /usr/include/c++/14.2.1/ext/type_traits.h \
   /usr/include/c++/14.2.1/filesystem \
   /usr/include/c++/14.2.1/functional \
+  /usr/include/c++/14.2.1/future \
   /usr/include/c++/14.2.1/initializer_list \
   /usr/include/c++/14.2.1/iosfwd \
   /usr/include/c++/14.2.1/iterator \
@@ -227,6 +233,7 @@
   /usr/include/c++/14.2.1/list \
   /usr/include/c++/14.2.1/map \
   /usr/include/c++/14.2.1/memory \
+  /usr/include/c++/14.2.1/mutex \
   /usr/include/c++/14.2.1/new \
   /usr/include/c++/14.2.1/numeric \
   /usr/include/c++/14.2.1/optional \
@@ -284,6 +291,7 @@
   /usr/include/linux/types.h \
   /usr/include/locale.h \
   /usr/include/pthread.h \
+  /usr/include/qt6/QtCore/QFutureWatcher \
   /usr/include/qt6/QtCore/QMap \
   /usr/include/qt6/QtCore/QPropertyAnimation \
   /usr/include/qt6/QtCore/QSet \
@@ -325,11 +333,14 @@
   /usr/include/qt6/QtCore/qdarwinhelpers.h \
   /usr/include/qt6/QtCore/qdatastream.h \
   /usr/include/qt6/QtCore/qdatetime.h \
+  /usr/include/qt6/QtCore/qdeadlinetimer.h \
   /usr/include/qt6/QtCore/qdebug.h \
   /usr/include/qt6/QtCore/qdir.h \
   /usr/include/qt6/QtCore/qdirlisting.h \
   /usr/include/qt6/QtCore/qeasingcurve.h \
+  /usr/include/qt6/QtCore/qelapsedtimer.h \
   /usr/include/qt6/QtCore/qendian.h \
+  /usr/include/qt6/QtCore/qexception.h \
   /usr/include/qt6/QtCore/qexceptionhandling.h \
   /usr/include/qt6/QtCore/qfile.h \
   /usr/include/qt6/QtCore/qfiledevice.h \
@@ -339,6 +350,10 @@
   /usr/include/qt6/QtCore/qforeach.h \
   /usr/include/qt6/QtCore/qfunctionaltools_impl.h \
   /usr/include/qt6/QtCore/qfunctionpointer.h \
+  /usr/include/qt6/QtCore/qfuture.h \
+  /usr/include/qt6/QtCore/qfuture_impl.h \
+  /usr/include/qt6/QtCore/qfutureinterface.h \
+  /usr/include/qt6/QtCore/qfuturewatcher.h \
   /usr/include/qt6/QtCore/qgenericatomic.h \
   /usr/include/qt6/QtCore/qglobal.h \
   /usr/include/qt6/QtCore/qglobalstatic.h \
@@ -361,6 +376,7 @@
   /usr/include/qt6/QtCore/qmetacontainer.h \
   /usr/include/qt6/QtCore/qmetatype.h \
   /usr/include/qt6/QtCore/qminmax.h \
+  /usr/include/qt6/QtCore/qmutex.h \
   /usr/include/qt6/QtCore/qnamespace.h \
   /usr/include/qt6/QtCore/qnumeric.h \
   /usr/include/qt6/QtCore/qobject.h \
@@ -371,10 +387,13 @@
   /usr/include/qt6/QtCore/qpair.h \
   /usr/include/qt6/QtCore/qpoint.h \
   /usr/include/qt6/QtCore/qprocessordetection.h \
+  /usr/include/qt6/QtCore/qpromise.h \
   /usr/include/qt6/QtCore/qpropertyanimation.h \
   /usr/include/qt6/QtCore/qrect.h \
   /usr/include/qt6/QtCore/qrefcount.h \
   /usr/include/qt6/QtCore/qregularexpression.h \
+  /usr/include/qt6/QtCore/qresultstore.h \
+  /usr/include/qt6/QtCore/qrunnable.h \
   /usr/include/qt6/QtCore/qscopedpointer.h \
   /usr/include/qt6/QtCore/qscopeguard.h \
   /usr/include/qt6/QtCore/qset.h \
@@ -411,11 +430,14 @@
   /usr/include/qt6/QtCore/qtenvironmentvariables.h \
   /usr/include/qt6/QtCore/qtextstream.h \
   /usr/include/qt6/QtCore/qtformat_impl.h \
+  /usr/include/qt6/QtCore/qthread.h \
+  /usr/include/qt6/QtCore/qthreadpool.h \
   /usr/include/qt6/QtCore/qtimezone.h \
   /usr/include/qt6/QtCore/qtmetamacros.h \
   /usr/include/qt6/QtCore/qtnoop.h \
   /usr/include/qt6/QtCore/qtpreprocessorsupport.h \
   /usr/include/qt6/QtCore/qtresource.h \
+  /usr/include/qt6/QtCore/qtsan_impl.h \
   /usr/include/qt6/QtCore/qttranslation.h \
   /usr/include/qt6/QtCore/qttypetraits.h \
   /usr/include/qt6/QtCore/qtversion.h \
@@ -478,6 +500,7 @@
   /usr/include/qt6/QtWidgets/QMainWindow \
   /usr/include/qt6/QtWidgets/QMenu \
   /usr/include/qt6/QtWidgets/QProgressBar \
+  /usr/include/qt6/QtWidgets/QProgressDialog \
   /usr/include/qt6/QtWidgets/QPushButton \
   /usr/include/qt6/QtWidgets/QRadioButton \
   /usr/include/qt6/QtWidgets/QScrollArea \
@@ -489,6 +512,7 @@
   /usr/include/qt6/QtWidgets/QTextEdit \
   /usr/include/qt6/QtWidgets/QToolBar \
   /usr/include/qt6/QtWidgets/QToolButton \
+  /usr/include/qt6/QtWidgets/QTreeView \
   /usr/include/qt6/QtWidgets/QVBoxLayout \
   /usr/include/qt6/QtWidgets/qabstractbutton.h \
   /usr/include/qt6/QtWidgets/qabstractitemdelegate.h \
@@ -514,6 +538,7 @@
   /usr/include/qt6/QtWidgets/qmainwindow.h \
   /usr/include/qt6/QtWidgets/qmenu.h \
   /usr/include/qt6/QtWidgets/qprogressbar.h \
+  /usr/include/qt6/QtWidgets/qprogressdialog.h \
   /usr/include/qt6/QtWidgets/qpushbutton.h \
   /usr/include/qt6/QtWidgets/qradiobutton.h \
   /usr/include/qt6/QtWidgets/qrubberband.h \
@@ -531,6 +556,7 @@
   /usr/include/qt6/QtWidgets/qtextedit.h \
   /usr/include/qt6/QtWidgets/qtoolbar.h \
   /usr/include/qt6/QtWidgets/qtoolbutton.h \
+  /usr/include/qt6/QtWidgets/qtreeview.h \
   /usr/include/qt6/QtWidgets/qtwidgets-config.h \
   /usr/include/qt6/QtWidgets/qtwidgetsexports.h \
   /usr/include/qt6/QtWidgets/qtwidgetsglobal.h \

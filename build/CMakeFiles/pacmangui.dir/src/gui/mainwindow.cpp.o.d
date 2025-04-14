@@ -379,10 +379,11 @@ CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o: \
  /usr/include/qt6/QtWidgets/qabstractslider.h \
  /usr/include/qt6/QtWidgets/qstyle.h /usr/include/qt6/QtWidgets/qtabbar.h \
  /usr/include/qt6/QtWidgets/qrubberband.h \
- /usr/include/qt6/QtWidgets/QLabel /usr/include/qt6/QtWidgets/qlabel.h \
- /usr/include/qt6/QtGui/qpicture.h /usr/include/qt6/QtCore/qiodevice.h \
- /usr/include/qt6/QtGui/QAction /usr/include/qt6/QtGui/qaction.h \
- /usr/include/qt6/QtWidgets/QToolBar \
+ /usr/include/qt6/QtWidgets/QTreeView \
+ /usr/include/qt6/QtWidgets/qtreeview.h /usr/include/qt6/QtWidgets/QLabel \
+ /usr/include/qt6/QtWidgets/qlabel.h /usr/include/qt6/QtGui/qpicture.h \
+ /usr/include/qt6/QtCore/qiodevice.h /usr/include/qt6/QtGui/QAction \
+ /usr/include/qt6/QtGui/qaction.h /usr/include/qt6/QtWidgets/QToolBar \
  /usr/include/qt6/QtWidgets/qtoolbar.h /usr/include/qt6/QtWidgets/QMenu \
  /usr/include/qt6/QtWidgets/qmenu.h /usr/include/qt6/QtWidgets/QStatusBar \
  /usr/include/qt6/QtWidgets/qstatusbar.h \
@@ -450,6 +451,27 @@ CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o: \
  /usr/include/qt6/QtWidgets/qgraphicseffect.h \
  /usr/include/qt6/QtWidgets/QScrollArea \
  /usr/include/qt6/QtWidgets/qscrollarea.h \
+ /usr/include/qt6/QtCore/QFutureWatcher \
+ /usr/include/qt6/QtCore/qfuturewatcher.h \
+ /usr/include/qt6/QtCore/qfuture.h \
+ /usr/include/qt6/QtCore/qfutureinterface.h \
+ /usr/include/qt6/QtCore/qmutex.h \
+ /usr/include/qt6/QtCore/qdeadlinetimer.h \
+ /usr/include/qt6/QtCore/qelapsedtimer.h \
+ /usr/include/qt6/QtCore/qtsan_impl.h \
+ /usr/include/qt6/QtCore/qresultstore.h \
+ /usr/include/qt6/QtCore/qfuture_impl.h \
+ /usr/include/qt6/QtCore/qthreadpool.h /usr/include/qt6/QtCore/qthread.h \
+ /usr/include/c++/14.2.1/future /usr/include/c++/14.2.1/mutex \
+ /usr/include/c++/14.2.1/bits/std_mutex.h \
+ /usr/include/c++/14.2.1/bits/unique_lock.h \
+ /usr/include/c++/14.2.1/condition_variable \
+ /usr/include/c++/14.2.1/bits/atomic_futex.h \
+ /usr/include/c++/14.2.1/bits/std_thread.h \
+ /usr/include/qt6/QtCore/qrunnable.h /usr/include/qt6/QtCore/qexception.h \
+ /usr/include/qt6/QtCore/qpromise.h \
+ /usr/include/qt6/QtWidgets/QProgressDialog \
+ /usr/include/qt6/QtWidgets/qprogressdialog.h \
  /home/matt/PacmanGui-new/include/core/packagemanager.hpp \
  /usr/include/alpm.h /usr/include/archive.h /usr/include/sys/stat.h \
  /usr/include/bits/stat.h /usr/include/bits/struct_stat.h \
@@ -468,96 +490,429 @@ CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o: \
  /home/matt/PacmanGui-new/include/gui/settingsdialog.hpp \
  /usr/include/qt6/QtWidgets/QDialog /usr/include/qt6/QtWidgets/qdialog.h \
  /usr/include/qt6/QtCore/QSettings /usr/include/qt6/QtCore/qsettings.h \
- /usr/include/qt6/QtWidgets/QApplication \
- /usr/include/qt6/QtWidgets/qapplication.h \
+ /home/matt/PacmanGui-new/include/wayland/wayland_backend.hpp \
+ /usr/include/qt6/QtCore/QString /usr/include/qt6/QtCore/qstring.h \
+ /home/matt/PacmanGui-new/include/wayland/wayland_protocols.hpp \
+ /usr/include/qt6/QtCore/QStringList \
+ /usr/include/qt6/QtCore/qstringlist.h \
+ /home/matt/PacmanGui-new/include/wayland/wayland_security.hpp \
+ /home/matt/PacmanGui-new/include/wayland/wayland_optimization.hpp \
+ /usr/include/qt6/QtWidgets/QMenuBar \
+ /usr/include/qt6/QtWidgets/qmenubar.h /usr/include/qt6/QtWidgets/qmenu.h \
+ /usr/include/qt6/QtWidgets/QHeaderView \
+ /usr/include/qt6/QtWidgets/qheaderview.h \
+ /usr/include/qt6/QtWidgets/QMessageBox \
+ /usr/include/qt6/QtWidgets/qmessagebox.h \
+ /usr/include/qt6/QtWidgets/qdialogbuttonbox.h \
+ /usr/include/qt6/QtWidgets/QInputDialog \
+ /usr/include/qt6/QtWidgets/qinputdialog.h \
+ /usr/include/qt6/QtWidgets/qlineedit.h \
+ /usr/include/qt6/QtCore/QStandardPaths \
+ /usr/include/qt6/QtCore/qstandardpaths.h /usr/include/qt6/QtCore/QFuture \
+ /usr/include/qt6/QtCore/qfuture.h \
+ /usr/include/qt6/QtConcurrent/QtConcurrent \
+ /usr/include/qt6/QtConcurrent/QtConcurrentDepends \
+ /usr/include/qt6/QtCore/QtCore /usr/include/qt6/QtCore/QtCoreDepends \
+ /usr/include/qt6/QtCore/qglobal.h /usr/include/qt6/QtCore/qtcoreglobal.h \
+ /usr/include/qt6/QtCore/q17memory.h \
+ /usr/include/qt6/QtCore/q20algorithm.h \
+ /usr/include/qt6/QtCore/q20chrono.h \
+ /usr/include/qt6/QtCore/q20functional.h \
+ /usr/include/qt6/QtCore/q20iterator.h /usr/include/qt6/QtCore/q20map.h \
+ /usr/include/c++/14.2.1/memory_resource \
+ /usr/include/c++/14.2.1/shared_mutex /usr/include/qt6/QtCore/q20memory.h \
+ /usr/include/qt6/QtCore/q20utility.h /usr/include/qt6/QtCore/q20vector.h \
+ /usr/include/qt6/QtCore/q23functional.h \
+ /usr/include/qt6/QtCore/q23utility.h \
+ /usr/include/qt6/QtCore/q26numeric.h \
+ /usr/include/qt6/QtCore/qabstractanimation.h \
+ /usr/include/qt6/QtCore/qabstracteventdispatcher.h \
+ /usr/include/qt6/QtCore/qeventloop.h \
+ /usr/include/qt6/QtCore/qabstractitemmodel.h \
+ /usr/include/qt6/QtCore/qabstractnativeeventfilter.h \
+ /usr/include/qt6/QtCore/qabstractproxymodel.h \
+ /usr/include/qt6/QtCore/qalgorithms.h \
+ /usr/include/qt6/QtCore/qanimationgroup.h \
+ /usr/include/qt6/QtCore/qanystringview.h \
+ /usr/include/qt6/QtCore/qapplicationstatic.h \
+ /usr/include/qt6/QtCore/QMutex /usr/include/qt6/QtCore/qmutex.h \
  /usr/include/qt6/QtCore/qcoreapplication.h \
  /usr/include/qt6/QtCore/qcoreevent.h \
  /usr/include/qt6/QtCore/qbasictimer.h \
  /usr/include/qt6/QtCore/qabstracteventdispatcher.h \
- /usr/include/qt6/QtCore/qeventloop.h \
- /usr/include/qt6/QtCore/qdeadlinetimer.h \
- /usr/include/qt6/QtCore/qelapsedtimer.h \
  /usr/include/qt6/QtCore/qnativeinterface.h \
  /usr/include/qt6/QtCore/qcoreapplication_platform.h \
- /usr/include/qt6/QtGui/qguiapplication.h \
- /usr/include/qt6/QtGui/qinputmethod.h \
- /usr/include/qt6/QtGui/qguiapplication_platform.h \
- /usr/include/qt6/QtGui/QGuiApplication \
- /usr/include/qt6/QtGui/qguiapplication.h \
- /usr/include/qt6/QtWidgets/QMessageBox \
- /usr/include/qt6/QtWidgets/qmessagebox.h \
- /usr/include/qt6/QtWidgets/qdialogbuttonbox.h \
- /usr/include/qt6/QtWidgets/QHeaderView \
- /usr/include/qt6/QtWidgets/qheaderview.h \
- /usr/include/qt6/QtGui/QCloseEvent /usr/include/qt6/QtGui/qevent.h \
- /usr/include/qt6/QtGui/qeventpoint.h /usr/include/qt6/QtGui/qvector2d.h \
- /usr/include/qt6/QtGui/qvectornd.h \
- /usr/include/qt6/QtGui/qpointingdevice.h \
- /usr/include/qt6/QtGui/qinputdevice.h /usr/include/qt6/QtGui/qscreen.h \
- /usr/include/qt6/QtCore/QList /usr/include/qt6/QtCore/qlist.h \
- /usr/include/qt6/QtCore/QObject /usr/include/qt6/QtCore/qobject.h \
- /usr/include/qt6/QtCore/QRect /usr/include/qt6/QtCore/qrect.h \
- /usr/include/qt6/QtCore/QSize /usr/include/qt6/QtCore/qsize.h \
- /usr/include/qt6/QtCore/QSizeF /usr/include/qt6/QtGui/QTransform \
- /usr/include/qt6/QtGui/qtransform.h \
- /usr/include/qt6/QtGui/qscreen_platform.h \
- /usr/include/qt6/QtWidgets/QMenuBar \
- /usr/include/qt6/QtWidgets/qmenubar.h /usr/include/qt6/QtWidgets/qmenu.h \
- /usr/include/qt6/QtGui/QIcon /usr/include/qt6/QtGui/qicon.h \
- /usr/include/qt6/QtGui/QFont /usr/include/qt6/QtGui/qfont.h \
- /usr/include/qt6/QtWidgets/QStyle /usr/include/qt6/QtWidgets/qstyle.h \
- /usr/include/qt6/QtGui/QPalette /usr/include/qt6/QtGui/qpalette.h \
- /usr/include/qt6/QtWidgets/QStyleFactory \
- /usr/include/qt6/QtWidgets/qstylefactory.h \
- /usr/include/qt6/QtGui/QScreen /usr/include/qt6/QtGui/qscreen.h \
- /usr/include/qt6/QtWidgets/QInputDialog \
- /usr/include/qt6/QtWidgets/qinputdialog.h \
- /usr/include/qt6/QtWidgets/qlineedit.h \
- /usr/include/qt6/QtGui/QDesktopServices \
- /usr/include/qt6/QtGui/qdesktopservices.h /usr/include/qt6/QtCore/QUrl \
- /usr/include/qt6/QtCore/qurl.h /usr/include/qt6/QtCore/QProcess \
- /usr/include/qt6/QtCore/qprocess.h /usr/include/qt6/QtWidgets/QScrollBar \
- /usr/include/qt6/QtWidgets/qscrollbar.h \
- /usr/include/qt6/QtWidgets/QProgressDialog \
- /usr/include/qt6/QtWidgets/qprogressdialog.h \
- /usr/include/qt6/QtConcurrent/QtConcurrentRun \
- /usr/include/qt6/QtConcurrent/qtconcurrentrun.h \
- /usr/include/qt6/QtConcurrent/qtconcurrentcompilertest.h \
+ /usr/include/qt6/QtCore/qarraydata.h \
+ /usr/include/qt6/QtCore/qarraydataops.h \
+ /usr/include/qt6/QtCore/qarraydatapointer.h \
+ /usr/include/qt6/QtCore/qassert.h \
+ /usr/include/qt6/QtCore/qassociativeiterable.h \
+ /usr/include/qt6/QtCore/qatomic.h \
+ /usr/include/qt6/QtCore/qatomicscopedvaluerollback.h \
+ /usr/include/qt6/QtCore/qbasictimer.h \
+ /usr/include/qt6/QtCore/qbindingstorage.h \
+ /usr/include/qt6/QtCore/qbitarray.h /usr/include/qt6/QtCore/qbuffer.h \
+ /usr/include/qt6/QtCore/qbytearray.h \
+ /usr/include/qt6/QtCore/qbytearrayalgorithms.h \
+ /usr/include/qt6/QtCore/qbytearraylist.h \
+ /usr/include/qt6/QtCore/qbytearraymatcher.h \
+ /usr/include/qt6/QtCore/q20algorithm.h \
+ /usr/include/qt6/QtCore/qbytearrayview.h \
+ /usr/include/qt6/QtCore/qcache.h /usr/include/qt6/QtCore/qcalendar.h \
+ /usr/include/qt6/QtCore/qcborarray.h \
+ /usr/include/qt6/QtCore/qcborvalue.h \
+ /usr/include/qt6/QtCore/qcborcommon.h /usr/include/qt6/QtCore/quuid.h \
+ /usr/include/qt6/QtCore/qcborcommon.h /usr/include/qt6/QtCore/qcbormap.h \
+ /usr/include/qt6/QtCore/qcborstream.h \
+ /usr/include/qt6/QtCore/qcborstreamreader.h \
+ /usr/include/qt6/QtCore/qcborstreamwriter.h \
+ /usr/include/qt6/QtCore/qcborstreamreader.h \
+ /usr/include/qt6/QtCore/qcborstreamwriter.h \
+ /usr/include/qt6/QtCore/qcborvalue.h /usr/include/qt6/QtCore/qchar.h \
+ /usr/include/qt6/QtCore/qchronotimer.h \
+ /usr/include/qt6/QtCore/qproperty.h \
+ /usr/include/qt6/QtCore/qpropertyprivate.h \
+ /usr/include/c++/14.2.1/experimental/source_location \
+ /usr/include/qt6/QtCore/qtimer.h /usr/include/qt6/QtCore/qcollator.h \
+ /usr/include/qt6/QtCore/qcommandlineoption.h \
+ /usr/include/qt6/QtCore/qcommandlineparser.h \
+ /usr/include/qt6/QtCore/qcommandlineoption.h \
+ /usr/include/qt6/QtCore/qcompare.h \
+ /usr/include/qt6/QtCore/qcompilerdetection.h \
+ /usr/include/qt6/QtCore/qconcatenatetablesproxymodel.h \
+ /usr/include/qt6/QtCore/qconstructormacros.h \
+ /usr/include/qt6/QtCore/qcontainerfwd.h \
+ /usr/include/qt6/QtCore/qcontainerinfo.h \
+ /usr/include/qt6/QtCore/qcontiguouscache.h \
+ /usr/include/qt6/QtCore/qcoreapplication.h \
+ /usr/include/qt6/QtCore/qcoreevent.h \
+ /usr/include/qt6/QtCore/qcryptographichash.h \
+ /usr/include/qt6/QtCore/qdarwinhelpers.h \
+ /usr/include/qt6/QtCore/qdatastream.h \
+ /usr/include/qt6/QtCore/qdatetime.h \
+ /usr/include/qt6/QtCore/qdeadlinetimer.h \
+ /usr/include/qt6/QtCore/qdebug.h /usr/include/qt6/QtCore/qdir.h \
+ /usr/include/qt6/QtCore/qdiriterator.h \
+ /usr/include/qt6/QtCore/qdirlisting.h \
+ /usr/include/qt6/QtCore/qeasingcurve.h \
+ /usr/include/qt6/QtCore/qelapsedtimer.h \
+ /usr/include/qt6/QtCore/qendian.h /usr/include/qt6/QtCore/qeventloop.h \
+ /usr/include/qt6/QtCore/qexception.h \
+ /usr/include/qt6/QtCore/qexceptionhandling.h \
+ /usr/include/qt6/QtCore/qfactoryinterface.h \
+ /usr/include/qt6/QtCore/qfile.h /usr/include/qt6/QtCore/qfiledevice.h \
+ /usr/include/qt6/QtCore/qfileinfo.h \
+ /usr/include/qt6/QtCore/qfileselector.h /usr/include/qt6/QtCore/QObject \
+ /usr/include/qt6/QtCore/qobject.h /usr/include/qt6/QtCore/QStringList \
+ /usr/include/qt6/QtCore/qfilesystemwatcher.h \
+ /usr/include/qt6/QtCore/qflags.h /usr/include/qt6/QtCore/qforeach.h \
+ /usr/include/qt6/QtCore/qfunctionpointer.h \
+ /usr/include/qt6/QtCore/qfutureinterface.h \
+ /usr/include/qt6/QtCore/qfuturesynchronizer.h \
+ /usr/include/qt6/QtCore/qgenericatomic.h \
+ /usr/include/qt6/QtCore/qglobalstatic.h /usr/include/qt6/QtCore/qhash.h \
+ /usr/include/qt6/QtCore/qhashfunctions.h \
+ /usr/include/qt6/QtCore/qidentityproxymodel.h \
+ /usr/include/qt6/QtCore/qabstractproxymodel.h \
+ /usr/include/qt6/QtCore/qiodevice.h \
+ /usr/include/qt6/QtCore/qiodevicebase.h \
+ /usr/include/qt6/QtCore/qitemselectionmodel.h \
+ /usr/include/qt6/QtCore/qiterable.h /usr/include/qt6/QtCore/qiterator.h \
+ /usr/include/qt6/QtCore/qjsonarray.h \
+ /usr/include/qt6/QtCore/qjsonvalue.h \
+ /usr/include/qt6/QtCore/qjsondocument.h \
+ /usr/include/qt6/QtCore/qjsonparseerror.h \
+ /usr/include/qt6/QtCore/qjsondocument.h \
+ /usr/include/qt6/QtCore/qjsonobject.h \
+ /usr/include/qt6/QtCore/qjsonparseerror.h \
+ /usr/include/qt6/QtCore/qjsonvalue.h \
+ /usr/include/qt6/QtCore/qlatin1stringmatcher.h \
+ /usr/include/qt6/QtCore/qlatin1stringview.h \
+ /usr/include/qt6/QtCore/qlibrary.h \
+ /usr/include/qt6/QtCore/qlibraryinfo.h \
+ /usr/include/qt6/QtCore/qversionnumber.h \
+ /usr/include/qt6/QtCore/qtyperevision.h /usr/include/qt6/QtCore/qline.h \
+ /usr/include/qt6/QtCore/qlist.h /usr/include/qt6/QtCore/qlocale.h \
+ /usr/include/qt6/QtCore/qlockfile.h \
+ /usr/include/qt6/QtCore/qloggingcategory.h \
+ /usr/include/qt6/QtCore/qmalloc.h /usr/include/qt6/QtCore/qmargins.h \
+ /usr/include/qt6/QtCore/qmath.h \
+ /usr/include/qt6/QtCore/qmessageauthenticationcode.h \
+ /usr/include/qt6/QtCore/qcryptographichash.h \
+ /usr/include/qt6/QtCore/qmetacontainer.h \
+ /usr/include/qt6/QtCore/qmetaobject.h \
+ /usr/include/qt6/QtCore/qmetatype.h /usr/include/qt6/QtCore/qmimedata.h \
+ /usr/include/qt6/QtCore/qmimedatabase.h \
+ /usr/include/qt6/QtCore/qmimetype.h /usr/include/qt6/QtCore/qmimetype.h \
+ /usr/include/qt6/QtCore/qminmax.h /usr/include/qt6/QtCore/qnamespace.h \
+ /usr/include/qt6/QtCore/qnativeinterface.h \
+ /usr/include/qt6/QtCore/qnumeric.h \
+ /usr/include/qt6/QtCore/qobjectcleanuphandler.h \
+ /usr/include/qt6/QtCore/qobjectdefs.h \
+ /usr/include/qt6/QtCore/qoperatingsystemversion.h \
+ /usr/include/qt6/QtCore/qoverload.h /usr/include/qt6/QtCore/qpair.h \
+ /usr/include/qt6/QtCore/qparallelanimationgroup.h \
+ /usr/include/qt6/QtCore/qanimationgroup.h \
+ /usr/include/qt6/QtCore/qpauseanimation.h \
+ /usr/include/qt6/QtCore/qpermissions.h /usr/include/qt6/QtCore/qplugin.h \
+ /usr/include/qt6/QtCore/qpointer.h /usr/include/qt6/QtCore/qjsonobject.h \
+ /usr/include/qt6/QtCore/qpluginloader.h \
+ /usr/include/qt6/QtCore/qlibrary.h /usr/include/qt6/QtCore/qplugin.h \
+ /usr/include/qt6/QtCore/qpoint.h /usr/include/qt6/QtCore/qpointer.h \
+ /usr/include/qt6/QtCore/qprocess.h \
+ /usr/include/qt6/QtCore/qprocessordetection.h \
+ /usr/include/qt6/QtCore/qpromise.h /usr/include/qt6/QtCore/qproperty.h \
+ /usr/include/qt6/QtCore/qpropertyprivate.h \
+ /usr/include/qt6/QtCore/qqueue.h /usr/include/qt6/QtCore/qrandom.h \
+ /usr/include/c++/14.2.1/random /usr/include/c++/14.2.1/bits/random.h \
+ /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/opt_random.h \
+ /usr/include/c++/14.2.1/bits/random.tcc \
+ /usr/include/qt6/QtCore/qreadwritelock.h /usr/include/qt6/QtCore/qrect.h \
+ /usr/include/qt6/QtCore/qrefcount.h \
+ /usr/include/qt6/QtCore/qregularexpression.h \
+ /usr/include/qt6/QtCore/qresource.h \
+ /usr/include/qt6/QtCore/qresultstore.h \
+ /usr/include/qt6/QtCore/qrunnable.h /usr/include/qt6/QtCore/qsavefile.h \
+ /usr/include/qt6/QtCore/qscopedpointer.h \
+ /usr/include/qt6/QtCore/qscopedvaluerollback.h \
+ /usr/include/qt6/QtCore/qscopeguard.h \
+ /usr/include/qt6/QtCore/qsemaphore.h \
+ /usr/include/qt6/QtCore/qsequentialanimationgroup.h \
+ /usr/include/qt6/QtCore/qsequentialiterable.h \
+ /usr/include/qt6/QtCore/qshareddata.h \
+ /usr/include/qt6/QtCore/qsharedmemory.h \
+ /usr/include/qt6/QtCore/qtipccommon.h \
+ /usr/include/qt6/QtCore/qsharedpointer.h \
+ /usr/include/qt6/QtCore/qsignalmapper.h /usr/include/qt6/QtCore/qsimd.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/immintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/x86gprintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/ia32intrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/adxintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/bmiintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/bmi2intrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/cetintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/cldemoteintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/clflushoptintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/clwbintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/clzerointrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/cmpccxaddintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/enqcmdintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/fxsrintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/lzcntintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/lwpintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/movdirintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/mwaitintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/mwaitxintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/pconfigintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/popcntintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/pkuintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/prfchiintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/raointintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/rdseedintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/rtmintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/serializeintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/sgxintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/tbmintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/tsxldtrkintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/uintrintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/waitpkgintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/wbnoinvdintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xsaveintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xsavecintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xsaveoptintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xsavesintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xtestintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/hresetintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/usermsrintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/mmintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/xmmintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/mm_malloc.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/emmintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/pmmintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/tmmintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/smmintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/wmmintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxvnniintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxifmaintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxvnniint8intrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxvnniint16intrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx2intrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512fintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512erintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512pfintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512cdintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vlintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512bwintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512dqintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vlbwintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vldqintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512ifmaintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512ifmavlintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vbmiintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vbmivlintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx5124fmapsintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx5124vnniwintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vpopcntdqintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vbmi2intrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vbmi2vlintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vnniintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vnnivlintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vpopcntdqvlintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512bitalgintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512bitalgvlintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vp2intersectintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512vp2intersectvlintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512fp16intrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512fp16vlintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/shaintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/sm3intrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/sha512intrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/sm4intrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/fmaintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/f16cintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/gfniintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/vaesintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/vpclmulqdqintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512bf16vlintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avx512bf16intrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/avxneconvertintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/amxtileintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/amxint8intrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/amxbf16intrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/amxcomplexintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/prfchwintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/keylockerintrin.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/amxfp16intrin.h \
+ /usr/include/qt6/QtCore/qsize.h \
+ /usr/include/qt6/QtCore/qsocketnotifier.h \
+ /usr/include/qt6/QtCore/qsortfilterproxymodel.h \
+ /usr/include/qt6/QtCore/qspan.h /usr/include/qt6/QtCore/qstack.h \
+ /usr/include/qt6/QtCore/qstaticlatin1stringmatcher.h \
+ /usr/include/qt6/QtCore/qlatin1stringmatcher.h \
+ /usr/include/qt6/QtCore/qstdlibdetection.h \
+ /usr/include/qt6/QtCore/qstorageinfo.h \
+ /usr/include/qt6/QtCore/qstringalgorithms.h \
+ /usr/include/qt6/QtCore/qstringbuilder.h \
+ /usr/include/qt6/QtCore/qstringconverter.h \
+ /usr/include/qt6/QtCore/qstringfwd.h \
+ /usr/include/qt6/QtCore/qstringlistmodel.h \
+ /usr/include/qt6/QtCore/qstringliteral.h \
+ /usr/include/qt6/QtCore/qstringmatcher.h \
+ /usr/include/qt6/QtCore/qstringtokenizer.h \
+ /usr/include/qt6/QtCore/qstringview.h /usr/include/qt6/QtCore/qswap.h \
+ /usr/include/qt6/QtCore/qsysinfo.h \
+ /usr/include/qt6/QtCore/qsystemdetection.h \
+ /usr/include/qt6/QtCore/qsystemsemaphore.h \
+ /usr/include/qt6/QtCore/qtaggedpointer.h \
+ /usr/include/qt6/QtCore/qtclasshelpermacros.h \
+ /usr/include/qt6/QtCore/qtconfiginclude.h \
+ /usr/include/qt6/QtCore/qtconfigmacros.h \
+ /usr/include/qt6/QtCore/qtcoreversion.h \
+ /usr/include/qt6/QtCore/qtdeprecationmarkers.h \
+ /usr/include/qt6/QtCore/qtemporarydir.h \
+ /usr/include/qt6/QtCore/qtemporaryfile.h \
+ /usr/include/qt6/QtCore/qtenvironmentvariables.h \
+ /usr/include/qt6/QtCore/qtextboundaryfinder.h \
+ /usr/include/qt6/QtCore/qtextstream.h /usr/include/qt6/QtCore/qthread.h \
+ /usr/include/qt6/QtCore/qthreadpool.h \
+ /usr/include/qt6/QtCore/qthreadstorage.h \
+ /usr/include/qt6/QtCore/qtimeline.h /usr/include/qt6/QtCore/qtimer.h \
+ /usr/include/qt6/QtCore/qtimezone.h \
+ /usr/include/qt6/QtCore/qtipccommon.h \
+ /usr/include/qt6/QtCore/qtmetamacros.h \
+ /usr/include/qt6/QtCore/qtmocconstants.h \
+ /usr/include/qt6/QtCore/qtnoop.h \
+ /usr/include/qt6/QtCore/qtpreprocessorsupport.h \
+ /usr/include/qt6/QtCore/qtranslator.h \
+ /usr/include/qt6/QtCore/qtransposeproxymodel.h \
+ /usr/include/qt6/QtCore/qtresource.h \
+ /usr/include/qt6/QtCore/qtsymbolmacros.h \
+ /usr/include/qt6/QtCore/qttranslation.h \
+ /usr/include/qt6/QtCore/qttypetraits.h \
+ /usr/include/qt6/QtCore/qtversion.h \
+ /usr/include/qt6/QtCore/qtversionchecks.h \
+ /usr/include/qt6/QtCore/qtypeinfo.h \
+ /usr/include/qt6/QtCore/qtyperevision.h /usr/include/qt6/QtCore/qtypes.h \
+ /usr/include/qt6/QtCore/qurl.h /usr/include/qt6/QtCore/qurlquery.h \
+ /usr/include/qt6/QtCore/qutf8stringview.h \
+ /usr/include/qt6/QtCore/quuid.h /usr/include/qt6/QtCore/qvariant.h \
+ /usr/include/qt6/QtCore/qvariantanimation.h \
+ /usr/include/qt6/QtCore/qvarianthash.h /usr/include/qt6/QtCore/QHash \
+ /usr/include/qt6/QtCore/QVariant /usr/include/qt6/QtCore/QString \
+ /usr/include/qt6/QtCore/qvariantlist.h /usr/include/qt6/QtCore/QList \
+ /usr/include/qt6/QtCore/qvariantmap.h /usr/include/qt6/QtCore/QMap \
+ /usr/include/qt6/QtCore/qvarlengtharray.h \
+ /usr/include/qt6/QtCore/qvector.h \
+ /usr/include/qt6/QtCore/qversionnumber.h \
+ /usr/include/qt6/QtCore/qwaitcondition.h \
+ /usr/include/qt6/QtCore/QDeadlineTimer \
+ /usr/include/qt6/QtCore/qwineventnotifier.h \
+ /usr/include/qt6/QtCore/qxmlstream.h \
+ /usr/include/qt6/QtCore/qxpfunctional.h \
+ /usr/include/qt6/QtCore/q23functional.h \
+ /usr/include/qt6/QtCore/qyieldcpu.h \
+ /usr/include/qt6/QtConcurrent/qtaskbuilder.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentstoredfunctioncall.h \
  /usr/include/qt6/QtConcurrent/qtconcurrent_global.h \
  /usr/include/qt6/QtConcurrent/qtconcurrentexports.h \
  /usr/include/qt6/QtConcurrent/qtconcurrentrunbase.h \
- /usr/include/qt6/QtCore/qfuture.h \
- /usr/include/qt6/QtCore/qfutureinterface.h \
- /usr/include/qt6/QtCore/qmutex.h /usr/include/qt6/QtCore/qtsan_impl.h \
- /usr/include/qt6/QtCore/qresultstore.h \
- /usr/include/qt6/QtCore/qfuture_impl.h \
- /usr/include/qt6/QtCore/qthreadpool.h /usr/include/qt6/QtCore/qthread.h \
- /usr/include/c++/14.2.1/future /usr/include/c++/14.2.1/mutex \
- /usr/include/c++/14.2.1/bits/std_mutex.h \
- /usr/include/c++/14.2.1/bits/unique_lock.h \
- /usr/include/c++/14.2.1/condition_variable \
- /usr/include/c++/14.2.1/bits/atomic_futex.h \
- /usr/include/c++/14.2.1/bits/std_thread.h \
- /usr/include/qt6/QtCore/qrunnable.h /usr/include/qt6/QtCore/qexception.h \
- /usr/include/qt6/QtCore/qpromise.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentcompilertest.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentfilter.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentfilterkernel.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentiteratekernel.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentmedian.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentthreadengine.h \
+ /usr/include/qt6/QtCore/qwaitcondition.h \
+ /usr/include/qt6/QtCore/qsemaphore.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentmapkernel.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentreducekernel.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentfunctionwrappers.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentcompilertest.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentfilterkernel.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentfunctionwrappers.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentiteratekernel.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentmap.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentmapkernel.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentmedian.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentreducekernel.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentrun.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentrunbase.h \
  /usr/include/qt6/QtConcurrent/qtconcurrentstoredfunctioncall.h \
- /usr/include/qt6/QtCore/QFutureWatcher \
- /usr/include/qt6/QtCore/qfuturewatcher.h \
- /usr/include/qt6/QtCore/QStandardPaths \
- /usr/include/qt6/QtCore/qstandardpaths.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrenttask.h \
+ /usr/include/qt6/QtConcurrent/qtaskbuilder.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentthreadengine.h \
+ /usr/include/qt6/QtConcurrent/qtconcurrentversion.h \
+ /usr/include/qt6/QtCore/QProcess /usr/include/qt6/QtGui/QCloseEvent \
+ /usr/include/qt6/QtGui/qevent.h /usr/include/qt6/QtGui/qeventpoint.h \
+ /usr/include/qt6/QtGui/qvector2d.h /usr/include/qt6/QtGui/qvectornd.h \
+ /usr/include/qt6/QtGui/qpointingdevice.h \
+ /usr/include/qt6/QtGui/qinputdevice.h /usr/include/qt6/QtGui/qscreen.h \
+ /usr/include/qt6/QtCore/QRect /usr/include/qt6/QtCore/QSize \
+ /usr/include/qt6/QtCore/QSizeF /usr/include/qt6/QtGui/QTransform \
+ /usr/include/qt6/QtGui/qtransform.h \
+ /usr/include/qt6/QtGui/qscreen_platform.h \
+ /usr/include/qt6/QtGui/qguiapplication.h \
+ /usr/include/qt6/QtGui/qinputmethod.h \
+ /usr/include/qt6/QtGui/qguiapplication_platform.h \
  /usr/include/qt6/QtCore/QTemporaryDir \
- /usr/include/qt6/QtCore/qtemporarydir.h \
- /usr/include/qt6/QtCore/QMetaObject \
- /usr/include/qt6/QtCore/qobjectdefs.h /usr/include/qt6/QtCore/QFile \
- /usr/include/qt6/QtCore/qfile.h /usr/include/qt6/QtWidgets/QSizePolicy \
+ /usr/include/qt6/QtGui/QDesktopServices \
+ /usr/include/qt6/QtGui/qdesktopservices.h /usr/include/qt6/QtCore/QUrl \
+ /usr/include/qt6/QtWidgets/QScrollBar \
+ /usr/include/qt6/QtWidgets/qscrollbar.h /usr/include/qt6/QtCore/QThread \
+ /usr/include/qt6/QtWidgets/QStyleFactory \
+ /usr/include/qt6/QtWidgets/qstylefactory.h \
+ /usr/include/qt6/QtWidgets/QStyle /usr/include/qt6/QtWidgets/qstyle.h \
+ /usr/include/qt6/QtGui/QPalette /usr/include/qt6/QtGui/qpalette.h \
+ /usr/include/qt6/QtCore/QTimer /usr/include/qt6/QtGui/QScreen \
+ /usr/include/qt6/QtGui/qscreen.h /usr/include/qt6/QtWidgets/QApplication \
+ /usr/include/qt6/QtWidgets/qapplication.h \
+ /usr/include/qt6/QtGui/QClipboard /usr/include/qt6/QtGui/qclipboard.h \
+ /usr/include/qt6/QtGui/QShortcut /usr/include/qt6/QtGui/qshortcut.h \
+ /usr/include/qt6/QtWidgets/QGridLayout \
+ /usr/include/qt6/QtWidgets/qgridlayout.h \
+ /usr/include/qt6/QtWidgets/QSizePolicy \
  /usr/include/qt6/QtWidgets/qsizepolicy.h \
- /usr/include/qt6/QtCore/QThreadPool \
- /usr/include/qt6/QtCore/qthreadpool.h \
- /usr/include/qt6/QtWidgets/QCompleter \
- /usr/include/qt6/QtWidgets/qcompleter.h /usr/include/qt6/QtCore/QDir \
- /usr/include/qt6/QtCore/qdir.h /usr/include/qt6/QtCore/QFileInfo \
- /usr/include/qt6/QtCore/qfileinfo.h \
- /usr/include/qt6/QtWidgets/QFontDialog \
- /usr/include/qt6/QtWidgets/qfontdialog.h \
- /usr/include/qt6/QtCore/QEasingCurve \
- /usr/include/qt6/QtCore/qeasingcurve.h /usr/include/c++/14.2.1/iostream
+ /usr/include/qt6/QtWidgets/QSpacerItem \
+ /usr/include/qt6/QtWidgets/qlayoutitem.h \
+ /usr/include/c++/14.2.1/iostream /usr/include/qt6/QtCore/QDebug

@@ -392,6 +392,30 @@ src/gui/settingsdialog.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.s
 .PHONY : src/gui/settingsdialog.cpp.s
 
+src/gui/util.o: src/gui/util.cpp.o
+.PHONY : src/gui/util.o
+
+# target to build an object file
+src/gui/util.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/gui/util.cpp.o
+.PHONY : src/gui/util.cpp.o
+
+src/gui/util.i: src/gui/util.cpp.i
+.PHONY : src/gui/util.i
+
+# target to preprocess a source file
+src/gui/util.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/gui/util.cpp.i
+.PHONY : src/gui/util.cpp.i
+
+src/gui/util.s: src/gui/util.cpp.s
+.PHONY : src/gui/util.s
+
+# target to generate assembly for a file
+src/gui/util.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/gui/util.cpp.s
+.PHONY : src/gui/util.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -415,6 +439,102 @@ src/main.s: src/main.cpp.s
 src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
+
+src/wayland/wayland_backend.o: src/wayland/wayland_backend.cpp.o
+.PHONY : src/wayland/wayland_backend.o
+
+# target to build an object file
+src/wayland/wayland_backend.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.o
+.PHONY : src/wayland/wayland_backend.cpp.o
+
+src/wayland/wayland_backend.i: src/wayland/wayland_backend.cpp.i
+.PHONY : src/wayland/wayland_backend.i
+
+# target to preprocess a source file
+src/wayland/wayland_backend.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.i
+.PHONY : src/wayland/wayland_backend.cpp.i
+
+src/wayland/wayland_backend.s: src/wayland/wayland_backend.cpp.s
+.PHONY : src/wayland/wayland_backend.s
+
+# target to generate assembly for a file
+src/wayland/wayland_backend.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.s
+.PHONY : src/wayland/wayland_backend.cpp.s
+
+src/wayland/wayland_optimization.o: src/wayland/wayland_optimization.cpp.o
+.PHONY : src/wayland/wayland_optimization.o
+
+# target to build an object file
+src/wayland/wayland_optimization.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/wayland/wayland_optimization.cpp.o
+.PHONY : src/wayland/wayland_optimization.cpp.o
+
+src/wayland/wayland_optimization.i: src/wayland/wayland_optimization.cpp.i
+.PHONY : src/wayland/wayland_optimization.i
+
+# target to preprocess a source file
+src/wayland/wayland_optimization.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/wayland/wayland_optimization.cpp.i
+.PHONY : src/wayland/wayland_optimization.cpp.i
+
+src/wayland/wayland_optimization.s: src/wayland/wayland_optimization.cpp.s
+.PHONY : src/wayland/wayland_optimization.s
+
+# target to generate assembly for a file
+src/wayland/wayland_optimization.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/wayland/wayland_optimization.cpp.s
+.PHONY : src/wayland/wayland_optimization.cpp.s
+
+src/wayland/wayland_protocols.o: src/wayland/wayland_protocols.cpp.o
+.PHONY : src/wayland/wayland_protocols.o
+
+# target to build an object file
+src/wayland/wayland_protocols.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.o
+.PHONY : src/wayland/wayland_protocols.cpp.o
+
+src/wayland/wayland_protocols.i: src/wayland/wayland_protocols.cpp.i
+.PHONY : src/wayland/wayland_protocols.i
+
+# target to preprocess a source file
+src/wayland/wayland_protocols.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.i
+.PHONY : src/wayland/wayland_protocols.cpp.i
+
+src/wayland/wayland_protocols.s: src/wayland/wayland_protocols.cpp.s
+.PHONY : src/wayland/wayland_protocols.s
+
+# target to generate assembly for a file
+src/wayland/wayland_protocols.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.s
+.PHONY : src/wayland/wayland_protocols.cpp.s
+
+src/wayland/wayland_security.o: src/wayland/wayland_security.cpp.o
+.PHONY : src/wayland/wayland_security.o
+
+# target to build an object file
+src/wayland/wayland_security.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.o
+.PHONY : src/wayland/wayland_security.cpp.o
+
+src/wayland/wayland_security.i: src/wayland/wayland_security.cpp.i
+.PHONY : src/wayland/wayland_security.i
+
+# target to preprocess a source file
+src/wayland/wayland_security.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.i
+.PHONY : src/wayland/wayland_security.cpp.i
+
+src/wayland/wayland_security.s: src/wayland/wayland_security.cpp.s
+.PHONY : src/wayland/wayland_security.s
+
+# target to generate assembly for a file
+src/wayland/wayland_security.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pacmangui.dir/build.make CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.s
+.PHONY : src/wayland/wayland_security.cpp.s
 
 # Help Target
 help:
@@ -455,9 +575,24 @@ help:
 	@echo "... src/gui/settingsdialog.o"
 	@echo "... src/gui/settingsdialog.i"
 	@echo "... src/gui/settingsdialog.s"
+	@echo "... src/gui/util.o"
+	@echo "... src/gui/util.i"
+	@echo "... src/gui/util.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/wayland/wayland_backend.o"
+	@echo "... src/wayland/wayland_backend.i"
+	@echo "... src/wayland/wayland_backend.s"
+	@echo "... src/wayland/wayland_optimization.o"
+	@echo "... src/wayland/wayland_optimization.i"
+	@echo "... src/wayland/wayland_optimization.s"
+	@echo "... src/wayland/wayland_protocols.o"
+	@echo "... src/wayland/wayland_protocols.i"
+	@echo "... src/wayland/wayland_protocols.s"
+	@echo "... src/wayland/wayland_security.o"
+	@echo "... src/wayland/wayland_security.i"
+	@echo "... src/wayland/wayland_security.s"
 .PHONY : help
 
 

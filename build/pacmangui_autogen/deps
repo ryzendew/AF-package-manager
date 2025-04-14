@@ -10,6 +10,10 @@ pacmangui_autogen/timestamp: \
 	/home/matt/PacmanGui-new/include/core/transaction.hpp \
 	/home/matt/PacmanGui-new/include/gui/mainwindow.hpp \
 	/home/matt/PacmanGui-new/include/gui/settingsdialog.hpp \
+	/home/matt/PacmanGui-new/include/wayland/wayland_backend.hpp \
+	/home/matt/PacmanGui-new/include/wayland/wayland_optimization.hpp \
+	/home/matt/PacmanGui-new/include/wayland/wayland_protocols.hpp \
+	/home/matt/PacmanGui-new/include/wayland/wayland_security.hpp \
 	/home/matt/PacmanGui-new/resources/resources.qrc \
 	/home/matt/PacmanGui-new/src/core/package.cpp \
 	/home/matt/PacmanGui-new/src/core/packagemanager.cpp \
@@ -17,7 +21,12 @@ pacmangui_autogen/timestamp: \
 	/home/matt/PacmanGui-new/src/core/transaction.cpp \
 	/home/matt/PacmanGui-new/src/gui/mainwindow.cpp \
 	/home/matt/PacmanGui-new/src/gui/settingsdialog.cpp \
+	/home/matt/PacmanGui-new/src/gui/util.cpp \
 	/home/matt/PacmanGui-new/src/main.cpp \
+	/home/matt/PacmanGui-new/src/wayland/wayland_backend.cpp \
+	/home/matt/PacmanGui-new/src/wayland/wayland_optimization.cpp \
+	/home/matt/PacmanGui-new/src/wayland/wayland_protocols.cpp \
+	/home/matt/PacmanGui-new/src/wayland/wayland_security.cpp \
 	/usr/include/alloca.h \
 	/usr/include/alpm.h \
 	/usr/include/alpm_list.h \
@@ -124,6 +133,7 @@ pacmangui_autogen/timestamp: \
 	/usr/include/c++/14.2.1/bits/allocated_ptr.h \
 	/usr/include/c++/14.2.1/bits/allocator.h \
 	/usr/include/c++/14.2.1/bits/atomic_base.h \
+	/usr/include/c++/14.2.1/bits/atomic_futex.h \
 	/usr/include/c++/14.2.1/bits/atomic_lockfree_defines.h \
 	/usr/include/c++/14.2.1/bits/basic_string.h \
 	/usr/include/c++/14.2.1/bits/basic_string.tcc \
@@ -170,6 +180,8 @@ pacmangui_autogen/timestamp: \
 	/usr/include/c++/14.2.1/bits/specfun.h \
 	/usr/include/c++/14.2.1/bits/std_abs.h \
 	/usr/include/c++/14.2.1/bits/std_function.h \
+	/usr/include/c++/14.2.1/bits/std_mutex.h \
+	/usr/include/c++/14.2.1/bits/std_thread.h \
 	/usr/include/c++/14.2.1/bits/stl_algo.h \
 	/usr/include/c++/14.2.1/bits/stl_algobase.h \
 	/usr/include/c++/14.2.1/bits/stl_bvector.h \
@@ -198,6 +210,7 @@ pacmangui_autogen/timestamp: \
 	/usr/include/c++/14.2.1/bits/string_view.tcc \
 	/usr/include/c++/14.2.1/bits/stringfwd.h \
 	/usr/include/c++/14.2.1/bits/uniform_int_dist.h \
+	/usr/include/c++/14.2.1/bits/unique_lock.h \
 	/usr/include/c++/14.2.1/bits/unique_ptr.h \
 	/usr/include/c++/14.2.1/bits/unordered_map.h \
 	/usr/include/c++/14.2.1/bits/unordered_set.h \
@@ -215,6 +228,7 @@ pacmangui_autogen/timestamp: \
 	/usr/include/c++/14.2.1/cmath \
 	/usr/include/c++/14.2.1/compare \
 	/usr/include/c++/14.2.1/concepts \
+	/usr/include/c++/14.2.1/condition_variable \
 	/usr/include/c++/14.2.1/cstddef \
 	/usr/include/c++/14.2.1/cstdint \
 	/usr/include/c++/14.2.1/cstdio \
@@ -234,6 +248,7 @@ pacmangui_autogen/timestamp: \
 	/usr/include/c++/14.2.1/ext/type_traits.h \
 	/usr/include/c++/14.2.1/filesystem \
 	/usr/include/c++/14.2.1/functional \
+	/usr/include/c++/14.2.1/future \
 	/usr/include/c++/14.2.1/initializer_list \
 	/usr/include/c++/14.2.1/iosfwd \
 	/usr/include/c++/14.2.1/iterator \
@@ -241,6 +256,7 @@ pacmangui_autogen/timestamp: \
 	/usr/include/c++/14.2.1/list \
 	/usr/include/c++/14.2.1/map \
 	/usr/include/c++/14.2.1/memory \
+	/usr/include/c++/14.2.1/mutex \
 	/usr/include/c++/14.2.1/new \
 	/usr/include/c++/14.2.1/numeric \
 	/usr/include/c++/14.2.1/optional \
@@ -298,6 +314,7 @@ pacmangui_autogen/timestamp: \
 	/usr/include/linux/types.h \
 	/usr/include/locale.h \
 	/usr/include/pthread.h \
+	/usr/include/qt6/QtCore/QFutureWatcher \
 	/usr/include/qt6/QtCore/QMap \
 	/usr/include/qt6/QtCore/QPropertyAnimation \
 	/usr/include/qt6/QtCore/QSet \
@@ -340,11 +357,14 @@ pacmangui_autogen/timestamp: \
 	/usr/include/qt6/QtCore/qdarwinhelpers.h \
 	/usr/include/qt6/QtCore/qdatastream.h \
 	/usr/include/qt6/QtCore/qdatetime.h \
+	/usr/include/qt6/QtCore/qdeadlinetimer.h \
 	/usr/include/qt6/QtCore/qdebug.h \
 	/usr/include/qt6/QtCore/qdir.h \
 	/usr/include/qt6/QtCore/qdirlisting.h \
 	/usr/include/qt6/QtCore/qeasingcurve.h \
+	/usr/include/qt6/QtCore/qelapsedtimer.h \
 	/usr/include/qt6/QtCore/qendian.h \
+	/usr/include/qt6/QtCore/qexception.h \
 	/usr/include/qt6/QtCore/qexceptionhandling.h \
 	/usr/include/qt6/QtCore/qfile.h \
 	/usr/include/qt6/QtCore/qfiledevice.h \
@@ -354,6 +374,10 @@ pacmangui_autogen/timestamp: \
 	/usr/include/qt6/QtCore/qforeach.h \
 	/usr/include/qt6/QtCore/qfunctionaltools_impl.h \
 	/usr/include/qt6/QtCore/qfunctionpointer.h \
+	/usr/include/qt6/QtCore/qfuture.h \
+	/usr/include/qt6/QtCore/qfuture_impl.h \
+	/usr/include/qt6/QtCore/qfutureinterface.h \
+	/usr/include/qt6/QtCore/qfuturewatcher.h \
 	/usr/include/qt6/QtCore/qgenericatomic.h \
 	/usr/include/qt6/QtCore/qglobal.h \
 	/usr/include/qt6/QtCore/qglobalstatic.h \
@@ -376,6 +400,7 @@ pacmangui_autogen/timestamp: \
 	/usr/include/qt6/QtCore/qmetacontainer.h \
 	/usr/include/qt6/QtCore/qmetatype.h \
 	/usr/include/qt6/QtCore/qminmax.h \
+	/usr/include/qt6/QtCore/qmutex.h \
 	/usr/include/qt6/QtCore/qnamespace.h \
 	/usr/include/qt6/QtCore/qnumeric.h \
 	/usr/include/qt6/QtCore/qobject.h \
@@ -386,10 +411,13 @@ pacmangui_autogen/timestamp: \
 	/usr/include/qt6/QtCore/qpair.h \
 	/usr/include/qt6/QtCore/qpoint.h \
 	/usr/include/qt6/QtCore/qprocessordetection.h \
+	/usr/include/qt6/QtCore/qpromise.h \
 	/usr/include/qt6/QtCore/qpropertyanimation.h \
 	/usr/include/qt6/QtCore/qrect.h \
 	/usr/include/qt6/QtCore/qrefcount.h \
 	/usr/include/qt6/QtCore/qregularexpression.h \
+	/usr/include/qt6/QtCore/qresultstore.h \
+	/usr/include/qt6/QtCore/qrunnable.h \
 	/usr/include/qt6/QtCore/qscopedpointer.h \
 	/usr/include/qt6/QtCore/qscopeguard.h \
 	/usr/include/qt6/QtCore/qset.h \
@@ -427,11 +455,14 @@ pacmangui_autogen/timestamp: \
 	/usr/include/qt6/QtCore/qtenvironmentvariables.h \
 	/usr/include/qt6/QtCore/qtextstream.h \
 	/usr/include/qt6/QtCore/qtformat_impl.h \
+	/usr/include/qt6/QtCore/qthread.h \
+	/usr/include/qt6/QtCore/qthreadpool.h \
 	/usr/include/qt6/QtCore/qtimezone.h \
 	/usr/include/qt6/QtCore/qtmetamacros.h \
 	/usr/include/qt6/QtCore/qtnoop.h \
 	/usr/include/qt6/QtCore/qtpreprocessorsupport.h \
 	/usr/include/qt6/QtCore/qtresource.h \
+	/usr/include/qt6/QtCore/qtsan_impl.h \
 	/usr/include/qt6/QtCore/qttranslation.h \
 	/usr/include/qt6/QtCore/qttypetraits.h \
 	/usr/include/qt6/QtCore/qtversion.h \
@@ -495,6 +526,7 @@ pacmangui_autogen/timestamp: \
 	/usr/include/qt6/QtWidgets/QMainWindow \
 	/usr/include/qt6/QtWidgets/QMenu \
 	/usr/include/qt6/QtWidgets/QProgressBar \
+	/usr/include/qt6/QtWidgets/QProgressDialog \
 	/usr/include/qt6/QtWidgets/QPushButton \
 	/usr/include/qt6/QtWidgets/QRadioButton \
 	/usr/include/qt6/QtWidgets/QScrollArea \
@@ -506,6 +538,7 @@ pacmangui_autogen/timestamp: \
 	/usr/include/qt6/QtWidgets/QTextEdit \
 	/usr/include/qt6/QtWidgets/QToolBar \
 	/usr/include/qt6/QtWidgets/QToolButton \
+	/usr/include/qt6/QtWidgets/QTreeView \
 	/usr/include/qt6/QtWidgets/QVBoxLayout \
 	/usr/include/qt6/QtWidgets/qabstractbutton.h \
 	/usr/include/qt6/QtWidgets/qabstractitemdelegate.h \
@@ -531,6 +564,7 @@ pacmangui_autogen/timestamp: \
 	/usr/include/qt6/QtWidgets/qmainwindow.h \
 	/usr/include/qt6/QtWidgets/qmenu.h \
 	/usr/include/qt6/QtWidgets/qprogressbar.h \
+	/usr/include/qt6/QtWidgets/qprogressdialog.h \
 	/usr/include/qt6/QtWidgets/qpushbutton.h \
 	/usr/include/qt6/QtWidgets/qradiobutton.h \
 	/usr/include/qt6/QtWidgets/qrubberband.h \
@@ -548,6 +582,7 @@ pacmangui_autogen/timestamp: \
 	/usr/include/qt6/QtWidgets/qtextedit.h \
 	/usr/include/qt6/QtWidgets/qtoolbar.h \
 	/usr/include/qt6/QtWidgets/qtoolbutton.h \
+	/usr/include/qt6/QtWidgets/qtreeview.h \
 	/usr/include/qt6/QtWidgets/qtwidgets-config.h \
 	/usr/include/qt6/QtWidgets/qtwidgetsexports.h \
 	/usr/include/qt6/QtWidgets/qtwidgetsglobal.h \
@@ -566,6 +601,10 @@ pacmangui_autogen/timestamp: \
 	/usr/include/time.h \
 	/usr/include/unistd.h \
 	/usr/include/wchar.h \
+	/usr/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules/ECMFindModuleHelpersStub.cmake \
+	/usr/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules/FindWayland.cmake \
+	/usr/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules/FindWaylandScanner.cmake \
+	/usr/lib/cmake/Qt6/3rdparty/extra-cmake-modules/modules/ECMFindModuleHelpers.cmake \
 	/usr/lib/cmake/Qt6/3rdparty/kwin/FindXKB.cmake \
 	/usr/lib/cmake/Qt6/FindWrapAtomic.cmake \
 	/usr/lib/cmake/Qt6/FindWrapOpenGL.cmake \
@@ -845,6 +884,85 @@ pacmangui_autogen/timestamp: \
 	/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsTargets-relwithdebinfo.cmake \
 	/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsTargets.cmake \
 	/usr/lib/cmake/Qt6GuiTools/Qt6GuiToolsVersionlessTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6DmaBufServerBufferPluginAdditionalTargetInfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6DmaBufServerBufferPluginConfig.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6DmaBufServerBufferPluginTargets-relwithdebinfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6DmaBufServerBufferPluginTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6DrmEglServerBufferPluginAdditionalTargetInfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6DrmEglServerBufferPluginConfig.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6DrmEglServerBufferPluginTargets-relwithdebinfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6DrmEglServerBufferPluginTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandAdwaitaDecorationPluginAdditionalTargetInfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandAdwaitaDecorationPluginConfig.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandAdwaitaDecorationPluginTargets-relwithdebinfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandAdwaitaDecorationPluginTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandBradientDecorationPluginAdditionalTargetInfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandBradientDecorationPluginConfig.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandBradientDecorationPluginTargets-relwithdebinfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandBradientDecorationPluginTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandEglClientBufferPluginAdditionalTargetInfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandEglClientBufferPluginConfig.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandEglClientBufferPluginTargets-relwithdebinfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandEglClientBufferPluginTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandFullScreenShellV1IntegrationPluginAdditionalTargetInfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandFullScreenShellV1IntegrationPluginConfig.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandFullScreenShellV1IntegrationPluginTargets-relwithdebinfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandFullScreenShellV1IntegrationPluginTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandIviShellIntegrationPluginAdditionalTargetInfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandIviShellIntegrationPluginConfig.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandIviShellIntegrationPluginTargets-relwithdebinfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandIviShellIntegrationPluginTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandQtShellIntegrationPluginAdditionalTargetInfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandQtShellIntegrationPluginConfig.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandQtShellIntegrationPluginTargets-relwithdebinfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandQtShellIntegrationPluginTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandWlShellIntegrationPluginAdditionalTargetInfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandWlShellIntegrationPluginConfig.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandWlShellIntegrationPluginTargets-relwithdebinfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandWlShellIntegrationPluginTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandXdgShellIntegrationPluginAdditionalTargetInfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandXdgShellIntegrationPluginConfig.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandXdgShellIntegrationPluginTargets-relwithdebinfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6QWaylandXdgShellIntegrationPluginTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6ShmServerBufferPluginAdditionalTargetInfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6ShmServerBufferPluginConfig.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6ShmServerBufferPluginTargets-relwithdebinfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6ShmServerBufferPluginTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6VulkanServerBufferPluginAdditionalTargetInfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6VulkanServerBufferPluginConfig.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6VulkanServerBufferPluginTargets-relwithdebinfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6VulkanServerBufferPluginTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6WaylandClientAdditionalTargetInfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6WaylandClientConfig.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6WaylandClientConfigVersion.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6WaylandClientConfigVersionImpl.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6WaylandClientDependencies.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6WaylandClientMacros.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6WaylandClientPlugins.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6WaylandClientTargets-relwithdebinfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6WaylandClientTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandClient/Qt6WaylandClientVersionlessAliasTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandClientPrivate/Qt6WaylandClientPrivateAdditionalTargetInfo.cmake \
+	/usr/lib/cmake/Qt6WaylandClientPrivate/Qt6WaylandClientPrivateConfig.cmake \
+	/usr/lib/cmake/Qt6WaylandClientPrivate/Qt6WaylandClientPrivateConfigVersion.cmake \
+	/usr/lib/cmake/Qt6WaylandClientPrivate/Qt6WaylandClientPrivateConfigVersionImpl.cmake \
+	/usr/lib/cmake/Qt6WaylandClientPrivate/Qt6WaylandClientPrivateDependencies.cmake \
+	/usr/lib/cmake/Qt6WaylandClientPrivate/Qt6WaylandClientPrivateTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandClientPrivate/Qt6WaylandClientPrivateVersionlessAliasTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandGlobalPrivate/Qt6WaylandGlobalPrivateAdditionalTargetInfo.cmake \
+	/usr/lib/cmake/Qt6WaylandGlobalPrivate/Qt6WaylandGlobalPrivateConfig.cmake \
+	/usr/lib/cmake/Qt6WaylandGlobalPrivate/Qt6WaylandGlobalPrivateConfigVersion.cmake \
+	/usr/lib/cmake/Qt6WaylandGlobalPrivate/Qt6WaylandGlobalPrivateConfigVersionImpl.cmake \
+	/usr/lib/cmake/Qt6WaylandGlobalPrivate/Qt6WaylandGlobalPrivateTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandGlobalPrivate/Qt6WaylandGlobalPrivateVersionlessAliasTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandScannerTools/Qt6WaylandScannerToolsAdditionalTargetInfo.cmake \
+	/usr/lib/cmake/Qt6WaylandScannerTools/Qt6WaylandScannerToolsConfig.cmake \
+	/usr/lib/cmake/Qt6WaylandScannerTools/Qt6WaylandScannerToolsConfigVersion.cmake \
+	/usr/lib/cmake/Qt6WaylandScannerTools/Qt6WaylandScannerToolsConfigVersionImpl.cmake \
+	/usr/lib/cmake/Qt6WaylandScannerTools/Qt6WaylandScannerToolsDependencies.cmake \
+	/usr/lib/cmake/Qt6WaylandScannerTools/Qt6WaylandScannerToolsTargets-relwithdebinfo.cmake \
+	/usr/lib/cmake/Qt6WaylandScannerTools/Qt6WaylandScannerToolsTargets.cmake \
+	/usr/lib/cmake/Qt6WaylandScannerTools/Qt6WaylandScannerToolsVersionlessTargets.cmake \
 	/usr/lib/cmake/Qt6Widgets/Qt6WidgetsAdditionalTargetInfo.cmake \
 	/usr/lib/cmake/Qt6Widgets/Qt6WidgetsConfig.cmake \
 	/usr/lib/cmake/Qt6Widgets/Qt6WidgetsConfigVersion.cmake \

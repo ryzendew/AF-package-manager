@@ -1,0 +1,171 @@
+#include "include/gui/mainwindow.hpp"
+#include "include/gui/settingsdialog.hpp"
+#include "include/wayland/wayland_backend.hpp"
+#include "include/wayland/wayland_protocols.hpp"
+#include "include/wayland/wayland_security.hpp"
+#include "include/wayland/wayland_optimization.hpp"
+
+#include <QMenuBar>
+#include <QStatusBar>
+#include <QHeaderView>
+#include <QMessageBox>
+#include <QInputDialog>
+#include <QFileDialog>
+#include <QStandardPaths>
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QtConcurrent/QtConcurrent>
+#include <QProcess>
+#include <QSettings>
+#include <QCloseEvent>
+#include <QTemporaryDir>
+#include <QDesktopServices>
+#include <QUrl>
+#include <QScrollBar>
+#include <QThread>
+#include <QStyleFactory>
+#include <QStyle>
+#include <QPalette>
+#include <QTimer>
+#include <QProgressDialog>
+#include <QProgressBar>
+#include <QScreen>
+#include <QLabel>
+#include <QApplication>
+#include <QClipboard>
+#include <QShortcut>
+
+#include <iostream>
+#include <functional>
+
+namespace pacmangui {
+namespace gui {
+
+MainWindow::MainWindow(QWidget* parent)
+    : QMainWindow(parent),
+    m_packageManager(),
+    m_settingsDialog(nullptr),
+    m_waylandSupported(false)
+{
+    setWindowTitle(tr("PacmanGUI"));
+    setMinimumSize(800, 600);
+
+    // Initialize package manager
+    m_packageManager.initialize("/", "/var/lib/pacman");
+
+    // Set up UI components
+    setupUi();
+    setupActions();
+    setupMenus();
+    setupConnections();
+    setupSystemUpdateTab();
+    setupMaintenanceTab();
+    setupDetailPanel();
+    setupWaylandSupport();
+
+    // Load settings
+    loadSettings();
+    applyTheme(isDarkThemeEnabled());
+
+    // Populate tables
+    refreshInstalledPackages();
+    searchPackages("");
+
+    // Check for AUR helper
+    checkAurHelper();
+
+    // Show welcome message
+    showStatusMessage(tr("Welcome to PacmanGUI"));
+}
+
+MainWindow::~MainWindow()
+{
+    // Clean up allocated resources
+    if (m_slideAnimation) {
+        m_slideAnimation->stop();
+    }
+    
+    delete m_packagesModel;
+    delete m_installedModel;
+    delete m_systemUpdatesModel;
+    delete m_settingsDialog;
+}
+
+void MainWindow::setupWaylandSupport()
+{
+#ifdef ENABLE_WAYLAND_SUPPORT
+    // Check if Wayland is available
+    m_waylandSupported = pacmangui::wayland::WaylandBackend::isWaylandAvailable();
+    
+    if (m_waylandSupported) {
+        // Initialize static Wayland support
+        pacmangui::wayland::WaylandBackend::initialize();
+        pacmangui::wayland::WaylandProtocols::initialize();
+        pacmangui::wayland::WaylandSecurity::initialize();
+        pacmangui::wayland::WaylandOptimization::initialize();
+        
+        // Create actions
+        m_waylandSecurityAction = new QAction("Enable Wayland Security Features", this);
+        m_waylandSecurityAction->setCheckable(true);
+        m_waylandSecurityAction->setChecked(true);
+        
+        m_waylandOptimizationsAction = new QAction("Enable Wayland Optimizations", this);
+        m_waylandOptimizationsAction->setCheckable(true);
+        m_waylandOptimizationsAction->setChecked(true);
+        
+        // Connect signals and slots
+        connect(m_waylandSecurityAction, &QAction::toggled, this, [this](bool checked) {
+            pacmangui::wayland::WaylandSecurity::enableSecurityFeatures(checked);
+            statusBar()->showMessage(
+                checked ? "Wayland security features enabled" 
+                        : "Wayland security features disabled", 
+                3000);
+        });
+        
+        connect(m_waylandOptimizationsAction, &QAction::toggled, this, [this](bool checked) {
+            pacmangui::wayland::WaylandOptimization::enableOptimizations(checked);
+            statusBar()->showMessage(
+                checked ? "Wayland optimizations enabled" 
+                        : "Wayland optimizations disabled", 
+                3000);
+        });
+        
+        // Display Wayland info in status bar
+        QString displayInfo = pacmangui::wayland::WaylandBackend::getDisplayInfo();
+        if (!displayInfo.isEmpty()) {
+            statusBar()->showMessage("Wayland support enabled: " + displayInfo, 5000);
+        }
+    }
+#endif
+}
+
+// Empty implementations for Wayland callbacks
+void MainWindow::onWaylandBackendAvailabilityChanged(bool available) {
+    Q_UNUSED(available);
+}
+
+void MainWindow::onWaylandOutputChanged() {
+}
+
+void MainWindow::onWaylandPermissionChanged(const QString& featureName, bool granted) {
+    Q_UNUSED(featureName);
+    Q_UNUSED(granted);
+}
+
+void MainWindow::onWaylandSecurityEvent(const QString& eventType, const QString& details) {
+    Q_UNUSED(eventType);
+    Q_UNUSED(details);
+}
+
+void MainWindow::onWaylandHardwareAccelerationStatusChanged(bool available) {
+    Q_UNUSED(available);
+}
+
+void MainWindow::onWaylandPerformanceMetricsUpdated(const QVariantMap& metrics) {
+    Q_UNUSED(metrics);
+}
+
+// Here the rest of the implementation would be placed, but we're focusing only on the Wayland part
+
+} // namespace gui
+} // namespace pacmangui 

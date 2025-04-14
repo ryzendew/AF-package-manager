@@ -45,8 +45,6 @@ template <> constexpr inline auto pacmangui::gui::SettingsDialog::qt_create_meta
         "isDark",
         "aurStatusChanged",
         "enabled",
-        "onAurEnabledChanged",
-        "state",
         "onOkClicked",
         "onCancelClicked",
         "onApplyClicked",
@@ -62,18 +60,14 @@ template <> constexpr inline auto pacmangui::gui::SettingsDialog::qt_create_meta
         QtMocHelpers::SignalData<void(bool)>(4, 2, QMC::AccessPublic, QMetaType::Void, {{
             { QMetaType::Bool, 5 },
         }}),
-        // Slot 'onAurEnabledChanged'
-        QtMocHelpers::SlotData<void(int)>(6, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 7 },
-        }}),
         // Slot 'onOkClicked'
-        QtMocHelpers::SlotData<void()>(8, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(6, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'onCancelClicked'
-        QtMocHelpers::SlotData<void()>(9, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(7, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'onApplyClicked'
-        QtMocHelpers::SlotData<void()>(10, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(8, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'detectAurHelpers'
-        QtMocHelpers::SlotData<void()>(11, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(9, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -99,11 +93,10 @@ void pacmangui::gui::SettingsDialog::qt_static_metacall(QObject *_o, QMetaObject
         switch (_id) {
         case 0: _t->themeChanged((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
         case 1: _t->aurStatusChanged((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
-        case 2: _t->onAurEnabledChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
-        case 3: _t->onOkClicked(); break;
-        case 4: _t->onCancelClicked(); break;
-        case 5: _t->onApplyClicked(); break;
-        case 6: _t->detectAurHelpers(); break;
+        case 2: _t->onOkClicked(); break;
+        case 3: _t->onCancelClicked(); break;
+        case 4: _t->onApplyClicked(); break;
+        case 5: _t->detectAurHelpers(); break;
         default: ;
         }
     }
@@ -134,14 +127,14 @@ int pacmangui::gui::SettingsDialog::qt_metacall(QMetaObject::Call _c, int _id, v
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 6;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 7)
+        if (_id < 6)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 7;
+        _id -= 6;
     }
     return _id;
 }

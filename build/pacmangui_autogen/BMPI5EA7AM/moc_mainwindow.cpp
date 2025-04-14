@@ -70,12 +70,29 @@ template <> constexpr inline auto pacmangui::gui::MainWindow::qt_create_metaobje
         "onMaintenanceTaskFinished",
         "success",
         "message",
+        "onCleanCache",
+        "onClearPackageLock",
+        "onCheckIntegrityAllPackages",
+        "onRefreshMirrorList",
         "toggleTheme",
         "isDark",
         "openSettings",
         "onAbout",
         "onDetailPanelAnimationFinished",
         "closeDetailPanel",
+        "onWaylandBackendAvailabilityChanged",
+        "available",
+        "onWaylandOutputChanged",
+        "onWaylandPermissionChanged",
+        "featureName",
+        "granted",
+        "onWaylandSecurityEvent",
+        "eventType",
+        "details",
+        "onWaylandHardwareAccelerationStatusChanged",
+        "onWaylandPerformanceMetricsUpdated",
+        "QVariantMap",
+        "metrics",
         "showStatusMessage",
         "timeout"
     };
@@ -137,26 +154,56 @@ template <> constexpr inline auto pacmangui::gui::MainWindow::qt_create_metaobje
         QtMocHelpers::SlotData<void(bool, const QString &)>(28, 2, QMC::AccessPrivate, QMetaType::Void, {{
             { QMetaType::Bool, 29 }, { QMetaType::QString, 30 },
         }}),
-        // Slot 'toggleTheme'
+        // Slot 'onCleanCache'
         QtMocHelpers::SlotData<void()>(31, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onClearPackageLock'
+        QtMocHelpers::SlotData<void()>(32, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onCheckIntegrityAllPackages'
+        QtMocHelpers::SlotData<void()>(33, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onRefreshMirrorList'
+        QtMocHelpers::SlotData<void()>(34, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'toggleTheme'
-        QtMocHelpers::SlotData<void(bool)>(31, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Bool, 32 },
+        QtMocHelpers::SlotData<void()>(35, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'toggleTheme'
+        QtMocHelpers::SlotData<void(bool)>(35, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Bool, 36 },
         }}),
         // Slot 'openSettings'
-        QtMocHelpers::SlotData<void()>(33, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(37, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'onAbout'
-        QtMocHelpers::SlotData<void()>(34, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(38, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'onDetailPanelAnimationFinished'
-        QtMocHelpers::SlotData<void()>(35, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(39, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'closeDetailPanel'
-        QtMocHelpers::SlotData<void()>(36, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Method 'showStatusMessage'
-        QtMocHelpers::MethodData<void(const QString &, int)>(37, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::QString, 30 }, { QMetaType::Int, 38 },
+        QtMocHelpers::SlotData<void()>(40, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onWaylandBackendAvailabilityChanged'
+        QtMocHelpers::SlotData<void(bool)>(41, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Bool, 42 },
+        }}),
+        // Slot 'onWaylandOutputChanged'
+        QtMocHelpers::SlotData<void()>(43, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onWaylandPermissionChanged'
+        QtMocHelpers::SlotData<void(const QString &, bool)>(44, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::QString, 45 }, { QMetaType::Bool, 46 },
+        }}),
+        // Slot 'onWaylandSecurityEvent'
+        QtMocHelpers::SlotData<void(const QString &, const QString &)>(47, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::QString, 48 }, { QMetaType::QString, 49 },
+        }}),
+        // Slot 'onWaylandHardwareAccelerationStatusChanged'
+        QtMocHelpers::SlotData<void(bool)>(50, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Bool, 42 },
+        }}),
+        // Slot 'onWaylandPerformanceMetricsUpdated'
+        QtMocHelpers::SlotData<void(const QVariantMap &)>(51, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 52, 53 },
         }}),
         // Method 'showStatusMessage'
-        QtMocHelpers::MethodData<void(const QString &)>(37, 2, QMC::AccessPrivate | QMC::MethodCloned, QMetaType::Void, {{
+        QtMocHelpers::MethodData<void(const QString &, int)>(54, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::QString, 30 }, { QMetaType::Int, 55 },
+        }}),
+        // Method 'showStatusMessage'
+        QtMocHelpers::MethodData<void(const QString &)>(54, 2, QMC::AccessPrivate | QMC::MethodCloned, QMetaType::Void, {{
             { QMetaType::QString, 30 },
         }}),
     };
@@ -204,14 +251,24 @@ void pacmangui::gui::MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Ca
         case 19: _t->onBackupDatabase(); break;
         case 20: _t->onRestoreDatabase(); break;
         case 21: _t->onMaintenanceTaskFinished((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
-        case 22: _t->toggleTheme(); break;
-        case 23: _t->toggleTheme((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
-        case 24: _t->openSettings(); break;
-        case 25: _t->onAbout(); break;
-        case 26: _t->onDetailPanelAnimationFinished(); break;
-        case 27: _t->closeDetailPanel(); break;
-        case 28: _t->showStatusMessage((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
-        case 29: _t->showStatusMessage((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 22: _t->onCleanCache(); break;
+        case 23: _t->onClearPackageLock(); break;
+        case 24: _t->onCheckIntegrityAllPackages(); break;
+        case 25: _t->onRefreshMirrorList(); break;
+        case 26: _t->toggleTheme(); break;
+        case 27: _t->toggleTheme((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 28: _t->openSettings(); break;
+        case 29: _t->onAbout(); break;
+        case 30: _t->onDetailPanelAnimationFinished(); break;
+        case 31: _t->closeDetailPanel(); break;
+        case 32: _t->onWaylandBackendAvailabilityChanged((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 33: _t->onWaylandOutputChanged(); break;
+        case 34: _t->onWaylandPermissionChanged((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<bool>>(_a[2]))); break;
+        case 35: _t->onWaylandSecurityEvent((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
+        case 36: _t->onWaylandHardwareAccelerationStatusChanged((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 37: _t->onWaylandPerformanceMetricsUpdated((*reinterpret_cast< std::add_pointer_t<QVariantMap>>(_a[1]))); break;
+        case 38: _t->showStatusMessage((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
+        case 39: _t->showStatusMessage((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         default: ;
         }
     }
@@ -236,14 +293,14 @@ int pacmangui::gui::MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void 
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 30)
+        if (_id < 40)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 30;
+        _id -= 40;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 30)
+        if (_id < 40)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 30;
+        _id -= 40;
     }
     return _id;
 }

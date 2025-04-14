@@ -41,8 +41,8 @@ public:
     bool isAurEnabled() const;
     
     /**
-     * @brief Get the selected AUR helper
-     * @return QString The selected AUR helper (e.g., "yay", "paru")
+     * @brief Get the default AUR helper
+     * @return QString The default AUR helper (e.g., "yay")
      */
     QString getAurHelper() const;
     
@@ -89,12 +89,6 @@ signals:
 
 private slots:
     /**
-     * @brief AUR checkbox state changed
-     * @param state New state of the checkbox
-     */
-    void onAurEnabledChanged(int state);
-    
-    /**
      * @brief Called when OK button is clicked
      */
     void onOkClicked();
@@ -125,8 +119,6 @@ private:
     // AUR tab
     QWidget* m_aurTab;
     QCheckBox* m_enableAurCheckbox;
-    QComboBox* m_aurHelperComboBox;
-    QLabel* m_aurHelperLabel;
     
     // Appearance tab
     QWidget* m_appearanceTab;
@@ -142,7 +134,6 @@ private:
     
     // Settings
     bool m_aurEnabled;
-    QString m_aurHelper;
     QString m_selectedTheme;
     double m_scalingFactor;
 };

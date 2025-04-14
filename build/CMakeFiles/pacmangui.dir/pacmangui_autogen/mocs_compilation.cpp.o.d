@@ -380,10 +380,11 @@ CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o: \
  /usr/include/qt6/QtWidgets/qabstractslider.h \
  /usr/include/qt6/QtWidgets/qstyle.h /usr/include/qt6/QtWidgets/qtabbar.h \
  /usr/include/qt6/QtWidgets/qrubberband.h \
- /usr/include/qt6/QtWidgets/QLabel /usr/include/qt6/QtWidgets/qlabel.h \
- /usr/include/qt6/QtGui/qpicture.h /usr/include/qt6/QtCore/qiodevice.h \
- /usr/include/qt6/QtGui/QAction /usr/include/qt6/QtGui/qaction.h \
- /usr/include/qt6/QtWidgets/QToolBar \
+ /usr/include/qt6/QtWidgets/QTreeView \
+ /usr/include/qt6/QtWidgets/qtreeview.h /usr/include/qt6/QtWidgets/QLabel \
+ /usr/include/qt6/QtWidgets/qlabel.h /usr/include/qt6/QtGui/qpicture.h \
+ /usr/include/qt6/QtCore/qiodevice.h /usr/include/qt6/QtGui/QAction \
+ /usr/include/qt6/QtGui/qaction.h /usr/include/qt6/QtWidgets/QToolBar \
  /usr/include/qt6/QtWidgets/qtoolbar.h /usr/include/qt6/QtWidgets/QMenu \
  /usr/include/qt6/QtWidgets/qmenu.h /usr/include/qt6/QtWidgets/QStatusBar \
  /usr/include/qt6/QtWidgets/qstatusbar.h \
@@ -451,6 +452,27 @@ CMakeFiles/pacmangui.dir/pacmangui_autogen/mocs_compilation.cpp.o: \
  /usr/include/qt6/QtWidgets/qgraphicseffect.h \
  /usr/include/qt6/QtWidgets/QScrollArea \
  /usr/include/qt6/QtWidgets/qscrollarea.h \
+ /usr/include/qt6/QtCore/QFutureWatcher \
+ /usr/include/qt6/QtCore/qfuturewatcher.h \
+ /usr/include/qt6/QtCore/qfuture.h \
+ /usr/include/qt6/QtCore/qfutureinterface.h \
+ /usr/include/qt6/QtCore/qmutex.h \
+ /usr/include/qt6/QtCore/qdeadlinetimer.h \
+ /usr/include/qt6/QtCore/qelapsedtimer.h \
+ /usr/include/qt6/QtCore/qtsan_impl.h \
+ /usr/include/qt6/QtCore/qresultstore.h \
+ /usr/include/qt6/QtCore/qfuture_impl.h \
+ /usr/include/qt6/QtCore/qthreadpool.h /usr/include/qt6/QtCore/qthread.h \
+ /usr/include/c++/14.2.1/future /usr/include/c++/14.2.1/mutex \
+ /usr/include/c++/14.2.1/bits/std_mutex.h \
+ /usr/include/c++/14.2.1/bits/unique_lock.h \
+ /usr/include/c++/14.2.1/condition_variable \
+ /usr/include/c++/14.2.1/bits/atomic_futex.h \
+ /usr/include/c++/14.2.1/bits/std_thread.h \
+ /usr/include/qt6/QtCore/qrunnable.h /usr/include/qt6/QtCore/qexception.h \
+ /usr/include/qt6/QtCore/qpromise.h \
+ /usr/include/qt6/QtWidgets/QProgressDialog \
+ /usr/include/qt6/QtWidgets/qprogressdialog.h \
  /home/matt/PacmanGui-new/include/core/packagemanager.hpp \
  /usr/include/alpm.h /usr/include/archive.h /usr/include/sys/stat.h \
  /usr/include/bits/stat.h /usr/include/bits/struct_stat.h \

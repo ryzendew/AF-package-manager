@@ -387,7 +387,8 @@ CMakeFiles/pacmangui.dir/src/main.cpp.o: \
  /usr/include/qt6/QtCore/qdirlisting.h \
  /usr/include/qt6/QtCore/qdatetime.h /usr/include/qt6/QtCore/qcalendar.h \
  /usr/include/qt6/QtCore/qfile.h /usr/include/qt6/QtCore/qfileinfo.h \
- /usr/include/qt6/QtCore/qtimezone.h \
+ /usr/include/qt6/QtCore/qtimezone.h /usr/include/qt6/QtCore/QDebug \
+ /usr/include/qt6/QtCore/qdebug.h \
  /home/matt/PacmanGui-new/include/gui/mainwindow.hpp \
  /usr/include/qt6/QtWidgets/QMainWindow \
  /usr/include/qt6/QtWidgets/qmainwindow.h \
@@ -434,9 +435,11 @@ CMakeFiles/pacmangui.dir/src/main.cpp.o: \
  /usr/include/qt6/QtWidgets/qabstractslider.h \
  /usr/include/qt6/QtWidgets/qstyle.h /usr/include/qt6/QtWidgets/qtabbar.h \
  /usr/include/qt6/QtWidgets/qrubberband.h \
- /usr/include/qt6/QtWidgets/QLabel /usr/include/qt6/QtWidgets/qlabel.h \
- /usr/include/qt6/QtGui/qpicture.h /usr/include/qt6/QtGui/QAction \
- /usr/include/qt6/QtGui/qaction.h /usr/include/qt6/QtWidgets/QToolBar \
+ /usr/include/qt6/QtWidgets/QTreeView \
+ /usr/include/qt6/QtWidgets/qtreeview.h /usr/include/qt6/QtWidgets/QLabel \
+ /usr/include/qt6/QtWidgets/qlabel.h /usr/include/qt6/QtGui/qpicture.h \
+ /usr/include/qt6/QtGui/QAction /usr/include/qt6/QtGui/qaction.h \
+ /usr/include/qt6/QtWidgets/QToolBar \
  /usr/include/qt6/QtWidgets/qtoolbar.h /usr/include/qt6/QtWidgets/QMenu \
  /usr/include/qt6/QtWidgets/qmenu.h /usr/include/qt6/QtWidgets/QStatusBar \
  /usr/include/qt6/QtWidgets/qstatusbar.h \
@@ -475,6 +478,24 @@ CMakeFiles/pacmangui.dir/src/main.cpp.o: \
  /usr/include/qt6/QtWidgets/qgraphicseffect.h \
  /usr/include/qt6/QtWidgets/QScrollArea \
  /usr/include/qt6/QtWidgets/qscrollarea.h \
+ /usr/include/qt6/QtCore/QFutureWatcher \
+ /usr/include/qt6/QtCore/qfuturewatcher.h \
+ /usr/include/qt6/QtCore/qfuture.h \
+ /usr/include/qt6/QtCore/qfutureinterface.h \
+ /usr/include/qt6/QtCore/qmutex.h /usr/include/qt6/QtCore/qtsan_impl.h \
+ /usr/include/qt6/QtCore/qresultstore.h \
+ /usr/include/qt6/QtCore/qfuture_impl.h \
+ /usr/include/qt6/QtCore/qthreadpool.h /usr/include/qt6/QtCore/qthread.h \
+ /usr/include/c++/14.2.1/future /usr/include/c++/14.2.1/mutex \
+ /usr/include/c++/14.2.1/bits/std_mutex.h \
+ /usr/include/c++/14.2.1/bits/unique_lock.h \
+ /usr/include/c++/14.2.1/condition_variable \
+ /usr/include/c++/14.2.1/bits/atomic_futex.h \
+ /usr/include/c++/14.2.1/bits/std_thread.h \
+ /usr/include/qt6/QtCore/qrunnable.h /usr/include/qt6/QtCore/qexception.h \
+ /usr/include/qt6/QtCore/qpromise.h \
+ /usr/include/qt6/QtWidgets/QProgressDialog \
+ /usr/include/qt6/QtWidgets/qprogressdialog.h \
  /home/matt/PacmanGui-new/include/core/packagemanager.hpp \
  /usr/include/alpm.h /usr/include/archive.h /usr/include/sys/stat.h \
  /usr/include/bits/stat.h /usr/include/bits/struct_stat.h \
@@ -489,4 +510,11 @@ CMakeFiles/pacmangui.dir/src/main.cpp.o: \
  /usr/include/archive_entry.h /usr/include/alpm_list.h \
  /home/matt/PacmanGui-new/include/core/package.hpp \
  /home/matt/PacmanGui-new/include/core/repository.hpp \
- /home/matt/PacmanGui-new/include/core/transaction.hpp
+ /home/matt/PacmanGui-new/include/core/transaction.hpp \
+ /home/matt/PacmanGui-new/include/wayland/wayland_backend.hpp \
+ /usr/include/qt6/QtCore/QString /usr/include/qt6/QtCore/qstring.h \
+ /home/matt/PacmanGui-new/include/wayland/wayland_protocols.hpp \
+ /usr/include/qt6/QtCore/QStringList \
+ /usr/include/qt6/QtCore/qstringlist.h \
+ /home/matt/PacmanGui-new/include/wayland/wayland_security.hpp \
+ /home/matt/PacmanGui-new/include/wayland/wayland_optimization.hpp

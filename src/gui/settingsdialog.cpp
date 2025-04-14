@@ -15,8 +15,6 @@ SettingsDialog::SettingsDialog(QWidget* parent)
     , m_tabWidget(nullptr)
     , m_aurTab(nullptr)
     , m_enableAurCheckbox(nullptr)
-    , m_aurHelperComboBox(nullptr)
-    , m_aurHelperLabel(nullptr)
     , m_appearanceTab(nullptr)
     , m_themeComboBox(nullptr)
     , m_themeLabel(nullptr)
@@ -26,7 +24,6 @@ SettingsDialog::SettingsDialog(QWidget* parent)
     , m_cancelButton(nullptr)
     , m_applyButton(nullptr)
     , m_aurEnabled(false)
-    , m_aurHelper("")
     , m_selectedTheme("dark_colorful")
     , m_scalingFactor(1.0)
 {
@@ -51,7 +48,8 @@ bool SettingsDialog::isAurEnabled() const
 
 QString SettingsDialog::getAurHelper() const
 {
-    return m_aurHelper;
+    // Since we removed the dropdown, always return "yay" as the default AUR helper
+    return "yay";
 }
 
 bool SettingsDialog::isDarkThemeEnabled() const
@@ -86,7 +84,7 @@ void SettingsDialog::setupUi()
     // Tab widget
     m_tabWidget = new QTabWidget(this);
     
-    // AUR Tab
+    // AUR Tab - simplify to only have checkbox for enabling/disabling AUR
     m_aurTab = new QWidget(m_tabWidget);
     QVBoxLayout* aurLayout = new QVBoxLayout(m_aurTab);
     
@@ -96,15 +94,15 @@ void SettingsDialog::setupUi()
     m_enableAurCheckbox = new QCheckBox("Enable AUR Support", aurGroupBox);
     aurGroupLayout->addWidget(m_enableAurCheckbox);
     
-    QFormLayout* helperLayout = new QFormLayout();
-    m_aurHelperLabel = new QLabel("AUR Helper:", aurGroupBox);
-    m_aurHelperComboBox = new QComboBox(aurGroupBox);
-    m_aurHelperComboBox->addItem("yay");
-    m_aurHelperComboBox->addItem("paru");
-    m_aurHelperComboBox->setEnabled(false); // Initially disabled
+    // Remove AUR helper dropdown completely
     
-    helperLayout->addRow(m_aurHelperLabel, m_aurHelperComboBox);
-    aurGroupLayout->addLayout(helperLayout);
+    // Add a note about AUR support
+    QLabel* aurNoteLabel = new QLabel("Note: Enabling AUR support allows installing packages from the Arch User Repository. "
+                                     "AUR packages are user-produced content and may be less stable than official packages.", 
+                                     aurGroupBox);
+    aurNoteLabel->setWordWrap(true);
+    aurNoteLabel->setStyleSheet("font-style: italic; color: gray;");
+    aurGroupLayout->addWidget(aurNoteLabel);
     
     aurLayout->addWidget(aurGroupBox);
     aurLayout->addStretch(1);
@@ -182,18 +180,13 @@ void SettingsDialog::setupUi()
 
 void SettingsDialog::setupConnections()
 {
-    // Connect checkbox state change to enable/disable helper dropdown
-    connect(m_enableAurCheckbox, &QCheckBox::stateChanged, this, &SettingsDialog::onAurEnabledChanged);
+    // AUR checkbox connection - no longer needs to enable/disable the dropdown
+    // since we've removed the dropdown
     
     // Connect buttons
     connect(m_okButton, &QPushButton::clicked, this, &SettingsDialog::onOkClicked);
     connect(m_cancelButton, &QPushButton::clicked, this, &SettingsDialog::onCancelClicked);
     connect(m_applyButton, &QPushButton::clicked, this, &SettingsDialog::onApplyClicked);
-}
-
-void SettingsDialog::onAurEnabledChanged(int state)
-{
-    m_aurHelperComboBox->setEnabled(state == Qt::Checked);
 }
 
 void SettingsDialog::onOkClicked()
@@ -239,12 +232,11 @@ void SettingsDialog::saveSettings()
 {
     QSettings settings("PacmanGUI", "PacmanGUI");
     
-    // Save AUR settings
+    // Save AUR settings - only enable/disable state
     m_aurEnabled = m_enableAurCheckbox->isChecked();
-    m_aurHelper = m_aurHelperComboBox->currentText();
-    
     settings.setValue("aur/enabled", m_aurEnabled);
-    settings.setValue("aur/helper", m_aurHelper);
+    
+    // No longer saving AUR helper selection
     
     // Save appearance settings
     m_selectedTheme = m_themeComboBox->currentData().toString();
@@ -274,16 +266,11 @@ void SettingsDialog::loadSettings()
 {
     QSettings settings("PacmanGUI", "PacmanGUI");
     
-    // Load AUR settings
+    // Load AUR settings - only enable/disable state
     m_aurEnabled = settings.value("aur/enabled", false).toBool();
-    m_aurHelper = settings.value("aur/helper", "yay").toString();
-    
     m_enableAurCheckbox->setChecked(m_aurEnabled);
-    int helperIndex = m_aurHelperComboBox->findText(m_aurHelper);
-    if (helperIndex >= 0) {
-        m_aurHelperComboBox->setCurrentIndex(helperIndex);
-    }
-    m_aurHelperComboBox->setEnabled(m_aurEnabled);
+    
+    // No longer loading AUR helper selection
     
     // Load appearance settings
     m_selectedTheme = settings.value("appearance/theme", "dark_colorful").toString();
@@ -318,68 +305,47 @@ void SettingsDialog::loadSettings()
     }
 }
 
-void SettingsDialog::detectAurHelpers()
-{
-    // Store the current selection
-    QString currentHelper = m_aurHelperComboBox->currentText();
+void SettingsDialog::detectAurHelpers() {
+    // Check for common AUR helpers to determine if AUR support should be allowed
+    bool anyHelperFound = false;
     
-    // Clear the combobox
-    m_aurHelperComboBox->clear();
+    // Check for common AUR helpers
+    QStringList helpers = {"yay", "paru", "pikaur", "trizen", "pacaur"};
     
-    // Check for yay
-    if (checkHelperExists("yay")) {
-        m_aurHelperComboBox->addItem("yay");
-    }
-    
-    // Check for paru
-    if (checkHelperExists("paru")) {
-        m_aurHelperComboBox->addItem("paru");
-    }
-    
-    // Check for pikaur
-    if (checkHelperExists("pikaur")) {
-        m_aurHelperComboBox->addItem("pikaur");
-    }
-    
-    // Check for trizen
-    if (checkHelperExists("trizen")) {
-        m_aurHelperComboBox->addItem("trizen");
-    }
-    
-    // Check for pacaur
-    if (checkHelperExists("pacaur")) {
-        m_aurHelperComboBox->addItem("pacaur");
+    for (const QString& helper : helpers) {
+        if (checkHelperExists(helper)) {
+            anyHelperFound = true;
+            break;
+        }
     }
     
     // If no AUR helpers found, disable AUR support
-    if (m_aurHelperComboBox->count() == 0) {
+    if (!anyHelperFound) {
         m_enableAurCheckbox->setChecked(false);
         m_enableAurCheckbox->setEnabled(false);
-        m_aurHelperComboBox->setEnabled(false);
-        m_aurHelperLabel->setEnabled(false);
         
-        // Add a placeholder item
-        m_aurHelperComboBox->addItem("No AUR helpers found");
-        
-        // Show a message suggesting installation of an AUR helper
-        QLabel* helperInstallLabel = new QLabel(
-            "No AUR helpers found. Please install yay, paru, pikaur, trizen, or pacaur "
-            "to enable AUR support.", m_aurTab);
-        helperInstallLabel->setWordWrap(true);
-        helperInstallLabel->setStyleSheet("color: red;");
-        
-        // Find the layout of aurTab
-        if (QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(m_aurTab->layout())) {
-            layout->addWidget(helperInstallLabel);
+        // Add a placeholder label if not already done
+        QLabel* helperInstallLabel = m_aurTab->findChild<QLabel*>("helperInstallLabel");
+        if (!helperInstallLabel) {
+            helperInstallLabel = new QLabel(
+                "No AUR helpers found. Please install yay, paru, pikaur, trizen, or pacaur "
+                "to enable AUR support.", m_aurTab);
+            helperInstallLabel->setObjectName("helperInstallLabel");
+            helperInstallLabel->setWordWrap(true);
+            helperInstallLabel->setStyleSheet("color: red;");
+            
+            // Find the layout of aurTab
+            if (QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(m_aurTab->layout())) {
+                layout->addWidget(helperInstallLabel);
+            }
         }
     } else {
         m_enableAurCheckbox->setEnabled(true);
-        m_aurHelperLabel->setEnabled(true);
         
-        // Restore previous selection if it exists
-        int index = m_aurHelperComboBox->findText(currentHelper);
-        if (index >= 0) {
-            m_aurHelperComboBox->setCurrentIndex(index);
+        // Remove warning label if it exists
+        QLabel* helperInstallLabel = m_aurTab->findChild<QLabel*>("helperInstallLabel");
+        if (helperInstallLabel) {
+            helperInstallLabel->deleteLater();
         }
     }
 }

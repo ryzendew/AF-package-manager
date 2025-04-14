@@ -10,6 +10,11 @@ pacmangui: \
   CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o \
   CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o \
   CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o \
+  CMakeFiles/pacmangui.dir/src/gui/util.cpp.o \
+  CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.o \
+  CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.o \
+  CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.o \
+  CMakeFiles/pacmangui.dir/src/wayland/wayland_optimization.cpp.o \
   CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o \
   /usr/lib/libQt6Widgets.so.6.9.0 \
   /usr/lib/libQt6Gui.so.6.9.0 \
@@ -122,6 +127,16 @@ CMakeFiles/pacmangui.dir/src/core/packagemanager.cpp.o:
 CMakeFiles/pacmangui.dir/src/gui/mainwindow.cpp.o:
 
 CMakeFiles/pacmangui.dir/src/gui/settingsdialog.cpp.o:
+
+CMakeFiles/pacmangui.dir/src/gui/util.cpp.o:
+
+CMakeFiles/pacmangui.dir/src/wayland/wayland_backend.cpp.o:
+
+CMakeFiles/pacmangui.dir/src/wayland/wayland_protocols.cpp.o:
+
+CMakeFiles/pacmangui.dir/src/wayland/wayland_security.cpp.o:
+
+CMakeFiles/pacmangui.dir/src/wayland/wayland_optimization.cpp.o:
 
 CMakeFiles/pacmangui.dir/pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp.o:
 

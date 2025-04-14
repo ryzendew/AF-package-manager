@@ -1,159 +1,131 @@
 #include "gui/mainwindow.hpp"
 #include "gui/settingsdialog.hpp"
-#include <QApplication>
-#include <QGuiApplication>
-#include <QSettings>
-#include <QMessageBox>
-#include <QHeaderView>
-#include <QCloseEvent>
+#include "wayland/wayland_backend.hpp"
+#include "wayland/wayland_protocols.hpp"
+#include "wayland/wayland_security.hpp"
+#include "wayland/wayland_optimization.hpp"
+
 #include <QMenuBar>
-#include <QIcon>
-#include <QFont>
-#include <QStyle>
-#include <QPalette>
-#include <QStyleFactory>
-#include <QScreen>
+#include <QStatusBar>
+#include <QHeaderView>
+#include <QMessageBox>
 #include <QInputDialog>
+#include <QFileDialog>
+#include <QStandardPaths>
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QtConcurrent/QtConcurrent>
+#include <QProcess>
+#include <QSettings>
+#include <QCloseEvent>
+#include <QTemporaryDir>
 #include <QDesktopServices>
 #include <QUrl>
-#include <QFileDialog>
-#include <QProcess>
 #include <QScrollBar>
+#include <QThread>
+#include <QStyleFactory>
+#include <QStyle>
+#include <QPalette>
+#include <QTimer>
 #include <QProgressDialog>
-#include <QtConcurrent/QtConcurrentRun>
-#include <QFutureWatcher>
-#include <QStandardPaths>
-#include <QTemporaryDir>
-#include <QMetaObject>
-#include <QFile>
+#include <QProgressBar>
+#include <QScreen>
+#include <QLabel>
+#include <QApplication>
+#include <QClipboard>
+#include <QShortcut>
+#include <QGridLayout>
 #include <QSizePolicy>
-#include <QSplitter>
-#include <QThreadPool>
-#include <QCompleter>
-#include <QDir>
-#include <QFileInfo>
-#include <QFontDialog>
-#include <QGroupBox>
-#include <QHBoxLayout>
-#include <QInputDialog>
-#include <QRadioButton>
-#include <QScrollArea>
-#include <QVBoxLayout>
-#include <QGraphicsOpacityEffect>
-#include <QPropertyAnimation>
-#include <QEasingCurve>
+#include <QSpacerItem>
+
 #include <iostream>
+#include <functional>
+#include <QDebug>
 
 namespace pacmangui {
 namespace gui {
 
 MainWindow::MainWindow(QWidget* parent)
-    : QMainWindow(parent)
-    , m_tabWidget(nullptr)
-    , m_searchBox(nullptr)
-    , m_searchButton(nullptr)
-    , m_settingsButton(nullptr)
-    , m_packagesView(nullptr)
-    , m_installedView(nullptr)
-    , m_batchInstallButton(nullptr)
-    , m_systemUpdateTab(nullptr)
-    , m_systemUpdateInfoLabel(nullptr)
-    , m_systemUpdateButton(nullptr)
-    , m_checkUpdatesButton(nullptr)
-    , m_systemUpdateLogView(nullptr)
-    , m_systemUpdatesView(nullptr)
-    , m_systemUpdatesModel(nullptr)
-    , m_systemUpdateOverwriteCheckbox(nullptr)
-    , m_detailsWidget(nullptr)
-    , m_packageNameLabel(nullptr)
-    , m_packageVersionLabel(nullptr)
-    , m_packageDescLabel(nullptr)
-    , m_actionButton(nullptr)
-    , m_packageOverwriteCheckbox(nullptr)
-    , m_packagesModel(nullptr)
-    , m_installedModel(nullptr)
-    , m_selectedPackages()
-    , m_darkTheme(false)
-    , m_settingsDialog(new SettingsDialog(this))
-    , m_packageManager()
-    , m_detailPanel(nullptr)
-    , m_slideAnimation(nullptr)
-    , m_opacityEffect(nullptr)
-    , m_detailPanelVisible(false)
+    : QMainWindow(parent),
+    m_packageManager(),
+    m_settingsDialog(nullptr),
+    m_waylandSupported(false),
+    m_slideAnimation(nullptr),
+    m_packagesModel(nullptr),
+    m_installedModel(nullptr),
+    m_systemUpdatesModel(nullptr),
+    m_updatesModel(nullptr),
+    m_searchWatcher(nullptr),
+    m_searchProgressDialog(nullptr),
+    m_updateButton(nullptr),           // Explicitly set to nullptr since we're not creating it
+    m_installAurButton(nullptr),       // Explicitly set to nullptr since we're not creating it
+    m_updateInstalledButton(nullptr)   // Explicitly set to nullptr since we're not creating it
 {
-    setWindowTitle("PacmanGUI - Package Manager");
-    setMinimumSize(1000, 600);
-    
-    // Set attribute for responsive resizing
-    setAttribute(Qt::WA_DeleteOnClose);
-    
-    // Setup for responsive window
-    QWidget* centralWidget = new QWidget(this);
-    centralWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    setCentralWidget(centralWidget);
-    
+    setWindowTitle(tr("PacmanGUI"));
+    setMinimumSize(800, 600);
+
     // Initialize package manager
-    if (!m_packageManager.initialize("/", "/var/lib/pacman")) {
-        QMessageBox::critical(this, "Error", "Failed to initialize package manager.");
-        return;
-    }
+    m_packageManager.initialize("/", "/var/lib/pacman");
+
+    // Initialize models before we use them
+    // Add a checkbox column at the beginning for multi-selection
+    m_packagesModel = new QStandardItemModel(0, 5, this);
+    m_packagesModel->setHorizontalHeaderLabels(
+        QStringList() << tr("") << tr("Name") << tr("Version") << tr("Description") << tr("Repository"));
+        
+    m_installedModel = new QStandardItemModel(0, 5, this);
+    m_installedModel->setHorizontalHeaderLabels(
+        QStringList() << tr("") << tr("Name") << tr("Version") << tr("Description") << tr("Repository"));
+        
+    m_updatesModel = new QStandardItemModel(0, 5, this);
+    m_updatesModel->setHorizontalHeaderLabels(
+        QStringList() << tr("") << tr("Name") << tr("Current Version") << tr("New Version") << tr("Repository"));
+        
+    // Initialize search progress dialog
+    m_searchProgressDialog = new QProgressDialog(tr("Searching for packages..."), tr("Cancel"), 0, 0, this);
+    m_searchProgressDialog->setWindowModality(Qt::WindowModal);
+    m_searchProgressDialog->setMinimumDuration(500);
+    m_searchProgressDialog->setAutoClose(true);
+    m_searchProgressDialog->setAutoReset(true);
     
-    // Setup UI components
+    // Set up UI components in the correct order
     setupUi();
     setupActions();
     setupMenus();
-    setupConnections();
+    setupSystemUpdateTab(); // Create the tab and its buttons before connecting signals
+    setupMaintenanceTab();  // Create maintenance buttons before connecting them
     
+    // Initialize Wayland support, if available and enabled
+#if defined(ENABLE_WAYLAND_SUPPORT) && ENABLE_WAYLAND_SUPPORT == 1
+    setupWaylandSupport();
+#else
+    qDebug() << "DEBUG: Wayland support is disabled in build configuration";
+    m_waylandSupported = false;
+    m_waylandSecurityAction = nullptr;
+    m_waylandOptimizationsAction = nullptr;
+#endif
+
+    // Now connect signals after all buttons have been created
+    setupConnections();
+    setupDetailPanel();
+
     // Load settings
     loadSettings();
-    
-    // Apply theme
-    applyTheme(m_darkTheme);
-    
-    // Populate the tables
+    applyTheme(isDarkThemeEnabled());
+
+    // Populate tables - enable these to load actual data
     refreshInstalledPackages();
-    refreshUpdatesList();
+    // Don't search packages on startup - let user initiate search
+    // searchPackages(""); // Start with empty search to show all packages
     
+    // Don't check for updates automatically as it might be slow
+    // We'll let the user trigger this manually
+
     // Check for AUR helper
     checkAurHelper();
-    
-    // Show status message
-    statusBar()->showMessage("Ready", 3000);
-    
-    // Connect resize events to handle responsiveness
-    connect(this, &QMainWindow::windowTitleChanged, this, [this](const QString&) {
-        // This is a workaround signal that is triggered more often than we need
-        // but will allow us to check window state regularly
-        if (isMaximized()) {
-            // When maximized, adjust UI for maximum content display
-            if (m_packagesView) {
-                m_packagesView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-            }
-            if (m_installedView) {
-                m_installedView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-            }
-            if (m_systemUpdatesView) {
-                m_systemUpdatesView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-            }
-        } else {
-            // When restored, adjust UI for balanced display
-            if (m_packagesView) {
-                m_packagesView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
-                m_packagesView->horizontalHeader()->setStretchLastSection(true);
-            }
-            if (m_installedView) {
-                m_installedView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
-                m_installedView->horizontalHeader()->setStretchLastSection(true);
-            }
-            if (m_systemUpdatesView) {
-                m_systemUpdatesView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
-                m_systemUpdatesView->horizontalHeader()->setStretchLastSection(true);
-            }
-        }
-    });
-    
-    // Setup the detail panel
-    setupDetailPanel();
+
+    // Show welcome message
+    showStatusMessage(tr("Welcome to PacmanGUI"));
 }
 
 MainWindow::~MainWindow()
@@ -161,1980 +133,1258 @@ MainWindow::~MainWindow()
     // Clean up allocated resources
     if (m_slideAnimation) {
         m_slideAnimation->stop();
+        delete m_slideAnimation;
+        m_slideAnimation = nullptr;
     }
+    
+    // Clean up async search resources
+    if (m_searchWatcher) {
+        if (m_searchWatcher->isRunning()) {
+            m_searchWatcher->cancel();
+            m_searchWatcher->waitForFinished();
+        }
+        delete m_searchWatcher;
+        m_searchWatcher = nullptr;
+    }
+    
+    delete m_searchProgressDialog;
     
     delete m_packagesModel;
     delete m_installedModel;
     delete m_systemUpdatesModel;
+    delete m_updatesModel;
     delete m_settingsDialog;
 }
 
-void MainWindow::checkAurHelper()
+void MainWindow::setupWaylandSupport()
 {
-    // Check if AUR is enabled in settings
-    QSettings settings("PacmanGUI", "PacmanGUI");
-    bool aurEnabled = settings.value("aur/enabled", false).toBool();
+    qDebug() << "DEBUG: Entering setupWaylandSupport()";
+#if defined(ENABLE_WAYLAND_SUPPORT) && ENABLE_WAYLAND_SUPPORT == 1
+    qDebug() << "DEBUG: ENABLE_WAYLAND_SUPPORT is defined and enabled";
+    // Check if Wayland is available
+    m_waylandSupported = pacmangui::wayland::WaylandBackend::isWaylandAvailable();
+    qDebug() << "DEBUG: m_waylandSupported =" << m_waylandSupported;
     
-    if (!aurEnabled) {
-        return;  // AUR not enabled, nothing to check
+    if (m_waylandSupported) {
+        qDebug() << "DEBUG: Wayland is supported, initializing components";
+        // Initialize static Wayland support
+        pacmangui::wayland::WaylandBackend::initialize();
+        qDebug() << "DEBUG: WaylandBackend initialized";
+        pacmangui::wayland::WaylandProtocols::initialize();
+        qDebug() << "DEBUG: WaylandProtocols initialized";
+        pacmangui::wayland::WaylandSecurity::initialize();
+        qDebug() << "DEBUG: WaylandSecurity initialized";
+        pacmangui::wayland::WaylandOptimization::initialize();
+        qDebug() << "DEBUG: WaylandOptimization initialized";
+        
+        qDebug() << "DEBUG: Creating Wayland actions";
+        // Create actions
+        m_waylandSecurityAction = new QAction("Enable Wayland Security Features", this);
+        m_waylandSecurityAction->setCheckable(true);
+        m_waylandSecurityAction->setChecked(true);
+        
+        m_waylandOptimizationsAction = new QAction("Enable Wayland Optimizations", this);
+        m_waylandOptimizationsAction->setCheckable(true);
+        m_waylandOptimizationsAction->setChecked(true);
+        
+        qDebug() << "DEBUG: Connecting Wayland action signals";
+        // Connect signals and slots
+        connect(m_waylandSecurityAction, &QAction::toggled, this, [this](bool checked) {
+            pacmangui::wayland::WaylandSecurity::enableSecurityFeatures(checked);
+            statusBar()->showMessage(
+                checked ? "Wayland security features enabled" 
+                        : "Wayland security features disabled", 
+                3000);
+        });
+        
+        connect(m_waylandOptimizationsAction, &QAction::toggled, this, [this](bool checked) {
+            pacmangui::wayland::WaylandOptimization::enableOptimizations(checked);
+            statusBar()->showMessage(
+                checked ? "Wayland optimizations enabled" 
+                        : "Wayland optimizations disabled", 
+                3000);
+        });
+        
+        qDebug() << "DEBUG: Getting Wayland display info";
+        // Display Wayland info in status bar
+        QString displayInfo = pacmangui::wayland::WaylandBackend::getDisplayInfo();
+        if (!displayInfo.isEmpty()) {
+            statusBar()->showMessage("Wayland support enabled: " + displayInfo, 5000);
+        }
+    }
+#else
+    qDebug() << "DEBUG: ENABLE_WAYLAND_SUPPORT is not enabled";
+    m_waylandSupported = false;
+    m_waylandSecurityAction = nullptr;
+    m_waylandOptimizationsAction = nullptr;
+#endif
+    qDebug() << "DEBUG: Exiting setupWaylandSupport()";
+}
+
+// Empty implementations for Wayland callbacks
+void MainWindow::onWaylandBackendAvailabilityChanged(bool available) {
+    Q_UNUSED(available);
+}
+
+void MainWindow::onWaylandOutputChanged() {
+}
+
+void MainWindow::onWaylandPermissionChanged(const QString& featureName, bool granted) {
+    Q_UNUSED(featureName);
+    Q_UNUSED(granted);
+}
+
+void MainWindow::onWaylandSecurityEvent(const QString& eventType, const QString& details) {
+    Q_UNUSED(eventType);
+    Q_UNUSED(details);
+}
+
+void MainWindow::onWaylandHardwareAccelerationStatusChanged(bool available) {
+    Q_UNUSED(available);
+}
+
+void MainWindow::onWaylandPerformanceMetricsUpdated(const QVariantMap& metrics) {
+    Q_UNUSED(metrics);
+}
+
+// Here the rest of the implementation would be placed, but we're focusing only on the Wayland part
+
+// Add implementation for setupUi
+void MainWindow::setupUi() {
+    qDebug() << "DEBUG: Entering setupUi()";
+    
+    // Create central widget and layout
+    m_centralWidget = new QWidget(this);
+    m_mainLayout = new QVBoxLayout(m_centralWidget);
+    setCentralWidget(m_centralWidget);
+
+    // Create tab widget
+    qDebug() << "DEBUG: Creating tab widget";
+    m_tabWidget = new QTabWidget(m_centralWidget);
+    m_mainLayout->addWidget(m_tabWidget);
+
+    // Create search tab
+    qDebug() << "DEBUG: Creating search tab";
+    m_searchTab = new QWidget();
+    m_searchLayout = new QVBoxLayout(m_searchTab);
+    
+    // Create search controls
+    qDebug() << "DEBUG: Creating search controls";
+    m_searchControlsLayout = new QHBoxLayout();
+    m_searchInput = new QLineEdit(m_searchTab);
+    m_searchInput->setPlaceholderText(tr("Search packages..."));
+    m_searchButton = new QPushButton(tr("Search"), m_searchTab);
+    m_searchButton->setStyleSheet("background-color: #0078d7; color: white; border-radius: 3px;");
+    m_searchButton->setMaximumWidth(90);  // Reduced from 100
+    m_searchButton->setMaximumHeight(26); // Reduced from 30
+    m_searchControlsLayout->addWidget(m_searchInput);
+    m_searchControlsLayout->addWidget(m_searchButton);
+    
+    m_searchLayout->addLayout(m_searchControlsLayout);
+    
+    // Create package action buttons - now at the top
+    qDebug() << "DEBUG: Creating package action buttons";
+    m_packageActionsLayout = new QHBoxLayout();
+    
+    // Only create Install and Remove buttons (remove Update and AUR buttons)
+    m_installButton = new QPushButton(tr("Install"), m_searchTab);
+    m_removeButton = new QPushButton(tr("Remove"), m_searchTab);
+    
+    // Make buttons consistent in size and style
+    QList<QPushButton*> actionButtons = {m_installButton, m_removeButton};
+    for (QPushButton* button : actionButtons) {
+        button->setStyleSheet("QPushButton {"
+                             "background-color: #0078d7; "
+                             "color: white;"
+                             "border: none;"
+                             "border-radius: 3px;"
+                             "padding: 6px 12px;"
+                             "margin: 2px 4px;"
+                             "}"
+                             "QPushButton:hover {"
+                             "background-color: #0063b1;"
+                             "}"
+                             "QPushButton:pressed {"
+                             "background-color: #004b8d;"
+                             "}");
+        button->setMinimumWidth(100);
+        button->setMinimumHeight(26);
+        button->setMaximumHeight(30);
+        button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     }
     
-    // Get list of common AUR helpers
-    const QStringList helpers = {"yay", "paru", "pikaur", "trizen", "pacaur"};
-    bool helperFound = false;
+    m_packageActionsLayout->addWidget(m_installButton);
+    m_packageActionsLayout->addWidget(m_removeButton);
+    m_packageActionsLayout->addStretch(1); // Push buttons to the left
     
-    // Check if any helper is installed
-    for (const QString& helper : helpers) {
-        QString path = QStandardPaths::findExecutable(helper);
-        if (!path.isEmpty()) {
-            helperFound = true;
-            // Update the selected AUR helper in settings
-            settings.setValue("aur/helper", helper);
+    m_searchLayout->addLayout(m_packageActionsLayout);
+    
+    // Create package table
+    qDebug() << "DEBUG: Creating package table";
+    m_packagesTable = new QTreeView(m_searchTab);
+    m_packagesTable->setSelectionMode(QAbstractItemView::ExtendedSelection); // Allow multiple selection
+    m_packagesTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_packagesTable->setSortingEnabled(true);
+    m_packagesTable->setAlternatingRowColors(true);
+    
+    m_packagesTable->setModel(m_packagesModel);
+    
+    // Update column sizing to account for checkbox column
+    m_packagesTable->header()->setSectionResizeMode(0, QHeaderView::Fixed);  // Checkbox column
+    m_packagesTable->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents); // Name
+    m_packagesTable->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents); // Version
+    m_packagesTable->header()->setSectionResizeMode(3, QHeaderView::Stretch);         // Description
+    m_packagesTable->header()->setSectionResizeMode(4, QHeaderView::ResizeToContents); // Repository
+    
+    // Set checkbox column width
+    m_packagesTable->setColumnWidth(0, 30);
+    
+    m_searchLayout->addWidget(m_packagesTable);
+    
+    // Add search tab to main tab widget
+    qDebug() << "DEBUG: Adding search tab to main tab widget";
+    m_tabWidget->addTab(m_searchTab, tr("Search Packages"));
+    
+    // Create installed packages tab
+    qDebug() << "DEBUG: Creating installed packages tab";
+    m_installedTab = new QWidget();
+    m_installedLayout = new QVBoxLayout(m_installedTab);
+    
+    // Create installed packages action buttons - now at the top
+    qDebug() << "DEBUG: Creating installed packages action buttons";
+    m_installedActionsLayout = new QHBoxLayout();
+    m_removeInstalledButton = new QPushButton(tr("Remove"), m_installedTab);
+    
+    // Make buttons smaller with consistent styling
+    m_removeInstalledButton->setStyleSheet("QPushButton {"
+                                          "background-color: #0078d7; "
+                                          "color: white;"
+                                          "border: none;"
+                                          "border-radius: 3px;"
+                                          "padding: 6px 12px;"
+                                          "margin: 2px 4px;"
+                                          "}");
+    m_removeInstalledButton->setMinimumWidth(100);
+    m_removeInstalledButton->setMinimumHeight(26);
+    m_removeInstalledButton->setMaximumHeight(30);
+    m_removeInstalledButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    
+    m_installedActionsLayout->addWidget(m_removeInstalledButton);
+    m_installedActionsLayout->addStretch(1); // Push buttons to the left
+    
+    m_installedLayout->addLayout(m_installedActionsLayout);
+    
+    // Create installed packages table
+    qDebug() << "DEBUG: Creating installed packages table";
+    m_installedTable = new QTreeView(m_installedTab);
+    m_installedTable->setSelectionMode(QAbstractItemView::ExtendedSelection); // Allow multiple selection
+    m_installedTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_installedTable->setSortingEnabled(true);
+    m_installedTable->setAlternatingRowColors(true);
+    
+    m_installedTable->setModel(m_installedModel);
+    
+    // Update column sizing to account for checkbox column
+    m_installedTable->header()->setSectionResizeMode(0, QHeaderView::Fixed);  // Checkbox column
+    m_installedTable->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents); // Name
+    m_installedTable->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents); // Version
+    m_installedTable->header()->setSectionResizeMode(3, QHeaderView::Stretch);         // Description
+    m_installedTable->header()->setSectionResizeMode(4, QHeaderView::ResizeToContents); // Repository
+    
+    // Set checkbox column width
+    m_installedTable->setColumnWidth(0, 30);
+    
+    m_installedLayout->addWidget(m_installedTable);
+    
+    // Add installed packages tab to main tab widget
+    qDebug() << "DEBUG: Adding installed packages tab to main tab widget";
+    m_tabWidget->addTab(m_installedTab, tr("Installed Packages"));
+    
+    // Add status bar
+    statusBar()->showMessage(tr("Ready"));
+    
+    qDebug() << "DEBUG: Exiting setupUi()";
+}
+
+// Add implementation for setupActions
+void MainWindow::setupActions() {
+    // Create file actions
+    m_exitAction = new QAction(tr("Exit"), this);
+    m_exitAction->setShortcut(QKeySequence::Quit);
+    
+    // Create edit actions
+    m_settingsAction = new QAction(tr("Settings"), this);
+    
+    // Create package actions
+    m_syncAllAction = new QAction(tr("Sync All"), this);
+    m_checkForUpdatesAction = new QAction(tr("Check for Updates"), this);
+    // Removed batch install action as per plan.md
+    
+    // Create maintenance actions
+    m_clearPackageCacheAction = new QAction(tr("Clear Package Cache"), this);
+    m_removeOrphansAction = new QAction(tr("Remove Orphaned Packages"), this);
+    m_checkDatabaseAction = new QAction(tr("Check Database"), this);
+    m_findPacnewFilesAction = new QAction(tr("Find .pacnew Files"), this);
+    m_backupDatabaseAction = new QAction(tr("Backup Database"), this);
+    m_restoreDatabaseAction = new QAction(tr("Restore Database"), this);
+    
+    // Create theme action (used only in settings now)
+    m_toggleThemeAction = new QAction(tr("Toggle Dark/Light Theme"), this);
+    
+    // Create help actions
+    m_aboutAction = new QAction(tr("About"), this);
+}
+
+// Add implementation for setupMenus
+void MainWindow::setupMenus() {
+    // Create file menu
+    m_fileMenu = menuBar()->addMenu(tr("&File"));
+    m_fileMenu->addAction(m_exitAction);
+    
+    // Create edit menu
+    m_editMenu = menuBar()->addMenu(tr("&Edit"));
+    m_editMenu->addAction(m_settingsAction);
+    
+    // Create package menu
+    m_packageMenu = menuBar()->addMenu(tr("&Packages"));
+    m_packageMenu->addAction(m_syncAllAction);
+    m_packageMenu->addAction(m_checkForUpdatesAction);
+    // Remove batch install as requested in plan.md
+    
+    // Create maintenance menu
+    m_maintenanceMenu = menuBar()->addMenu(tr("&Maintenance"));
+    m_maintenanceMenu->addAction(m_clearPackageCacheAction);
+    m_maintenanceMenu->addAction(m_removeOrphansAction);
+    m_maintenanceMenu->addSeparator();
+    m_maintenanceMenu->addAction(m_checkDatabaseAction);
+    m_maintenanceMenu->addAction(m_findPacnewFilesAction);
+    m_maintenanceMenu->addSeparator();
+    m_maintenanceMenu->addAction(m_backupDatabaseAction);
+    m_maintenanceMenu->addAction(m_restoreDatabaseAction);
+    
+    // Remove view menu since themes are managed in settings
+    
+    // Create help menu
+    m_helpMenu = menuBar()->addMenu(tr("&Help"));
+    m_helpMenu->addAction(m_aboutAction);
+    
+    // Add Wayland menu items if supported
+    if (m_waylandSupported) {
+        m_waylandMenu = menuBar()->addMenu(tr("&Wayland"));
+        m_waylandMenu->addAction(m_waylandSecurityAction);
+        m_waylandMenu->addAction(m_waylandOptimizationsAction);
+    }
+}
+
+// Add implementation for setupConnections
+void MainWindow::setupConnections() {
+    qDebug() << "DEBUG: Entering setupConnections()";
+    
+    // Connect tab changed signal
+    qDebug() << "DEBUG: Connecting tab changed signal";
+    connect(m_tabWidget, &QTabWidget::currentChanged, this, &MainWindow::onTabChanged);
+    
+    // Connect search signals
+    qDebug() << "DEBUG: Connecting search signals";
+    // Remove the automatic search on text change which causes UI freezing
+    // connect(m_searchInput, &QLineEdit::textChanged, this, &MainWindow::onSearchTextChanged);
+    
+    // Only search when button is clicked or Enter is pressed
+    connect(m_searchInput, &QLineEdit::returnPressed, this, &MainWindow::onSearchClicked);
+    connect(m_searchButton, &QPushButton::clicked, this, &MainWindow::onSearchClicked);
+    
+    // Connect package table signals
+    qDebug() << "DEBUG: Connecting package table signals";
+    connect(m_packagesTable, &QTreeView::clicked, this, &MainWindow::onPackageSelected);
+    
+    // Connect selection model changes
+    qDebug() << "DEBUG: Connecting selection model changes";
+    connect(m_packagesTable->selectionModel(), &QItemSelectionModel::selectionChanged, 
+            this, [this]() { updateInstallButtonText(); });
+            
+    // Connect package action buttons
+    qDebug() << "DEBUG: Connecting package action buttons";
+    qDebug() << "DEBUG: m_installButton = " << (m_installButton ? "valid" : "NULL");
+    if (m_installButton) {
+        connect(m_installButton, &QPushButton::clicked, this, &MainWindow::onInstallPackage);
+    }
+    
+    qDebug() << "DEBUG: m_updateButton = " << (m_updateButton ? "valid" : "NULL");
+    if (m_updateButton) {
+        connect(m_updateButton, &QPushButton::clicked, this, &MainWindow::onUpdatePackage);
+    }
+    
+    qDebug() << "DEBUG: m_removeButton = " << (m_removeButton ? "valid" : "NULL");
+    if (m_removeButton) {
+        connect(m_removeButton, &QPushButton::clicked, this, &MainWindow::onRemovePackage);
+    }
+    
+    qDebug() << "DEBUG: m_installAurButton = " << (m_installAurButton ? "valid" : "NULL");
+    if (m_installAurButton) {
+        connect(m_installAurButton, &QPushButton::clicked, this, &MainWindow::onInstallAurPackage);
+    }
+    
+    // Connect installed package action buttons
+    qDebug() << "DEBUG: Connecting installed package action buttons";
+    qDebug() << "DEBUG: m_updateInstalledButton = " << (m_updateInstalledButton ? "valid" : "NULL");
+    if (m_updateInstalledButton) {
+        connect(m_updateInstalledButton, &QPushButton::clicked, this, &MainWindow::onUpdatePackage);
+    }
+    
+    qDebug() << "DEBUG: m_removeInstalledButton = " << (m_removeInstalledButton ? "valid" : "NULL");
+    if (m_removeInstalledButton) {
+        connect(m_removeInstalledButton, &QPushButton::clicked, this, &MainWindow::onRemovePackage);
+    }
+    
+    // Connect menu actions
+    qDebug() << "DEBUG: Connecting menu actions";
+    qDebug() << "DEBUG: m_exitAction = " << (m_exitAction ? "valid" : "NULL");
+    if (m_exitAction) {
+        connect(m_exitAction, &QAction::triggered, this, [this]() { close(); });
+    }
+    
+    qDebug() << "DEBUG: m_settingsAction = " << (m_settingsAction ? "valid" : "NULL");
+    if (m_settingsAction) {
+        connect(m_settingsAction, &QAction::triggered, this, &MainWindow::openSettings);
+    }
+    
+    qDebug() << "DEBUG: m_syncAllAction = " << (m_syncAllAction ? "valid" : "NULL");
+    if (m_syncAllAction) {
+        connect(m_syncAllAction, &QAction::triggered, this, &MainWindow::onSyncAll);
+    }
+    
+    qDebug() << "DEBUG: m_checkForUpdatesAction = " << (m_checkForUpdatesAction ? "valid" : "NULL");
+    if (m_checkForUpdatesAction) {
+        connect(m_checkForUpdatesAction, &QAction::triggered, this, &MainWindow::onCheckForUpdates);
+    }
+    
+    // Connect system update buttons
+    qDebug() << "DEBUG: Connecting system update buttons";
+    qDebug() << "DEBUG: m_systemUpdateButton = " << (m_systemUpdateButton ? "valid" : "NULL");
+    if (m_systemUpdateButton) {
+        connect(m_systemUpdateButton, &QPushButton::clicked, this, &MainWindow::onSystemUpdate);
+    }
+    
+    qDebug() << "DEBUG: m_checkUpdatesButton = " << (m_checkUpdatesButton ? "valid" : "NULL");
+    if (m_checkUpdatesButton) {
+        connect(m_checkUpdatesButton, &QPushButton::clicked, this, &MainWindow::onCheckForUpdates);
+    }
+    
+    // Connect maintenance buttons
+    qDebug() << "DEBUG: Connecting maintenance buttons";
+    qDebug() << "DEBUG: m_clearCacheButton = " << (m_clearCacheButton ? "valid" : "NULL");
+    if (m_clearCacheButton) {
+        connect(m_clearCacheButton, &QPushButton::clicked, this, &MainWindow::onClearPackageCache);
+    }
+    
+    qDebug() << "DEBUG: m_removeOrphansButton = " << (m_removeOrphansButton ? "valid" : "NULL");
+    if (m_removeOrphansButton) {
+        connect(m_removeOrphansButton, &QPushButton::clicked, this, &MainWindow::onRemoveOrphans);
+    }
+    
+    qDebug() << "DEBUG: Exiting setupConnections()";
+}
+
+// Add implementation for setupSystemUpdateTab
+void MainWindow::setupSystemUpdateTab() {
+    // Create system update tab
+    m_systemUpdateTab = new QWidget();
+    m_systemUpdateLayout = new QVBoxLayout(m_systemUpdateTab);
+    
+    // Create system update action buttons at the top
+    m_systemUpdateActionsLayout = new QHBoxLayout();
+    m_checkUpdatesButton = new QPushButton(tr("Check for Updates"), m_systemUpdateTab);
+    m_systemUpdateButton = new QPushButton(tr("Update System"), m_systemUpdateTab);
+    
+    // Make buttons consistent with the rest of the UI
+    QString buttonStyle = "QPushButton {"
+                         "background-color: #0078d7; "
+                         "color: white;"
+                         "border: none;"
+                         "border-radius: 3px;"
+                         "padding: 6px 12px;"
+                         "margin: 2px 4px;"
+                         "}"
+                         "QPushButton:hover {"
+                         "background-color: #0063b1;"
+                         "}"
+                         "QPushButton:pressed {"
+                         "background-color: #004b8d;"
+                         "}";
+    
+    // Place Check for Updates first, then Update System with consistent styling
+    m_checkUpdatesButton->setStyleSheet(buttonStyle);
+    m_checkUpdatesButton->setMinimumWidth(130);
+    m_checkUpdatesButton->setMinimumHeight(26);
+    m_checkUpdatesButton->setMaximumHeight(30);
+    m_checkUpdatesButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    
+    m_systemUpdateButton->setStyleSheet(buttonStyle);
+    m_systemUpdateButton->setMinimumWidth(110);
+    m_systemUpdateButton->setMinimumHeight(26);
+    m_systemUpdateButton->setMaximumHeight(30);
+    m_systemUpdateButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    
+    m_systemUpdateActionsLayout->addWidget(m_checkUpdatesButton);
+    m_systemUpdateActionsLayout->addWidget(m_systemUpdateButton);
+    m_systemUpdateActionsLayout->addStretch(1); // Push buttons to the left
+    
+    m_systemUpdateLayout->addLayout(m_systemUpdateActionsLayout);
+    
+    // Create status label
+    m_systemUpdateInfoLabel = new QLabel(tr("Check for updates to see available package upgrades."), m_systemUpdateTab);
+    m_systemUpdateInfoLabel->setStyleSheet("color: #666666; font-size: 11px;");
+    m_systemUpdateInfoLabel->setWordWrap(true);
+    m_systemUpdateLayout->addWidget(m_systemUpdateInfoLabel);
+    
+    // Create system update table
+    m_systemUpdatesTable = new QTreeView(m_systemUpdateTab);
+    m_systemUpdatesTable->setSelectionMode(QAbstractItemView::ExtendedSelection); // Allow multiple selection
+    m_systemUpdatesTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_systemUpdatesTable->setSortingEnabled(true);
+    m_systemUpdatesTable->setAlternatingRowColors(true);
+    
+    m_systemUpdatesModel = new QStandardItemModel(0, 5, this);
+    m_systemUpdatesModel->setHorizontalHeaderLabels(
+        QStringList() << tr("") << tr("Name") << tr("Current") << tr("New") << tr("Repository"));
+    m_systemUpdatesTable->setModel(m_systemUpdatesModel);
+    
+    // Update column sizing to account for checkbox column
+    m_systemUpdatesTable->header()->setSectionResizeMode(0, QHeaderView::Fixed);  // Checkbox column
+    m_systemUpdatesTable->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents); // Name
+    m_systemUpdatesTable->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents); // Current version
+    m_systemUpdatesTable->header()->setSectionResizeMode(3, QHeaderView::ResizeToContents); // New version
+    m_systemUpdatesTable->header()->setSectionResizeMode(4, QHeaderView::Stretch); // Repository
+    
+    // Set checkbox column width
+    m_systemUpdatesTable->setColumnWidth(0, 30);
+    
+    m_systemUpdateLayout->addWidget(m_systemUpdatesTable);
+    
+    // Create update log view
+    m_systemUpdateLogView = new QTextEdit(m_systemUpdateTab);
+    m_systemUpdateLogView->setReadOnly(true);
+    m_systemUpdateLogView->setMaximumHeight(120);
+    m_systemUpdateLogView->setPlaceholderText(tr("Update log will appear here..."));
+    m_systemUpdateLogView->setStyleSheet("background-color: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 3px;");
+    m_systemUpdateLayout->addWidget(m_systemUpdateLogView);
+    
+    // Add system update tab to tabwidget
+    m_tabWidget->addTab(m_systemUpdateTab, tr("System Update"));
+}
+
+// Add implementation for setupMaintenanceTab
+void MainWindow::setupMaintenanceTab() {
+    // Create maintenance tab
+    m_maintenanceTab = new QWidget();
+    
+    // Use grid layout with better spacing
+    QGridLayout* gridLayout = new QGridLayout(m_maintenanceTab);
+    gridLayout->setSpacing(10);  // Add spacing between elements
+    gridLayout->setContentsMargins(15, 15, 15, 15);  // Add margins
+    
+    m_maintenanceLayout = new QVBoxLayout(); // Keep this for backward compatibility
+    
+    // Create maintenance action descriptions with better styling
+    struct MaintenanceAction {
+        QString buttonText;
+        QString description;
+        QPushButton** buttonPtr;
+        QString tooltip;
+    };
+    
+    MaintenanceAction actions[] = {
+        {tr("Clear Package Cache"), 
+         tr("Remove downloaded package files to free disk space."), 
+         &m_clearCacheButton,
+         tr("Removes downloaded package files from the cache.")},
+         
+        {tr("Remove Orphaned Packages"), 
+         tr("Remove packages that are no longer required by any other package."), 
+         &m_removeOrphansButton,
+         tr("Finds and removes packages that are not dependencies of any installed package.")},
+         
+        {tr("Check Database"), 
+         tr("Verify integrity of the package database."), 
+         &m_checkDatabaseButton,
+         tr("Checks the package database for inconsistencies and errors.")},
+         
+        {tr("Find .pacnew Files"), 
+         tr("Find configuration files that need to be merged after updates."), 
+         &m_findPacnewButton,
+         tr("Locates .pacnew and .pacsave files that need attention after package updates.")},
+         
+        {tr("Backup Database"), 
+         tr("Create a backup of the package database."), 
+         &m_backupDatabaseButton,
+         tr("Saves a copy of the package database to restore later if needed.")},
+         
+        {tr("Restore Database"), 
+         tr("Restore a previous backup of the package database."), 
+         &m_restoreDatabaseButton,
+         tr("Replaces the current package database with a previously created backup.")}
+    };
+    
+    // Common button style
+    QString buttonStyle = 
+        "QPushButton {"
+        "    background-color: #0078d7;"
+        "    color: white;"
+        "    border: none;"
+        "    border-radius: 3px;"
+        "    padding: 5px 10px;"
+        "}"
+        "QPushButton:hover {"
+        "    background-color: #2980b9;"
+        "}"
+        "QPushButton:pressed {"
+        "    background-color: #1c6ea4;"
+        "}"
+        "QPushButton:disabled {"
+        "    background-color: #bdc3c7;"
+        "}";
+    
+    int row = 0;
+    for (const auto& action : actions) {
+        // Create button with reduced size and better styling
+        *(action.buttonPtr) = new QPushButton(action.buttonText, m_maintenanceTab);
+        (*(action.buttonPtr))->setMaximumHeight(32); // Reduced from 40
+        (*(action.buttonPtr))->setMinimumWidth(180);
+        (*(action.buttonPtr))->setMaximumWidth(200);
+        (*(action.buttonPtr))->setToolTip(action.tooltip);
+        (*(action.buttonPtr))->setStyleSheet(buttonStyle);
+        
+        // Create description label with better styling
+        QLabel* description = new QLabel(action.description, m_maintenanceTab);
+        description->setWordWrap(true);
+        description->setStyleSheet("color: #666666; font-size: 11px;");
+        
+        // Add to grid layout
+        gridLayout->addWidget(*(action.buttonPtr), row, 0);
+        gridLayout->addWidget(description, row, 1);
+        
+        // Add a separator line after each item except the last one
+        if (row < 5) {
+            QFrame* line = new QFrame(m_maintenanceTab);
+            line->setFrameShape(QFrame::HLine);
+            line->setFrameShadow(QFrame::Sunken);
+            line->setStyleSheet("color: #e0e0e0;");
+            gridLayout->addWidget(line, row + 1, 0, 1, 2);
+            row += 2; // Skip a row for the separator
+        } else {
+            row++;
+        }
+    }
+    
+    // Add spacer item at the bottom with less space
+    gridLayout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding), 
+                       row, 0, 1, 2);
+    
+    // Create log view with better styling
+    m_maintenanceLogView = new QTextEdit(m_maintenanceTab);
+    m_maintenanceLogView->setReadOnly(true);
+    m_maintenanceLogView->setMinimumHeight(150); // Reduced from 200
+    m_maintenanceLogView->setPlaceholderText(tr("Maintenance operations log will appear here..."));
+    m_maintenanceLogView->setStyleSheet("background-color: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 3px;");
+    
+    // Create progress bar with better styling
+    m_maintenanceProgressBar = new QProgressBar(m_maintenanceTab);
+    m_maintenanceProgressBar->setRange(0, 100);
+    m_maintenanceProgressBar->setValue(0);
+    m_maintenanceProgressBar->setVisible(false);
+    m_maintenanceProgressBar->setStyleSheet("QProgressBar {border: 1px solid #e0e0e0; border-radius: 3px; text-align: center;} "
+                                           "QProgressBar::chunk {background-color: #0078d7;}");
+    
+    // Add log view and progress bar to the grid layout
+    gridLayout->addWidget(m_maintenanceLogView, ++row, 0, 1, 2);
+    gridLayout->addWidget(m_maintenanceProgressBar, ++row, 0, 1, 2);
+    
+    // Add maintenance tab to tabwidget
+    m_tabWidget->addTab(m_maintenanceTab, tr("Maintenance"));
+}
+
+// Add implementation for setupDetailPanel
+void MainWindow::setupDetailPanel() {
+    // Create a simple detail panel
+    m_detailPanel = new QWidget(this);
+    m_detailPanel->setFixedWidth(300);
+    m_detailPanel->setMaximumWidth(300);
+    m_detailPanel->hide();
+    
+    m_detailLayout = new QVBoxLayout(m_detailPanel);
+    
+    QLabel* placeholderLabel = new QLabel(tr("Detail panel functionality to be implemented"), m_detailPanel);
+    m_detailLayout->addWidget(placeholderLabel);
+}
+
+// Add implementation for loadSettings
+void MainWindow::loadSettings() {
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    
+    // Load window geometry
+    if (settings.contains("mainwindow/geometry")) {
+        restoreGeometry(settings.value("mainwindow/geometry").toByteArray());
+    }
+    
+    // Load window state
+    if (settings.contains("mainwindow/state")) {
+        restoreState(settings.value("mainwindow/state").toByteArray());
+    }
+    
+    // Load theme preference
+    bool isDark = settings.value("appearance/darkTheme", true).toBool();
+    applyTheme(isDark);
+}
+
+// Add implementation for isDarkThemeEnabled
+bool MainWindow::isDarkThemeEnabled() const {
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    return settings.value("appearance/darkTheme", true).toBool();
+}
+
+// Add implementation for applyTheme
+void MainWindow::applyTheme(bool isDark) {
+    // Save the setting
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    settings.setValue("appearance/darkTheme", isDark);
+    
+    // Update the action state if it exists
+    if (m_toggleThemeAction) {
+        m_toggleThemeAction->setChecked(isDark);
+    }
+    
+    // Get the theme name
+    QString themeName = isDark ? "dark" : "light";
+    
+    // Try to load the stylesheet from multiple locations
+    QString styleContent;
+    bool loaded = false;
+    
+    // Paths to try in order
+    QStringList stylePaths = {
+        QApplication::applicationDirPath() + "/../resources/styles/" + themeName + ".qss",         // From build directory
+        QApplication::applicationDirPath() + "/resources/styles/" + themeName + ".qss",            // From install directory
+        QDir::currentPath() + "/resources/styles/" + themeName + ".qss",                           // From current directory
+        QDir::currentPath() + "/../resources/styles/" + themeName + ".qss"                         // From parent directory
+    };
+    
+    for (const QString& stylePath : stylePaths) {
+        QFile file(stylePath);
+        if (file.open(QFile::ReadOnly | QFile::Text)) {
+            styleContent = file.readAll();
+            file.close();
+            qDebug() << "Successfully loaded" << themeName << "theme from" << stylePath;
+            loaded = true;
             break;
         }
     }
     
-    // If no helper found but AUR is enabled, prompt to download yay-bin
-    if (!helperFound) {
-        QMessageBox::StandardButton reply = QMessageBox::question(this, 
-            "AUR Helper Not Found",
-            "AUR support is enabled but no AUR helper was found.\n\n"
-            "Would you like to download and install 'yay-bin' from GitHub?",
-            QMessageBox::Yes | QMessageBox::No);
-        
-        if (reply == QMessageBox::Yes) {
-            downloadYayHelper();
-        } else {
-            // Disable AUR since no helper is available
-            settings.setValue("aur/enabled", false);
-            
-            // Update UI
-            for (QAction* action : findChildren<QAction*>()) {
-                if (action->statusTip().contains("AUR")) {
-                    action->setEnabled(false);
-                }
-            }
-            
-            // Show message
-            statusBar()->showMessage("AUR support disabled (no helper found)", 5000);
+    if (!loaded) {
+        qDebug() << "Failed to load" << themeName << "theme from any location. Tried:";
+        for (const QString& path : stylePaths) {
+            qDebug() << "  -" << path;
         }
+        
+        // Fallback to built-in minimal theme
+        if (isDark) {
+            styleContent = "QWidget { background-color: #2D2D30; color: #E0E0E0; }"
+                           "QMainWindow { background-color: #1E1E1E; }"
+                           "QTreeView, QTableView { background-color: #252526; alternate-background-color: #2D2D30; color: #E0E0E0; }"
+                           "QLineEdit { background-color: #333337; color: #E0E0E0; border: 1px solid #3F3F46; }";
+        } else {
+            styleContent = "QWidget { background-color: #F0F0F0; color: #202020; }"
+                           "QMainWindow { background-color: #FFFFFF; }"
+                           "QTreeView, QTableView { background-color: #FFFFFF; alternate-background-color: #F5F5F5; color: #202020; }"
+                           "QLineEdit { background-color: #FFFFFF; color: #202020; border: 1px solid #C0C0C0; }";
+        }
+        qDebug() << "Using fallback built-in theme";
     }
+    
+    // Apply the theme
+    qApp->setStyleSheet(styleContent);
 }
 
-void MainWindow::downloadYayHelper()
-{
-    // Show progress dialog
-    QProgressDialog progress("Downloading yay-bin...", "Cancel", 0, 100, this);
-    progress.setWindowModality(Qt::WindowModal);
-    progress.show();
-    
-    // Use a background thread for download
-    QFuture<bool> future = QtConcurrent::run([this, &progress]() {
-        try {
-            // Step 1: Create a temporary directory
-            QTemporaryDir tempDir;
-            if (!tempDir.isValid()) {
-                throw std::runtime_error("Could not create temporary directory");
-            }
-            
-            progress.setValue(10);
-            if (progress.wasCanceled()) return false;
-            
-            // Step 2: Download yay-bin from GitHub using curl
-            std::string downloadCommand = "curl -L -o " + tempDir.path().toStdString() + 
-                                        "/yay-bin-latest.tar.gz " +
-                                        "https://github.com/Jguer/yay/releases/latest/download/yay_*_x86_64.tar.gz";
-            
-            int result = system(downloadCommand.c_str());
-            if (result != 0) {
-                throw std::runtime_error("Failed to download yay-bin");
-            }
-            
-            progress.setValue(40);
-            if (progress.wasCanceled()) return false;
-            
-            // Step 3: Extract the tar.gz file
-            std::string extractCommand = "tar -xzf " + tempDir.path().toStdString() + 
-                                       "/yay-bin-latest.tar.gz -C " + tempDir.path().toStdString();
-            
-            result = system(extractCommand.c_str());
-            if (result != 0) {
-                throw std::runtime_error("Failed to extract yay-bin");
-            }
-            
-            progress.setValue(70);
-            if (progress.wasCanceled()) return false;
-            
-            // Step 4: Get admin password for installation
-            bool ok;
-            QString password = QInputDialog::getText(nullptr, "Authentication Required",
-                                                  "Enter your password to install yay:",
-                                                  QLineEdit::Password, "", &ok);
-            
-            if (!ok || password.isEmpty()) {
-                throw std::runtime_error("Authentication cancelled");
-            }
-            
-            // Step 5: Move the binary to /usr/bin
-            std::string moveCommand = "cp " + tempDir.path().toStdString() + "/yay /tmp/yay-bin";
-            result = system(moveCommand.c_str());
-            if (result != 0) {
-                throw std::runtime_error("Failed to prepare yay binary");
-            }
-            
-            std::string installCommand = "mv /tmp/yay-bin /usr/bin/yay && chmod +x /usr/bin/yay";
-            bool success = m_packageManager.execute_with_sudo(installCommand, password.toStdString());
-            
-            if (!success) {
-                throw std::runtime_error("Failed to install yay. Authentication may have failed.");
-            }
-            
-            progress.setValue(100);
-            
-            // Update settings
-            QSettings settings("PacmanGUI", "PacmanGUI");
-            settings.setValue("aur/enabled", true);
-            settings.setValue("aur/helper", "yay");
-            
-            return true;
-        }
-        catch (const std::exception& e) {
-            QString errorMsg = QString("Error: %1").arg(e.what());
-            // Use QMetaObject::invokeMethod to safely show message from another thread
-            QMetaObject::invokeMethod(this, "showStatusMessage", 
-                                     Qt::QueuedConnection,
-                                     Q_ARG(QString, errorMsg),
-                                     Q_ARG(int, 5000));
-            return false;
-        }
-    });
-    
-    // Handle future result in the main thread
-    QFutureWatcher<bool>* watcher = new QFutureWatcher<bool>(this);
-    connect(watcher, &QFutureWatcher<bool>::finished, this, [this, watcher]() {
-        bool success = watcher->result();
-        if (success) {
-            QMessageBox::information(this, "Installation Successful", 
-                                     "yay was successfully installed.\nAUR support is now enabled.");
-            
-            // Enable AUR actions
-            for (QAction* action : findChildren<QAction*>()) {
-                if (action->statusTip().contains("AUR")) {
-                    action->setEnabled(true);
-                }
-            }
-            
-            statusBar()->showMessage("yay installed. AUR support enabled", 5000);
-        } else {
-            QMessageBox::warning(this, "Installation Failed", 
-                                "Failed to install yay.\nAUR support will be disabled.");
-            
-            // Disable AUR actions
-            for (QAction* action : findChildren<QAction*>()) {
-                if (action->statusTip().contains("AUR")) {
-                    action->setEnabled(false);
-                }
-            }
-            
-            // Update settings
-            QSettings settings("PacmanGUI", "PacmanGUI");
-            settings.setValue("aur/enabled", false);
-        }
-        
-        watcher->deleteLater();
-    });
-    
-    watcher->setFuture(future);
-}
-
-void MainWindow::showStatusMessage(const QString& message, int timeout)
-{
+// Add implementation for showStatusMessage
+void MainWindow::showStatusMessage(const QString& message, int timeout) {
     statusBar()->showMessage(message, timeout);
 }
 
-void MainWindow::closeEvent(QCloseEvent* event)
-{
-    // Save settings before closing
-    saveSettings();
-    event->accept();
-}
-
-void MainWindow::setupUi()
-{
-    // Get the central widget that was already set in the constructor
-    QWidget* centralWidget = this->centralWidget();
-    
-    // Create main layout with proper spacing that expands with the window
-    QVBoxLayout* mainLayout = new QVBoxLayout(centralWidget);
-    mainLayout->setContentsMargins(10, 10, 10, 10);
-    mainLayout->setSpacing(10);
-    
-    // Create search bar section that adapts to window width
-    QWidget* searchWidget = new QWidget();
-    searchWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    
-    QHBoxLayout* searchLayout = new QHBoxLayout(searchWidget);
-    searchLayout->setContentsMargins(5, 0, 5, 0);
-    searchLayout->setSpacing(10);
-    
-    QLabel* searchLabel = new QLabel("Search:", searchWidget);
-    searchLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    
-    m_searchBox = new QLineEdit(searchWidget);
-    m_searchBox->setPlaceholderText("Enter package name");
-    m_searchBox->setClearButtonEnabled(true);
-    m_searchBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    m_searchBox->setMinimumWidth(200);
-    
-    m_searchButton = new QPushButton("Search", searchWidget);
-    m_searchButton->setObjectName("primary");
-    m_searchButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    
-    m_settingsButton = new QToolButton();
-    m_settingsButton->setIcon(QIcon::fromTheme("preferences-system"));
-    m_settingsButton->setToolTip("Settings");
-    m_settingsButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    m_settingsButton->setIconSize(QSize(24, 24));
-    
-    searchLayout->addWidget(searchLabel);
-    searchLayout->addWidget(m_searchBox, 1);
-    searchLayout->addWidget(m_searchButton);
-    searchLayout->addWidget(m_settingsButton);
-    
-    // Add search widget to main layout
-    mainLayout->addWidget(searchWidget);
-    
-    // Create tab widget that takes all available space
-    m_tabWidget = new QTabWidget();
-    m_tabWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    
-    // Create "All Packages" tab with a responsive layout
-    QWidget* packagesTab = new QWidget();
-    packagesTab->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    
-    QVBoxLayout* packagesLayout = new QVBoxLayout(packagesTab);
-    packagesLayout->setContentsMargins(10, 10, 10, 10);
-    packagesLayout->setSpacing(10);
-    
-    // Create packages table view with responsive sizing
-    m_packagesView = new QTableView();
-    m_packagesView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    m_packagesView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_packagesView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    m_packagesView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    m_packagesView->setAlternatingRowColors(true);
-    m_packagesView->verticalHeader()->setVisible(false);
-    m_packagesView->verticalHeader()->setDefaultSectionSize(28);
-    m_packagesView->horizontalHeader()->setStretchLastSection(true);
-    m_packagesView->setSortingEnabled(true);
-    
-    // Set the model for packages view
-    m_packagesModel = new QStandardItemModel(0, 5, this);
-    m_packagesModel->setHorizontalHeaderLabels(QStringList() << "" << "Name" << "Version" << "Repository" << "Description");
-    m_packagesView->setModel(m_packagesModel);
-    
-    // Use ResizeToContents initially for best appearance
-    for (int i = 0; i < m_packagesModel->columnCount(); ++i) {
-        m_packagesView->horizontalHeader()->setSectionResizeMode(i, i == 4 ? QHeaderView::Stretch : QHeaderView::ResizeToContents);
+// Add implementation for refreshInstalledPackages
+void MainWindow::refreshInstalledPackages() {
+    // Ensure model is properly initialized
+    if (!m_installedModel) {
+        m_installedModel = new QStandardItemModel(0, 5, this);
+        m_installedModel->setHorizontalHeaderLabels(
+            QStringList() << tr("") << tr("Name") << tr("Version") << tr("Description") << tr("Repository"));
     }
     
-    packagesLayout->addWidget(m_packagesView);
+    // Clear the installed packages model
+    m_installedModel->clear();
+    m_installedModel->setHorizontalHeaderLabels(
+        QStringList() << tr("") << tr("Name") << tr("Version") << tr("Description") << tr("Repository"));
     
-    // Create "Installed" tab with a responsive layout
-    QWidget* installedTab = new QWidget();
-    installedTab->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    // Get installed packages from the package manager
+    std::vector<pacmangui::core::Package> installedPackages = m_packageManager.get_installed_packages();
     
-    QVBoxLayout* installedLayout = new QVBoxLayout(installedTab);
-    installedLayout->setContentsMargins(10, 10, 10, 10);
-    installedLayout->setSpacing(10);
-    
-    // Create batch install button in its own layout for proper alignment
-    QHBoxLayout* batchButtonLayout = new QHBoxLayout();
-    batchButtonLayout->addStretch(1);
-    
-    m_batchInstallButton = new QPushButton(QIcon::fromTheme("system-software-install"), "Install Selected Packages");
-    m_batchInstallButton->setObjectName("primary");
-    m_batchInstallButton->setEnabled(false);
-    m_batchInstallButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    
-    batchButtonLayout->addWidget(m_batchInstallButton);
-    installedLayout->addLayout(batchButtonLayout);
-    
-    // Create installed packages table view with responsive sizing
-    m_installedView = new QTableView();
-    m_installedView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    m_installedView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_installedView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    m_installedView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    m_installedView->setAlternatingRowColors(true);
-    m_installedView->verticalHeader()->setVisible(false);
-    m_installedView->verticalHeader()->setDefaultSectionSize(28);
-    m_installedView->horizontalHeader()->setStretchLastSection(true);
-    m_installedView->setSortingEnabled(true);
-    
-    // Set the model for installed view
-    m_installedModel = new QStandardItemModel(0, 5, this);
-    m_installedModel->setHorizontalHeaderLabels(QStringList() << "" << "Name" << "Version" << "Repository" << "Description");
-    m_installedView->setModel(m_installedModel);
-    
-    // Use ResizeToContents initially for best appearance
-    for (int i = 0; i < m_installedModel->columnCount(); ++i) {
-        m_installedView->horizontalHeader()->setSectionResizeMode(i, i == 4 ? QHeaderView::Stretch : QHeaderView::ResizeToContents);
+    // Add packages to the model
+    for (const auto& pkg : installedPackages) {
+        QList<QStandardItem*> row;
+        
+        // Add checkbox item
+        QStandardItem* checkItem = new QStandardItem();
+        checkItem->setCheckable(true);
+        checkItem->setCheckState(Qt::Unchecked);
+        checkItem->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
+        
+        QStandardItem* nameItem = new QStandardItem(QString::fromStdString(pkg.get_name()));
+        QStandardItem* versionItem = new QStandardItem(QString::fromStdString(pkg.get_version()));
+        QStandardItem* descItem = new QStandardItem(QString::fromStdString(pkg.get_description()));
+        QStandardItem* repoItem = new QStandardItem(QString::fromStdString(pkg.get_repository()));
+        
+        row << checkItem << nameItem << versionItem << descItem << repoItem;
+        m_installedModel->appendRow(row);
     }
-    
-    installedLayout->addWidget(m_installedView);
-    
-    // Add tabs to tab widget
-    m_tabWidget->addTab(packagesTab, "All Packages");
-    m_tabWidget->addTab(installedTab, "Installed");
-    
-    // Create and setup system update tab
-    m_systemUpdateTab = new QWidget();
-    setupSystemUpdateTab();
-    m_tabWidget->addTab(m_systemUpdateTab, "System Update");
-    
-    // Create and setup system maintenance tab
-    m_maintenanceTab = new QWidget();
-    setupMaintenanceTab();
-    m_tabWidget->addTab(m_maintenanceTab, "System Maintenance");
-    
-    // Add tab widget to main layout
-    mainLayout->addWidget(m_tabWidget);
-    
-    // Create details widget for package information
-    m_detailsWidget = new QWidget();
-    m_detailsWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-    QVBoxLayout* detailsLayout = new QVBoxLayout(m_detailsWidget);
-    detailsLayout->setContentsMargins(10, 10, 10, 10);
-    
-    // Package details
-    m_packageNameLabel = new QLabel();
-    m_packageNameLabel->setProperty("heading", true);
-    QFont nameFont = m_packageNameLabel->font();
-    nameFont.setBold(true);
-    nameFont.setPointSize(nameFont.pointSize() + 2);
-    m_packageNameLabel->setFont(nameFont);
-    
-    m_packageVersionLabel = new QLabel();
-    m_packageDescLabel = new QLabel();
-    m_packageDescLabel->setWordWrap(true);
-    
-    // Action button
-    QHBoxLayout* actionLayout = new QHBoxLayout();
-    actionLayout->addStretch(1);
-    
-    m_actionButton = new QPushButton();
-    m_actionButton->setObjectName("primary");
-    m_actionButton->setMinimumWidth(120);
-    m_actionButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    actionLayout->addWidget(m_actionButton);
-    
-    // Add package overwrite checkbox
-    m_packageOverwriteCheckbox = new QCheckBox("Use --overwrite \"*\"", this);
-    m_packageOverwriteCheckbox->setToolTip("This option allows pacman to overwrite conflicting files. Use with caution!");
-    
-    // Add widgets to details layout
-    detailsLayout->addWidget(m_packageNameLabel);
-    detailsLayout->addWidget(m_packageVersionLabel);
-    detailsLayout->addWidget(m_packageDescLabel);
-    detailsLayout->addWidget(m_packageOverwriteCheckbox);
-    detailsLayout->addLayout(actionLayout);
-    
-    // Add details widget to main layout
-    mainLayout->addWidget(m_detailsWidget);
-    
-    // Initially hide details widget until a package is selected
-    m_detailsWidget->setVisible(false);
-    
-    // Create status bar with resize grip
-    statusBar()->setSizeGripEnabled(true);
-    statusBar()->showMessage("Ready");
-}
-
-void MainWindow::setupSystemUpdateTab()
-{
-    QVBoxLayout* systemUpdateLayout = new QVBoxLayout(m_systemUpdateTab);
-    systemUpdateLayout->setContentsMargins(10, 10, 10, 10);
-    systemUpdateLayout->setSpacing(15);
-    
-    // Set object name for CSS styling
-    m_systemUpdateTab->setObjectName("systemUpdateTab");
-    m_systemUpdateTab->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    
-    // Create a scroll area for responsive content
-    QScrollArea* scrollArea = new QScrollArea(m_systemUpdateTab);
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setFrameShape(QFrame::NoFrame);
-    scrollArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    
-    QWidget* contentWidget = new QWidget(scrollArea);
-    contentWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    QVBoxLayout* contentLayout = new QVBoxLayout(contentWidget);
-    contentLayout->setContentsMargins(0, 0, 0, 0);
-    contentLayout->setSpacing(15);
-    
-    // Information label
-    m_systemUpdateInfoLabel = new QLabel(
-        "<h2>System Update</h2>"
-        "<p>Perform a full system update to ensure all packages are up to date.</p>"
-        "<p>This will execute <code>sudo pacman -Syu</code> to update your system.</p>"
-        "<p><b>Note:</b> You'll need administrator privileges to perform this operation.</p>",
-        contentWidget);
-    m_systemUpdateInfoLabel->setProperty("heading", true);
-    m_systemUpdateInfoLabel->setWordWrap(true);
-    m_systemUpdateInfoLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-    contentLayout->addWidget(m_systemUpdateInfoLabel);
-    
-    // Button layout
-    QHBoxLayout* systemUpdateButtonLayout = new QHBoxLayout();
-    systemUpdateButtonLayout->setSpacing(10);
-    
-    // Add check for updates button
-    m_checkUpdatesButton = new QPushButton("Check for Updates", contentWidget);
-    m_checkUpdatesButton->setObjectName("primary");
-    m_checkUpdatesButton->setMinimumHeight(36);
-    m_checkUpdatesButton->setMinimumWidth(150);
-    m_checkUpdatesButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    systemUpdateButtonLayout->addWidget(m_checkUpdatesButton);
-    
-    // Add system update button
-    m_systemUpdateButton = new QPushButton("Update System", contentWidget);
-    m_systemUpdateButton->setObjectName("primary");
-    m_systemUpdateButton->setMinimumHeight(36);
-    m_systemUpdateButton->setMinimumWidth(150);
-    m_systemUpdateButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    systemUpdateButtonLayout->addWidget(m_systemUpdateButton);
-    
-    // Add overwrite checkbox for system update
-    m_systemUpdateOverwriteCheckbox = new QCheckBox("Use --overwrite \"*\"", contentWidget);
-    m_systemUpdateOverwriteCheckbox->setToolTip("This option allows pacman to overwrite conflicting files during system update. Use with caution!");
-    systemUpdateButtonLayout->addWidget(m_systemUpdateOverwriteCheckbox);
-    
-    systemUpdateButtonLayout->addStretch(1);
-    contentLayout->addLayout(systemUpdateButtonLayout);
-    
-    // Create a table for available updates
-    QLabel* updatesLabel = new QLabel("Available Updates:", contentWidget);
-    updatesLabel->setProperty("subheading", true);
-    contentLayout->addWidget(updatesLabel);
-    
-    m_systemUpdatesView = new QTableView(contentWidget);
-    m_systemUpdatesView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    m_systemUpdatesView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_systemUpdatesView->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_systemUpdatesView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    m_systemUpdatesView->setAlternatingRowColors(true);
-    m_systemUpdatesView->verticalHeader()->setVisible(false);
-    m_systemUpdatesView->verticalHeader()->setDefaultSectionSize(28);
-    m_systemUpdatesView->horizontalHeader()->setStretchLastSection(true);
-    m_systemUpdatesView->setSortingEnabled(true);
-    
-    m_systemUpdatesModel = new QStandardItemModel(0, 4, this);
-    m_systemUpdatesModel->setHorizontalHeaderLabels(QStringList() << "Name" << "Current Version" << "New Version" << "Repository");
-    m_systemUpdatesView->setModel(m_systemUpdatesModel);
-    
-    // Use ResizeToContents initially for best appearance
-    for (int i = 0; i < m_systemUpdatesModel->columnCount(); ++i) {
-        m_systemUpdatesView->horizontalHeader()->setSectionResizeMode(i, i == 3 ? QHeaderView::Stretch : QHeaderView::ResizeToContents);
-    }
-    
-    contentLayout->addWidget(m_systemUpdatesView);
-    
-    // Add update log view with stretch
-    QLabel* logLabel = new QLabel("Update Log:", contentWidget);
-    logLabel->setProperty("subheading", true);
-    contentLayout->addWidget(logLabel);
-    
-    m_systemUpdateLogView = new QTextEdit(contentWidget);
-    m_systemUpdateLogView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    m_systemUpdateLogView->setReadOnly(true);
-    m_systemUpdateLogView->setPlaceholderText("System update log will appear here...");
-    m_systemUpdateLogView->setMinimumHeight(150);
-    contentLayout->addWidget(m_systemUpdateLogView);
-    
-    // Set the content widget to the scroll area
-    scrollArea->setWidget(contentWidget);
-    
-    // Add scroll area to the main layout
-    systemUpdateLayout->addWidget(scrollArea);
-}
-
-void MainWindow::setupMaintenanceTab()
-{
-    // Create a base layout for the maintenance tab
-    QVBoxLayout* mainLayout = new QVBoxLayout(m_maintenanceTab);
-    mainLayout->setContentsMargins(10, 10, 10, 10);
-    mainLayout->setSpacing(10);
-    
-    // Set object name for CSS styling
-    m_maintenanceTab->setObjectName("maintenanceTab");
-    
-    // Create a splitter for resizing between maintenance tools and log
-    QSplitter* mainSplitter = new QSplitter(Qt::Vertical);
-    mainSplitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    
-    // Create header section
-    QWidget* headerWidget = new QWidget();
-    QVBoxLayout* headerLayout = new QVBoxLayout(headerWidget);
-    headerLayout->setContentsMargins(0, 0, 0, 0);
-    
-    QLabel* titleLabel = new QLabel("System Maintenance");
-    titleLabel->setProperty("heading", true);
-    
-    QLabel* descLabel = new QLabel(
-        "Use these tools to maintain your Arch Linux system. Regular maintenance "
-        "helps keep your system clean, fast, and stable."
-    );
-    descLabel->setProperty("subheading", true);
-    descLabel->setWordWrap(true);
-    
-    headerLayout->addWidget(titleLabel);
-    headerLayout->addWidget(descLabel);
-    
-    // Create scrollable content for maintenance tools
-    QScrollArea* scrollArea = new QScrollArea();
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setFrameShape(QFrame::NoFrame);
-    scrollArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    
-    QWidget* contentWidget = new QWidget();
-    QVBoxLayout* contentLayout = new QVBoxLayout(contentWidget);
-    contentLayout->setContentsMargins(0, 0, 0, 0);
-    contentLayout->setSpacing(20); // More spacing between sections
-    
-    // Define button style and uniform size
-    const QString buttonStyle = "background-color: #2196F3; color: white;";
-    const int buttonHeight = 32;
-    const int buttonMinWidth = 120;
-    
-    // === Package Cache Cleaning ===
-    QGroupBox* cacheGroup = new QGroupBox("Package Cache");
-    QVBoxLayout* cacheGroupLayout = new QVBoxLayout(cacheGroup);
-    
-    QHBoxLayout* cacheButtonsLayout = new QHBoxLayout();
-    cacheButtonsLayout->setSpacing(10);
-    
-    m_clearCacheButton = new QPushButton("Clean Cache");
-    m_clearCacheButton->setObjectName("primary");
-    m_clearCacheButton->setMinimumHeight(buttonHeight);
-    m_clearCacheButton->setMinimumWidth(buttonMinWidth);
-    m_clearCacheButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    
-    QPushButton* refreshCacheButton = new QPushButton("Refresh");
-    refreshCacheButton->setObjectName("primary");
-    refreshCacheButton->setMinimumHeight(buttonHeight);
-    refreshCacheButton->setMinimumWidth(buttonMinWidth);
-    refreshCacheButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    
-    cacheButtonsLayout->addWidget(m_clearCacheButton);
-    cacheButtonsLayout->addWidget(refreshCacheButton);
-    cacheButtonsLayout->addStretch();
-    
-    QHBoxLayout* cacheOptionsLayout = new QHBoxLayout();
-    m_clearUnusedCacheRadio = new QRadioButton("Clean unused packages (pacman -Sc)");
-    m_clearUnusedCacheRadio->setChecked(true);
-    m_clearAllCacheRadio = new QRadioButton("Clean all packages (pacman -Scc)");
-    
-    cacheOptionsLayout->addWidget(m_clearUnusedCacheRadio);
-    cacheOptionsLayout->addWidget(m_clearAllCacheRadio);
-    cacheOptionsLayout->addStretch();
-    
-    cacheGroupLayout->addLayout(cacheButtonsLayout);
-    cacheGroupLayout->addLayout(cacheOptionsLayout);
-    
-    // === Orphaned Packages ===
-    QGroupBox* orphansGroup = new QGroupBox("Orphaned Packages");
-    QVBoxLayout* orphansGroupLayout = new QVBoxLayout(orphansGroup);
-    
-    QHBoxLayout* orphansButtonsLayout = new QHBoxLayout();
-    orphansButtonsLayout->setSpacing(10);
-    
-    m_findOrphansButton = new QPushButton("Find Orphans");
-    m_findOrphansButton->setObjectName("primary");
-    m_findOrphansButton->setMinimumHeight(buttonHeight);
-    m_findOrphansButton->setMinimumWidth(buttonMinWidth);
-    m_findOrphansButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    
-    m_removeOrphansButton = new QPushButton("Remove Orphans");
-    m_removeOrphansButton->setObjectName("primary");
-    m_removeOrphansButton->setMinimumHeight(buttonHeight);
-    m_removeOrphansButton->setMinimumWidth(buttonMinWidth);
-    m_removeOrphansButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    m_removeOrphansButton->setEnabled(false);
-    
-    orphansButtonsLayout->addWidget(m_findOrphansButton);
-    orphansButtonsLayout->addWidget(m_removeOrphansButton);
-    orphansButtonsLayout->addStretch();
-    
-    orphansGroupLayout->addLayout(orphansButtonsLayout);
-    
-    // === Database Check ===
-    QGroupBox* dbCheckGroup = new QGroupBox("Database Check");
-    QVBoxLayout* dbCheckGroupLayout = new QVBoxLayout(dbCheckGroup);
-    
-    QHBoxLayout* dbCheckLayout = new QHBoxLayout();
-    dbCheckLayout->setSpacing(10);
-    
-    m_checkDatabaseButton = new QPushButton("Check Database");
-    m_checkDatabaseButton->setObjectName("primary");
-    m_checkDatabaseButton->setMinimumHeight(buttonHeight);
-    m_checkDatabaseButton->setMinimumWidth(buttonMinWidth);
-    m_checkDatabaseButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    
-    m_checkSyncDbsCheckbox = new QCheckBox("Also check sync databases (pacman -Dkk)");
-    
-    dbCheckLayout->addWidget(m_checkDatabaseButton);
-    dbCheckLayout->addWidget(m_checkSyncDbsCheckbox);
-    dbCheckLayout->addStretch();
-    
-    dbCheckGroupLayout->addLayout(dbCheckLayout);
-    
-    // === Pacnew Files ===
-    QGroupBox* pacnewGroup = new QGroupBox("Config File Updates");
-    QVBoxLayout* pacnewGroupLayout = new QVBoxLayout(pacnewGroup);
-    
-    QHBoxLayout* pacnewLayout = new QHBoxLayout();
-    pacnewLayout->setSpacing(10);
-    
-    m_findPacnewButton = new QPushButton("Find .pacnew/.pacsave Files");
-    m_findPacnewButton->setObjectName("primary");
-    m_findPacnewButton->setMinimumHeight(buttonHeight);
-    m_findPacnewButton->setMinimumWidth(buttonMinWidth);
-    m_findPacnewButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    
-    pacnewLayout->addWidget(m_findPacnewButton);
-    pacnewLayout->addStretch();
-    
-    pacnewGroupLayout->addLayout(pacnewLayout);
-    
-    // === Database Backup/Restore ===
-    QGroupBox* backupGroup = new QGroupBox("Database Backup/Restore");
-    QVBoxLayout* backupGroupLayout = new QVBoxLayout(backupGroup);
-    
-    QHBoxLayout* backupPathLayout = new QHBoxLayout();
-    backupPathLayout->setSpacing(10);
-    
-    QLabel* backupPathLabel = new QLabel("Backup Path:");
-    m_backupPathEdit = new QLineEdit(QDir::homePath() + "/pacman_database_backup.tar.gz");
-    m_backupPathEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    
-    m_selectBackupPathButton = new QPushButton("Browse...");
-    m_selectBackupPathButton->setMinimumHeight(buttonHeight);
-    m_selectBackupPathButton->setMinimumWidth(80);
-    m_selectBackupPathButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    
-    backupPathLayout->addWidget(backupPathLabel);
-    backupPathLayout->addWidget(m_backupPathEdit, 1);
-    backupPathLayout->addWidget(m_selectBackupPathButton);
-    
-    QHBoxLayout* backupButtonsLayout = new QHBoxLayout();
-    backupButtonsLayout->setSpacing(10);
-    
-    m_backupButton = new QPushButton("Backup Database");
-    m_backupButton->setObjectName("primary");
-    m_backupButton->setMinimumHeight(buttonHeight);
-    m_backupButton->setMinimumWidth(buttonMinWidth);
-    m_backupButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    
-    m_restoreButton = new QPushButton("Restore Database");
-    m_restoreButton->setObjectName("primary");
-    m_restoreButton->setMinimumHeight(buttonHeight);
-    m_restoreButton->setMinimumWidth(buttonMinWidth);
-    m_restoreButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    
-    backupButtonsLayout->addWidget(m_backupButton);
-    backupButtonsLayout->addWidget(m_restoreButton);
-    backupButtonsLayout->addStretch();
-    
-    backupGroupLayout->addLayout(backupPathLayout);
-    backupGroupLayout->addLayout(backupButtonsLayout);
-    
-    // Add all sections to the content layout
-    contentLayout->addWidget(cacheGroup);
-    contentLayout->addWidget(orphansGroup);
-    contentLayout->addWidget(dbCheckGroup);
-    contentLayout->addWidget(pacnewGroup);
-    contentLayout->addWidget(backupGroup);
-    contentLayout->addStretch(1); // Add stretch at the end
-    
-    // Set the content widget to the scroll area
-    scrollArea->setWidget(contentWidget);
-    
-    // Create a widget for the top part (header + tools)
-    QWidget* topWidget = new QWidget();
-    QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
-    topLayout->setContentsMargins(0, 0, 0, 0);
-    topLayout->setSpacing(10);
-    topLayout->addWidget(headerWidget);
-    topLayout->addWidget(scrollArea, 1); // Give scrollArea a stretch factor
-    
-    // Create maintenance log area
-    QGroupBox* logGroup = new QGroupBox("Maintenance Log");
-    QVBoxLayout* logLayout = new QVBoxLayout(logGroup);
-    
-    m_maintenanceLogView = new QTextEdit();
-    m_maintenanceLogView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    m_maintenanceLogView->setReadOnly(true);
-    m_maintenanceLogView->setLineWrapMode(QTextEdit::WidgetWidth);
-    m_maintenanceLogView->setMinimumHeight(100);
-    
-    // Create progress bar for operations
-    m_maintenanceProgressBar = new QProgressBar();
-    m_maintenanceProgressBar->setRange(0, 0); // Indeterminate
-    m_maintenanceProgressBar->setVisible(false);
-    
-    logLayout->addWidget(m_maintenanceLogView);
-    logLayout->addWidget(m_maintenanceProgressBar);
-    
-    // Add the widgets to the splitter
-    mainSplitter->addWidget(topWidget);
-    mainSplitter->addWidget(logGroup);
-    
-    // Set the initial sizes of the splitter (70% top, 30% bottom)
-    QList<int> sizes;
-    sizes << 700 << 300;
-    mainSplitter->setSizes(sizes);
-    
-    // Add the splitter to the main layout
-    mainLayout->addWidget(mainSplitter);
-    
-    // Connect the refresh cache button
-    connect(refreshCacheButton, &QPushButton::clicked, this, [this]() {
-        m_maintenanceLogView->append("Checking package cache size...");
-        setCursor(Qt::WaitCursor);
-        m_maintenanceProgressBar->setVisible(true);
-        
-        QtConcurrent::run([this]() {
-            QString output;
-            QProcess process;
-            process.start("du", QStringList() << "-sh" << "/var/cache/pacman/pkg/");
-            process.waitForFinished();
-            output = QString::fromUtf8(process.readAllStandardOutput());
-            
-            // Update UI from the main thread
-            QMetaObject::invokeMethod(this, [this, output]() {
-                setCursor(Qt::ArrowCursor);
-                m_maintenanceProgressBar->setVisible(false);
-                
-                if (!output.isEmpty()) {
-                    m_maintenanceLogView->append("Package cache size: " + output.trimmed());
-                } else {
-                    m_maintenanceLogView->append("Failed to check package cache size");
-                }
-            }, Qt::QueuedConnection);
-        });
-    });
-}
-
-void MainWindow::setupActions()
-{
-    // Create actions for menu
-    QAction* installAction = new QAction("Install Package", this);
-    installAction->setStatusTip("Install selected package");
-    connect(installAction, &QAction::triggered, this, &MainWindow::onInstallPackage);
-    
-    QAction* removeAction = new QAction("Remove Package", this);
-    removeAction->setStatusTip("Remove selected package");
-    connect(removeAction, &QAction::triggered, this, &MainWindow::onRemovePackage);
-    
-    QAction* updateAction = new QAction("Update Package", this);
-    updateAction->setStatusTip("Update selected package");
-    connect(updateAction, &QAction::triggered, this, &MainWindow::onUpdatePackage);
-    
-    QAction* syncAction = new QAction("Sync Databases", this);
-    syncAction->setStatusTip("Synchronize package databases");
-    connect(syncAction, &QAction::triggered, this, &MainWindow::onSyncAll);
-    
-    QAction* systemUpdateAction = new QAction("System Update", this);
-    systemUpdateAction->setStatusTip("Update all packages on the system");
-    connect(systemUpdateAction, &QAction::triggered, this, &MainWindow::onSystemUpdate);
-    
-    QAction* checkUpdatesAction = new QAction("Check for Updates", this);
-    checkUpdatesAction->setStatusTip("Check for available updates");
-    connect(checkUpdatesAction, &QAction::triggered, this, &MainWindow::onCheckForUpdates);
-    
-    // AUR actions
-    QAction* aurInstallAction = new QAction("Install AUR Package", this);
-    aurInstallAction->setStatusTip("Install selected AUR package");
-    connect(aurInstallAction, &QAction::triggered, this, &MainWindow::onInstallAurPackage);
-    
-    QAction* aurUpdateAction = new QAction("Update AUR Packages", this);
-    aurUpdateAction->setStatusTip("Update AUR packages");
-    connect(aurUpdateAction, &QAction::triggered, this, &MainWindow::onUpdateAurPackages);
-    
-    QAction* settingsAction = new QAction("Settings", this);
-    settingsAction->setStatusTip("Open settings");
-    connect(settingsAction, &QAction::triggered, this, &MainWindow::openSettings);
-    
-    QAction* aboutAction = new QAction("About", this);
-    aboutAction->setStatusTip("About PacmanGUI");
-    connect(aboutAction, &QAction::triggered, this, &MainWindow::onAbout);
-    
-    QAction* exitAction = new QAction("Exit", this);
-    exitAction->setStatusTip("Exit application");
-    exitAction->setShortcut(QKeySequence::Quit);
-    connect(exitAction, &QAction::triggered, this, &QMainWindow::close);
-    
-    // Save the actions for use in the menu setup
-    m_actions["install"] = installAction;
-    m_actions["remove"] = removeAction;
-    m_actions["update"] = updateAction;
-    m_actions["sync"] = syncAction;
-    m_actions["systemUpdate"] = systemUpdateAction;
-    m_actions["checkUpdates"] = checkUpdatesAction;
-    m_actions["aurInstall"] = aurInstallAction;
-    m_actions["aurUpdate"] = aurUpdateAction;
-    m_actions["settings"] = settingsAction;
-    m_actions["about"] = aboutAction;
-    m_actions["exit"] = exitAction;
-    
-    // Check if AUR is enabled and disable AUR actions if not
-    QSettings settings("PacmanGUI", "PacmanGUI");
-    bool aurEnabled = settings.value("aur/enabled", false).toBool();
-    aurInstallAction->setEnabled(aurEnabled);
-    aurUpdateAction->setEnabled(aurEnabled);
-}
-
-void MainWindow::setupMenus()
-{
-    // File menu
-    QMenu* fileMenu = menuBar()->addMenu("&File");
-    fileMenu->addAction(m_actions["sync"]);
-    fileMenu->addSeparator();
-    fileMenu->addAction(m_actions["exit"]);
-    
-    // Operations menu
-    QMenu* operationsMenu = menuBar()->addMenu("&Operations");
-    
-    // Package operations
-    operationsMenu->addAction(m_actions["install"]);
-    operationsMenu->addAction(m_actions["remove"]);
-    operationsMenu->addAction(m_actions["update"]);
-    operationsMenu->addSeparator();
-    
-    // System update operations
-    operationsMenu->addAction(m_actions["checkUpdates"]);
-    operationsMenu->addAction(m_actions["systemUpdate"]);
-    operationsMenu->addSeparator();
-    
-    // AUR operations
-    operationsMenu->addAction(m_actions["aurInstall"]);
-    operationsMenu->addAction(m_actions["aurUpdate"]);
-    
-    // Settings menu
-    QMenu* settingsMenu = menuBar()->addMenu("&Settings");
-    
-    // AUR support setting
-    QSettings settings("PacmanGUI", "PacmanGUI");
-    bool aurEnabled = settings.value("aur/enabled", false).toBool();
-    
-    QAction* aurAction = settingsMenu->addAction("Enable &AUR Support");
-    aurAction->setCheckable(true);
-    aurAction->setChecked(aurEnabled);
-    
-    connect(aurAction, &QAction::toggled, this, [this](bool checked) {
-        QSettings settings("PacmanGUI", "PacmanGUI");
-        settings.setValue("aur/enabled", checked);
-        
-        // Update AUR actions enable state
-        m_actions["aurInstall"]->setEnabled(checked);
-        m_actions["aurUpdate"]->setEnabled(checked);
-        
-        QString message = checked ? "AUR support enabled" : "AUR support disabled";
-        statusBar()->showMessage(message, 3000);
-        
-        // Refresh search results if needed
-        if (!m_searchBox->text().isEmpty()) {
-            searchPackages(m_searchBox->text());
-        }
-    });
-    
-    // Add theme toggle
-    QAction* themeAction = settingsMenu->addAction("&Dark Theme");
-    themeAction->setCheckable(true);
-    themeAction->setChecked(m_darkTheme);
-    
-    // Fix the connection by using a lambda to handle the toggle
-    std::cout << "MainWindow::setupMenus - Setting up theme toggle action" << std::endl;
-    connect(themeAction, &QAction::toggled, this, [this](bool checked) {
-        std::cout << "MainWindow::setupMenus - Theme action toggled: " << (checked ? "true" : "false") << std::endl;
-        toggleTheme(checked);
-    });
-    
-    settingsMenu->addSeparator();
-    settingsMenu->addAction(m_actions["settings"]);
-    
-    // Help menu
-    QMenu* helpMenu = menuBar()->addMenu("&Help");
-    helpMenu->addAction(m_actions["about"]);
-}
-
-void MainWindow::setupConnections()
-{
-    // Add debug log to show we're setting up connections
-    std::cout << "MainWindow::setupConnections - Setting up signal/slot connections" << std::endl;
-    
-    // Connect search box and button
-    connect(m_searchBox, &QLineEdit::returnPressed, this, &MainWindow::onSearchClicked);
-    connect(m_searchBox, &QLineEdit::textChanged, this, &MainWindow::onSearchTextChanged);
-    connect(m_searchButton, &QPushButton::clicked, this, &MainWindow::onSearchClicked);
-    
-    // Connect settings button
-    connect(m_settingsButton, &QToolButton::clicked, this, &MainWindow::openSettings);
-    
-    // Connect tab changed signal
-    connect(m_tabWidget, &QTabWidget::currentChanged, this, &MainWindow::onTabChanged);
-    
-    // Connect system update buttons
-    connect(m_systemUpdateButton, &QPushButton::clicked, this, &MainWindow::onSystemUpdate);
-    connect(m_checkUpdatesButton, &QPushButton::clicked, this, &MainWindow::onCheckForUpdates);
-    
-    // Connect batch install button
-    connect(m_batchInstallButton, &QPushButton::clicked, this, &MainWindow::onBatchInstall);
-    
-    // Connect models for handling checkbox changes
-    connect(m_packagesModel, &QStandardItemModel::itemChanged, this, &MainWindow::onPackageItemChanged);
-    connect(m_installedModel, &QStandardItemModel::itemChanged, this, &MainWindow::onPackageItemChanged);
-    
-    // Handle row clicks for displaying package details
-    connect(m_packagesView, &QTableView::clicked, this, &MainWindow::onPackageSelected);
-    connect(m_installedView, &QTableView::clicked, this, &MainWindow::onInstalledPackageSelected);
-    
-    // Connect system update table double click
-    connect(m_systemUpdatesView, &QTableView::doubleClicked, [this](const QModelIndex& index) {
-        // Get package name from the first column
-        QString packageName = m_systemUpdatesModel->data(m_systemUpdatesModel->index(index.row(), 0)).toString();
-        QString newVersion = m_systemUpdatesModel->data(m_systemUpdatesModel->index(index.row(), 1)).toString();
-        
-        // Confirm update
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Update Package",
-                                     QString("Do you want to update package '%1' to version %2?")
-                                     .arg(packageName)
-                                     .arg(newVersion),
-                                     QMessageBox::Yes | QMessageBox::No);
-        
-        if (reply == QMessageBox::Yes) {
-            // Add password dialog
-            bool ok;
-            QString password = QInputDialog::getText(this, "Authentication Required",
-                                                   "Enter your password to update package:",
-                                                   QLineEdit::Password, "", &ok);
-            
-            if (!ok || password.isEmpty()) {
-                statusBar()->showMessage("Package update cancelled");
-                return;
-            }
-            
-            // Get overwrite checkbox state
-            bool useOverwrite = m_systemUpdateOverwriteCheckbox->isChecked();
-            
-            // Update status
-            statusBar()->showMessage(QString("Updating package: %1...%2")
-                                   .arg(packageName)
-                                   .arg(useOverwrite ? " (with --overwrite)" : ""));
-            
-            m_systemUpdateLogView->append(QString("<p>Updating package <b>%1</b> to version <b>%2</b>...%3</p>")
-                                        .arg(packageName)
-                                        .arg(newVersion)
-                                        .arg(useOverwrite ? " (using --overwrite=\"*\")" : ""));
-            
-            // Set wait cursor
-            setCursor(Qt::WaitCursor);
-            
-            // Update the package
-            bool success = m_packageManager.update_package(
-                packageName.toStdString(), 
-                password.toStdString(),
-                useOverwrite
-            );
-            
-            // Restore cursor
-            setCursor(Qt::ArrowCursor);
-            
-            if (success) {
-                m_systemUpdateLogView->append(QString("<p style='color:green'>Package <b>%1</b> updated successfully.</p>")
-                                            .arg(packageName));
-                
-                // Remove the updated package from the list
-                m_systemUpdatesModel->removeRow(index.row());
-                
-                // Refresh installed packages view
-                refreshInstalledPackages();
-                
-                statusBar()->showMessage(QString("Package '%1' updated successfully.").arg(packageName));
-            } else {
-                m_systemUpdateLogView->append(QString("<p style='color:red'>Failed to update package <b>%1</b>: %2</p>")
-                                            .arg(packageName)
-                                            .arg(QString::fromStdString(m_packageManager.get_last_error())));
-                
-                statusBar()->showMessage(QString("Failed to update package '%1'.").arg(packageName));
-            }
-        }
-    });
-    
-    // Similar connections for installed and updates views
-    // (Implementation omitted for brevity)
-    
-    // Connect maintenance tab buttons
-    connect(m_clearCacheButton, &QPushButton::clicked, this, &MainWindow::onClearPackageCache);
-    connect(m_findOrphansButton, &QPushButton::clicked, this, [this]() {
-        m_findOrphansButton->setEnabled(false);
-        m_removeOrphansButton->setEnabled(false);
-        setCursor(Qt::WaitCursor);
-        m_maintenanceProgressBar->setVisible(true);
-        m_maintenanceLogView->append("Searching for orphaned packages...");
-        
-        QtConcurrent::run([this]() {
-            std::vector<std::string> orphans = m_packageManager.get_orphaned_packages();
-
-            // Update UI in main thread
-            QMetaObject::invokeMethod(this, [this, orphans]() {
-                // Update UI state
-                m_findOrphansButton->setEnabled(true);
-                m_removeOrphansButton->setEnabled(!orphans.empty());
-                m_maintenanceProgressBar->setVisible(false);
-                setCursor(Qt::ArrowCursor);
-
-                // Update log
-                if (orphans.empty()) {
-                    m_maintenanceLogView->append("No orphaned packages found.");
-                } else {
-                    m_maintenanceLogView->append("Found " + QString::number(orphans.size()) +
-                        " orphaned packages:");
-                    
-                    // Display orphans in the log
-                    for (const auto& pkg : orphans) {
-                        m_maintenanceLogView->append(" - " + QString::fromStdString(pkg));
-                    }
-                }
-            }, Qt::QueuedConnection);
-        });
-    });
-    
-    connect(m_removeOrphansButton, &QPushButton::clicked, this, [this]() {
-        QMessageBox::StandardButton confirm = QMessageBox::question(
-            this,
-            "Remove Orphaned Packages",
-            "Are you sure you want to remove all orphaned packages?",
-            QMessageBox::Yes | QMessageBox::No
-        );
-        
-        if (confirm == QMessageBox::Yes) {
-            // Ask for password
-            bool ok;
-            QString password = QInputDialog::getText(
-                this, 
-                "Authentication Required",
-                "Enter your password to remove orphaned packages:",
-                QLineEdit::Password, 
-                "", 
-                &ok);
-            
-            if (!ok || password.isEmpty()) {
-                m_maintenanceLogView->append("Operation cancelled by user.");
-                return;
-            }
-            
-            m_findOrphansButton->setEnabled(false);
-            m_removeOrphansButton->setEnabled(false);
-            setCursor(Qt::WaitCursor);
-            m_maintenanceProgressBar->setVisible(true);
-            m_maintenanceLogView->append("Removing orphaned packages...");
-            
-            QThreadPool::globalInstance()->start([this, password]() {
-                // Define output callback for real-time feedback
-                auto outputCallback = [this](const std::string& output) {
-                    // Update log from the worker thread
-                    QMetaObject::invokeMethod(this, [this, line = QString::fromStdString(output)]() {
-                        m_maintenanceLogView->append(line);
-                        m_maintenanceLogView->verticalScrollBar()->setValue(
-                            m_maintenanceLogView->verticalScrollBar()->maximum()
-                        );
-                        QApplication::processEvents();
-                    }, Qt::QueuedConnection);
-                };
-                
-                bool success = m_packageManager.remove_orphaned_packages(
-                    password.toStdString(),
-                    outputCallback
-                );
-                
-                // Update UI in main thread
-                QMetaObject::invokeMethod(this, [this, success]() {
-                    // Update UI state
-                    m_findOrphansButton->setEnabled(true);
-                    m_removeOrphansButton->setEnabled(false);
-                    m_maintenanceProgressBar->setVisible(false);
-                    setCursor(Qt::ArrowCursor);
-                    
-                    // Update log
-                    if (success) {
-                        m_maintenanceLogView->append("Orphaned packages removed successfully.");
-                    } else {
-                        m_maintenanceLogView->append("Failed to remove orphaned packages: " + 
-                            QString::fromStdString(m_packageManager.get_last_error()));
-                    }
-                }, Qt::QueuedConnection);
-            });
-        }
-    });
-    
-    connect(m_checkDatabaseButton, &QPushButton::clicked, this, &MainWindow::onCheckDatabase);
-    connect(m_findPacnewButton, &QPushButton::clicked, this, [this]() {
-        m_findPacnewButton->setEnabled(false);
-        setCursor(Qt::WaitCursor);
-        m_maintenanceProgressBar->setVisible(true);
-        m_maintenanceLogView->append("Searching for .pacnew and .pacsave files...");
-        
-        QtConcurrent::run([this]() {
-            QStringList pacnewFiles;
-            
-            // Run the find command to locate .pacnew files
-            QProcess process;
-            process.start("find", QStringList() << "/" << "-name" << "*.pacnew" << "-o" << "-name" << "*.pacsave");
-            process.waitForFinished();
-            
-            QString output = QString::fromUtf8(process.readAllStandardOutput());
-            pacnewFiles = output.split('\n', Qt::SkipEmptyParts);
-            
-            // Update UI in main thread
-            QMetaObject::invokeMethod(this, [this, pacnewFiles]() {
-                // Update UI state
-                m_findPacnewButton->setEnabled(true);
-                m_maintenanceProgressBar->setVisible(false);
-                setCursor(Qt::ArrowCursor);
-                
-                // Update log
-                if (pacnewFiles.isEmpty()) {
-                    m_maintenanceLogView->append("No .pacnew or .pacsave files found.");
-                } else {
-                    m_maintenanceLogView->append("Found " + QString::number(pacnewFiles.size()) +
-                        " .pacnew/.pacsave files:");
-                    
-                    // Display files in the log
-                    for (const auto& file : pacnewFiles) {
-                        m_maintenanceLogView->append(" - " + file);
-                    }
-                }
-            }, Qt::QueuedConnection);
-        });
-    });
-    
-    connect(m_backupButton, &QPushButton::clicked, this, &MainWindow::onBackupDatabase);
-    connect(m_restoreButton, &QPushButton::clicked, this, &MainWindow::onRestoreDatabase);
-    connect(m_selectBackupPathButton, &QPushButton::clicked, this, [this]() {
-        QString fileName = QFileDialog::getSaveFileName(this,
-            "Select Backup Location",
-            m_backupPathEdit->text(),
-            "Tar Archives (*.tar.gz)");
-        
-        if (!fileName.isEmpty()) {
-            m_backupPathEdit->setText(fileName);
-        }
-    });
-    
-    // Connect to settings dialog for theme changes
-    std::cout << "MainWindow::setupConnections - Setting up connections for settings dialog" << std::endl;
-    QSettings settings("PacmanGUI", "PacmanGUI");
-    std::cout << "MainWindow::setupConnections - Current theme: " << settings.value("appearance/theme", "dark_colorful").toString().toStdString() << std::endl;
-}
-
-void MainWindow::onBackupDatabase()
-{
-    // Get the backup path
-    QString backupPath = m_backupPathEdit->text();
-    
-    // Confirm the operation
-    QMessageBox::StandardButton reply = QMessageBox::question(
-        this, 
-        "Backup Pacman Database",
-        "Are you sure you want to backup the pacman database to:\n" + backupPath,
-        QMessageBox::Yes | QMessageBox::No
-    );
-    
-    if (reply != QMessageBox::Yes) {
-        return;
-    }
-    
-    // Show progress bar
-    m_maintenanceProgressBar->setVisible(true);
-    
-    // Disable UI elements during operation
-    m_backupButton->setEnabled(false);
-    m_restoreButton->setEnabled(false);
-    m_selectBackupPathButton->setEnabled(false);
-    m_backupPathEdit->setEnabled(false);
-    
-    // Clear the log view
-    m_maintenanceLogView->clear();
-    m_maintenanceLogView->append("<b>Starting pacman database backup...</b>");
-    
-    // Define output callback for real-time updates
-    auto outputCallback = [this](const std::string& output) {
-        QString line = QString::fromStdString(output);
-        m_maintenanceLogView->append(line);
-        
-        // Ensure log view scrolls to show the most recent output
-        m_maintenanceLogView->verticalScrollBar()->setValue(
-            m_maintenanceLogView->verticalScrollBar()->maximum()
-        );
-        
-        // Process events to keep UI responsive
-        QApplication::processEvents();
-    };
-    
-    // Execute the operation in a separate thread
-    QtConcurrent::run([=]() {
-        bool success = m_packageManager.backup_database(
-            backupPath.toStdString(), 
-            outputCallback
-        );
-        
-        // Use signal-slot to update UI from the main thread
-        QMetaObject::invokeMethod(
-            this, 
-            "onMaintenanceTaskFinished", 
-            Qt::QueuedConnection,
-            Q_ARG(bool, success), 
-            Q_ARG(QString, QString("Database backup %1").arg(success ? "completed successfully" : "failed"))
-        );
-    });
-}
-
-void MainWindow::onRestoreDatabase()
-{
-    // Get the backup path
-    QString backupPath = m_backupPathEdit->text();
-    
-    // Check if the file exists
-    QFileInfo fileInfo(backupPath);
-    if (!fileInfo.exists() || !fileInfo.isFile()) {
-        QMessageBox::warning(
-            this, 
-            "Restore Failed",
-            "The specified backup file does not exist:\n" + backupPath
-        );
-        return;
-    }
-    
-    // Show a strong warning
-    QMessageBox::StandardButton reply = QMessageBox::warning(
-        this, 
-        "Restore Pacman Database",
-        "<b>WARNING: This operation will replace your current pacman database!</b>\n\n"
-        "Restoring an old database can cause serious problems with your system, "
-        "especially if package versions don't match your currently installed files.\n\n"
-        "Are you absolutely sure you want to restore the pacman database from:\n" + backupPath,
-        QMessageBox::Yes | QMessageBox::No
-    );
-    
-    if (reply != QMessageBox::Yes) {
-        return;
-    }
-    
-    // Get a second confirmation
-    reply = QMessageBox::warning(
-        this, 
-        "Confirm Restore",
-        "This is your final warning. Are you really sure you want to proceed?",
-        QMessageBox::Yes | QMessageBox::No
-    );
-    
-    if (reply != QMessageBox::Yes) {
-        return;
-    }
-    
-    // Get authentication
-    bool ok;
-    QString password = QInputDialog::getText(
-        this, 
-        "Authentication Required",
-        "Enter your password to restore the pacman database:",
-        QLineEdit::Password, 
-        "", 
-        &ok
-    );
-    
-    if (!ok || password.isEmpty()) {
-        m_maintenanceLogView->append("<span style='color:orange'>Operation cancelled</span>");
-        return;
-    }
-    
-    // Show progress bar
-    m_maintenanceProgressBar->setVisible(true);
-    
-    // Disable UI elements during operation
-    m_backupButton->setEnabled(false);
-    m_restoreButton->setEnabled(false);
-    m_selectBackupPathButton->setEnabled(false);
-    m_backupPathEdit->setEnabled(false);
-    
-    // Clear the log view
-    m_maintenanceLogView->clear();
-    m_maintenanceLogView->append("<b>Starting pacman database restore...</b>");
-    m_maintenanceLogView->append("<span style='color:red'>WARNING: This is a potentially dangerous operation!</span>");
-    
-    // Define output callback for real-time updates
-    auto outputCallback = [this](const std::string& output) {
-        QString line = QString::fromStdString(output);
-        
-        // Format output based on content
-        if (line.contains("error", Qt::CaseInsensitive)) {
-            line = "<span style='color:red'>" + line + "</span>";
-        } else if (line.contains("warning", Qt::CaseInsensitive)) {
-            line = "<span style='color:orange'>" + line + "</span>";
-        }
-        
-        m_maintenanceLogView->append(line);
-        
-        // Ensure log view scrolls to show the most recent output
-        m_maintenanceLogView->verticalScrollBar()->setValue(
-            m_maintenanceLogView->verticalScrollBar()->maximum()
-        );
-        
-        // Process events to keep UI responsive
-        QApplication::processEvents();
-    };
-    
-    // Execute the operation in a separate thread
-    QtConcurrent::run([=]() {
-        bool success = m_packageManager.restore_database(
-            backupPath.toStdString(), 
-            password.toStdString(), 
-            outputCallback
-        );
-        
-        // Use signal-slot to update UI from the main thread
-        QMetaObject::invokeMethod(
-            this, 
-            "onMaintenanceTaskFinished", 
-            Qt::QueuedConnection,
-            Q_ARG(bool, success), 
-            Q_ARG(QString, QString("Database restore %1").arg(success ? "completed successfully" : "failed"))
-        );
-    });
-}
-
-void MainWindow::onMaintenanceTaskFinished(bool success, const QString& message)
-{
-    // Hide progress bar
-    m_maintenanceProgressBar->setVisible(false);
-    
-    // Show message in log
-    m_maintenanceLogView->append(message);
     
     // Update status bar
-    statusBar()->showMessage(message, 3000);
-    
-    // Re-enable buttons
-    m_findOrphansButton->setEnabled(true);
-    m_removeOrphansButton->setEnabled(success);
+    showStatusMessage(tr("Loaded %1 installed packages").arg(installedPackages.size()), 3000);
 }
 
-void MainWindow::onSyncAll()
-{
-    // Confirm operation with the user
-    QMessageBox::StandardButton reply = QMessageBox::question(
-        this, 
-        "Synchronize Databases",
-        "Do you want to synchronize package databases?\n\n"
-        "This will refresh all package database information from the configured repositories.",
-        QMessageBox::Yes | QMessageBox::No);
-    
-    if (reply != QMessageBox::Yes) {
-        return;
-    }
-    
-    // Ask for password
-    bool ok;
-    QString password = QInputDialog::getText(
-        this, 
-        "Authentication Required",
-        "Enter your password to synchronize package databases:",
-        QLineEdit::Password, 
-        "", 
-        &ok);
-    
-    if (!ok || password.isEmpty()) {
-        statusBar()->showMessage("Database synchronization cancelled", 3000);
-        return;
-    }
-    
-    // Set cursor to wait cursor
-    setCursor(Qt::WaitCursor);
-    
-    // Show status message
-    statusBar()->showMessage("Synchronizing package databases...");
-    
-    // Sync all databases with provided password
-    bool success = m_packageManager.sync_all(password.toStdString());
-    
-    // Reset cursor
-    setCursor(Qt::ArrowCursor);
-    
-    if (success) {
-        // Show success message
-        statusBar()->showMessage("Package databases refreshed successfully", 3000);
-        
-        // Refresh any views that depend on package database info
-        refreshInstalledPackages();
-        refreshUpdatesList();
-    } else {
-        // Show error message
-        QString errorMessage = QString::fromStdString(m_packageManager.get_last_error());
-        QMessageBox::critical(
-            this, 
-            "Synchronization Failed",
-            "Failed to synchronize package databases.\n\n" + errorMessage);
-        
-        statusBar()->showMessage("Database synchronization failed", 3000);
-    }
+// Add implementation for searchPackages
+void MainWindow::searchPackages(const QString& searchTerm) {
+    // This is now a wrapper around performAsyncSearch
+    performAsyncSearch(searchTerm);
 }
 
-void MainWindow::onTabChanged(int index)
-{
-    qDebug() << "Tab changed to index:" << index;
-    statusBar()->showMessage("Current tab: " + m_tabWidget->tabText(index), 2000);
-
-    // Show/hide detail panel based on tab index
-    if (index < 2) { // All Packages (0) or Installed (1)
-        // Only show if a package is currently selected
-        if (index == 0 && m_packagesView->selectionModel()->hasSelection()) {
-            m_detailsWidget->setVisible(true);
-            // Ensure sidebar panel is open for selected package
-            if (m_detailPanelVisible) {
-                m_detailPanel->setVisible(true);
+// Implementation of async search
+void MainWindow::performAsyncSearch(const QString& searchTerm) {
+    // Ensure model is properly initialized
+    if (!m_packagesModel) {
+        m_packagesModel = new QStandardItemModel(0, 5, this);
+        m_packagesModel->setHorizontalHeaderLabels(
+            QStringList() << tr("") << tr("Name") << tr("Version") << tr("Description") << tr("Repository"));
+    }
+    
+    // Clear the search packages model
+    m_packagesModel->clear();
+    m_packagesModel->setHorizontalHeaderLabels(
+        QStringList() << tr("") << tr("Name") << tr("Version") << tr("Description") << tr("Repository"));
+    
+    // If search term is empty, show nothing
+    if (searchTerm.isEmpty()) {
+        showStatusMessage(tr("Enter a search term to find packages"), 3000);
+                return;
             }
-        } else if (index == 1 && m_installedView->selectionModel()->hasSelection()) {
-            m_detailsWidget->setVisible(true);
-            // Ensure sidebar panel is open for selected package
-            if (m_detailPanelVisible) {
-                m_detailPanel->setVisible(true);
-            }
-        } else {
-            m_detailsWidget->setVisible(false);
-            // Close sidebar panel if no selection
-            if (m_detailPanelVisible) {
-                closeDetailPanel();
-                m_detailPanelVisible = false;
-            }
+            
+    // Show searching status
+    showStatusMessage(tr("Searching for packages matching '%1'...").arg(searchTerm), 0);
+    
+    // Cancel any previous search
+    if (m_searchWatcher) {
+        if (m_searchWatcher->isRunning()) {
+            m_searchWatcher->cancel();
+            m_searchWatcher->waitForFinished();
         }
-    } else {
-        // For other tabs, always hide the detail panel and sliding panel
-        m_detailsWidget->setVisible(false);
-        if (m_detailPanelVisible) {
-            closeDetailPanel();
-            m_detailPanelVisible = false;
+        delete m_searchWatcher;
+        m_searchWatcher = nullptr;
+    }
+    
+    // Create new watcher for async search
+    m_searchWatcher = new QFutureWatcher<std::vector<pacmangui::core::Package>>(this);
+    
+    // Connect signals
+    connect(m_searchWatcher, &QFutureWatcher<std::vector<pacmangui::core::Package>>::finished, 
+            this, [this, searchTerm]() {
+        if (!m_searchWatcher) return;
+        
+        // Get results
+        std::vector<pacmangui::core::Package> searchResults = m_searchWatcher->result();
+        
+        // Clear the model first
+        m_packagesModel->clear();
+        m_packagesModel->setHorizontalHeaderLabels(
+            QStringList() << tr("") << tr("Name") << tr("Version") << tr("Description") << tr("Repository"));
+        
+        // Add packages to the model
+        for (const auto& pkg : searchResults) {
+            QList<QStandardItem*> row;
+            
+            // Add checkbox item
+            QStandardItem* checkItem = new QStandardItem();
+            checkItem->setCheckable(true);
+            checkItem->setCheckState(Qt::Unchecked);
+            checkItem->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
+            
+            QStandardItem* nameItem = new QStandardItem(QString::fromStdString(pkg.get_name()));
+            QStandardItem* versionItem = new QStandardItem(QString::fromStdString(pkg.get_version()));
+            QStandardItem* descItem = new QStandardItem(QString::fromStdString(pkg.get_description()));
+            QStandardItem* repoItem = new QStandardItem(QString::fromStdString(pkg.get_repository()));
+            
+            row << checkItem << nameItem << versionItem << descItem << repoItem;
+            m_packagesModel->appendRow(row);
         }
+        
+        // Hide progress dialog
+        m_searchProgressDialog->hide();
+        
+        // Clean up
+        m_searchWatcher->deleteLater();
+        m_searchWatcher = nullptr;
+        
+        // Update status bar
+        showStatusMessage(tr("Found %1 packages matching '%2'")
+                         .arg(searchResults.size())
+                         .arg(searchTerm), 3000);
+    });
+    
+    // Connect cancel button
+    connect(m_searchProgressDialog, &QProgressDialog::canceled, [this]() {
+        if (m_searchWatcher && m_searchWatcher->isRunning()) {
+            m_searchWatcher->cancel();
+            showStatusMessage(tr("Search canceled"), 3000);
+        }
+    });
+    
+    // Show progress dialog
+    m_searchProgressDialog->setLabelText(tr("Searching for '%1'...").arg(searchTerm));
+    m_searchProgressDialog->reset();
+    m_searchProgressDialog->show();
+    
+    // Run the search in background
+    QFuture<std::vector<pacmangui::core::Package>> future = QtConcurrent::run(
+        [this, searchTerm]() {
+            return m_packageManager.search_by_name(searchTerm.toStdString());
+        }
+    );
+    
+    m_searchWatcher->setFuture(future);
+}
+
+// Add implementation for checkAurHelper
+void MainWindow::checkAurHelper() {
+    // Simple check for common AUR helpers
+        QProcess process;
+    QStringList helpers = {"yay", "paru", "trizen", "aurman", "pamac"};
+    
+    for (const QString& helper : helpers) {
+        process.start("which", QStringList() << helper);
+        process.waitForFinished();
+        
+        if (process.exitCode() == 0) {
+            m_aurHelper = helper;
+            if (m_installAurButton)
+                m_installAurButton->setEnabled(true);
+            showStatusMessage(tr("Found AUR helper: %1").arg(helper), 3000);
+                return;
+            }
+    }
+    
+    // No AUR helper found
+    m_aurHelper = "";
+    if (m_installAurButton)
+        m_installAurButton->setEnabled(false);
+    showStatusMessage(tr("No AUR helper found. AUR functions will be disabled."), 5000);
+}
+
+// Add implementation for onTabChanged
+void MainWindow::onTabChanged(int index) {
+    Q_UNUSED(index);
+    // Implement onTabChanged
+}
+
+// Add implementation for onSearchTextChanged
+void MainWindow::onSearchTextChanged(const QString& text) {
+    // Auto-search after a short delay
+    if (text.length() >= 2) {
+        // Don't immediately search on each keystroke, let the user finish typing
+        // We can add a timer for debouncing if needed
+        performAsyncSearch(text);
+    } else if (text.isEmpty()) {
+        // Clear the search results
+        m_packagesModel->clear();
+        m_packagesModel->setHorizontalHeaderLabels(
+            QStringList() << tr("Name") << tr("Version") << tr("Description") << tr("Repository"));
     }
 }
 
-void MainWindow::onSearchTextChanged(const QString& text)
-{
-    // Enable/disable search button based on if there's text
-    m_searchButton->setEnabled(!text.isEmpty());
-}
-
-void MainWindow::onSearchClicked()
-{
-    // Perform search based on the text in the search box
-    searchPackages(m_searchBox->text());
-}
-
-void MainWindow::onInstallPackage()
-{
-    // Get currently selected package
-    QString packageName = m_packageNameLabel->text();
-    if (packageName.isEmpty()) {
-        return;
-    }
+// Add implementation for onSearchClicked
+void MainWindow::onSearchClicked() {
+    // Get the search text
+    QString searchText = m_searchInput->text();
     
-    // Ask for password
-    bool ok;
-    QString password = QInputDialog::getText(
-        this, 
-        "Authentication Required",
-        "Enter your password to install package:",
-        QLineEdit::Password, 
-        "", 
-        &ok);
-    
-    if (!ok || password.isEmpty()) {
-        statusBar()->showMessage("Installation cancelled", 3000);
-        return;
-    }
-    
-    // Check if overwrite is enabled
-    bool useOverwrite = m_packageOverwriteCheckbox->isChecked();
-    
-    // Install the package
-    setCursor(Qt::WaitCursor);
-    bool success = m_packageManager.install_package(
-        packageName.toStdString(), 
-        password.toStdString(), 
-        useOverwrite);
-    setCursor(Qt::ArrowCursor);
-    
-    if (success) {
-        statusBar()->showMessage("Package installed successfully", 3000);
-        refreshInstalledPackages();
-    } else {
-        QString errorMessage = QString::fromStdString(m_packageManager.get_last_error());
-        QMessageBox::critical(
-            this, 
-            "Installation Failed",
-            "Failed to install package.\n\n" + errorMessage);
-        statusBar()->showMessage("Installation failed", 3000);
+    // Perform the search
+    if (!searchText.isEmpty()) {
+        performAsyncSearch(searchText);
+                    } else {
+        showStatusMessage(tr("Please enter a search term"), 3000);
     }
 }
 
-void MainWindow::onRemovePackage()
-{
-    // Get currently selected package
-    QString packageName = m_packageNameLabel->text();
-    if (packageName.isEmpty()) {
+// Add implementation for onInstallPackage
+void MainWindow::onInstallPackage() {
+    // Get selected packages
+    QModelIndexList selected = m_packagesTable->selectionModel()->selectedRows();
+    if (selected.isEmpty()) {
+        showStatusMessage(tr("No packages selected for installation"), 3000);
         return;
     }
     
-    // Confirm removal
-    QMessageBox::StandardButton reply = QMessageBox::question(
-        this, 
-        "Remove Package",
-        "Are you sure you want to remove " + packageName + "?",
-        QMessageBox::Yes | QMessageBox::No);
-    
-    if (reply != QMessageBox::Yes) {
-        return;
-    }
-    
-    // Ask for password
-    bool ok;
-    QString password = QInputDialog::getText(
-        this, 
-        "Authentication Required",
-        "Enter your password to remove package:",
-        QLineEdit::Password, 
-        "", 
-        &ok);
-    
-    if (!ok || password.isEmpty()) {
-        statusBar()->showMessage("Removal cancelled", 3000);
-        return;
-    }
-    
-    // Remove the package
-    setCursor(Qt::WaitCursor);
-    bool success = m_packageManager.remove_package(
-        packageName.toStdString(), 
-        password.toStdString());
-    setCursor(Qt::ArrowCursor);
-    
-    if (success) {
-        statusBar()->showMessage("Package removed successfully", 3000);
-        refreshInstalledPackages();
-    } else {
-        QString errorMessage = QString::fromStdString(m_packageManager.get_last_error());
-        QMessageBox::critical(
-            this, 
-            "Removal Failed",
-            "Failed to remove package.\n\n" + errorMessage);
-        statusBar()->showMessage("Removal failed", 3000);
-    }
-}
-
-void MainWindow::onUpdatePackage()
-{
-    // Get currently selected package
-    QString packageName = m_packageNameLabel->text();
-    if (packageName.isEmpty()) {
-        return;
-    }
-    
-    // Ask for password
-    bool ok;
-    QString password = QInputDialog::getText(
-        this, 
-        "Authentication Required",
-        "Enter your password to update package:",
-        QLineEdit::Password, 
-        "", 
-        &ok);
-    
-    if (!ok || password.isEmpty()) {
-        statusBar()->showMessage("Update cancelled", 3000);
-        return;
-    }
-    
-    // Check if overwrite is enabled
-    bool useOverwrite = m_packageOverwriteCheckbox->isChecked();
-    
-    // Update the package
-    setCursor(Qt::WaitCursor);
-    bool success = m_packageManager.update_package(
-        packageName.toStdString(), 
-        password.toStdString(), 
-        useOverwrite);
-    setCursor(Qt::ArrowCursor);
-    
-    if (success) {
-        statusBar()->showMessage("Package updated successfully", 3000);
-        refreshInstalledPackages();
-    } else {
-        QString errorMessage = QString::fromStdString(m_packageManager.get_last_error());
-        QMessageBox::critical(
-            this, 
-            "Update Failed",
-            "Failed to update package.\n\n" + errorMessage);
-        statusBar()->showMessage("Update failed", 3000);
-    }
-}
-
-void MainWindow::onBatchInstall()
-{
-    if (m_selectedPackages.isEmpty()) {
-        return;
-    }
-    
-    // Convert selected packages to a list for display
-    QStringList packageList;
-    for (const QString& pkg : m_selectedPackages) {
-        packageList.append(pkg);
+    // Collect package names
+    QStringList packageNames;
+    QStringList packageDetails;
+    for (const QModelIndex& index : selected) {
+        QModelIndex nameIndex = m_packagesModel->index(index.row(), 0); // Name column
+        QModelIndex versionIndex = m_packagesModel->index(index.row(), 1); // Version column
+        QModelIndex repoIndex = m_packagesModel->index(index.row(), 3); // Repository column
+        
+        QString name = m_packagesModel->data(nameIndex).toString();
+        QString version = m_packagesModel->data(versionIndex).toString();
+        QString repo = m_packagesModel->data(repoIndex).toString();
+        
+        packageNames.append(name);
+        packageDetails.append(tr("%1 (%2) from %3").arg(name).arg(version).arg(repo));
     }
     
     // Confirm installation
+    QString message;
+    if (packageNames.size() == 1) {
+        message = tr("Are you sure you want to install %1?").arg(packageDetails.first());
+                } else {
+        message = tr("Are you sure you want to install the following %1 packages?\n\n%2")
+            .arg(packageNames.size())
+            .arg(packageDetails.join("\n"));
+    }
+    
     QMessageBox::StandardButton reply = QMessageBox::question(
         this, 
-        "Batch Install Packages",
-        "Are you sure you want to install the following packages?\n\n" + 
-        packageList.join("\n"),
-        QMessageBox::Yes | QMessageBox::No);
+        tr("Confirm Installation"),
+        message,
+        QMessageBox::Yes|QMessageBox::No
+    );
     
     if (reply != QMessageBox::Yes) {
         return;
     }
-    
-    // Ask for password
-    bool ok;
-    QString password = QInputDialog::getText(
-        this, 
-        "Authentication Required",
-        "Enter your password to install packages:",
-        QLineEdit::Password, 
-        "", 
-        &ok);
-    
-    if (!ok || password.isEmpty()) {
-        statusBar()->showMessage("Batch installation cancelled", 3000);
-        return;
-    }
-    
-    // Check if overwrite is enabled
-    bool useOverwrite = m_packageOverwriteCheckbox->isChecked();
-    
-    // Create progress dialog
-    QProgressDialog progress("Installing packages...", "Cancel", 0, packageList.size(), this);
-    progress.setWindowModality(Qt::WindowModal);
-    progress.setMinimumDuration(0);
-    progress.setValue(0);
-    
-    // Initialize success counter
-    int successCount = 0;
-    
-    // Set cursor
-    setCursor(Qt::WaitCursor);
-    
-    // Install each package
-    for (int i = 0; i < packageList.size(); ++i) {
-        QString packageName = packageList.at(i);
-        
-        // Update progress dialog
-        progress.setValue(i);
-        progress.setLabelText(QString("Installing package %1 of %2: %3")
-                             .arg(i+1)
-                             .arg(packageList.size())
-                             .arg(packageName));
-        QApplication::processEvents();
-        
-        // Check if user cancelled the operation
-        if (progress.wasCanceled()) {
-            break;
-        }
-        
-        // Install the package
-        bool success = m_packageManager.install_package(
-            packageName.toStdString(), 
-            password.toStdString(), 
-            useOverwrite);
-        
-        if (success) {
-            successCount++;
-        } else {
-            QString errorMessage = QString::fromStdString(m_packageManager.get_last_error());
-            QMessageBox::warning(
-                this, 
-                "Installation Failed",
-                QString("Failed to install package %1:\n\n%2")
-                .arg(packageName)
-                .arg(errorMessage));
-        }
-    }
-    
-    // Reset cursor
-    setCursor(Qt::ArrowCursor);
-    
-    // Close progress dialog
-    progress.setValue(packageList.size());
-    
-    // Show result message
-    if (successCount == packageList.size()) {
-        statusBar()->showMessage(QString("Successfully installed all %1 packages").arg(successCount), 3000);
-    } else if (successCount > 0) {
-        statusBar()->showMessage(QString("Installed %1 of %2 packages").arg(successCount).arg(packageList.size()), 3000);
-    } else {
-        statusBar()->showMessage("Failed to install packages", 3000);
-    }
-    
-    // Refresh installed packages view
-    refreshInstalledPackages();
-    
-    // Clear selection
-    m_selectedPackages.clear();
-    updateBatchInstallButton();
-}
-
-void MainWindow::onSystemUpdate()
-{
-    // Check if overwrite is enabled
-    bool useOverwrite = m_systemUpdateOverwriteCheckbox->isChecked();
-    
-    // Confirm update
-    QMessageBox::StandardButton reply = QMessageBox::question(
-        this, 
-        "System Update",
-        "Are you sure you want to update your system?\n\nThis will execute 'sudo pacman -Syu'" +
-        QString(useOverwrite ? " with --overwrite=\"*\"" : ""),
-        QMessageBox::Yes | QMessageBox::No);
-    
-    if (reply != QMessageBox::Yes) {
-        return;
-    }
-    
-    // Ask for password
-    bool ok;
-    QString password = QInputDialog::getText(
-        this, 
-        "Authentication Required",
-        "Enter your password to update system:",
-        QLineEdit::Password, 
-        "", 
-        &ok);
-    
-    if (!ok || password.isEmpty()) {
-        statusBar()->showMessage("System update cancelled", 3000);
-        return;
-    }
-    
-    // Clear log view
-    m_systemUpdateLogView->clear();
-    m_systemUpdateLogView->append("<b>Starting system update...</b>");
-    
-    // Define output callback for real-time updates
-    auto outputCallback = [this](const std::string& output) {
-        QString line = QString::fromStdString(output);
-        m_systemUpdateLogView->append(line);
-        
-        // Ensure log view scrolls to show the most recent output
-        m_systemUpdateLogView->verticalScrollBar()->setValue(
-            m_systemUpdateLogView->verticalScrollBar()->maximum()
-        );
-        
-        // Process events to keep UI responsive
-        QApplication::processEvents();
-    };
-    
-    // Switch to the system update tab
-    m_tabWidget->setCurrentIndex(m_tabWidget->indexOf(m_systemUpdateTab));
-    
-    // Disable update buttons during operation
-    m_systemUpdateButton->setEnabled(false);
-    m_checkUpdatesButton->setEnabled(false);
-    
-    // Update system
-    setCursor(Qt::WaitCursor);
-    
-    // Execute the operation in a separate thread
-    QtConcurrent::run([=]() {
-        bool success = m_packageManager.update_system(
-            password.toStdString(), 
-            outputCallback, 
-            useOverwrite);
-        
-        // Update UI from the main thread
-        QMetaObject::invokeMethod(this, [this, success]() {
-            setCursor(Qt::ArrowCursor);
-            
-            // Re-enable buttons
-            m_systemUpdateButton->setEnabled(true);
-            m_checkUpdatesButton->setEnabled(true);
-            
-            if (success) {
-                m_systemUpdateLogView->append("<span style='color:green'><b>System update completed successfully!</b></span>");
-                statusBar()->showMessage("System updated successfully", 3000);
-                
-                // Refresh package information
-                refreshInstalledPackages();
-                refreshUpdatesList();
-            } else {
-                QString errorMessage = QString::fromStdString(m_packageManager.get_last_error());
-                m_systemUpdateLogView->append("<span style='color:red'><b>System update failed:</b> " + 
-                    errorMessage + "</span>");
-                statusBar()->showMessage("System update failed", 3000);
-            }
-        }, Qt::QueuedConnection);
-    });
-}
-
-void MainWindow::onCheckForUpdates()
-{
-    // Clear the updates model
-    m_systemUpdatesModel->setRowCount(0);
-    
-    // Switch to the system update tab
-    m_tabWidget->setCurrentIndex(m_tabWidget->indexOf(m_systemUpdateTab));
-    
-    // Disable update buttons during check
-    m_systemUpdateButton->setEnabled(false);
-    m_checkUpdatesButton->setEnabled(false);
     
     // Show status message
-    statusBar()->showMessage("Checking for updates...");
+    showStatusMessage(tr("Installing packages..."), 0);
     
-    // Set cursor
-    setCursor(Qt::WaitCursor);
+    // Create progress dialog
+    QProgressDialog progressDialog(tr("Installing packages..."), tr("Cancel"), 0, 0, this);
+    progressDialog.setWindowModality(Qt::WindowModal);
+    progressDialog.setMinimumDuration(500);
+    progressDialog.setValue(0);
+    progressDialog.setAutoClose(false);
+    progressDialog.show();
     
-    // Clear the log view and show the process is starting
-    m_systemUpdateLogView->clear();
-    m_systemUpdateLogView->append("<b>Checking for system updates...</b>");
+    // Install packages one by one and collect output
+    bool success = true;
     
-    // Execute the operation in a separate thread
-    QtConcurrent::run([this]() {
-        QProcess process;
-        process.start("pacman", QStringList() << "-Qu");
-        process.waitForFinished(-1); // Wait indefinitely
+    for (const QString& packageName : packageNames) {
+        m_maintenanceLogView->append(tr("Installing %1...").arg(packageName));
+        success = m_packageManager.install_package(packageName.toStdString()) && success;
+    }
+    
+    // Update progress dialog
+    progressDialog.setValue(100);
+    progressDialog.setLabelText(success ? tr("Installation completed") : tr("Installation failed"));
+    
+    // Show results in log dialog
+    QDialog logDialog(this);
+    logDialog.setWindowTitle(tr("Installation Log"));
+    logDialog.setMinimumSize(600, 400);
+    
+    QVBoxLayout* layout = new QVBoxLayout(&logDialog);
+    QTextEdit* logView = new QTextEdit(&logDialog);
+    logView->setReadOnly(true);
+    logView->setPlainText(success ? tr("Packages installed successfully.") : tr("Failed to install some packages."));
+    layout->addWidget(logView);
+    
+    QPushButton* closeButton = new QPushButton(tr("Close"), &logDialog);
+    layout->addWidget(closeButton);
+    connect(closeButton, &QPushButton::clicked, &logDialog, &QDialog::accept);
+    
+    // Update status
+    if (success) {
+        showStatusMessage(tr("Packages installed successfully"), 5000);
+        progressDialog.close();
+        logDialog.exec();
         
-        QString output = QString::fromUtf8(process.readAllStandardOutput());
-        QString error = QString::fromUtf8(process.readAllStandardError());
-        int exitCode = process.exitCode();
-        
-        // Parse the output to extract package updates
-        QStringList lines = output.split('\n', Qt::SkipEmptyParts);
-        std::vector<std::pair<std::string, std::string>> updates;
-        
-        for (const QString& line : lines) {
-            // Parse output line (format: package_name old_version -> new_version)
-            int firstSpace = line.indexOf(' ');
-            if (firstSpace != -1) {
-                QString packageName = line.left(firstSpace);
-                
-                // Find the arrow separator
-                int arrowPos = line.indexOf("->");
-                if (arrowPos != -1) {
-                    // Extract new version (skip spaces after arrow)
-                    int versionStart = arrowPos + 2;
-                    while (versionStart < line.size() && line[versionStart].isSpace()) {
-                        versionStart++;
-                    }
-                    
-                    QString newVersion = line.mid(versionStart).trimmed();
-                    updates.push_back(std::make_pair(packageName.toStdString(), newVersion.toStdString()));
-                }
-            }
-        }
-        
-        // Update UI from the main thread
-        QMetaObject::invokeMethod(this, [this, updates, output, error, exitCode]() {
-            setCursor(Qt::ArrowCursor);
-            
-            // Clear the updates model
-            m_systemUpdatesModel->setRowCount(0);
-            
-            // Check if the command was successful
-            if (exitCode == 0) {
-                // Update system updates view
-                for (const auto& update : updates) {
-                    QList<QStandardItem*> items;
-                    items.append(new QStandardItem(QString::fromStdString(update.first)));
-                    items.append(new QStandardItem(QString::fromStdString(update.second)));
-                    m_systemUpdatesModel->appendRow(items);
-                }
-                
-                if (!updates.empty()) {
-                    // Update count in button
-                    m_systemUpdateButton->setText(QString("Update System (%1)").arg(updates.size()));
-                    m_systemUpdateButton->setEnabled(true);
-                    
-                    // Show status message
-                    statusBar()->showMessage(QString("%1 updates available").arg(updates.size()), 3000);
-                    
-                    // Update log view
-                    m_systemUpdateLogView->append(QString("<span style='color:green'><b>Found %1 packages to update:</b></span>").arg(updates.size()));
-                    m_systemUpdateLogView->append(output);
-                } else {
-                    // No updates available
-                    m_systemUpdateButton->setText("Update System");
-                    m_systemUpdateButton->setEnabled(false);
-                    
-                    // Show status message
-                    statusBar()->showMessage("System is up to date", 3000);
-                    
-                    // Update log view
-                    m_systemUpdateLogView->append("<span style='color:green'><b>System is up to date. No packages need updating.</b></span>");
-                }
-            } else {
-                // Command failed
-                m_systemUpdateButton->setText("Update System");
-                m_systemUpdateButton->setEnabled(false);
-                
-                // Show status message
-                statusBar()->showMessage("Failed to check for updates", 3000);
-                
-                // Update log view with error
-                m_systemUpdateLogView->append("<span style='color:red'><b>Failed to check for updates:</b></span>");
-                if (!error.isEmpty()) {
-                    m_systemUpdateLogView->append(error);
-                } else {
-                    m_systemUpdateLogView->append("Unknown error occurred while checking for updates.");
-                }
-            }
-            
-            // Re-enable check button
-            m_checkUpdatesButton->setEnabled(true);
-        }, Qt::QueuedConnection);
-    });
+        // Refresh installed packages list
+        refreshInstalledPackages();
+    } else {
+        showStatusMessage(tr("Error installing packages"), 5000);
+        progressDialog.close();
+        logDialog.exec();
+    }
 }
 
-void MainWindow::onInstallAurPackage()
-{
-    // TODO: Implement AUR package installation
-    statusBar()->showMessage("AUR package installation not implemented yet", 3000);
-}
-
-void MainWindow::onUpdateAurPackages()
-{
-    // TODO: Implement AUR package updates
-    statusBar()->showMessage("AUR package updates not implemented yet", 3000);
-}
-
-void MainWindow::onClearPackageCache()
-{
-    bool cleanAll = m_clearAllCacheRadio->isChecked();
-    QString operation = cleanAll ? "all" : "unused";
+// Add implementation for onRemovePackage
+void MainWindow::onRemovePackage() {
+    // Determine which tab is active to get the correct selection
+    QTreeView* activeTable = nullptr;
+    QStandardItemModel* activeModel = nullptr;
     
+    if (m_tabWidget->currentWidget() == m_searchTab) {
+        activeTable = m_packagesTable;
+        activeModel = m_packagesModel;
+    } else if (m_tabWidget->currentWidget() == m_installedTab) {
+        activeTable = m_installedTable;
+        activeModel = m_installedModel;
+    } else {
+        showStatusMessage(tr("Please select packages to remove from the installed packages tab"), 3000);
+        return;
+    }
+    
+    // Get selected packages
+    QModelIndexList selected = activeTable->selectionModel()->selectedRows();
+    if (selected.isEmpty()) {
+        showStatusMessage(tr("No packages selected for removal"), 3000);
+        return;
+    }
+    
+    // Collect package names
+    QStringList packageNames;
+    QStringList packageDetails;
+    for (const QModelIndex& index : selected) {
+        QModelIndex nameIndex = activeModel->index(index.row(), 0); // Name column
+        QModelIndex versionIndex = activeModel->index(index.row(), 1); // Version column
+        
+        QString name = activeModel->data(nameIndex).toString();
+        QString version = activeModel->data(versionIndex).toString();
+        
+        packageNames.append(name);
+        packageDetails.append(tr("%1 (%2)").arg(name).arg(version));
+    }
+    
+    // Confirm removal
+    QString message;
+    if (packageNames.size() == 1) {
+        message = tr("Are you sure you want to remove %1?").arg(packageDetails.first());
+    } else {
+        message = tr("Are you sure you want to remove the following %1 packages?\n\n%2")
+            .arg(packageNames.size())
+            .arg(packageDetails.join("\n"));
+    }
+    
+    QMessageBox::StandardButton reply = QMessageBox::question(
+        this, 
+        tr("Confirm Removal"),
+        message,
+        QMessageBox::Yes|QMessageBox::No
+    );
+    
+    if (reply != QMessageBox::Yes) {
+        return;
+    }
+    
+    // Show status message
+    showStatusMessage(tr("Removing packages..."), 0);
+    
+    // Create progress dialog
+    QProgressDialog progressDialog(tr("Removing packages..."), tr("Cancel"), 0, 0, this);
+    progressDialog.setWindowModality(Qt::WindowModal);
+    progressDialog.setMinimumDuration(500);
+    progressDialog.setValue(0);
+    progressDialog.setAutoClose(false);
+    progressDialog.show();
+    
+    // Remove packages one by one and collect output
+    bool success = true;
+    
+    for (const QString& packageName : packageNames) {
+        m_maintenanceLogView->append(tr("Removing %1...").arg(packageName));
+        success = m_packageManager.remove_package(packageName.toStdString()) && success;
+    }
+    
+    // Update progress dialog
+    progressDialog.setValue(100);
+    progressDialog.setLabelText(success ? tr("Removal completed") : tr("Removal failed"));
+    
+    // Show results in log dialog
+    QDialog logDialog(this);
+    logDialog.setWindowTitle(tr("Removal Log"));
+    logDialog.setMinimumSize(600, 400);
+    
+    QVBoxLayout* layout = new QVBoxLayout(&logDialog);
+    QTextEdit* logView = new QTextEdit(&logDialog);
+    logView->setReadOnly(true);
+    logView->setPlainText(success ? tr("Packages removed successfully.") : tr("Failed to remove some packages."));
+    layout->addWidget(logView);
+    
+    QPushButton* closeButton = new QPushButton(tr("Close"), &logDialog);
+    layout->addWidget(closeButton);
+    connect(closeButton, &QPushButton::clicked, &logDialog, &QDialog::accept);
+    
+    // Update status
+    if (success) {
+        showStatusMessage(tr("Packages removed successfully"), 5000);
+        progressDialog.close();
+        logDialog.exec();
+        
+        // Refresh installed packages list
+        refreshInstalledPackages();
+    } else {
+        showStatusMessage(tr("Error removing packages"), 5000);
+        progressDialog.close();
+        logDialog.exec();
+    }
+}
+
+// Add implementation for onUpdatePackage
+void MainWindow::onUpdatePackage() {
+    // Implement onUpdatePackage
+}
+
+// Add implementation for onSyncAll
+void MainWindow::onSyncAll() {
+    // Implement onSyncAll
+}
+
+// Add implementation for onBatchInstall
+void MainWindow::onBatchInstall() {
+    // Implement onBatchInstall
+}
+
+// Add implementation for onPackageSelected
+void MainWindow::onPackageSelected(const QModelIndex& index) {
+    Q_UNUSED(index);
+    updateInstallButtonText();
+    
+    // Enable/disable buttons based on selection
+    bool hasSelection = m_packagesTable->selectionModel()->hasSelection();
+    m_installButton->setEnabled(hasSelection);
+    m_removeButton->setEnabled(hasSelection);
+}
+
+// Add implementation for onInstalledPackageSelected
+void MainWindow::onInstalledPackageSelected(const QModelIndex& index) {
+    Q_UNUSED(index);
+    // Implement onInstalledPackageSelected
+}
+
+// Add implementation for onPackageItemChanged
+void MainWindow::onPackageItemChanged(QStandardItem* item) {
+    Q_UNUSED(item);
+    // Implement onPackageItemChanged
+}
+
+// Add implementation for onInstallAurPackage
+void MainWindow::onInstallAurPackage() {
+    // Implement onInstallAurPackage
+}
+
+// Add implementation for onUpdateAurPackages
+void MainWindow::onUpdateAurPackages() {
+    // Implement onUpdateAurPackages
+}
+
+// Add implementation for onSystemUpdate
+void MainWindow::onSystemUpdate() {
+    // First, confirm with the user
     QMessageBox::StandardButton confirm = QMessageBox::question(
-        this,
-        "Clear Package Cache",
-        "Are you sure you want to clear " + operation + " packages from the cache?",
+        this, 
+        tr("Confirm System Update"), 
+        tr("Are you sure you want to update all packages? This will require authentication."),
         QMessageBox::Yes | QMessageBox::No
     );
     
@@ -2142,1004 +1392,912 @@ void MainWindow::onClearPackageCache()
         return;
     }
     
-    // Setup UI for operation
-    m_clearCacheButton->setEnabled(false);
-    setCursor(Qt::WaitCursor);
-    m_maintenanceProgressBar->setVisible(true);
-    m_maintenanceLogView->append("Clearing " + operation + " packages from cache...");
+    // Clear the update log
+    m_systemUpdateLogView->clear();
+    m_systemUpdateLogView->append(tr("Starting system update..."));
     
-    // Ask for password
-    bool ok;
-    QString password = QInputDialog::getText(
-        this, 
-        "Authentication Required",
-        "Enter your password to clear the package cache:",
-        QLineEdit::Password, 
-        "", 
-        &ok);
+    // Use pkexec for proper authentication
+    QProcess* process = new QProcess(this);
     
-    if (!ok || password.isEmpty()) {
-        m_clearCacheButton->setEnabled(true);
-        setCursor(Qt::ArrowCursor);
-        m_maintenanceProgressBar->setVisible(false);
-        m_maintenanceLogView->append("Operation cancelled by user.");
-        return;
-    }
+    // Set process to maintain terminal and capture output
+    process->setProcessChannelMode(QProcess::MergedChannels);
     
-    QtConcurrent::run([this, cleanAll, password]() {
-        QProcess process;
-        QString command = cleanAll ? "pacman -Scc --noconfirm" : "pacman -Sc --noconfirm";
-        
-        // Run the command with sudo
-        process.start("sudo", QStringList() << "-S" << "-k" << "sh" << "-c" << command);
-        process.write(password.toUtf8() + "\n");
-        process.closeWriteChannel();
-        process.waitForFinished(-1); // Wait indefinitely
-        
-        QString output = QString::fromUtf8(process.readAllStandardOutput());
-        QString error = QString::fromUtf8(process.readAllStandardError());
-        int exitCode = process.exitCode();
-        
-        // Update UI in main thread
-        QMetaObject::invokeMethod(this, [this, exitCode, output, error]() {
-            // Re-enable UI elements
-            m_clearCacheButton->setEnabled(true);
-            setCursor(Qt::ArrowCursor);
-            m_maintenanceProgressBar->setVisible(false);
-            
-            if (exitCode == 0) {
-                m_maintenanceLogView->append("Package cache cleared successfully.");
-                if (!output.isEmpty()) {
-                    m_maintenanceLogView->append("Output:");
-                    for (const QString& line : output.split('\n', Qt::SkipEmptyParts)) {
-                        m_maintenanceLogView->append("  " + line);
-                    }
-                }
-            } else {
-                m_maintenanceLogView->append("Failed to clear package cache:");
-                if (!error.isEmpty()) {
-                    for (const QString& line : error.split('\n', Qt::SkipEmptyParts)) {
-                        m_maintenanceLogView->append("  " + line);
-                    }
-                }
-            }
-        }, Qt::QueuedConnection);
-    });
-}
-
-void MainWindow::onCheckDatabase()
-{
-    bool checkSyncDbs = m_checkSyncDbsCheckbox->isChecked();
-    QString operation = checkSyncDbs ? "all" : "local";
-    
-    // Setup UI for operation
-    m_checkDatabaseButton->setEnabled(false);
-    setCursor(Qt::WaitCursor);
-    m_maintenanceProgressBar->setVisible(true);
-    m_maintenanceLogView->append("Checking " + operation + " databases...");
-    
-    QtConcurrent::run([this, checkSyncDbs]() {
-        QProcess process;
-        QStringList args;
-        
-        if (checkSyncDbs) {
-            args << "-k" << "-Dkk";
-        } else {
-            args << "-k" << "-Dk";
+    // Connect signals to capture and display output
+    connect(process, &QProcess::readyReadStandardOutput, [=]() {
+        QString output = process->readAllStandardOutput();
+        if (!output.isEmpty()) {
+            m_systemUpdateLogView->append(output);
+            // Scroll to bottom to show latest output
+            QScrollBar* scrollBar = m_systemUpdateLogView->verticalScrollBar();
+            scrollBar->setValue(scrollBar->maximum());
         }
-        
-        process.start("pacman", args);
-        process.waitForFinished(-1); // Wait indefinitely
-        
-        QString output = QString::fromUtf8(process.readAllStandardOutput());
-        QString error = QString::fromUtf8(process.readAllStandardError());
-        int exitCode = process.exitCode();
-        
-        // Update UI in main thread
-        QMetaObject::invokeMethod(this, [this, exitCode, output, error, checkSyncDbs]() {
-            // Re-enable UI elements
-            m_checkDatabaseButton->setEnabled(true);
-            setCursor(Qt::ArrowCursor);
-            m_maintenanceProgressBar->setVisible(false);
-            
-            if (exitCode == 0) {
-                m_maintenanceLogView->append("Database check completed successfully.");
-                if (output.isEmpty()) {
-                    m_maintenanceLogView->append("No issues found. All " + QString(checkSyncDbs ? "databases" : "packages") + " are valid.");
-                } else {
-                    m_maintenanceLogView->append("Results:");
-                    for (const QString& line : output.split('\n', Qt::SkipEmptyParts)) {
-                        m_maintenanceLogView->append("  " + line);
-                    }
-                }
+    });
+    
+    // Connect to process finished signal
+    connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+        [=](int exitCode, QProcess::ExitStatus exitStatus) {
+            if (exitStatus == QProcess::NormalExit && exitCode == 0) {
+                m_systemUpdateLogView->append(tr("System update completed successfully."));
+                showStatusMessage(tr("System update completed successfully."), 5000);
             } else {
-                m_maintenanceLogView->append("Database check failed:");
-                if (!error.isEmpty()) {
-                    for (const QString& line : error.split('\n', Qt::SkipEmptyParts)) {
-                        m_maintenanceLogView->append("  " + line);
-                    }
-                }
+                m_systemUpdateLogView->append(tr("System update failed with exit code %1.").arg(exitCode));
+                showStatusMessage(tr("System update failed."), 5000);
             }
-        }, Qt::QueuedConnection);
-    });
-}
-
-void MainWindow::openSettings()
-{
-    std::cout << "MainWindow::openSettings - Opening settings dialog" << std::endl;
-    
-    // Create settings dialog
-    SettingsDialog dialog(this);
-    
-    // Connect signals for theme changes
-    connect(&dialog, &SettingsDialog::themeChanged, this, [this](bool isDark) {
-        std::cout << "MainWindow::openSettings - Theme changed signal received, isDark: " << (isDark ? "true" : "false") << std::endl;
-        applyTheme(isDark);
-    });
-    
-    // Execute dialog
-    int result = dialog.exec();
-    std::cout << "MainWindow::openSettings - Dialog closed with result: " << result << std::endl;
-    
-    if (result == QDialog::Accepted) {
-        std::cout << "MainWindow::openSettings - Settings accepted" << std::endl;
-        
-        // Update dark theme state
-        bool darkTheme = dialog.isDarkThemeEnabled();
-        std::cout << "MainWindow::openSettings - Dark theme enabled: " << (darkTheme ? "true" : "false") << std::endl;
-        
-        // Apply theme if it changed
-        if (m_darkTheme != darkTheme) {
-            std::cout << "MainWindow::openSettings - Theme changed, applying new theme" << std::endl;
-            toggleTheme(darkTheme);
-        } else {
-            std::cout << "MainWindow::openSettings - Theme unchanged" << std::endl;
+            
+            // Clean up the process
+            process->deleteLater();
+            
+            // Refresh installed packages
+        refreshInstalledPackages();
+            
+            // Clear updates list since we've just updated
+            m_systemUpdatesModel->clear();
+            m_systemUpdatesModel->setHorizontalHeaderLabels(
+                QStringList() << tr("Name") << tr("Current") << tr("New") << tr("Repository"));
         }
-        
-        // Update AUR state
-        bool aurEnabled = dialog.isAurEnabled();
-        QSettings settings("PacmanGUI", "PacmanGUI");
-        settings.setValue("aur/enabled", aurEnabled);
-        
-        // Update AUR actions enable state
-        m_actions["aurInstall"]->setEnabled(aurEnabled);
-        m_actions["aurUpdate"]->setEnabled(aurEnabled);
-        
-        // Show confirmation message
-        std::cout << "MainWindow::openSettings - Settings applied successfully" << std::endl;
-        statusBar()->showMessage("Settings updated successfully", 3000);
-    }
-}
-
-void MainWindow::onAbout()
-{
-    QMessageBox::about(this, "About PacmanGUI",
-        "<h2>PacmanGUI</h2>"
-        "<p>A graphical user interface for the Arch Linux package manager pacman.</p>"
-        "<p>Version 0.1</p>"
-        "<p>Copyright © 2023</p>");
-}
-
-void MainWindow::toggleTheme()
-{
-    std::cout << "MainWindow::toggleTheme() - Toggling theme" << std::endl;
-    toggleTheme(!m_darkTheme);
-}
-
-void MainWindow::toggleTheme(bool isDark)
-{
-    std::cout << "MainWindow::toggleTheme(bool) - Setting dark theme to: " << (isDark ? "true" : "false") << std::endl;
-    m_darkTheme = isDark;
-    applyTheme(m_darkTheme);
-    
-    // Save the setting
-    QSettings settings("PacmanGUI", "PacmanGUI");
-    settings.setValue("appearance/darkTheme", m_darkTheme);
-    
-    // Also update the theme name setting for consistency
-    QString themeName;
-    if (isDark) {
-        bool colorful = settings.value("appearance/darkColorfulTheme", true).toBool();
-        themeName = colorful ? "dark_colorful" : "dark";
-    } else {
-        bool colorful = settings.value("appearance/lightColorfulTheme", false).toBool();
-        themeName = colorful ? "light_colorful" : "light";
-    }
-    
-    std::cout << "MainWindow::toggleTheme(bool) - Setting theme name to: " << themeName.toStdString() << std::endl;
-    settings.setValue("appearance/theme", themeName);
-}
-
-void MainWindow::loadSettings()
-{
-    QSettings settings("PacmanGUI", "PacmanGUI");
-    m_darkTheme = settings.value("appearance/darkTheme", true).toBool();
-}
-
-void MainWindow::saveSettings()
-{
-    QSettings settings("PacmanGUI", "PacmanGUI");
-    settings.setValue("appearance/darkTheme", m_darkTheme);
-}
-
-void MainWindow::applyTheme(bool isDark)
-{
-    QSettings settings("PacmanGUI", "PacmanGUI");
-    QString selectedTheme = settings.value("appearance/theme", "dark_colorful").toString();
-    
-    std::cout << "MainWindow::applyTheme - Applying theme: " << selectedTheme.toStdString() << std::endl;
-    
-    // Set Fusion style as the base style
-    qApp->setStyle("Fusion");
-    std::cout << "MainWindow::applyTheme - Set base style to Fusion" << std::endl;
-    
-    // Apply color palette based on the selected theme
-    QPalette palette;
-    
-    if (selectedTheme == "dark" || selectedTheme == "dark_colorful") {
-        std::cout << "MainWindow::applyTheme - Applying dark palette" << std::endl;
-        // Dark or Dark Colorful theme
-        QColor darkColor = QColor(30, 30, 46); // Match #1e1e2e
-        QColor disabledColor = QColor(166, 173, 200); // Match #a6adc8
-        QColor baseColor = QColor(24, 24, 37); // Match #181825
-        QColor textColor = QColor(248, 248, 242); // Match #f8f8f2
-        QColor accentColor = QColor(30, 102, 245); // Match #1e66f5
-        
-        palette.setColor(QPalette::Window, darkColor);
-        palette.setColor(QPalette::WindowText, textColor);
-        palette.setColor(QPalette::Base, baseColor);
-        palette.setColor(QPalette::AlternateBase, darkColor);
-        palette.setColor(QPalette::ToolTipBase, textColor);
-        palette.setColor(QPalette::ToolTipText, textColor);
-        palette.setColor(QPalette::Text, textColor);
-        palette.setColor(QPalette::Disabled, QPalette::Text, disabledColor);
-        palette.setColor(QPalette::Button, darkColor);
-        palette.setColor(QPalette::ButtonText, textColor);
-        palette.setColor(QPalette::Disabled, QPalette::ButtonText, disabledColor);
-        palette.setColor(QPalette::BrightText, textColor);
-        palette.setColor(QPalette::Link, accentColor);
-        palette.setColor(QPalette::Highlight, accentColor);
-        palette.setColor(QPalette::HighlightedText, textColor);
-        palette.setColor(QPalette::Disabled, QPalette::HighlightedText, disabledColor);
-    } else {
-        std::cout << "MainWindow::applyTheme - Applying light palette" << std::endl;
-        // Light or Light Colorful theme
-        QColor lightColor = QColor(242, 244, 248); // Match #f2f4f8
-        QColor textColor = QColor(24, 24, 37); // Match #181825
-        QColor baseColor = QColor(255, 255, 255); // White
-        QColor disabledColor = QColor(88, 91, 112); // Match #585b70
-        QColor accentColor = QColor(30, 102, 245); // Match #1e66f5
-        
-        palette.setColor(QPalette::Window, lightColor);
-        palette.setColor(QPalette::WindowText, textColor);
-        palette.setColor(QPalette::Base, baseColor);
-        palette.setColor(QPalette::AlternateBase, lightColor);
-        palette.setColor(QPalette::ToolTipBase, baseColor);
-        palette.setColor(QPalette::ToolTipText, textColor);
-        palette.setColor(QPalette::Text, textColor);
-        palette.setColor(QPalette::Disabled, QPalette::Text, disabledColor);
-        palette.setColor(QPalette::Button, lightColor);
-        palette.setColor(QPalette::ButtonText, textColor);
-        palette.setColor(QPalette::Disabled, QPalette::ButtonText, disabledColor);
-        palette.setColor(QPalette::BrightText, textColor);
-        palette.setColor(QPalette::Link, accentColor);
-        palette.setColor(QPalette::Highlight, accentColor);
-        palette.setColor(QPalette::HighlightedText, baseColor);
-        palette.setColor(QPalette::Disabled, QPalette::HighlightedText, disabledColor);
-    }
-    
-    // Apply the palette
-    qApp->setPalette(palette);
-    std::cout << "MainWindow::applyTheme - Applied palette to application" << std::endl;
-    
-    // Save the dark theme state for backward compatibility
-    m_darkTheme = (selectedTheme == "dark" || selectedTheme == "dark_colorful");
-    
-    // Load the appropriate QSS file based on theme selection
-    QString qssFile;
-    if (selectedTheme == "dark_colorful") {
-        qssFile = "dark_colorful.qss";
-    } else if (selectedTheme == "light_colorful") {
-        qssFile = "light_colorful.qss";
-    } else if (selectedTheme == "dark") {
-        qssFile = "dark.qss";
-    } else { // light
-        qssFile = "light.qss";
-    }
-    
-    std::cout << "MainWindow::applyTheme - Selected QSS file: " << qssFile.toStdString() << std::endl;
-    
-    // Try to load the selected theme from various paths
-    loadThemeStylesheet(qssFile);
-    
-    std::cout << "MainWindow::applyTheme - Theme application completed" << std::endl;
-}
-
-void MainWindow::searchPackages(const QString& searchTerm)
-{
-    if (searchTerm.isEmpty()) {
-        return;
-    }
-    
-    // Clear existing results
-    m_packagesModel->setRowCount(0);
-    
-    // Show status message
-    statusBar()->showMessage("Searching for packages...");
-    
-    // Set cursor
-    setCursor(Qt::WaitCursor);
-    
-    // Execute search in a separate thread
-    QtConcurrent::run([this, searchTerm]() {
-        std::vector<pacmangui::core::Package> results = 
-            m_packageManager.search_by_name(searchTerm.toStdString());
-        
-        // Update UI from the main thread
-        QMetaObject::invokeMethod(this, [this, results, searchTerm]() {
-            setCursor(Qt::ArrowCursor);
-            
-            // Fill results in table
-            for (const auto& pkg : results) {
-                QList<QStandardItem*> items;
-                
-                // Checkbox column for package selection
-                QStandardItem* checkItem = new QStandardItem();
-                checkItem->setCheckable(true);
-                checkItem->setCheckState(Qt::Unchecked);
-                
-                // If already installed, add a visual indicator but keep it checkable
-                if (m_packageManager.is_package_installed(pkg.get_name())) {
-                    checkItem->setText("✓");
-                    checkItem->setTextAlignment(Qt::AlignCenter);
-                }
-                items.append(checkItem);
-                
-                // Package information
-                items.append(new QStandardItem(QString::fromStdString(pkg.get_name())));
-                items.append(new QStandardItem(QString::fromStdString(pkg.get_version())));
-                items.append(new QStandardItem(QString::fromStdString(pkg.get_repository())));
-                items.append(new QStandardItem(QString::fromStdString(pkg.get_description())));
-                
-                m_packagesModel->appendRow(items);
-            }
-            
-            // Using Stretch mode instead of resizing columns
-            // m_packagesView->resizeColumnsToContents();
-            
-            // Show status message
-            statusBar()->showMessage(
-                QString("Found %1 packages matching '%2'")
-                .arg(results.size())
-                .arg(searchTerm), 
-                3000);
-        }, Qt::QueuedConnection);
-    });
-}
-
-void MainWindow::refreshInstalledPackages()
-{
-    // Clear existing items
-    m_installedModel->setRowCount(0);
-    
-    // Set cursor
-    setCursor(Qt::WaitCursor);
-    
-    // Execute in separate thread
-    QtConcurrent::run([this]() {
-        std::vector<pacmangui::core::Package> installedPackages = 
-            m_packageManager.get_installed_packages();
-        
-        // Update UI from the main thread
-        QMetaObject::invokeMethod(this, [this, installedPackages]() {
-            setCursor(Qt::ArrowCursor);
-            
-            // Fill results in table
-            for (const auto& pkg : installedPackages) {
-                QList<QStandardItem*> items;
-                
-                // Checkbox column for package selection
-                QStandardItem* checkItem = new QStandardItem();
-                checkItem->setCheckable(true);
-                checkItem->setCheckState(Qt::Unchecked);
-                checkItem->setText("✓");
-                checkItem->setTextAlignment(Qt::AlignCenter);
-                items.append(checkItem);
-                
-                // Package information
-                items.append(new QStandardItem(QString::fromStdString(pkg.get_name())));
-                items.append(new QStandardItem(QString::fromStdString(pkg.get_version())));
-                items.append(new QStandardItem(QString::fromStdString(pkg.get_repository())));
-                items.append(new QStandardItem(QString::fromStdString(pkg.get_description())));
-                
-                m_installedModel->appendRow(items);
-            }
-            
-            // Using Stretch mode instead of resizing columns
-            // m_installedView->resizeColumnsToContents();
-            
-            // Show status message
-            statusBar()->showMessage(
-                QString("Found %1 installed packages")
-                .arg(installedPackages.size()), 
-                3000);
-        }, Qt::QueuedConnection);
-    });
-}
-
-void MainWindow::refreshUpdatesList()
-{
-    // Clear current model
-    m_systemUpdatesModel->removeRows(0, m_systemUpdatesModel->rowCount());
-    
-    // Set cursor
-    setCursor(Qt::WaitCursor);
-    
-    // Execute in separate thread
-    QThreadPool::globalInstance()->start([this]() {
-        auto updates = m_packageManager.check_updates();
-        
-        // Update UI from the main thread
-        QMetaObject::invokeMethod(this, [this, updates]() {
-            setCursor(Qt::ArrowCursor);
-            
-            // Clear the updates model
-            m_systemUpdatesModel->setRowCount(0);
-            
-            // Update system updates view
-            for (const auto& update : updates) {
-                QList<QStandardItem*> items;
-                items.append(new QStandardItem(QString::fromStdString(update.first)));
-                items.append(new QStandardItem(QString::fromStdString(update.second)));
-                m_systemUpdatesModel->appendRow(items);
-            }
-            
-            // Using Stretch mode instead of resizing columns
-            // m_systemUpdatesView->resizeColumnsToContents();
-            
-            if (!updates.empty()) {
-                // Update count in button
-                m_systemUpdateButton->setText(QString("Update System (%1)").arg(updates.size()));
-                m_systemUpdateButton->setEnabled(true);
-                
-                // Show status message
-                statusBar()->showMessage(QString("%1 updates available").arg(updates.size()), 3000);
-            } else {
-                // No updates available
-                m_systemUpdateButton->setText("Update System");
-                m_systemUpdateButton->setEnabled(false);
-                
-                // Show status message
-                statusBar()->showMessage("System is up to date", 3000);
-            }
-        }, Qt::QueuedConnection);
-    });
-}
-
-void MainWindow::updateBatchInstallButton()
-{
-    m_batchInstallButton->setEnabled(!m_selectedPackages.isEmpty());
-}
-
-void MainWindow::onRemoveOrphans()
-{
-    QMessageBox::StandardButton confirm = QMessageBox::question(
-        this,
-        "Remove Orphaned Packages",
-        "Are you sure you want to remove all orphaned packages?",
-        QMessageBox::Yes | QMessageBox::No
     );
     
-    if (confirm == QMessageBox::Yes) {
-        // Ask for password
-        bool ok;
-        QString password = QInputDialog::getText(
-            this, 
-            "Authentication Required",
-            "Enter your password to remove orphaned packages:",
-            QLineEdit::Password, 
-            "", 
-            &ok);
+    // Start process with pkexec which will prompt for password
+    process->start("pkexec", QStringList() << "pacman" << "-Syu" << "--noconfirm");
+    
+    // Show status message
+    showStatusMessage(tr("Updating system packages..."), 0);
+}
+
+// Add implementation for onCheckForUpdates
+void MainWindow::onCheckForUpdates() {
+    // Show status message and update UI
+    showStatusMessage(tr("Checking for updates..."), 0);
+    m_systemUpdateInfoLabel->setText(tr("Checking for updates..."));
+    
+    // Ensure we're using the correct tab for updates
+    if (m_tabWidget->indexOf(m_systemUpdateTab) >= 0) {
+        m_tabWidget->setCurrentIndex(m_tabWidget->indexOf(m_systemUpdateTab));
+    }
+    
+    // Clear the updates model
+    if (m_systemUpdatesModel) {
+        m_systemUpdatesModel->clear();
+        m_systemUpdatesModel->setHorizontalHeaderLabels(
+            QStringList() << tr("Name") << tr("Current Version") << tr("New Version") << tr("Repository"));
+        }
+    
+    // Clear the log view
+    if (m_systemUpdateLogView) {
+        m_systemUpdateLogView->clear();
+        m_systemUpdateLogView->append(tr("Starting update check..."));
+    }
+    
+    // Refresh the package database first
+    bool syncSuccess = m_packageManager.sync_all();
+    
+    if (!syncSuccess) {
+        m_systemUpdateInfoLabel->setText(tr("Error synchronizing package databases."));
+        showStatusMessage(tr("Error synchronizing package databases"), 5000);
+        m_systemUpdateLogView->append(tr("Failed to synchronize package databases."));
+        return;
+    }
+    
+    m_systemUpdateLogView->append(tr("Checking for available updates..."));
+    
+    // Check for updates
+    try {
+        std::vector<std::pair<std::string, std::string>> updates = m_packageManager.check_updates();
         
-        if (!ok || password.isEmpty()) {
-            m_maintenanceLogView->append("Operation cancelled by user.");
+        // Add updates to the model
+        for (const auto& update : updates) {
+            QList<QStandardItem*> row;
+            
+            // Get package details to find the repository and current version
+            QString pkgName = QString::fromStdString(update.first);
+            QString newVersion = QString::fromStdString(update.second);
+            
+            // Try to get the current version from installed packages
+            QString currentVersion = "Unknown";
+            QString repoName = "Unknown";
+            
+            // Find the package in the installed packages model
+            for (int i = 0; i < m_installedModel->rowCount(); ++i) {
+                QString name = m_installedModel->item(i, 0)->text();
+                if (name == pkgName) {
+                    currentVersion = m_installedModel->item(i, 1)->text();
+                    repoName = m_installedModel->item(i, 3)->text();
+            break;
+                }
+            }
+            
+            QStandardItem* nameItem = new QStandardItem(pkgName);
+            QStandardItem* currentVersionItem = new QStandardItem(currentVersion);
+            QStandardItem* newVersionItem = new QStandardItem(newVersion);
+            QStandardItem* repoItem = new QStandardItem(repoName);
+            
+            row << nameItem << currentVersionItem << newVersionItem << repoItem;
+            m_systemUpdatesModel->appendRow(row);
+        }
+        
+        // Update status bar and info label
+        if (updates.empty()) {
+            m_systemUpdateInfoLabel->setText(tr("Your system is up to date."));
+            showStatusMessage(tr("Your system is up to date"), 5000);
+            m_systemUpdateLogView->append(tr("No updates available."));
+    } else {
+            m_systemUpdateInfoLabel->setText(tr("Found %1 updates available.").arg(updates.size()));
+            showStatusMessage(tr("Found %1 updates").arg(updates.size()), 5000);
+            m_systemUpdateLogView->append(tr("Found %1 updates available.").arg(updates.size()));
+        }
+        
+        // Auto-size columns
+        for (int i = 0; i < m_systemUpdatesTable->model()->columnCount(); ++i) {
+            m_systemUpdatesTable->resizeColumnToContents(i);
+        }
+        
+    } catch (const std::exception& e) {
+        // Handle any exceptions
+        m_systemUpdateInfoLabel->setText(tr("Error checking for updates."));
+        showStatusMessage(tr("Error checking for updates: %1").arg(e.what()), 5000);
+        m_systemUpdateLogView->append(tr("Error: %1").arg(e.what()));
+    }
+}
+
+// Add implementation for onClearPackageCache
+void MainWindow::onClearPackageCache() {
+    // Show confirmation dialog
+    QMessageBox::StandardButton reply = QMessageBox::question(
+        this, 
+        tr("Confirm Package Cache Cleanup"),
+        tr("Are you sure you want to clear the package cache? This will remove downloaded package files to free disk space."),
+        QMessageBox::Yes|QMessageBox::No
+    );
+    
+    if (reply != QMessageBox::Yes) {
+        return;
+    }
+    
+    // Show status message
+    showStatusMessage(tr("Clearing package cache..."), 0);
+    m_maintenanceLogView->append(tr("Starting package cache cleanup..."));
+    
+    // Execute pacman clean command
+    QProcess process;
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    
+    // Run the command with sudo
+    process.start("pkexec", QStringList() << "pacman" << "-Sc" << "--noconfirm");
+    
+    if (!process.waitForStarted()) {
+        showStatusMessage(tr("Failed to start package cache cleanup"), 5000);
+        m_maintenanceLogView->append(tr("Error: Failed to start package cache cleanup."));
+        return;
+    }
+    
+    // Read output as it becomes available
+    while (process.state() != QProcess::NotRunning) {
+        process.waitForReadyRead();
+        QString output = process.readAllStandardOutput();
+        if (!output.isEmpty()) {
+            m_maintenanceLogView->append(output);
+        }
+        QApplication::processEvents();
+    }
+    
+    // Check exit code
+    if (process.exitCode() == 0) {
+        showStatusMessage(tr("Package cache cleared successfully"), 5000);
+        m_maintenanceLogView->append(tr("Package cache cleared successfully."));
+        
+        // Run df to show disk space
+        QProcess dfProcess;
+        dfProcess.start("df", QStringList() << "-h" << "/");
+        dfProcess.waitForFinished();
+        QString dfOutput = dfProcess.readAllStandardOutput();
+        m_maintenanceLogView->append(tr("\nDisk space after cleanup:"));
+        m_maintenanceLogView->append(dfOutput);
+            } else {
+        showStatusMessage(tr("Error clearing package cache"), 5000);
+        m_maintenanceLogView->append(tr("Error: Package cache cleanup failed with exit code %1.").arg(process.exitCode()));
+        m_maintenanceLogView->append(process.readAllStandardError());
+    }
+}
+
+// Add implementation for onRemoveOrphans
+void MainWindow::onRemoveOrphans() {
+    // First find orphaned packages
+    showStatusMessage(tr("Finding orphaned packages..."), 0);
+    m_maintenanceLogView->append(tr("Searching for orphaned packages..."));
+    
+    QProcess process;
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    
+    // Run pacman to find orphans (packages installed as deps but no longer required)
+    process.start("pacman", QStringList() << "-Qdt");
+    
+    if (!process.waitForStarted()) {
+        showStatusMessage(tr("Failed to start orphan search"), 5000);
+        m_maintenanceLogView->append(tr("Error: Failed to search for orphaned packages."));
+        return;
+    }
+    
+    process.waitForFinished(-1);
+    QString output = process.readAllStandardOutput();
+    
+    // Process the output
+    QStringList orphans = output.split("\n", Qt::SkipEmptyParts);
+    
+    if (orphans.isEmpty()) {
+        showStatusMessage(tr("No orphaned packages found"), 5000);
+        m_maintenanceLogView->append(tr("No orphaned packages found on the system."));
+        return;
+    }
+    
+    // Extract just the package names
+    QStringList packageNames;
+    for (const QString& orphan : orphans) {
+        packageNames.append(orphan.split(" ").first());
+    }
+    
+    // Display the found orphans
+    m_maintenanceLogView->append(tr("Found %1 orphaned packages:").arg(orphans.size()));
+    for (const QString& orphan : orphans) {
+        m_maintenanceLogView->append(orphan);
+    }
+    
+    // Ask for confirmation before removing
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, tr("Remove Orphaned Packages"),
+                                  tr("Do you want to remove %1 orphaned packages?").arg(orphans.size()),
+                                  QMessageBox::Yes | QMessageBox::No);
+    
+    if (reply == QMessageBox::No) {
+        showStatusMessage(tr("Orphan removal canceled"), 5000);
+        m_maintenanceLogView->append(tr("Orphan removal canceled by user."));
+        return;
+    }
+    
+    // Remove the orphaned packages
+    showStatusMessage(tr("Removing orphaned packages..."), 0);
+    m_maintenanceLogView->append(tr("Removing orphaned packages. This may take some time..."));
+    
+    QStringList args;
+    args << "-Rs";
+    args.append(packageNames);
+    
+    QProcess removeProcess;
+    removeProcess.setProcessChannelMode(QProcess::MergedChannels);
+    
+    // Use pkexec to get elevated privileges
+    QStringList pkexecArgs;
+    pkexecArgs << "pacman";
+    pkexecArgs.append(args);
+    
+    removeProcess.start("pkexec", pkexecArgs);
+    
+    if (!removeProcess.waitForStarted()) {
+        showStatusMessage(tr("Failed to start orphan removal"), 5000);
+        m_maintenanceLogView->append(tr("Error: Failed to start orphaned package removal."));
+        return;
+    }
+    
+    removeProcess.waitForFinished(-1);
+    output = removeProcess.readAllStandardOutput();
+    
+    int exitCode = removeProcess.exitCode();
+    if (exitCode == 0) {
+        showStatusMessage(tr("Orphaned packages removed successfully"), 5000);
+        m_maintenanceLogView->append(tr("Orphaned packages removed successfully."));
+                } else {
+        showStatusMessage(tr("Failed to remove orphaned packages"), 5000);
+        m_maintenanceLogView->append(tr("Error: Failed to remove orphaned packages."));
+    }
+    
+    // Display the command output
+    m_maintenanceLogView->append(tr("\nCommand output:"));
+    m_maintenanceLogView->append(output);
+}
+
+// Add implementation for onCheckDatabase
+void MainWindow::onCheckDatabase() {
+    // Show confirmation dialog
+    QMessageBox::StandardButton reply = QMessageBox::question(
+        this,
+        tr("Confirm Database Check"),
+        tr("Are you sure you want to check the package database? This will verify the integrity of all installed packages."),
+        QMessageBox::Yes|QMessageBox::No
+    );
+    
+    if (reply != QMessageBox::Yes) {
+        return;
+    }
+    
+    // Show status message
+    showStatusMessage(tr("Checking package database..."), 0);
+    m_maintenanceLogView->append(tr("Starting package database check..."));
+    
+    // Execute pacman database check
+        QProcess process;
+    process.setProcessChannelMode(QProcess::MergedChannels);
+        
+        // Run the command with sudo
+    process.start("pkexec", QStringList() << "pacman" << "-Qk");
+    
+    if (!process.waitForStarted()) {
+        showStatusMessage(tr("Failed to start database check"), 5000);
+        m_maintenanceLogView->append(tr("Error: Failed to start database check."));
+        return;
+    }
+    
+    // Read output as it becomes available
+    while (process.state() != QProcess::NotRunning) {
+        process.waitForReadyRead();
+        QString output = process.readAllStandardOutput();
+                if (!output.isEmpty()) {
+            m_maintenanceLogView->append(output);
+                    }
+        QApplication::processEvents();
+                }
+    
+    // Check exit code
+    if (process.exitCode() == 0) {
+        showStatusMessage(tr("Database check completed successfully"), 5000);
+        m_maintenanceLogView->append(tr("Database check completed successfully."));
+            } else {
+        showStatusMessage(tr("Database check found issues"), 5000);
+        m_maintenanceLogView->append(tr("Database check found issues. See above log for details."));
+    }
+}
+
+// Add implementation for onFindPacnewFiles
+void MainWindow::onFindPacnewFiles() {
+    // Show status message
+    showStatusMessage(tr("Finding .pacnew files..."), 0);
+    m_maintenanceLogView->append(tr("Searching for .pacnew and .pacsave files..."));
+    
+    // Execute find command to locate .pacnew files
+        QProcess process;
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    
+    // Run the find command
+    process.start("find", QStringList() << "/" << "-type" << "f" << "(" << "-name" << "*.pacnew" << "-o" << "-name" << "*.pacsave" << ")" << "2>/dev/null");
+    
+    if (!process.waitForStarted()) {
+        showStatusMessage(tr("Failed to start file search"), 5000);
+        m_maintenanceLogView->append(tr("Error: Failed to start .pacnew/.pacsave file search."));
+        return;
+    }
+    
+    process.waitForFinished(-1);
+    QString output = process.readAllStandardOutput();
+    
+    // Process the output
+    QStringList files = output.split("\n", Qt::SkipEmptyParts);
+    
+    if (files.isEmpty()) {
+        showStatusMessage(tr("No .pacnew or .pacsave files found"), 5000);
+        m_maintenanceLogView->append(tr("No .pacnew or .pacsave files found on the system."));
+        return;
+    }
+    
+    // Display the found files
+    m_maintenanceLogView->append(tr("Found %1 .pacnew/.pacsave files:").arg(files.size()));
+    for (const QString& file : files) {
+        m_maintenanceLogView->append(file);
+    }
+    
+    // Suggest tools for merging
+    m_maintenanceLogView->append(tr("\nYou can use tools like 'pacdiff' (from pacman-contrib package) to merge these files."));
+    m_maintenanceLogView->append(tr("To install pacman-contrib if not installed:"));
+    m_maintenanceLogView->append(tr("  sudo pacman -S pacman-contrib"));
+    m_maintenanceLogView->append(tr("To merge using pacdiff:"));
+    m_maintenanceLogView->append(tr("  sudo pacdiff"));
+    
+    showStatusMessage(tr("Found %1 .pacnew/.pacsave files").arg(files.size()), 5000);
+}
+
+// Add implementation for onBackupDatabase
+void MainWindow::onBackupDatabase() {
+    // Implement onBackupDatabase
+}
+
+// Add implementation for onRestoreDatabase
+void MainWindow::onRestoreDatabase() {
+    // Implement onRestoreDatabase
+}
+
+// Add implementation for onMaintenanceTaskFinished
+void MainWindow::onMaintenanceTaskFinished(bool success, const QString& message) {
+    Q_UNUSED(success);
+    Q_UNUSED(message);
+    // Implement onMaintenanceTaskFinished
+}
+
+// Add implementation for toggleTheme
+void MainWindow::toggleTheme() {
+    // Toggle the theme
+    bool isDark = !isDarkThemeEnabled();
+    toggleTheme(isDark);
+}
+
+// Add implementation for toggleTheme with bool parameter
+void MainWindow::toggleTheme(bool isDark) {
+    // Save the setting
+    QSettings settings("PacmanGUI", "PacmanGUI");
+    settings.setValue("appearance/darkTheme", isDark);
+    
+    // Apply the theme
+    applyTheme(isDark);
+    
+    // Show status message
+    showStatusMessage(isDark ? tr("Dark theme applied") : tr("Light theme applied"), 2000);
+}
+
+// Add implementation for openSettings
+void MainWindow::openSettings() {
+    // Create settings dialog if it doesn't exist
+    if (!m_settingsDialog) {
+        m_settingsDialog = new SettingsDialog(this);
+        
+        // Connect theme changed signal using lambda
+        connect(m_settingsDialog, &SettingsDialog::themeChanged, 
+                [this](bool isDark) { this->toggleTheme(isDark); });
+        
+        // Connect AUR status changed signal
+        connect(m_settingsDialog, &SettingsDialog::aurStatusChanged, [this](bool enabled) {
+            // Update UI based on AUR status
+            if (m_installAurButton) {
+                m_installAurButton->setEnabled(enabled && !m_aurHelper.isEmpty());
+            }
+            
+            // Refresh AUR helper if enabled
+            if (enabled) {
+                checkAurHelper();
+            }
+        });
+    }
+    
+    // Show dialog
+    m_settingsDialog->loadSettings();
+    m_settingsDialog->exec();
+    
+    // Handle result
+    if (m_settingsDialog->result() == QDialog::Accepted) {
+        // Save settings
+        m_settingsDialog->saveSettings();
+        
+        // Update AUR helper
+        checkAurHelper();
+        
+        // Show status message
+        showStatusMessage(tr("Settings saved successfully"), 2000);
+    }
+}
+
+// Add implementation for onAbout
+void MainWindow::onAbout() {
+    // Implement onAbout
+}
+
+// Add implementation for onDetailPanelAnimationFinished
+void MainWindow::onDetailPanelAnimationFinished() {
+    // Implement onDetailPanelAnimationFinished
+}
+
+// Add implementation for closeDetailPanel
+void MainWindow::closeDetailPanel() {
+    // Implement closeDetailPanel
+}
+
+// Add implementation for eventFilter
+bool MainWindow::eventFilter(QObject* watched, QEvent* event) {
+    Q_UNUSED(watched);
+    Q_UNUSED(event);
+    return false; // Default implementation
+}
+
+// Add implementation for resizeEvent
+void MainWindow::resizeEvent(QResizeEvent* event) {
+    QMainWindow::resizeEvent(event); // Call base implementation
+}
+
+// Add implementation for closeEvent
+void MainWindow::closeEvent(QCloseEvent* event) {
+    QMainWindow::closeEvent(event); // Call base implementation
+}
+
+// Add implementation for updateInstallButtonText
+void MainWindow::updateInstallButtonText() {
+    QItemSelectionModel* selectionModel = m_packagesTable->selectionModel();
+    if (selectionModel) {
+        QModelIndexList selected = selectionModel->selectedRows();
+        if (selected.size() > 1) {
+            m_installButton->setText(tr("Install Selected Packages"));
+            } else {
+            m_installButton->setText(tr("Install"));
+        }
+    }
+}
+
+// Add implementation for onCleanCache
+void MainWindow::onCleanCache() {
+    // Ask user what type of cache cleaning they want
+    QStringList options;
+    options << tr("Remove all packages from cache")
+            << tr("Keep only the latest version of each package")
+            << tr("Keep currently installed packages only");
+    
+        bool ok;
+    QString selected = QInputDialog::getItem(this, tr("Clean Package Cache"),
+                                            tr("Select cache cleaning option:"), options, 
+                                            1, false, &ok);
+    
+    if (!ok || selected.isEmpty()) {
+        showStatusMessage(tr("Cache cleaning canceled"), 5000);
+        m_maintenanceLogView->append(tr("Package cache cleaning was canceled."));
             return;
         }
         
-        m_findOrphansButton->setEnabled(false);
-        m_removeOrphansButton->setEnabled(false);
-        setCursor(Qt::WaitCursor);
-        m_maintenanceProgressBar->setVisible(true);
-        m_maintenanceLogView->append("Removing orphaned packages...");
-        
-        QThreadPool::globalInstance()->start([this, password]() {
-            // Define output callback for real-time feedback
-            auto outputCallback = [this](const std::string& output) {
-                // Update log from the worker thread
-                QMetaObject::invokeMethod(this, [this, line = QString::fromStdString(output)]() {
-                    m_maintenanceLogView->append(line);
-                    m_maintenanceLogView->verticalScrollBar()->setValue(
-                        m_maintenanceLogView->verticalScrollBar()->maximum()
-                    );
-                    QApplication::processEvents();
-                }, Qt::QueuedConnection);
-            };
-            
-            bool success = m_packageManager.remove_orphaned_packages(
-                password.toStdString(),
-                outputCallback
-            );
-            
-            // Update UI in main thread
-            QMetaObject::invokeMethod(this, [this, success]() {
-                // Update UI state
-                m_findOrphansButton->setEnabled(true);
-                m_removeOrphansButton->setEnabled(false);
-                m_maintenanceProgressBar->setVisible(false);
-                setCursor(Qt::ArrowCursor);
-                
-                // Update log
-                if (success) {
-                    m_maintenanceLogView->append("Orphaned packages removed successfully.");
-                } else {
-                    m_maintenanceLogView->append("Failed to remove orphaned packages: " + 
-                        QString::fromStdString(m_packageManager.get_last_error()));
-                }
-            }, Qt::QueuedConnection);
-        });
-    }
-}
-
-void MainWindow::onFindPacnewFiles()
-{
-    m_findPacnewButton->setEnabled(false);
-    setCursor(Qt::WaitCursor);
-    m_maintenanceProgressBar->setVisible(true);
-    m_maintenanceLogView->append("Searching for .pacnew and .pacsave files...");
+    // Prepare the command based on selection
+    QStringList args;
     
-    QThreadPool::globalInstance()->start([this]() {
-        QStringList pacnewFiles;
-        
-        // Run the find command to locate .pacnew files
+    if (selected == options[0]) {
+        // Remove all packages from cache
+        args << "-Scc" << "--noconfirm";
+        m_maintenanceLogView->append(tr("Removing all packages from cache..."));
+    } else if (selected == options[1]) {
+        // Keep only the latest version of each package
+        args << "-Sc" << "--noconfirm";
+        m_maintenanceLogView->append(tr("Removing old versions of packages from cache..."));
+    } else if (selected == options[2]) {
+        // Keep currently installed packages only
+        args << "-Sc" << "--noconfirm";
+        m_maintenanceLogView->append(tr("Removing packages not currently installed from cache..."));
+    }
+    
+    // Show status message
+    showStatusMessage(tr("Cleaning package cache..."), 0);
+    
+    // Execute pacman clean command with elevated privileges
         QProcess process;
-        process.start("find", QStringList() << "/" << "-name" << "*.pacnew" << "-o" << "-name" << "*.pacsave");
-        process.waitForFinished();
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    
+    // Use pkexec to get root privileges
+    QStringList pkexecArgs;
+    pkexecArgs << "pacman";
+    pkexecArgs.append(args);
+    
+    process.start("pkexec", pkexecArgs);
+    
+    if (!process.waitForStarted()) {
+        showStatusMessage(tr("Failed to start cache cleaning"), 5000);
+        m_maintenanceLogView->append(tr("Error: Failed to start package cache cleaning."));
+        return;
+    }
+    
+    process.waitForFinished(-1);
+    QString output = process.readAllStandardOutput();
+    
+    int exitCode = process.exitCode();
+    if (exitCode == 0) {
+        // Get the cache size after cleaning
+        QProcess sizeProcess;
+        sizeProcess.start("du", QStringList() << "-sh" << "/var/cache/pacman/pkg/");
+        sizeProcess.waitForFinished();
+        QString sizeOutput = sizeProcess.readAllStandardOutput();
+        QString currentSize = sizeOutput.trimmed().split("\t").first();
         
-        QString output = QString::fromUtf8(process.readAllStandardOutput());
-        pacnewFiles = output.split('\n', Qt::SkipEmptyParts);
+        showStatusMessage(tr("Package cache cleaned successfully"), 5000);
+        m_maintenanceLogView->append(tr("Package cache cleaned successfully."));
+        m_maintenanceLogView->append(tr("Current cache size: %1").arg(currentSize));
+    } else {
+        showStatusMessage(tr("Failed to clean package cache"), 5000);
+        m_maintenanceLogView->append(tr("Error: Failed to clean package cache."));
+    }
+    
+    // Display the command output
+    m_maintenanceLogView->append(tr("\nCommand output:"));
+    m_maintenanceLogView->append(output);
+}
+
+// Add implementation for onClearPackageLock
+void MainWindow::onClearPackageLock() {
+    // Show confirmation dialog
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, tr("Clear Package Lock"),
+                                 tr("Are you sure you want to remove the package manager lock?\n\n"
+                                    "This should only be done if you're certain no package operations "
+                                    "are in progress. Removing the lock while an operation is in progress "
+                                    "could damage your system."),
+                                 QMessageBox::Yes | QMessageBox::No);
+    
+    if (reply != QMessageBox::Yes) {
+        showStatusMessage(tr("Package lock removal canceled"), 5000);
+        m_maintenanceLogView->append(tr("Package lock removal was canceled."));
+        return;
+    }
+    
+    // Show status message
+    showStatusMessage(tr("Removing package lock..."), 0);
+    m_maintenanceLogView->append(tr("Attempting to remove package manager lock..."));
+    
+    // Execute command to remove the lock file with elevated privileges
+    QProcess process;
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    
+    // Use pkexec to get root privileges
+    QStringList args;
+    args << "rm" << "-f" << "/var/lib/pacman/db.lck";
+    
+    process.start("pkexec", args);
+    
+    if (!process.waitForStarted()) {
+        showStatusMessage(tr("Failed to start lock removal"), 5000);
+        m_maintenanceLogView->append(tr("Error: Failed to start package lock removal."));
+        return;
+    }
+    
+    process.waitForFinished(-1);
+    QString output = process.readAllStandardOutput();
+    
+    int exitCode = process.exitCode();
+    if (exitCode == 0) {
+        showStatusMessage(tr("Package lock removed successfully"), 5000);
+        m_maintenanceLogView->append(tr("Package manager lock was successfully removed."));
+    } else {
+        showStatusMessage(tr("Failed to remove package lock"), 5000);
+        m_maintenanceLogView->append(tr("Error: Failed to remove package manager lock."));
+        m_maintenanceLogView->append(tr("Exit code: %1").arg(exitCode));
+    }
+    
+    // Display the command output
+    if (!output.isEmpty()) {
+        m_maintenanceLogView->append(tr("\nCommand output:"));
+        m_maintenanceLogView->append(output);
+    }
+    
+    // Check if lock file exists after attempted removal
+    QProcess checkProcess;
+    checkProcess.start("ls", QStringList() << "-l" << "/var/lib/pacman/db.lck");
+    checkProcess.waitForFinished();
+    int checkExitCode = checkProcess.exitCode();
+    
+    if (checkExitCode != 0) {
+        m_maintenanceLogView->append(tr("Confirmed: Lock file no longer exists."));
+    } else {
+        m_maintenanceLogView->append(tr("Warning: Lock file may still exist despite removal attempt."));
+    }
+}
+
+// Add implementation for onCheckIntegrityAllPackages
+void MainWindow::onCheckIntegrityAllPackages() {
+    // Confirm operation with user
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, tr("Check Package Integrity"),
+                                 tr("This will check the integrity of all installed packages.\n"
+                                    "The process may take some time. Do you want to continue?"),
+                                 QMessageBox::Yes | QMessageBox::No);
+    
+    if (reply != QMessageBox::Yes) {
+        showStatusMessage(tr("Package integrity check canceled"), 5000);
+        m_maintenanceLogView->append(tr("Package integrity check was canceled."));
+        return;
+    }
+    
+    // Show status message
+    showStatusMessage(tr("Checking package integrity..."), 0);
+    m_maintenanceLogView->append(tr("Starting integrity check for all installed packages..."));
+    
+    // Execute pacman command to check integrity
+    QProcess process;
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    
+    // Use paccheck from pacutils or pacman to verify packages
+    QStringList args;
+    
+    // First, check if paccheck is available
+    QProcess checkPaccheck;
+    checkPaccheck.start("which", QStringList() << "paccheck");
+    checkPaccheck.waitForFinished();
+    
+    if (checkPaccheck.exitCode() == 0) {
+        // Use paccheck which is more thorough
+        args << "paccheck" << "--md5sum" << "--files" << "--backup" << "--quiet";
+        process.start("pkexec", args);
+    } else {
+        // Fallback to pacman's verification
+        args << "pacman" << "-Qk";
+        process.start("pkexec", args);
+    }
+    
+    if (!process.waitForStarted()) {
+        showStatusMessage(tr("Failed to start integrity check"), 5000);
+        m_maintenanceLogView->append(tr("Error: Failed to start package integrity check."));
+        return;
+    }
+    
+    // Set cursor to wait cursor
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    
+    process.waitForFinished(-1);
+    QString output = process.readAllStandardOutput();
+    
+    // Reset cursor
+    QApplication::restoreOverrideCursor();
+    
+    int exitCode = process.exitCode();
+    if (exitCode == 0) {
+        showStatusMessage(tr("Package integrity check completed"), 5000);
         
-        // Update UI in main thread
-        QMetaObject::invokeMethod(this, [this, pacnewFiles]() {
-            // Update UI state
-            m_findPacnewButton->setEnabled(true);
-            m_maintenanceProgressBar->setVisible(false);
-            setCursor(Qt::ArrowCursor);
+        // Check if there were any issues reported in the output
+        if (output.contains("warning") || output.contains("error") || 
+            output.contains("corrupted") || output.contains("missing")) {
+            m_maintenanceLogView->append(tr("Package integrity check completed with issues detected."));
+        } else {
+            m_maintenanceLogView->append(tr("Package integrity check completed successfully. No issues found."));
+        }
+    } else {
+        showStatusMessage(tr("Package integrity check failed"), 5000);
+        m_maintenanceLogView->append(tr("Error: Package integrity check failed."));
+        m_maintenanceLogView->append(tr("Exit code: %1").arg(exitCode));
+    }
+    
+    // Display the command output with formatting
+    if (!output.isEmpty()) {
+        m_maintenanceLogView->append(tr("\nIntegrity check results:"));
+        
+        // Highlight warnings and errors
+        QStringList lines = output.split("\n");
+        for (const QString& line : lines) {
+            QString formattedLine = line;
             
-            // Update log
-            if (pacnewFiles.isEmpty()) {
-                m_maintenanceLogView->append("No .pacnew or .pacsave files found.");
-            } else {
-                m_maintenanceLogView->append("Found " + QString::number(pacnewFiles.size()) +
-                    " .pacnew/.pacsave files:");
-                
-                // Display files in the log
-                for (const auto& file : pacnewFiles) {
-                    m_maintenanceLogView->append(" - " + file);
-                }
+            // Simple HTML formatting for warnings and errors
+            if (line.contains("warning", Qt::CaseInsensitive) || 
+                line.contains("missing", Qt::CaseInsensitive)) {
+                formattedLine = "<span style='color:orange'>" + line + "</span>";
+                m_maintenanceLogView->append(formattedLine);
+            } else if (line.contains("error", Qt::CaseInsensitive) || 
+                       line.contains("corrupted", Qt::CaseInsensitive) || 
+                       line.contains("failed", Qt::CaseInsensitive)) {
+                formattedLine = "<span style='color:red'>" + line + "</span>";
+                m_maintenanceLogView->append(formattedLine);
+        } else {
+                m_maintenanceLogView->append(line);
             }
-        }, Qt::QueuedConnection);
-    });
-}
-
-void MainWindow::setupDetailPanel()
-{
-    // Create the detail panel widget that will slide in from the right
-    m_detailPanel = new QWidget(this);
-    m_detailPanel->setObjectName("detailPanel");
-    m_detailPanel->setAutoFillBackground(true);
-    
-    // Set up opacity effect for fade-in animation
-    m_opacityEffect = new QGraphicsOpacityEffect(m_detailPanel);
-    m_opacityEffect->setOpacity(0.0);
-    m_detailPanel->setGraphicsEffect(m_opacityEffect);
-    
-    // Calculate panel width (25% of main window width)
-    int panelWidth = width() * SLIDE_PANEL_WIDTH_PERCENT / 100;
-    
-    // Position the panel initially outside the visible area
-    m_detailPanel->setGeometry(width(), 0, panelWidth, height());
-    m_detailPanel->setMinimumWidth(panelWidth);
-    m_detailPanel->setMaximumWidth(panelWidth);
-    
-    // Style the panel with a border and background
-    QPalette palette = m_detailPanel->palette();
-    palette.setColor(QPalette::Window, QColor(240, 240, 240));
-    if (m_darkTheme) {
-        palette.setColor(QPalette::Window, QColor(45, 45, 45));
-        palette.setColor(QPalette::WindowText, Qt::white);
-    }
-    m_detailPanel->setPalette(palette);
-    
-    // Create a layout for the panel content
-    QVBoxLayout* panelLayout = new QVBoxLayout(m_detailPanel);
-    panelLayout->setContentsMargins(15, 15, 15, 15);
-    panelLayout->setSpacing(10);
-    
-    // Add a scroll area for the panel content
-    m_detailScrollArea = new QScrollArea();
-    m_detailScrollArea->setWidgetResizable(true);
-    m_detailScrollArea->setFrameShape(QFrame::NoFrame);
-    
-    QWidget* scrollContent = new QWidget();
-    QVBoxLayout* scrollLayout = new QVBoxLayout(scrollContent);
-    scrollLayout->setContentsMargins(0, 0, 0, 0);
-    scrollLayout->setSpacing(15);
-    
-    // Add close button at the top
-    QHBoxLayout* headerLayout = new QHBoxLayout();
-    m_detailCloseButton = new QPushButton("×");
-    m_detailCloseButton->setObjectName("detailCloseButton");
-    m_detailCloseButton->setFixedSize(28, 28);
-    m_detailCloseButton->setToolTip("Close detail panel");
-    m_detailCloseButton->setCursor(Qt::PointingHandCursor);
-    headerLayout->addStretch();
-    headerLayout->addWidget(m_detailCloseButton);
-    scrollLayout->addLayout(headerLayout);
-    
-    // Add package icon
-    m_detailIcon = new QLabel();
-    m_detailIcon->setAlignment(Qt::AlignCenter);
-    m_detailIcon->setFixedSize(96, 96);
-    m_detailIcon->setScaledContents(true);
-    QIcon defaultIcon = QIcon::fromTheme("package", QIcon::fromTheme("application-x-executable"));
-    m_detailIcon->setPixmap(defaultIcon.pixmap(96, 96));
-    
-    QHBoxLayout* iconLayout = new QHBoxLayout();
-    iconLayout->addStretch();
-    iconLayout->addWidget(m_detailIcon);
-    iconLayout->addStretch();
-    scrollLayout->addLayout(iconLayout);
-    
-    // Add package title
-    m_detailTitle = new QLabel();
-    m_detailTitle->setObjectName("detailTitle");
-    m_detailTitle->setAlignment(Qt::AlignCenter);
-    m_detailTitle->setWordWrap(true);
-    QFont titleFont = m_detailTitle->font();
-    titleFont.setBold(true);
-    titleFont.setPointSize(titleFont.pointSize() + 2);
-    m_detailTitle->setFont(titleFont);
-    scrollLayout->addWidget(m_detailTitle);
-    
-    // Add package version
-    m_detailVersion = new QLabel();
-    m_detailVersion->setObjectName("detailVersion");
-    m_detailVersion->setAlignment(Qt::AlignCenter);
-    scrollLayout->addWidget(m_detailVersion);
-    
-    // Add repository
-    m_detailRepo = new QLabel();
-    m_detailRepo->setObjectName("detailRepo");
-    m_detailRepo->setAlignment(Qt::AlignCenter);
-    scrollLayout->addWidget(m_detailRepo);
-    
-    // Add separator line
-    QFrame* line = new QFrame();
-    line->setFrameShape(QFrame::HLine);
-    line->setFrameShadow(QFrame::Sunken);
-    scrollLayout->addWidget(line);
-    
-    // Add description
-    m_detailDescription = new QLabel();
-    m_detailDescription->setObjectName("detailDescription");
-    m_detailDescription->setWordWrap(true);
-    m_detailDescription->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    m_detailDescription->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    scrollLayout->addWidget(m_detailDescription);
-    
-    // Add spacing at the bottom
-    scrollLayout->addStretch();
-    
-    // Set the scroll content
-    m_detailScrollArea->setWidget(scrollContent);
-    panelLayout->addWidget(m_detailScrollArea);
-    
-    // Create the slide animation
-    m_slideAnimation = new QPropertyAnimation(m_detailPanel, "geometry");
-    m_slideAnimation->setDuration(300);
-    m_slideAnimation->setEasingCurve(QEasingCurve::OutCubic);
-    
-    // Connect signals for the detail panel
-    connect(m_detailCloseButton, &QPushButton::clicked, this, &MainWindow::closeDetailPanel);
-    connect(m_slideAnimation, &QPropertyAnimation::finished, this, &MainWindow::onDetailPanelAnimationFinished);
-    
-    // Initially hide the panel
-    m_detailPanel->setVisible(false);
-}
-
-void MainWindow::showDetailPanel(const QString& packageName, const QString& version, const QString& repo, const QString& description)
-{
-    // Stop any running animations
-    if (m_slideAnimation->state() == QPropertyAnimation::Running) {
-        m_slideAnimation->stop();
-    }
-    
-    // Update panel contents
-    m_detailTitle->setText(packageName);
-    m_detailVersion->setText("Version: " + version);
-    m_detailRepo->setText("Repository: " + repo);
-    m_detailDescription->setText(description);
-    
-    // Try to load package icon - using safe fallbacks
-    QIcon packageIcon;
-    QString iconName = packageName.toLower();
-    
-    if (QIcon::hasThemeIcon(iconName)) {
-        packageIcon = QIcon::fromTheme(iconName);
-    } else if (QIcon::hasThemeIcon("package")) {
-        packageIcon = QIcon::fromTheme("package");
-    } else if (QIcon::hasThemeIcon("application-x-executable")) {
-        packageIcon = QIcon::fromTheme("application-x-executable");
-    } else {
-        // Last resort, create a simple colored square
-        QPixmap pixmap(96, 96);
-        pixmap.fill(m_darkTheme ? QColor(64, 81, 181) : QColor(41, 121, 255));
-        packageIcon = QIcon(pixmap);
-    }
-    
-    // Set the icon pixmap safely
-    m_detailIcon->setPixmap(packageIcon.pixmap(96, 96));
-    
-    // Make sure panel is the correct size
-    int panelWidth = width() * SLIDE_PANEL_WIDTH_PERCENT / 100;
-    m_detailPanel->setMinimumWidth(panelWidth);
-    m_detailPanel->setMaximumWidth(panelWidth);
-    
-    // Prepare the animation
-    QRect startGeometry = QRect(width(), 0, panelWidth, height());
-    QRect endGeometry = QRect(width() - panelWidth, 0, panelWidth, height());
-    
-    m_detailPanel->setGeometry(startGeometry);
-    m_detailPanel->setVisible(true);
-    
-    // Start the slide animation
-    m_slideAnimation->setStartValue(startGeometry);
-    m_slideAnimation->setEndValue(endGeometry);
-    m_slideAnimation->start();
-    
-    // Animate opacity separately (safely)
-    m_opacityEffect->setOpacity(0.0);
-    QPropertyAnimation* fadeAnimation = new QPropertyAnimation(m_opacityEffect, "opacity", this);
-    fadeAnimation->setDuration(300);
-    fadeAnimation->setStartValue(0.0);
-    fadeAnimation->setEndValue(1.0);
-    fadeAnimation->start(QPropertyAnimation::DeleteWhenStopped);
-    
-    m_detailPanelVisible = true;
-}
-
-void MainWindow::closeDetailPanel()
-{
-    if (!m_detailPanelVisible) return;
-    
-    // Stop any running animations
-    if (m_slideAnimation->state() == QPropertyAnimation::Running) {
-        m_slideAnimation->stop();
-    }
-    
-    // Prepare the animation
-    int panelWidth = m_detailPanel->width();
-    QRect startGeometry = m_detailPanel->geometry();
-    QRect endGeometry = QRect(width(), 0, panelWidth, height());
-    
-    // Start the slide animation
-    m_slideAnimation->setStartValue(startGeometry);
-    m_slideAnimation->setEndValue(endGeometry);
-    m_slideAnimation->start();
-    
-    // Animate opacity separately (safely)
-    QPropertyAnimation* fadeAnimation = new QPropertyAnimation(m_opacityEffect, "opacity", this);
-    fadeAnimation->setDuration(300);
-    fadeAnimation->setStartValue(m_opacityEffect->opacity());
-    fadeAnimation->setEndValue(0.0);
-    fadeAnimation->start(QPropertyAnimation::DeleteWhenStopped);
-    
-    m_detailPanelVisible = false;
-}
-
-void MainWindow::onDetailPanelAnimationFinished()
-{
-    // Hide the panel if the animation was closing it
-    if (!m_detailPanelVisible) {
-        m_detailPanel->setVisible(false);
-    }
-}
-
-void MainWindow::resizeEvent(QResizeEvent *event)
-{
-    QMainWindow::resizeEvent(event);
-    
-    // Adjust detail panel size and position when window is resized
-    if (m_detailPanel) {
-        int panelWidth = width() * SLIDE_PANEL_WIDTH_PERCENT / 100;
-        m_detailPanel->setMinimumWidth(panelWidth);
-        m_detailPanel->setMaximumWidth(panelWidth);
-        
-        if (m_detailPanelVisible) {
-            // Reposition the panel so it stays visible at the right edge
-            m_detailPanel->setGeometry(width() - panelWidth, 0, panelWidth, height());
-        } else {
-            // Keep the panel outside the visible area
-            m_detailPanel->setGeometry(width(), 0, panelWidth, height());
         }
     }
+    
+    // Provide a summary if issues were found
+    if (output.contains("warning") || output.contains("error") || 
+        output.contains("corrupted") || output.contains("missing")) {
+        m_maintenanceLogView->append(tr("\nSome packages have integrity issues. "
+                                     "Consider reinstalling the affected packages."));
+    }
 }
 
-// Implement package selection handlers
-void MainWindow::onPackageSelected(const QModelIndex& index)
-{
-    if (!index.isValid()) return;
+void MainWindow::onRefreshMirrorList() {
+    // Confirm operation with user
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, tr("Refresh Mirror List"),
+                                 tr("This will update your pacman mirror list with faster mirrors.\n"
+                                    "Do you want to continue?"),
+                                 QMessageBox::Yes | QMessageBox::No);
     
-    // Get the row of the selected item
-    int row = index.row();
+    if (reply != QMessageBox::Yes) {
+        showStatusMessage(tr("Mirror list refresh canceled"), 5000);
+        m_maintenanceLogView->append(tr("Mirror list refresh was canceled."));
+        return;
+    }
     
-    // Get package information from the model
-    QString packageName = m_packagesModel->index(row, 1).data().toString();
-    QString version = m_packagesModel->index(row, 2).data().toString();
-    QString repo = m_packagesModel->index(row, 3).data().toString();
-    QString description = m_packagesModel->index(row, 4).data().toString();
+    // Show status message
+    showStatusMessage(tr("Refreshing mirror list..."), 0);
+    m_maintenanceLogView->append(tr("Starting mirror list refresh..."));
     
-    // Show the package detail in the sliding panel only if we're in the All Packages tab
-    if (m_tabWidget->currentIndex() == 0) {
-        showDetailPanel(packageName, version, repo, description);
+    // Execute reflector command to update mirrors
+    QProcess process;
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    
+    // Set up the reflector command with appropriate parameters
+    QStringList args;
+    args << "reflector";
+    
+    // Default options - customize as needed
+    args << "--verbose";
+    args << "--latest" << "20";
+    args << "--sort" << "rate";
+    args << "--save" << "/etc/pacman.d/mirrorlist";
+    
+    // Check if reflector is installed
+    QProcess checkReflector;
+    checkReflector.start("which", QStringList() << "reflector");
+    checkReflector.waitForFinished();
+    
+    if (checkReflector.exitCode() != 0) {
+        // Reflector not found
+        showStatusMessage(tr("Reflector not found"), 5000);
         
-        // Show the bottom details panel
-        m_packageNameLabel->setText(packageName);
-        m_packageVersionLabel->setText("Version: " + version);
-        m_packageDescLabel->setText(description);
+        // Ask if the user wants to install reflector
+        QMessageBox::StandardButton installReply;
+        installReply = QMessageBox::question(this, tr("Install Reflector"),
+                                          tr("The reflector tool is not installed. It is needed to refresh mirrors.\n"
+                                             "Do you want to install it now?"),
+                                          QMessageBox::Yes | QMessageBox::No);
         
-        // Disconnect previous connections
-        disconnect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onInstallPackage);
-        disconnect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onRemovePackage);
-        disconnect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onUpdatePackage);
-        
-        bool isInstalled = !m_packagesModel->index(row, 0).data().toString().isEmpty();
-        if (isInstalled) {
-            m_actionButton->setText("Remove");
-            m_actionButton->setIcon(QIcon::fromTheme("edit-delete"));
-            connect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onRemovePackage, Qt::UniqueConnection);
-        } else {
-            m_actionButton->setText("Install");
-            m_actionButton->setIcon(QIcon::fromTheme("system-software-install"));
-            connect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onInstallPackage, Qt::UniqueConnection);
+        if (installReply == QMessageBox::Yes) {
+            m_maintenanceLogView->append(tr("Installing reflector package..."));
+            
+            // Install reflector
+            QProcess installProcess;
+            installProcess.setProcessChannelMode(QProcess::MergedChannels);
+            
+            QStringList installArgs;
+            installArgs << "pacman" << "-S" << "--noconfirm" << "reflector";
+            
+            installProcess.start("pkexec", installArgs);
+            
+            if (!installProcess.waitForStarted()) {
+                showStatusMessage(tr("Failed to start reflector installation"), 5000);
+                m_maintenanceLogView->append(tr("Error: Failed to start reflector installation."));
+                return;
+            }
+            
+            installProcess.waitForFinished(-1);
+            QString installOutput = installProcess.readAllStandardOutput();
+            
+            if (installProcess.exitCode() == 0) {
+                m_maintenanceLogView->append(tr("Reflector installation completed successfully."));
+                m_maintenanceLogView->append(tr("Continuing with mirror list refresh..."));
+    } else {
+                showStatusMessage(tr("Failed to install reflector"), 5000);
+                m_maintenanceLogView->append(tr("Error: Failed to install reflector."));
+                m_maintenanceLogView->append(installOutput);
+        return;
+            }
+    } else {
+            m_maintenanceLogView->append(tr("Mirror list refresh canceled - reflector not installed."));
+            return;
         }
-        
-        m_detailsWidget->setVisible(true);
+    }
+    
+    // Start the reflector process
+    process.start("pkexec", args);
+    
+    if (!process.waitForStarted()) {
+        showStatusMessage(tr("Failed to start mirror refresh"), 5000);
+        m_maintenanceLogView->append(tr("Error: Failed to start mirror list refresh."));
+        return;
+    }
+    
+    // Set cursor to wait cursor
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    
+    // Wait for process to finish
+    process.waitForFinished(-1);
+    QString output = process.readAllStandardOutput();
+    
+    // Reset cursor
+    QApplication::restoreOverrideCursor();
+    
+    int exitCode = process.exitCode();
+    if (exitCode == 0) {
+        showStatusMessage(tr("Mirror list refreshed successfully"), 5000);
+        m_maintenanceLogView->append(tr("Mirror list has been updated successfully."));
+    } else {
+        showStatusMessage(tr("Failed to refresh mirror list"), 5000);
+        m_maintenanceLogView->append(tr("Error: Failed to refresh mirror list."));
+        m_maintenanceLogView->append(tr("Exit code: %1").arg(exitCode));
+    }
+    
+    // Display the command output
+    if (!output.isEmpty()) {
+        m_maintenanceLogView->append(tr("\nOutput from reflector:"));
+        m_maintenanceLogView->append(output);
+    }
+    
+    // Verify the mirror list was updated
+    QFile mirrorlistFile("/etc/pacman.d/mirrorlist");
+    if (mirrorlistFile.exists()) {
+        QDateTime lastModified = QFileInfo(mirrorlistFile).lastModified();
+        QString formattedTime = lastModified.toString("yyyy-MM-dd hh:mm:ss");
+        m_maintenanceLogView->append(tr("\nMirror list last modified: %1").arg(formattedTime));
     }
 }
-
-void MainWindow::onInstalledPackageSelected(const QModelIndex& index)
-{
-    if (!index.isValid()) return;
-    
-    // Get the row of the selected item
-    int row = index.row();
-    
-    // Get package information from the model
-    QString packageName = m_installedModel->index(row, 1).data().toString();
-    QString version = m_installedModel->index(row, 2).data().toString();
-    QString repo = m_installedModel->index(row, 3).data().toString();
-    QString description = m_installedModel->index(row, 4).data().toString();
-    
-    // Show the package detail in the sliding panel only if we're in the Installed tab
-    if (m_tabWidget->currentIndex() == 1) {
-        showDetailPanel(packageName, version, repo, description);
         
-        // Show the bottom details panel
-        m_packageNameLabel->setText(packageName);
-        m_packageVersionLabel->setText("Version: " + version);
-        m_packageDescLabel->setText(description);
-        
-        // Disconnect previous connections
-        disconnect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onInstallPackage);
-        disconnect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onRemovePackage);
-        disconnect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onUpdatePackage);
-        
-        m_actionButton->setText("Remove");
-        m_actionButton->setIcon(QIcon::fromTheme("edit-delete"));
-        connect(m_actionButton, &QPushButton::clicked, this, &MainWindow::onRemovePackage, Qt::UniqueConnection);
-        
-        m_detailsWidget->setVisible(true);
-    }
-}
-
-void MainWindow::loadThemeStylesheet(const QString& fileName)
-{
-    std::cout << "MainWindow::loadThemeStylesheet - Loading stylesheet: " << fileName.toStdString() << std::endl;
-    
-    // Try to load from resource
-    QFile styleFile(":/styles/" + fileName);
-    std::cout << "MainWindow::loadThemeStylesheet - Attempting to load from resource path: :/styles/" << fileName.toStdString() << std::endl;
-    if (styleFile.open(QFile::ReadOnly | QFile::Text)) {
-        QString style = styleFile.readAll();
-        qApp->setStyleSheet(style);
-        styleFile.close();
-        std::cout << "Successfully loaded " << fileName.toStdString() << " stylesheet from resource" << std::endl;
-        return;
-    } else {
-        std::cerr << "MainWindow::loadThemeStylesheet - Failed to load from resource: " << styleFile.errorString().toStdString() << std::endl;
-    }
-    
-    // First fallback: Try with different resource path
-    QFile alternativeStyleFile(":/resources/styles/" + fileName);
-    std::cout << "MainWindow::loadThemeStylesheet - Attempting to load from alternative resource path: :/resources/styles/" << fileName.toStdString() << std::endl;
-    if (alternativeStyleFile.open(QFile::ReadOnly | QFile::Text)) {
-        QString style = alternativeStyleFile.readAll();
-        qApp->setStyleSheet(style);
-        alternativeStyleFile.close();
-        std::cout << "Successfully loaded " << fileName.toStdString() << " stylesheet from alternative resource path" << std::endl;
-        return;
-    } else {
-        std::cerr << "MainWindow::loadThemeStylesheet - Failed to load from alternative resource: " << alternativeStyleFile.errorString().toStdString() << std::endl;
-    }
-    
-    // Second fallback: Try loading from the file system relative to executable
-    QFile localStyleFile("resources/styles/" + fileName);
-    std::cout << "MainWindow::loadThemeStylesheet - Attempting to load from local file: resources/styles/" << fileName.toStdString() << std::endl;
-    if (localStyleFile.open(QFile::ReadOnly | QFile::Text)) {
-        QString style = localStyleFile.readAll();
-        qApp->setStyleSheet(style);
-        localStyleFile.close();
-        std::cout << "Successfully loaded " << fileName.toStdString() << " stylesheet from local file" << std::endl;
-        return;
-    } else {
-        std::cerr << "MainWindow::loadThemeStylesheet - Failed to load from local file: " << localStyleFile.errorString().toStdString() << std::endl;
-    }
-    
-    // Third fallback: Try absolute path
-    QString sourcePath = QDir::currentPath() + "/../resources/styles/" + fileName;
-    std::cout << "MainWindow::loadThemeStylesheet - Attempting to load from source path: " << sourcePath.toStdString() << std::endl;
-    QFile sourceStyleFile(sourcePath);
-    if (sourceStyleFile.open(QFile::ReadOnly | QFile::Text)) {
-        QString style = sourceStyleFile.readAll();
-        qApp->setStyleSheet(style);
-        sourceStyleFile.close();
-        std::cout << "Successfully loaded " << fileName.toStdString() << " stylesheet from source path: " << sourcePath.toStdString() << std::endl;
-        return;
-    } else {
-        std::cerr << "MainWindow::loadThemeStylesheet - Failed to load from source path: " << sourceStyleFile.errorString().toStdString() << std::endl;
-    }
-    
-    // If all fails, try loading dark_colorful.qss as a fallback
-    if (fileName != "dark_colorful.qss") {
-        std::cerr << "Failed to load " << fileName.toStdString() << " stylesheet from all paths, trying dark_colorful.qss as fallback" << std::endl;
-        loadThemeStylesheet("dark_colorful.qss");
-    } else {
-        std::cerr << "Failed to load all stylesheets" << std::endl;
-    }
-}
-
-void MainWindow::onPackageItemChanged(QStandardItem *item)
-{
-    // Only process checkbox column (column 0)
-    if (item->column() != 0) return;
-    
-    // Get the package name from column 1 (same row)
-    QStandardItemModel* model = qobject_cast<QStandardItemModel*>(sender());
-    if (!model) return;
-    
-    QString packageName = model->item(item->row(), 1)->text();
-    
-    // Handle the checkbox state
-    if (item->checkState() == Qt::Checked) {
-        m_selectedPackages.insert(packageName);
-    } else {
-        m_selectedPackages.remove(packageName);
-    }
-    
-    // Update batch install button state
-    updateBatchInstallButton();
-}
-
 } // namespace gui
 } // namespace pacmangui
