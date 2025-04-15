@@ -11,6 +11,7 @@
 #include <QComboBox>
 #include <QRadioButton>
 #include <QButtonGroup>
+#include <QFutureWatcher>
 #include "core/packagemanager.hpp"
 
 namespace pacmangui {
@@ -33,34 +34,42 @@ public slots:
     void filterFlatpakList(const QString& filter);
     void onFlatpakSelected(const QModelIndex& current, const QModelIndex& previous);
     void installFlatpak(const QString& appId, const QString& remote);
-    void onInstallNew();
 
 private slots:
     void onManageUserData();
-    void onManageVersions();
     void onUninstall();
     void onRemoveUserData();
     void onCreateSnapshot();
     void onRestoreSnapshot();
-    void onAddRemote();
-    void onRemoveRemote();
+    void onSearchTextChanged(const QString& text);
+    void onSearchButtonClicked();
+    void onSearchResultSelected(const QModelIndex& current, const QModelIndex& previous);
+    void onInstallSelected();
+    void onSearchCompleted();
 
 private:
     void setupUi();
     void connectSignals();
     void updateFlatpakDetails(const QString& appId);
     void updateUserDataInfo(const QString& appId);
-    void updateAvailableVersions(const QString& appId);
     QString calculateDirSize(const QString& path);
     QString getDataPath(const QString& appId);
     QString getCurrentAppId() const;
+    void performAsyncSearch(const QString& searchTerm);
     
     // GUI components
     QSplitter* m_splitter = nullptr;
     QLineEdit* m_searchInput = nullptr;
+    QLineEdit* m_filterInput = nullptr;
     QTreeView* m_listView = nullptr;
     QStandardItemModel* m_listModel = nullptr;
-    QPushButton* m_installNewButton = nullptr;
+    
+    // Search components
+    QPushButton* m_searchButton = nullptr;
+    QTreeView* m_searchResultsView = nullptr;
+    QStandardItemModel* m_searchResultsModel = nullptr;
+    QPushButton* m_installSelectedButton = nullptr;
+    QFutureWatcher<std::vector<pacmangui::core::FlatpakPackage>>* m_searchWatcher = nullptr;
     
     // Details panel
     QLabel* m_nameLabel = nullptr;
@@ -73,36 +82,12 @@ private:
     QLabel* m_descriptionLabel = nullptr;
     QTextEdit* m_permissionsText = nullptr;
     
-    // User data panel
-    QLabel* m_userDataSizeLabel = nullptr;
-    QLabel* m_userDataPathLabel = nullptr;
-    QPushButton* m_manageUserDataButton = nullptr;
-    
-    // Versions panel
-    QComboBox* m_versionsCombo = nullptr;
-    QPushButton* m_changeVersionButton = nullptr;
-    
     // Actions panel
+    QPushButton* m_manageUserDataButton = nullptr;
     QPushButton* m_uninstallButton = nullptr;
     QPushButton* m_removeDataButton = nullptr;
     QPushButton* m_createSnapshotButton = nullptr;
     QPushButton* m_restoreSnapshotButton = nullptr;
-    
-    // Repository management
-    QComboBox* m_remotesCombo = nullptr;
-    QPushButton* m_addRemoteButton = nullptr;
-    QPushButton* m_removeRemoteButton = nullptr;
-    
-    // Batch operations
-    QButtonGroup* m_batchModeGroup = nullptr;
-    QRadioButton* m_batchUninstallRadio = nullptr;
-    QRadioButton* m_batchRemoveDataRadio = nullptr;
-    QRadioButton* m_batchCopyIdRadio = nullptr;
-    QPushButton* m_batchOperationButton = nullptr;
-    
-    // Orphaned data management
-    QPushButton* m_scanOrphanedButton = nullptr;
-    QTextEdit* m_orphanedText = nullptr;
     
     // Data
     core::PackageManager* m_packageManager = nullptr;

@@ -55,15 +55,17 @@ template <> constexpr inline auto pacmangui::gui::FlatpakManagerTab::qt_create_m
         "installFlatpak",
         "appId",
         "remote",
-        "onInstallNew",
         "onManageUserData",
-        "onManageVersions",
         "onUninstall",
         "onRemoveUserData",
         "onCreateSnapshot",
         "onRestoreSnapshot",
-        "onAddRemote",
-        "onRemoveRemote"
+        "onSearchTextChanged",
+        "text",
+        "onSearchButtonClicked",
+        "onSearchResultSelected",
+        "onInstallSelected",
+        "onSearchCompleted"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -87,24 +89,30 @@ template <> constexpr inline auto pacmangui::gui::FlatpakManagerTab::qt_create_m
         QtMocHelpers::SlotData<void(const QString &, const QString &)>(13, 2, QMC::AccessPublic, QMetaType::Void, {{
             { QMetaType::QString, 14 }, { QMetaType::QString, 15 },
         }}),
-        // Slot 'onInstallNew'
-        QtMocHelpers::SlotData<void()>(16, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'onManageUserData'
-        QtMocHelpers::SlotData<void()>(17, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onManageVersions'
-        QtMocHelpers::SlotData<void()>(18, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(16, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'onUninstall'
-        QtMocHelpers::SlotData<void()>(19, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(17, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'onRemoveUserData'
-        QtMocHelpers::SlotData<void()>(20, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(18, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'onCreateSnapshot'
-        QtMocHelpers::SlotData<void()>(21, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(19, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'onRestoreSnapshot'
-        QtMocHelpers::SlotData<void()>(22, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onAddRemote'
+        QtMocHelpers::SlotData<void()>(20, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onSearchTextChanged'
+        QtMocHelpers::SlotData<void(const QString &)>(21, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::QString, 22 },
+        }}),
+        // Slot 'onSearchButtonClicked'
         QtMocHelpers::SlotData<void()>(23, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onRemoveRemote'
-        QtMocHelpers::SlotData<void()>(24, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onSearchResultSelected'
+        QtMocHelpers::SlotData<void(const QModelIndex &, const QModelIndex &)>(24, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 10, 11 }, { 0x80000000 | 10, 12 },
+        }}),
+        // Slot 'onInstallSelected'
+        QtMocHelpers::SlotData<void()>(25, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onSearchCompleted'
+        QtMocHelpers::SlotData<void()>(26, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -134,15 +142,16 @@ void pacmangui::gui::FlatpakManagerTab::qt_static_metacall(QObject *_o, QMetaObj
         case 3: _t->filterFlatpakList((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         case 4: _t->onFlatpakSelected((*reinterpret_cast< std::add_pointer_t<QModelIndex>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QModelIndex>>(_a[2]))); break;
         case 5: _t->installFlatpak((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
-        case 6: _t->onInstallNew(); break;
-        case 7: _t->onManageUserData(); break;
-        case 8: _t->onManageVersions(); break;
-        case 9: _t->onUninstall(); break;
-        case 10: _t->onRemoveUserData(); break;
-        case 11: _t->onCreateSnapshot(); break;
-        case 12: _t->onRestoreSnapshot(); break;
-        case 13: _t->onAddRemote(); break;
-        case 14: _t->onRemoveRemote(); break;
+        case 6: _t->onManageUserData(); break;
+        case 7: _t->onUninstall(); break;
+        case 8: _t->onRemoveUserData(); break;
+        case 9: _t->onCreateSnapshot(); break;
+        case 10: _t->onRestoreSnapshot(); break;
+        case 11: _t->onSearchTextChanged((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 12: _t->onSearchButtonClicked(); break;
+        case 13: _t->onSearchResultSelected((*reinterpret_cast< std::add_pointer_t<QModelIndex>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QModelIndex>>(_a[2]))); break;
+        case 14: _t->onInstallSelected(); break;
+        case 15: _t->onSearchCompleted(); break;
         default: ;
         }
     }
@@ -171,14 +180,14 @@ int pacmangui::gui::FlatpakManagerTab::qt_metacall(QMetaObject::Call _c, int _id
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 15)
+        if (_id < 16)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 15;
+        _id -= 16;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 15)
+        if (_id < 16)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 15;
+        _id -= 16;
     }
     return _id;
 }

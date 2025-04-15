@@ -35,6 +35,9 @@
 #include <QGridLayout>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QTimer>
+#include <QFutureWatcher>
+#include <QtConcurrent/QtConcurrent>
 
 namespace pacmangui {
 namespace gui {
@@ -83,47 +86,98 @@ void FlatpakManagerTab::setupUi()
     leftLayout->setContentsMargins(0, 0, 0, 0);
     leftLayout->setSpacing(8);
     
-    // Search input
-    QWidget* searchWidget = new QWidget(leftPanel);
-    QHBoxLayout* searchLayout = new QHBoxLayout(searchWidget);
-    searchLayout->setContentsMargins(0, 0, 0, 0);
-    searchLayout->setSpacing(8);
+    // Search section
+    QGroupBox* searchGroup = new QGroupBox(tr("Search Flatpak Packages"), leftPanel);
+    QVBoxLayout* searchGroupLayout = new QVBoxLayout(searchGroup);
+    searchGroupLayout->setContentsMargins(8, 16, 8, 8);
+    searchGroupLayout->setSpacing(8);
     
-    m_searchInput = new QLineEdit(searchWidget);
-    m_searchInput->setPlaceholderText(tr("Filter Flatpaks..."));
+    // Search input and button
+    QHBoxLayout* searchLayout = new QHBoxLayout();
+    m_searchInput = new QLineEdit(searchGroup);
+    m_searchInput->setPlaceholderText(tr("Search for Flatpak packages..."));
     m_searchInput->setMinimumHeight(32);
     m_searchInput->setProperty("class", "search-input");
     
-    m_installNewButton = new QPushButton(tr("Install New"), searchWidget);
-    m_installNewButton->setToolTip(tr("Install a new Flatpak application"));
-    m_installNewButton->setMinimumHeight(32);
-    m_installNewButton->setProperty("class", "primary-button");
+    m_searchButton = new QPushButton(tr("Search"), searchGroup);
+    m_searchButton->setMinimumHeight(32);
+    m_searchButton->setProperty("class", "primary-button");
     
     searchLayout->addWidget(m_searchInput);
-    searchLayout->addWidget(m_installNewButton);
+    searchLayout->addWidget(m_searchButton);
+    searchGroupLayout->addLayout(searchLayout);
     
-    leftLayout->addWidget(searchWidget);
+    // Search results
+    m_searchResultsView = new QTreeView(searchGroup);
+    m_searchResultsView->setAlternatingRowColors(true);
+    m_searchResultsView->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_searchResultsView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_searchResultsView->setSortingEnabled(true);
+    m_searchResultsView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_searchResultsView->setRootIsDecorated(false);
+    m_searchResultsView->setMinimumHeight(200);
+    m_searchResultsView->setProperty("class", "search-results");
+    m_searchResultsView->setFrameShape(QFrame::NoFrame);
     
-    // Flatpak list view
-    m_listView = new QTreeView(leftPanel);
+    m_searchResultsModel = new QStandardItemModel(0, 5, this);
+    m_searchResultsModel->setHorizontalHeaderLabels(
+        QStringList() << tr("Name") << tr("Application ID") << tr("Version") << tr("Remote") << tr("Description"));
+    m_searchResultsView->setModel(m_searchResultsModel);
+    
+    // Set column sizes for better readability
+    m_searchResultsView->setColumnWidth(0, 200);  // Name
+    m_searchResultsView->setColumnWidth(1, 250);  // Application ID
+    m_searchResultsView->setColumnWidth(2, 100);  // Version
+    m_searchResultsView->setColumnWidth(3, 100);  // Remote
+    m_searchResultsView->header()->setSectionResizeMode(4, QHeaderView::Stretch); // Description
+    
+    searchGroupLayout->addWidget(m_searchResultsView);
+    
+    // Install button for search results
+    m_installSelectedButton = new QPushButton(tr("Install Selected"), searchGroup);
+    m_installSelectedButton->setMinimumHeight(32);
+    m_installSelectedButton->setProperty("class", "primary-button");
+    m_installSelectedButton->setEnabled(false);
+    searchGroupLayout->addWidget(m_installSelectedButton);
+    
+    leftLayout->addWidget(searchGroup);
+    
+    // Installed packages section
+    QGroupBox* installedGroup = new QGroupBox(tr("Installed Packages"), leftPanel);
+    QVBoxLayout* installedLayout = new QVBoxLayout(installedGroup);
+    installedLayout->setContentsMargins(8, 16, 8, 8);
+    installedLayout->setSpacing(8);
+    
+    // Filter input for installed packages
+    QHBoxLayout* filterLayout = new QHBoxLayout();
+    m_filterInput = new QLineEdit(installedGroup);
+    m_filterInput->setPlaceholderText(tr("Filter installed packages..."));
+    m_filterInput->setMinimumHeight(32);
+    m_filterInput->setProperty("class", "filter-input");
+    
+    filterLayout->addWidget(m_filterInput);
+    installedLayout->addLayout(filterLayout);
+    
+    // Installed packages list
+    m_listView = new QTreeView(installedGroup);
     m_listView->setAlternatingRowColors(true);
     m_listView->setSelectionMode(QAbstractItemView::SingleSelection);
     m_listView->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_listView->setSortingEnabled(true);
     m_listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_listView->setRootIsDecorated(false);
-    m_listView->setMinimumWidth(400);
-    m_listView->setMinimumHeight(600);
+    m_listView->setMinimumHeight(300);
     m_listView->setProperty("class", "list-view");
     m_listView->setFrameShape(QFrame::NoFrame);
-    m_listView->setAllColumnsShowFocus(true);
     
     m_listModel = new QStandardItemModel(0, 4, this);
     m_listModel->setHorizontalHeaderLabels(
         QStringList() << tr("Name") << tr("Application ID") << tr("Version") << tr("Origin"));
     m_listView->setModel(m_listModel);
     
-    leftLayout->addWidget(m_listView);
+    installedLayout->addWidget(m_listView);
+    
+    leftLayout->addWidget(installedGroup);
     
     // ===== RIGHT PANEL =====
     QScrollArea* scrollArea = new QScrollArea();
@@ -141,49 +195,104 @@ void FlatpakManagerTab::setupUi()
     rightLayout->setSpacing(16);
     rightLayout->setAlignment(Qt::AlignTop);
     
-    // ---- Application Details Group ----
+    // Application Details Group
     QGroupBox* detailsGroup = new QGroupBox(tr("Application Details"), rightPanel);
     detailsGroup->setProperty("class", "details-group");
-    QFormLayout* detailsLayout = new QFormLayout(detailsGroup);
-    detailsLayout->setContentsMargins(12, 16, 12, 12);
-    detailsLayout->setSpacing(8);
-    detailsLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    detailsLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    QGridLayout* detailsLayout = new QGridLayout(detailsGroup);
+    detailsLayout->setColumnStretch(1, 1);
+    detailsLayout->setVerticalSpacing(8);
+    detailsLayout->setHorizontalSpacing(12);
     
-    m_nameLabel = new QLabel(tr(""), detailsGroup);
-    m_versionLabel = new QLabel(tr(""), detailsGroup);
-    m_branchLabel = new QLabel(tr(""), detailsGroup);
-    m_originLabel = new QLabel(tr(""), detailsGroup);
-    m_installationLabel = new QLabel(tr(""), detailsGroup);
-    m_sizeLabel = new QLabel(tr(""), detailsGroup);
-    m_runtimeLabel = new QLabel(tr(""), detailsGroup);
-    m_descriptionLabel = new QLabel(tr(""), detailsGroup);
+    int row = 0;
+    
+    // Name
+    QLabel* nameTitle = new QLabel(tr("Name:"), detailsGroup);
+    nameTitle->setProperty("class", "details-label");
+    m_nameLabel = new QLabel(detailsGroup);
+    m_nameLabel->setWordWrap(true);
+    m_nameLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    detailsLayout->addWidget(nameTitle, row, 0);
+    detailsLayout->addWidget(m_nameLabel, row++, 1);
+    
+    // Version
+    QLabel* versionTitle = new QLabel(tr("Version:"), detailsGroup);
+    versionTitle->setProperty("class", "details-label");
+    m_versionLabel = new QLabel(detailsGroup);
+    m_versionLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    detailsLayout->addWidget(versionTitle, row, 0);
+    detailsLayout->addWidget(m_versionLabel, row++, 1);
+    
+    // Branch
+    QLabel* branchTitle = new QLabel(tr("Branch:"), detailsGroup);
+    branchTitle->setProperty("class", "details-label");
+    m_branchLabel = new QLabel(detailsGroup);
+    m_branchLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    detailsLayout->addWidget(branchTitle, row, 0);
+    detailsLayout->addWidget(m_branchLabel, row++, 1);
+    
+    // Origin
+    QLabel* originTitle = new QLabel(tr("Origin:"), detailsGroup);
+    originTitle->setProperty("class", "details-label");
+    m_originLabel = new QLabel(detailsGroup);
+    m_originLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    detailsLayout->addWidget(originTitle, row, 0);
+    detailsLayout->addWidget(m_originLabel, row++, 1);
+    
+    // Installation
+    QLabel* installationTitle = new QLabel(tr("Installation:"), detailsGroup);
+    installationTitle->setProperty("class", "details-label");
+    m_installationLabel = new QLabel(detailsGroup);
+    m_installationLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    detailsLayout->addWidget(installationTitle, row, 0);
+    detailsLayout->addWidget(m_installationLabel, row++, 1);
+    
+    // Size
+    QLabel* sizeTitle = new QLabel(tr("Size:"), detailsGroup);
+    sizeTitle->setProperty("class", "details-label");
+    m_sizeLabel = new QLabel(detailsGroup);
+    m_sizeLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    detailsLayout->addWidget(sizeTitle, row, 0);
+    detailsLayout->addWidget(m_sizeLabel, row++, 1);
+    
+    // Runtime
+    QLabel* runtimeTitle = new QLabel(tr("Runtime:"), detailsGroup);
+    runtimeTitle->setProperty("class", "details-label");
+    m_runtimeLabel = new QLabel(detailsGroup);
+    m_runtimeLabel->setWordWrap(true);
+    m_runtimeLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    detailsLayout->addWidget(runtimeTitle, row, 0);
+    detailsLayout->addWidget(m_runtimeLabel, row++, 1);
+    
+    // Description
+    QLabel* descriptionTitle = new QLabel(tr("Description:"), detailsGroup);
+    descriptionTitle->setProperty("class", "details-label");
+    m_descriptionLabel = new QLabel(detailsGroup);
     m_descriptionLabel->setWordWrap(true);
-    
-    // Set consistent width for labels
-    QList<QLabel*> labels = {m_nameLabel, m_versionLabel, m_branchLabel, m_originLabel,
-                            m_installationLabel, m_sizeLabel, m_runtimeLabel, m_descriptionLabel};
-    for (auto* label : labels) {
-        label->setMinimumWidth(200);
-    }
-    
-    detailsLayout->addRow(tr("Name:"), m_nameLabel);
-    detailsLayout->addRow(tr("Version:"), m_versionLabel);
-    detailsLayout->addRow(tr("Branch:"), m_branchLabel);
-    detailsLayout->addRow(tr("Origin:"), m_originLabel);
-    detailsLayout->addRow(tr("Installation:"), m_installationLabel);
-    detailsLayout->addRow(tr("Size:"), m_sizeLabel);
-    detailsLayout->addRow(tr("Runtime:"), m_runtimeLabel);
-    detailsLayout->addRow(tr("Description:"), m_descriptionLabel);
+    m_descriptionLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    detailsLayout->addWidget(descriptionTitle, row, 0);
+    detailsLayout->addWidget(m_descriptionLabel, row++, 1);
     
     rightLayout->addWidget(detailsGroup);
     
-    // ---- Action Buttons ----
+    // Permissions Group
+    QGroupBox* permissionsGroup = new QGroupBox(tr("Permissions"), rightPanel);
+    permissionsGroup->setProperty("class", "details-group");
+    QVBoxLayout* permissionsLayout = new QVBoxLayout(permissionsGroup);
+    
+    m_permissionsText = new QTextEdit(permissionsGroup);
+    m_permissionsText->setReadOnly(true);
+    m_permissionsText->setFrameShape(QFrame::NoFrame);
+    m_permissionsText->setMinimumHeight(100);
+    m_permissionsText->setProperty("class", "permissions-text");
+    permissionsLayout->addWidget(m_permissionsText);
+    
+    rightLayout->addWidget(permissionsGroup);
+    
+    // Actions Group
     QGroupBox* actionsGroup = new QGroupBox(tr("Actions"), rightPanel);
-    actionsGroup->setProperty("class", "actions-group");
-    QGridLayout* actionButtonsLayout = new QGridLayout(actionsGroup);
-    actionButtonsLayout->setContentsMargins(12, 16, 12, 12);
-    actionButtonsLayout->setSpacing(8);
+    actionsGroup->setProperty("class", "details-group");
+    QGridLayout* actionsLayout = new QGridLayout(actionsGroup);
+    actionsLayout->setSpacing(8);
     
     m_manageUserDataButton = new QPushButton(tr("Manage User Data"), actionsGroup);
     m_uninstallButton = new QPushButton(tr("Uninstall"), actionsGroup);
@@ -191,130 +300,76 @@ void FlatpakManagerTab::setupUi()
     m_createSnapshotButton = new QPushButton(tr("Create Snapshot"), actionsGroup);
     m_restoreSnapshotButton = new QPushButton(tr("Restore Snapshot"), actionsGroup);
     
-    // Set consistent button styling
-    QList<QPushButton*> actionButtons = {m_manageUserDataButton, m_uninstallButton, m_removeDataButton, 
-                                        m_createSnapshotButton, m_restoreSnapshotButton};
-    for (auto* button : actionButtons) {
+    // Set button properties
+    QList<QPushButton*> buttons = {
+        m_manageUserDataButton, m_uninstallButton, m_removeDataButton,
+        m_createSnapshotButton, m_restoreSnapshotButton
+    };
+    
+    for (QPushButton* button : buttons) {
         button->setMinimumHeight(32);
-        button->setProperty("class", "action-button");
+        button->setEnabled(false);
     }
     
-    // Make destructive actions visually distinct
-    m_uninstallButton->setProperty("type", "destructive");
-    m_removeDataButton->setProperty("type", "destructive");
+    m_uninstallButton->setProperty("class", "danger-button");
+    m_removeDataButton->setProperty("class", "danger-button");
     
-    actionButtonsLayout->addWidget(m_manageUserDataButton, 0, 0);
-    actionButtonsLayout->addWidget(m_uninstallButton, 0, 1);
-    actionButtonsLayout->addWidget(m_removeDataButton, 1, 0);
-    actionButtonsLayout->addWidget(m_createSnapshotButton, 1, 1);
-    actionButtonsLayout->addWidget(m_restoreSnapshotButton, 2, 0, 1, 2);
+    actionsLayout->addWidget(m_manageUserDataButton, 0, 0);
+    actionsLayout->addWidget(m_uninstallButton, 0, 1);
+    actionsLayout->addWidget(m_removeDataButton, 1, 0);
+    actionsLayout->addWidget(m_createSnapshotButton, 1, 1);
+    actionsLayout->addWidget(m_restoreSnapshotButton, 2, 0, 1, 2);
     
     rightLayout->addWidget(actionsGroup);
     
-    // ---- Permissions Group ----
-    QGroupBox* permissionsGroup = new QGroupBox(tr("Permissions"), rightPanel);
-    permissionsGroup->setProperty("class", "permissions-group");
-    QVBoxLayout* permissionsLayout = new QVBoxLayout(permissionsGroup);
-    permissionsLayout->setContentsMargins(12, 16, 12, 12);
-    permissionsLayout->setSpacing(8);
+    rightLayout->addStretch();
     
-    m_permissionsText = new QTextEdit(permissionsGroup);
-    m_permissionsText->setReadOnly(true);
-    m_permissionsText->setMinimumHeight(120);
-    m_permissionsText->setMaximumHeight(120);
-    m_permissionsText->setFrameShape(QFrame::NoFrame);
-    m_permissionsText->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    m_permissionsText->setProperty("class", "permissions-text");
+    // Set initial splitter sizes (40% left, 60% right)
+    m_splitter->setStretchFactor(0, 4);
+    m_splitter->setStretchFactor(1, 6);
     
-    permissionsLayout->addWidget(m_permissionsText);
-    rightLayout->addWidget(permissionsGroup);
-    
-    // ---- User Data Group ----
-    QGroupBox* userDataGroup = new QGroupBox(tr("User Data"), rightPanel);
-    userDataGroup->setProperty("class", "user-data-group");
-    QFormLayout* userDataLayout = new QFormLayout(userDataGroup);
-    userDataLayout->setContentsMargins(12, 16, 12, 12);
-    userDataLayout->setSpacing(8);
-    userDataLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    
-    m_userDataSizeLabel = new QLabel(tr("Size: Unknown"), userDataGroup);
-    m_userDataPathLabel = new QLabel(tr("Path: Unknown"), userDataGroup);
-    m_userDataPathLabel->setWordWrap(true);
-    
-    userDataLayout->addRow(tr("Size:"), m_userDataSizeLabel);
-    userDataLayout->addRow(tr("Path:"), m_userDataPathLabel);
-    
-    rightLayout->addWidget(userDataGroup);
-    
-    // ---- Version Management Group ----
-    QGroupBox* versionGroup = new QGroupBox(tr("Version Management"), rightPanel);
-    versionGroup->setProperty("class", "version-group");
-    QHBoxLayout* versionLayout = new QHBoxLayout(versionGroup);
-    versionLayout->setContentsMargins(12, 16, 12, 12);
-    versionLayout->setSpacing(8);
-    
-    m_versionsCombo = new QComboBox(versionGroup);
-    m_versionsCombo->setMinimumHeight(32);
-    m_changeVersionButton = new QPushButton(tr("Change Version"), versionGroup);
-    m_changeVersionButton->setEnabled(false);
-    m_changeVersionButton->setMinimumHeight(32);
-    m_changeVersionButton->setProperty("class", "action-button");
-    
-    versionLayout->addWidget(m_versionsCombo);
-    versionLayout->addWidget(m_changeVersionButton);
-    
-    rightLayout->addWidget(versionGroup);
-    
-    // ---- Remote Management Group ----
-    QGroupBox* remoteGroup = new QGroupBox(tr("Remote Management"), rightPanel);
-    remoteGroup->setProperty("class", "remote-group");
-    QHBoxLayout* remoteLayout = new QHBoxLayout(remoteGroup);
-    remoteLayout->setContentsMargins(12, 16, 12, 12);
-    remoteLayout->setSpacing(8);
-    
-    m_remotesCombo = new QComboBox(remoteGroup);
-    m_remotesCombo->setMinimumHeight(32);
-    m_addRemoteButton = new QPushButton(tr("Add Remote"), remoteGroup);
-    m_removeRemoteButton = new QPushButton(tr("Remove Remote"), remoteGroup);
-    
-    m_addRemoteButton->setMinimumHeight(32);
-    m_removeRemoteButton->setMinimumHeight(32);
-    m_addRemoteButton->setProperty("class", "action-button");
-    m_removeRemoteButton->setProperty("class", "action-button");
-    m_removeRemoteButton->setProperty("type", "destructive");
-    
-    remoteLayout->addWidget(m_remotesCombo);
-    remoteLayout->addWidget(m_addRemoteButton);
-    remoteLayout->addWidget(m_removeRemoteButton);
-    
-    rightLayout->addWidget(remoteGroup);
-    
-    // Set up splitter proportions
-    m_splitter->setStretchFactor(0, 2);
-    m_splitter->setStretchFactor(1, 1);
+    // Set initial values for the right panel
+    m_nameLabel->setText(tr("Name"));
+    m_versionLabel->setText(tr("Version"));
+    m_branchLabel->setText(tr("Branch"));
+    m_originLabel->setText(tr("Origin"));
+    m_installationLabel->setText(tr("Installation"));
+    m_sizeLabel->setText(tr("Size"));
+    m_runtimeLabel->setText(tr("Runtime"));
+    m_descriptionLabel->setText(tr("Description"));
+    m_permissionsText->setText(tr("Permissions information will be displayed here."));
     
     // Disable detail buttons initially
     m_manageUserDataButton->setEnabled(false);
-    m_changeVersionButton->setEnabled(false);
     m_uninstallButton->setEnabled(false);
     m_removeDataButton->setEnabled(false);
     m_createSnapshotButton->setEnabled(false);
     m_restoreSnapshotButton->setEnabled(false);
+    
+    // Show initial package details if available
+    QTimer::singleShot(0, this, [this]() {
+        if (m_listModel->rowCount() > 0) {
+            m_listView->setCurrentIndex(m_listModel->index(0, 0));
+        }
+    });
 }
 
 void FlatpakManagerTab::connectSignals()
 {
-    connect(m_searchInput, &QLineEdit::textChanged, this, &FlatpakManagerTab::filterFlatpakList);
-    connect(m_listView->selectionModel(), &QItemSelectionModel::currentChanged, this, &FlatpakManagerTab::onFlatpakSelected);
+    connect(m_searchInput, &QLineEdit::textChanged, this, &FlatpakManagerTab::onSearchTextChanged);
+    connect(m_searchButton, &QPushButton::clicked, this, &FlatpakManagerTab::onSearchButtonClicked);
+    connect(m_searchResultsView->selectionModel(), &QItemSelectionModel::currentChanged,
+            this, &FlatpakManagerTab::onSearchResultSelected);
+    connect(m_installSelectedButton, &QPushButton::clicked, this, &FlatpakManagerTab::onInstallSelected);
+    
+    connect(m_filterInput, &QLineEdit::textChanged, this, &FlatpakManagerTab::filterFlatpakList);
+    connect(m_listView->selectionModel(), &QItemSelectionModel::currentChanged,
+            this, &FlatpakManagerTab::onFlatpakSelected);
     connect(m_manageUserDataButton, &QPushButton::clicked, this, &FlatpakManagerTab::onManageUserData);
-    connect(m_changeVersionButton, &QPushButton::clicked, this, &FlatpakManagerTab::onManageVersions);
     connect(m_uninstallButton, &QPushButton::clicked, this, &FlatpakManagerTab::onUninstall);
     connect(m_removeDataButton, &QPushButton::clicked, this, &FlatpakManagerTab::onRemoveUserData);
     connect(m_createSnapshotButton, &QPushButton::clicked, this, &FlatpakManagerTab::onCreateSnapshot);
     connect(m_restoreSnapshotButton, &QPushButton::clicked, this, &FlatpakManagerTab::onRestoreSnapshot);
-    connect(m_addRemoteButton, &QPushButton::clicked, this, &FlatpakManagerTab::onAddRemote);
-    connect(m_removeRemoteButton, &QPushButton::clicked, this, &FlatpakManagerTab::onRemoveRemote);
-    connect(m_installNewButton, &QPushButton::clicked, this, &FlatpakManagerTab::onInstallNew);
 }
 
 void FlatpakManagerTab::refreshFlatpakList()
@@ -358,9 +413,6 @@ void FlatpakManagerTab::refreshFlatpakList()
 
 void FlatpakManagerTab::refreshFlatpakRemotes()
 {
-    // Clear combo box
-    m_remotesCombo->clear();
-    
     // Run flatpak remotes command
     QProcess process;
     process.start("flatpak", QStringList() << "remotes");
@@ -369,17 +421,8 @@ void FlatpakManagerTab::refreshFlatpakRemotes()
     QString output = process.readAllStandardOutput();
     QStringList lines = output.split('\n', Qt::SkipEmptyParts);
     
-    // Parse results
-    for (const QString& line : lines) {
-        // Use QRegularExpression instead of QRegExp
-        QStringList parts = line.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
-        if (parts.size() >= 1) {
-            m_remotesCombo->addItem(parts[0]);
-        }
-    }
-    
     // Update status
-    emit statusMessage(tr("Found %1 Flatpak remotes").arg(m_remotesCombo->count()), 3000);
+    emit statusMessage(tr("Found %1 Flatpak remotes").arg(lines.size()), 3000);
 }
 
 // Implementation of filterFlatpakList
@@ -414,46 +457,40 @@ void FlatpakManagerTab::filterFlatpakList(const QString& filter) {
 }
 
 // Implementation of onFlatpakSelected
-void FlatpakManagerTab::onFlatpakSelected(const QModelIndex& current, const QModelIndex& previous) {
+void FlatpakManagerTab::onFlatpakSelected(const QModelIndex& current, const QModelIndex& previous)
+{
     Q_UNUSED(previous);
     
-    // Clear current details
-    m_versionsCombo->clear();
-    m_permissionsText->clear();
-    
     if (!current.isValid()) {
-        // Disable action buttons if no selection
+        // Clear details
+        m_nameLabel->clear();
+        m_versionLabel->clear();
+        m_branchLabel->clear();
+        m_originLabel->clear();
+        m_installationLabel->clear();
+        m_sizeLabel->clear();
+        m_runtimeLabel->clear();
+        m_descriptionLabel->clear();
+        m_permissionsText->clear();
+        
+        // Disable action buttons
         m_manageUserDataButton->setEnabled(false);
-        m_changeVersionButton->setEnabled(false);
         m_uninstallButton->setEnabled(false);
         m_removeDataButton->setEnabled(false);
         m_createSnapshotButton->setEnabled(false);
         m_restoreSnapshotButton->setEnabled(false);
-        
-        // Clear labels
-        m_nameLabel->setText(tr("Name: "));
-        m_versionLabel->setText(tr("Version: "));
-        m_branchLabel->setText(tr("Branch: "));
-        m_originLabel->setText(tr("Origin: "));
-        m_installationLabel->setText(tr("Installation: "));
-        m_sizeLabel->setText(tr("Size: "));
-        m_runtimeLabel->setText(tr("Runtime: "));
-        m_userDataSizeLabel->setText(tr("Size: Unknown"));
-        m_userDataPathLabel->setText(tr("Path: Unknown"));
-        
         return;
     }
     
     // Get the app ID from the selected row
-    QModelIndex appIdIndex = m_listModel->index(current.row(), 1); // App ID column
-    QString appId = m_listModel->data(appIdIndex).toString();
+    QModelIndex nameIndex = m_listModel->index(current.row(), 1); // Application ID column
+    QString appId = m_listModel->data(nameIndex).toString();
     
-    // Update Flatpak details
+    // Update the details panel
     updateFlatpakDetails(appId);
     
     // Enable action buttons
     m_manageUserDataButton->setEnabled(true);
-    m_changeVersionButton->setEnabled(true);
     m_uninstallButton->setEnabled(true);
     m_removeDataButton->setEnabled(true);
     m_createSnapshotButton->setEnabled(true);
@@ -467,14 +504,6 @@ void FlatpakManagerTab::onManageUserData() {
     
     emit statusMessage(tr("Managing user data for %1").arg(appId), 3000);
     // Real implementation would open a file manager to the user data location
-}
-
-void FlatpakManagerTab::onManageVersions() {
-    QString appId = getCurrentAppId();
-    if (appId.isEmpty()) return;
-    
-    emit statusMessage(tr("Managing versions for %1").arg(appId), 3000);
-    // Real implementation would show a dialog to choose versions
 }
 
 void FlatpakManagerTab::onUninstall() {
@@ -536,127 +565,74 @@ void FlatpakManagerTab::onRestoreSnapshot() {
     // Real implementation would let the user select a snapshot to restore
 }
 
-void FlatpakManagerTab::onAddRemote() {
-    // Show a dialog to add a new remote
-    QString remoteName = QInputDialog::getText(this, tr("Add Remote"),
-                                               tr("Enter the name of the remote:"));
-    if (remoteName.isEmpty()) return;
+void FlatpakManagerTab::onInstallSelected()
+{
+    QModelIndex current = m_searchResultsView->currentIndex();
+    if (!current.isValid()) return;
     
-    QString remoteUrl = QInputDialog::getText(this, tr("Add Remote"),
-                                              tr("Enter the URL of the remote:"));
-    if (remoteUrl.isEmpty()) return;
+    // Get the app ID and remote from the stored data
+    QModelIndex nameIndex = m_searchResultsModel->index(current.row(), 0);
+    QString appId = m_searchResultsModel->data(nameIndex, Qt::UserRole).toString();
+    QString remote = m_searchResultsModel->data(nameIndex, Qt::UserRole + 1).toString();
     
-    emit statusMessage(tr("Adding remote %1").arg(remoteName), 3000);
-    // Real implementation would add the remote
-}
-
-void FlatpakManagerTab::onRemoveRemote() {
-    QString remoteName = m_remotesCombo->currentText();
-    if (remoteName.isEmpty()) return;
-    
-    emit statusMessage(tr("Removing remote %1").arg(remoteName), 3000);
-    // Real implementation would remove the remote
-}
-
-void FlatpakManagerTab::onInstallNew() {
-    QString appId = QInputDialog::getText(this, tr("Install Flatpak"),
-                                         tr("Enter the Application ID to install:"),
-                                         QLineEdit::Normal,
-                                         "org.example.App");
-    
-    if (appId.isEmpty()) return;
-    
-    // Get remote
-    QString remote;
-    if (m_remotesCombo->count() > 0) {
-        remote = m_remotesCombo->currentText();
-    } else {
-        remote = "flathub";  // Default to flathub if no remotes are available
+    if (appId.isEmpty() || remote.isEmpty()) {
+        emit statusMessage(tr("Invalid package data"), 3000);
+        return;
     }
     
+    // Install the package
     installFlatpak(appId, remote);
 }
 
-void FlatpakManagerTab::updateFlatpakDetails(const QString& appId) {
-    if (appId.isEmpty()) return;
-    
-    qDebug() << "Updating details for Flatpak:" << appId;
-
-    auto packages = m_packageManager->get_installed_flatpak_packages();
-    qDebug() << "Found" << packages.size() << "installed Flatpak packages";
-
-    auto it = std::find_if(packages.begin(), packages.end(),
-        [&appId](const pacmangui::core::FlatpakPackage& pkg) {
-            return pkg.get_app_id() == appId.toStdString();
-        });
-
-    if (it != packages.end()) {
-        const pacmangui::core::FlatpakPackage& package = *it;
-        QString fullAppId = QString::fromStdString(package.get_app_id());
-        
-        // Update basic information
-        m_nameLabel->setText(QString::fromStdString(package.get_name()));
-        m_versionLabel->setText(QString::fromStdString(package.get_version()));
-        m_branchLabel->setText(QString::fromStdString(package.get_branch()));
-        m_originLabel->setText(QString::fromStdString(package.get_repository()));
-        m_installationLabel->setText(QString("Installation: %1").arg(package.get_installation_type()));
-        m_runtimeLabel->setText(QString::fromStdString(package.get_runtime()));
-        
-        // Format the size with proper units
-        QString size = QString::fromStdString(package.get_size());
-        if (!size.isEmpty()) {
-            m_sizeLabel->setText(size);
-        } else {
-            m_sizeLabel->setText(tr("Unknown"));
-        }
-
-        // Get additional information from flatpak info
-        qDebug() << "Getting additional information from flatpak info for" << fullAppId;
-        QProcess process;
-        process.start("flatpak", QStringList() << "info" << fullAppId);
-        process.waitForFinished();
-        QString output = process.readAllStandardOutput();
-        QString error = process.readAllStandardError();
-        
-        if (!error.isEmpty()) {
-            qDebug() << "Error getting info:" << error;
-        } else {
-            // Parse info output for additional details
-            QStringList lines = output.split('\n');
-            for (const QString& line : lines) {
-                if (line.startsWith("Branch:")) {
-                    m_branchLabel->setText(line.mid(7).trimmed());
-                } else if (line.startsWith("Installation:")) {
-                    m_installationLabel->setText(line.trimmed());
-                } else if (line.startsWith("Runtime:")) {
-                    m_runtimeLabel->setText(line.mid(8).trimmed());
-                }
-            }
-        }
-
-        // Update user data information
-        updateUserDataInfo(fullAppId);
-    } else {
-        qDebug() << "Package not found for app ID:" << appId;
+void FlatpakManagerTab::updateFlatpakDetails(const QString& appId)
+{
+    if (appId.isEmpty()) {
+        return;
     }
+    
+    // Get package details
+    auto packages = m_packageManager->get_installed_flatpak_packages();
+    auto it = std::find_if(packages.begin(), packages.end(),
+        [&appId](const auto& pkg) {
+            return QString::fromStdString(pkg.get_app_id()) == appId;
+        });
+    
+    if (it == packages.end()) {
+        qDebug() << "Package not found:" << appId;
+        return;
+    }
+    
+    const auto& package = *it;
+    
+    // Update labels with package information
+    m_nameLabel->setText(QString::fromStdString(package.get_name()));
+    m_versionLabel->setText(QString::fromStdString(package.get_version()));
+    m_branchLabel->setText(QString::fromStdString(package.get_branch()));
+    m_originLabel->setText(QString::fromStdString(package.get_repository()));
+    m_installationLabel->setText(package.is_system_wide() ? tr("System") : tr("User"));
+    m_sizeLabel->setText(QString::fromStdString(package.get_size()));
+    m_runtimeLabel->setText(QString::fromStdString(package.get_runtime()));
+    m_descriptionLabel->setText(QString::fromStdString(package.get_description()));
+    
+    // Get permissions
+    QProcess process;
+    process.start("flatpak", QStringList() << "info" << appId);
+    process.waitForFinished();
+    
+    QString output = process.readAllStandardOutput();
+    m_permissionsText->setText(output);
+    
+    // Update user data info
+    updateUserDataInfo(appId);
 }
 
-void FlatpakManagerTab::updateUserDataInfo(const QString& appId) {
-    if (appId.isEmpty()) return;
-    
+void FlatpakManagerTab::updateUserDataInfo(const QString& appId)
+{
     QString dataPath = getDataPath(appId);
     QString dataSize = calculateDirSize(dataPath);
     
-    m_userDataSizeLabel->setText(dataSize);
-    m_userDataPathLabel->setText(dataPath);
-}
-
-void FlatpakManagerTab::updateAvailableVersions(const QString& appId) {
-    if (appId.isEmpty()) return;
-    
-    // In a real implementation, this would get the available versions from the remote
-    // For now, we'll just add a placeholder
-    m_versionsCombo->addItem("master");
+    // Update status
+    emit statusMessage(tr("User data size: %1").arg(dataSize), 3000);
 }
 
 QString FlatpakManagerTab::calculateDirSize(const QString& path) {
@@ -697,12 +673,13 @@ QString FlatpakManagerTab::getDataPath(const QString& appId) {
     return tr("Unknown");
 }
 
-QString FlatpakManagerTab::getCurrentAppId() const {
+QString FlatpakManagerTab::getCurrentAppId() const
+{
     QModelIndex current = m_listView->currentIndex();
     if (!current.isValid()) return QString();
     
-    QModelIndex appIdIndex = m_listModel->index(current.row(), 1);
-    return m_listModel->data(appIdIndex).toString();
+    QModelIndex nameIndex = m_listModel->index(current.row(), 1); // Application ID column
+    return m_listModel->data(nameIndex).toString();
 }
 
 // Add a new method to install Flatpak packages
@@ -742,6 +719,122 @@ void FlatpakManagerTab::installFlatpak(const QString& appId, const QString& remo
                              tr("Failed to install %1. Check the console for errors.").arg(appId));
         emit statusMessage(tr("Failed to install %1").arg(appId), 3000);
     }
+}
+
+void FlatpakManagerTab::onSearchTextChanged(const QString& text)
+{
+    // Enable search button only if we have at least 2 characters
+    m_searchButton->setEnabled(text.length() >= 2);
+    
+    // Auto-search after a delay if we have enough characters
+    if (text.length() >= 2) {
+        QTimer::singleShot(500, this, [this, text]() {
+            if (m_searchInput->text() == text) {
+                performAsyncSearch(text);
+            }
+        });
+    } else {
+        // Clear results if search text is too short
+        m_searchResultsModel->clear();
+        m_searchResultsModel->setHorizontalHeaderLabels(
+            QStringList() << tr("Name") << tr("Application ID") << tr("Version") << tr("Remote") << tr("Description"));
+    }
+}
+
+void FlatpakManagerTab::onSearchButtonClicked()
+{
+    QString searchText = m_searchInput->text();
+    if (searchText.length() < 2) {
+        emit statusMessage(tr("Please enter at least 2 characters to search"), 3000);
+        return;
+    }
+    
+    performAsyncSearch(searchText);
+}
+
+void FlatpakManagerTab::performAsyncSearch(const QString& searchTerm)
+{
+    // Clear previous results
+    m_searchResultsModel->clear();
+    m_searchResultsModel->setHorizontalHeaderLabels(
+        QStringList() << tr("Name") << tr("Application ID") << tr("Version") << tr("Remote") << tr("Description"));
+    
+    // Show searching status
+    emit statusMessage(tr("Searching for Flatpak packages matching '%1'...").arg(searchTerm), 0);
+    
+    // Create a new watcher if needed
+    if (!m_searchWatcher) {
+        m_searchWatcher = new QFutureWatcher<std::vector<pacmangui::core::FlatpakPackage>>(this);
+        connect(m_searchWatcher, &QFutureWatcher<std::vector<pacmangui::core::FlatpakPackage>>::finished,
+                this, &FlatpakManagerTab::onSearchCompleted);
+    }
+    
+    // Start the async search
+    auto future = QtConcurrent::run([this, searchTerm]() {
+        return m_packageManager->search_flatpak_by_name(searchTerm.toStdString());
+    });
+    
+    m_searchWatcher->setFuture(future);
+}
+
+void FlatpakManagerTab::onSearchCompleted()
+{
+    auto results = m_searchWatcher->result();
+    
+    // Clear previous results
+    m_searchResultsModel->clear();
+    m_searchResultsModel->setHorizontalHeaderLabels(
+        QStringList() << tr("Name") << tr("Application ID") << tr("Version") << tr("Remote") << tr("Description"));
+    
+    // Update the search results model
+    for (const auto& package : results) {
+        QList<QStandardItem*> row;
+        
+        // Get a more user-friendly name
+        QString displayName = QString::fromStdString(package.get_name());
+        if (displayName.isEmpty() || displayName == QString::fromStdString(package.get_app_id())) {
+            // If name is empty or same as app_id, try to make app_id more readable
+            QString appId = QString::fromStdString(package.get_app_id());
+            QStringList parts = appId.split(".");
+            if (parts.size() >= 3) {
+                displayName = parts.last();
+                // Capitalize first letter and convert remaining dots to spaces
+                displayName[0] = displayName[0].toUpper();
+                displayName.replace(".", " ");
+            }
+        }
+        
+        QStandardItem* nameItem = new QStandardItem(displayName);
+        QStandardItem* appIdItem = new QStandardItem(QString::fromStdString(package.get_app_id()));
+        QStandardItem* versionItem = new QStandardItem(QString::fromStdString(package.get_version()));
+        QStandardItem* remoteItem = new QStandardItem(QString::fromStdString(package.get_repository()));
+        QStandardItem* descItem = new QStandardItem(QString::fromStdString(package.get_description()));
+        
+        // Store the app ID and remote for installation
+        nameItem->setData(QString::fromStdString(package.get_app_id()), Qt::UserRole);
+        nameItem->setData(QString::fromStdString(package.get_repository()), Qt::UserRole + 1);
+        
+        // Set tooltips for better UX
+        nameItem->setToolTip(displayName);
+        appIdItem->setToolTip(QString::fromStdString(package.get_app_id()));
+        descItem->setToolTip(QString::fromStdString(package.get_description()));
+        
+        row << nameItem << appIdItem << versionItem << remoteItem << descItem;
+        m_searchResultsModel->appendRow(row);
+    }
+    
+    // Update status
+    if (results.empty()) {
+        emit statusMessage(tr("No packages found matching '%1'").arg(m_searchInput->text()), 3000);
+    } else {
+        emit statusMessage(tr("Found %1 package(s)").arg(results.size()), 3000);
+    }
+}
+
+void FlatpakManagerTab::onSearchResultSelected(const QModelIndex& current, const QModelIndex& previous)
+{
+    Q_UNUSED(previous);
+    m_installSelectedButton->setEnabled(current.isValid());
 }
 
 } // namespace gui
