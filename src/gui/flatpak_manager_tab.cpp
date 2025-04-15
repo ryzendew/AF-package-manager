@@ -67,34 +67,40 @@ void FlatpakManagerTab::setupUi()
     
     // Create the main layout
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setContentsMargins(8, 8, 8, 8);
     mainLayout->setSpacing(0);
     
     // Create the splitter
     m_splitter = new QSplitter(Qt::Horizontal, this);
+    m_splitter->setHandleWidth(1); // Thinner splitter handle
     mainLayout->addWidget(m_splitter);
     
     // ===== LEFT PANEL =====
     QWidget* leftPanel = new QWidget(m_splitter);
     QVBoxLayout* leftLayout = new QVBoxLayout(leftPanel);
-    leftLayout->setContentsMargins(4, 4, 4, 4);
-    leftLayout->setSpacing(4);
+    leftLayout->setContentsMargins(0, 0, 0, 0);
+    leftLayout->setSpacing(8);
     
     // Search input
-    QHBoxLayout* topBarLayout = new QHBoxLayout();
+    QWidget* searchWidget = new QWidget(leftPanel);
+    QHBoxLayout* searchLayout = new QHBoxLayout(searchWidget);
+    searchLayout->setContentsMargins(0, 0, 0, 0);
+    searchLayout->setSpacing(8);
     
-    m_searchInput = new QLineEdit(leftPanel);
+    m_searchInput = new QLineEdit(searchWidget);
     m_searchInput->setPlaceholderText(tr("Filter Flatpaks..."));
-    m_searchInput->setMinimumHeight(24);
+    m_searchInput->setMinimumHeight(32);
+    m_searchInput->setProperty("class", "search-input");
     
-    m_installNewButton = new QPushButton(tr("Install New"), leftPanel);
+    m_installNewButton = new QPushButton(tr("Install New"), searchWidget);
     m_installNewButton->setToolTip(tr("Install a new Flatpak application"));
-    m_installNewButton->setMaximumHeight(24);
+    m_installNewButton->setMinimumHeight(32);
+    m_installNewButton->setProperty("class", "primary-button");
     
-    topBarLayout->addWidget(m_searchInput);
-    topBarLayout->addWidget(m_installNewButton);
+    searchLayout->addWidget(m_searchInput);
+    searchLayout->addWidget(m_installNewButton);
     
-    leftLayout->addLayout(topBarLayout);
+    leftLayout->addWidget(searchWidget);
     
     // Flatpak list view
     m_listView = new QTreeView(leftPanel);
@@ -104,8 +110,11 @@ void FlatpakManagerTab::setupUi()
     m_listView->setSortingEnabled(true);
     m_listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_listView->setRootIsDecorated(false);
-    m_listView->setMinimumWidth(250);
-    m_listView->setMinimumHeight(600); // Make the list view taller
+    m_listView->setMinimumWidth(400);
+    m_listView->setMinimumHeight(600);
+    m_listView->setProperty("class", "list-view");
+    m_listView->setFrameShape(QFrame::NoFrame);
+    m_listView->setAllColumnsShowFocus(true);
     
     m_listModel = new QStandardItemModel(0, 4, this);
     m_listModel->setHorizontalHeaderLabels(
@@ -119,22 +128,25 @@ void FlatpakManagerTab::setupUi()
     scrollArea->setWidgetResizable(true);
     scrollArea->setFrameShape(QFrame::NoFrame);
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollArea->setProperty("class", "details-panel");
     
     QWidget* rightPanel = new QWidget();
     scrollArea->setWidget(rightPanel);
     m_splitter->addWidget(scrollArea);
     
     QVBoxLayout* rightLayout = new QVBoxLayout(rightPanel);
-    rightLayout->setContentsMargins(8, 8, 8, 8);
-    rightLayout->setSpacing(4); // Reduce spacing between elements
+    rightLayout->setContentsMargins(16, 16, 16, 16);
+    rightLayout->setSpacing(16);
     rightLayout->setAlignment(Qt::AlignTop);
     
     // ---- Application Details Group ----
     QGroupBox* detailsGroup = new QGroupBox(tr("Application Details"), rightPanel);
+    detailsGroup->setProperty("class", "details-group");
     QFormLayout* detailsLayout = new QFormLayout(detailsGroup);
-    detailsLayout->setContentsMargins(6, 6, 6, 6); // Reduce margins
-    detailsLayout->setSpacing(2); // Reduce spacing
+    detailsLayout->setContentsMargins(12, 16, 12, 12);
+    detailsLayout->setSpacing(8);
     detailsLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    detailsLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
     
     m_nameLabel = new QLabel(tr(""), detailsGroup);
     m_versionLabel = new QLabel(tr(""), detailsGroup);
@@ -145,6 +157,13 @@ void FlatpakManagerTab::setupUi()
     m_runtimeLabel = new QLabel(tr(""), detailsGroup);
     m_descriptionLabel = new QLabel(tr(""), detailsGroup);
     m_descriptionLabel->setWordWrap(true);
+    
+    // Set consistent width for labels
+    QList<QLabel*> labels = {m_nameLabel, m_versionLabel, m_branchLabel, m_originLabel,
+                            m_installationLabel, m_sizeLabel, m_runtimeLabel, m_descriptionLabel};
+    for (auto* label : labels) {
+        label->setMinimumWidth(200);
+    }
     
     detailsLayout->addRow(tr("Name:"), m_nameLabel);
     detailsLayout->addRow(tr("Version:"), m_versionLabel);
@@ -158,22 +177,29 @@ void FlatpakManagerTab::setupUi()
     rightLayout->addWidget(detailsGroup);
     
     // ---- Action Buttons ----
-    QGridLayout* actionButtonsLayout = new QGridLayout();
-    actionButtonsLayout->setSpacing(4);
+    QGroupBox* actionsGroup = new QGroupBox(tr("Actions"), rightPanel);
+    actionsGroup->setProperty("class", "actions-group");
+    QGridLayout* actionButtonsLayout = new QGridLayout(actionsGroup);
+    actionButtonsLayout->setContentsMargins(12, 16, 12, 12);
+    actionButtonsLayout->setSpacing(8);
     
-    m_manageUserDataButton = new QPushButton(tr("Manage User Data"), rightPanel);
-    m_uninstallButton = new QPushButton(tr("Uninstall"), rightPanel);
-    m_removeDataButton = new QPushButton(tr("Remove Data"), rightPanel);
-    m_createSnapshotButton = new QPushButton(tr("Create Snapshot"), rightPanel);
-    m_restoreSnapshotButton = new QPushButton(tr("Restore Snapshot"), rightPanel);
+    m_manageUserDataButton = new QPushButton(tr("Manage User Data"), actionsGroup);
+    m_uninstallButton = new QPushButton(tr("Uninstall"), actionsGroup);
+    m_removeDataButton = new QPushButton(tr("Remove Data"), actionsGroup);
+    m_createSnapshotButton = new QPushButton(tr("Create Snapshot"), actionsGroup);
+    m_restoreSnapshotButton = new QPushButton(tr("Restore Snapshot"), actionsGroup);
     
-    // Set fixed height for all buttons
-    QList<QPushButton*> buttons = {m_manageUserDataButton, m_uninstallButton, m_removeDataButton, 
-                                  m_createSnapshotButton, m_restoreSnapshotButton};
-    for (auto* button : buttons) {
-        button->setMaximumHeight(24);
-        button->setMinimumHeight(24);
+    // Set consistent button styling
+    QList<QPushButton*> actionButtons = {m_manageUserDataButton, m_uninstallButton, m_removeDataButton, 
+                                        m_createSnapshotButton, m_restoreSnapshotButton};
+    for (auto* button : actionButtons) {
+        button->setMinimumHeight(32);
+        button->setProperty("class", "action-button");
     }
+    
+    // Make destructive actions visually distinct
+    m_uninstallButton->setProperty("type", "destructive");
+    m_removeDataButton->setProperty("type", "destructive");
     
     actionButtonsLayout->addWidget(m_manageUserDataButton, 0, 0);
     actionButtonsLayout->addWidget(m_uninstallButton, 0, 1);
@@ -181,29 +207,33 @@ void FlatpakManagerTab::setupUi()
     actionButtonsLayout->addWidget(m_createSnapshotButton, 1, 1);
     actionButtonsLayout->addWidget(m_restoreSnapshotButton, 2, 0, 1, 2);
     
-    rightLayout->addLayout(actionButtonsLayout);
+    rightLayout->addWidget(actionsGroup);
     
     // ---- Permissions Group ----
     QGroupBox* permissionsGroup = new QGroupBox(tr("Permissions"), rightPanel);
+    permissionsGroup->setProperty("class", "permissions-group");
     QVBoxLayout* permissionsLayout = new QVBoxLayout(permissionsGroup);
-    permissionsLayout->setContentsMargins(6, 6, 6, 6);
-    permissionsLayout->setSpacing(2);
+    permissionsLayout->setContentsMargins(12, 16, 12, 12);
+    permissionsLayout->setSpacing(8);
     
     m_permissionsText = new QTextEdit(permissionsGroup);
     m_permissionsText->setReadOnly(true);
-    m_permissionsText->setMinimumHeight(100);
-    m_permissionsText->setMaximumHeight(100);
+    m_permissionsText->setMinimumHeight(120);
+    m_permissionsText->setMaximumHeight(120);
     m_permissionsText->setFrameShape(QFrame::NoFrame);
     m_permissionsText->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    m_permissionsText->setProperty("class", "permissions-text");
     
     permissionsLayout->addWidget(m_permissionsText);
     rightLayout->addWidget(permissionsGroup);
     
     // ---- User Data Group ----
     QGroupBox* userDataGroup = new QGroupBox(tr("User Data"), rightPanel);
+    userDataGroup->setProperty("class", "user-data-group");
     QFormLayout* userDataLayout = new QFormLayout(userDataGroup);
-    userDataLayout->setContentsMargins(6, 6, 6, 6);
-    userDataLayout->setSpacing(2);
+    userDataLayout->setContentsMargins(12, 16, 12, 12);
+    userDataLayout->setSpacing(8);
+    userDataLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
     
     m_userDataSizeLabel = new QLabel(tr("Size: Unknown"), userDataGroup);
     m_userDataPathLabel = new QLabel(tr("Path: Unknown"), userDataGroup);
@@ -216,14 +246,17 @@ void FlatpakManagerTab::setupUi()
     
     // ---- Version Management Group ----
     QGroupBox* versionGroup = new QGroupBox(tr("Version Management"), rightPanel);
+    versionGroup->setProperty("class", "version-group");
     QHBoxLayout* versionLayout = new QHBoxLayout(versionGroup);
-    versionLayout->setContentsMargins(6, 6, 6, 6);
-    versionLayout->setSpacing(4);
+    versionLayout->setContentsMargins(12, 16, 12, 12);
+    versionLayout->setSpacing(8);
     
     m_versionsCombo = new QComboBox(versionGroup);
+    m_versionsCombo->setMinimumHeight(32);
     m_changeVersionButton = new QPushButton(tr("Change Version"), versionGroup);
     m_changeVersionButton->setEnabled(false);
-    m_changeVersionButton->setMaximumHeight(24);
+    m_changeVersionButton->setMinimumHeight(32);
+    m_changeVersionButton->setProperty("class", "action-button");
     
     versionLayout->addWidget(m_versionsCombo);
     versionLayout->addWidget(m_changeVersionButton);
@@ -232,16 +265,21 @@ void FlatpakManagerTab::setupUi()
     
     // ---- Remote Management Group ----
     QGroupBox* remoteGroup = new QGroupBox(tr("Remote Management"), rightPanel);
+    remoteGroup->setProperty("class", "remote-group");
     QHBoxLayout* remoteLayout = new QHBoxLayout(remoteGroup);
-    remoteLayout->setContentsMargins(6, 6, 6, 6);
-    remoteLayout->setSpacing(4);
+    remoteLayout->setContentsMargins(12, 16, 12, 12);
+    remoteLayout->setSpacing(8);
     
     m_remotesCombo = new QComboBox(remoteGroup);
+    m_remotesCombo->setMinimumHeight(32);
     m_addRemoteButton = new QPushButton(tr("Add Remote"), remoteGroup);
     m_removeRemoteButton = new QPushButton(tr("Remove Remote"), remoteGroup);
     
-    m_addRemoteButton->setMaximumHeight(24);
-    m_removeRemoteButton->setMaximumHeight(24);
+    m_addRemoteButton->setMinimumHeight(32);
+    m_removeRemoteButton->setMinimumHeight(32);
+    m_addRemoteButton->setProperty("class", "action-button");
+    m_removeRemoteButton->setProperty("class", "action-button");
+    m_removeRemoteButton->setProperty("type", "destructive");
     
     remoteLayout->addWidget(m_remotesCombo);
     remoteLayout->addWidget(m_addRemoteButton);
@@ -249,11 +287,11 @@ void FlatpakManagerTab::setupUi()
     
     rightLayout->addWidget(remoteGroup);
     
-    // Set up splitter proportions - make the right panel narrower
+    // Set up splitter proportions
     m_splitter->setStretchFactor(0, 2);
     m_splitter->setStretchFactor(1, 1);
     
-    // Disable detail buttons initially - enable when a Flatpak is selected
+    // Disable detail buttons initially
     m_manageUserDataButton->setEnabled(false);
     m_changeVersionButton->setEnabled(false);
     m_uninstallButton->setEnabled(false);
