@@ -63,9 +63,7 @@ template <> constexpr inline auto pacmangui::gui::FlatpakManagerTab::qt_create_m
         "onCreateSnapshot",
         "onRestoreSnapshot",
         "onAddRemote",
-        "onRemoveRemote",
-        "onBatchOperation",
-        "scanForOrphanedData"
+        "onRemoveRemote"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -107,10 +105,6 @@ template <> constexpr inline auto pacmangui::gui::FlatpakManagerTab::qt_create_m
         QtMocHelpers::SlotData<void()>(23, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'onRemoveRemote'
         QtMocHelpers::SlotData<void()>(24, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onBatchOperation'
-        QtMocHelpers::SlotData<void()>(25, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'scanForOrphanedData'
-        QtMocHelpers::SlotData<void()>(26, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -149,8 +143,6 @@ void pacmangui::gui::FlatpakManagerTab::qt_static_metacall(QObject *_o, QMetaObj
         case 12: _t->onRestoreSnapshot(); break;
         case 13: _t->onAddRemote(); break;
         case 14: _t->onRemoveRemote(); break;
-        case 15: _t->onBatchOperation(); break;
-        case 16: _t->scanForOrphanedData(); break;
         default: ;
         }
     }
@@ -179,14 +171,14 @@ int pacmangui::gui::FlatpakManagerTab::qt_metacall(QMetaObject::Call _c, int _id
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 17)
+        if (_id < 15)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 17;
+        _id -= 15;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 17)
+        if (_id < 15)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 17;
+        _id -= 15;
     }
     return _id;
 }

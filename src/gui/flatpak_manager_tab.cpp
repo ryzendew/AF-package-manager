@@ -85,10 +85,11 @@ void FlatpakManagerTab::setupUi()
     
     m_searchInput = new QLineEdit(leftPanel);
     m_searchInput->setPlaceholderText(tr("Filter Flatpaks..."));
-    m_searchInput->setMinimumHeight(26);
+    m_searchInput->setMinimumHeight(24);
     
     m_installNewButton = new QPushButton(tr("Install New"), leftPanel);
     m_installNewButton->setToolTip(tr("Install a new Flatpak application"));
+    m_installNewButton->setMaximumHeight(24);
     
     topBarLayout->addWidget(m_searchInput);
     topBarLayout->addWidget(m_installNewButton);
@@ -104,6 +105,7 @@ void FlatpakManagerTab::setupUi()
     m_listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_listView->setRootIsDecorated(false);
     m_listView->setMinimumWidth(250);
+    m_listView->setMinimumHeight(600); // Make the list view taller
     
     m_listModel = new QStandardItemModel(0, 4, this);
     m_listModel->setHorizontalHeaderLabels(
@@ -124,14 +126,14 @@ void FlatpakManagerTab::setupUi()
     
     QVBoxLayout* rightLayout = new QVBoxLayout(rightPanel);
     rightLayout->setContentsMargins(8, 8, 8, 8);
-    rightLayout->setSpacing(8);
+    rightLayout->setSpacing(4); // Reduce spacing between elements
     rightLayout->setAlignment(Qt::AlignTop);
     
     // ---- Application Details Group ----
     QGroupBox* detailsGroup = new QGroupBox(tr("Application Details"), rightPanel);
     QFormLayout* detailsLayout = new QFormLayout(detailsGroup);
-    detailsLayout->setContentsMargins(6, 10, 6, 6);
-    detailsLayout->setSpacing(4);
+    detailsLayout->setContentsMargins(6, 6, 6, 6); // Reduce margins
+    detailsLayout->setSpacing(2); // Reduce spacing
     detailsLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
     
     m_nameLabel = new QLabel(tr(""), detailsGroup);
@@ -141,6 +143,8 @@ void FlatpakManagerTab::setupUi()
     m_installationLabel = new QLabel(tr(""), detailsGroup);
     m_sizeLabel = new QLabel(tr(""), detailsGroup);
     m_runtimeLabel = new QLabel(tr(""), detailsGroup);
+    m_descriptionLabel = new QLabel(tr(""), detailsGroup);
+    m_descriptionLabel->setWordWrap(true);
     
     detailsLayout->addRow(tr("Name:"), m_nameLabel);
     detailsLayout->addRow(tr("Version:"), m_versionLabel);
@@ -149,18 +153,46 @@ void FlatpakManagerTab::setupUi()
     detailsLayout->addRow(tr("Installation:"), m_installationLabel);
     detailsLayout->addRow(tr("Size:"), m_sizeLabel);
     detailsLayout->addRow(tr("Runtime:"), m_runtimeLabel);
+    detailsLayout->addRow(tr("Description:"), m_descriptionLabel);
     
     rightLayout->addWidget(detailsGroup);
+    
+    // ---- Action Buttons ----
+    QGridLayout* actionButtonsLayout = new QGridLayout();
+    actionButtonsLayout->setSpacing(4);
+    
+    m_manageUserDataButton = new QPushButton(tr("Manage User Data"), rightPanel);
+    m_uninstallButton = new QPushButton(tr("Uninstall"), rightPanel);
+    m_removeDataButton = new QPushButton(tr("Remove Data"), rightPanel);
+    m_createSnapshotButton = new QPushButton(tr("Create Snapshot"), rightPanel);
+    m_restoreSnapshotButton = new QPushButton(tr("Restore Snapshot"), rightPanel);
+    
+    // Set fixed height for all buttons
+    QList<QPushButton*> buttons = {m_manageUserDataButton, m_uninstallButton, m_removeDataButton, 
+                                  m_createSnapshotButton, m_restoreSnapshotButton};
+    for (auto* button : buttons) {
+        button->setMaximumHeight(24);
+        button->setMinimumHeight(24);
+    }
+    
+    actionButtonsLayout->addWidget(m_manageUserDataButton, 0, 0);
+    actionButtonsLayout->addWidget(m_uninstallButton, 0, 1);
+    actionButtonsLayout->addWidget(m_removeDataButton, 1, 0);
+    actionButtonsLayout->addWidget(m_createSnapshotButton, 1, 1);
+    actionButtonsLayout->addWidget(m_restoreSnapshotButton, 2, 0, 1, 2);
+    
+    rightLayout->addLayout(actionButtonsLayout);
     
     // ---- Permissions Group ----
     QGroupBox* permissionsGroup = new QGroupBox(tr("Permissions"), rightPanel);
     QVBoxLayout* permissionsLayout = new QVBoxLayout(permissionsGroup);
-    permissionsLayout->setContentsMargins(6, 10, 6, 6);
-    permissionsLayout->setSpacing(4);
+    permissionsLayout->setContentsMargins(6, 6, 6, 6);
+    permissionsLayout->setSpacing(2);
     
     m_permissionsText = new QTextEdit(permissionsGroup);
     m_permissionsText->setReadOnly(true);
-    m_permissionsText->setMinimumHeight(150);
+    m_permissionsText->setMinimumHeight(100);
+    m_permissionsText->setMaximumHeight(100);
     m_permissionsText->setFrameShape(QFrame::NoFrame);
     m_permissionsText->setTextInteractionFlags(Qt::TextSelectableByMouse);
     
@@ -170,11 +202,12 @@ void FlatpakManagerTab::setupUi()
     // ---- User Data Group ----
     QGroupBox* userDataGroup = new QGroupBox(tr("User Data"), rightPanel);
     QFormLayout* userDataLayout = new QFormLayout(userDataGroup);
-    userDataLayout->setContentsMargins(6, 10, 6, 6);
-    userDataLayout->setSpacing(4);
+    userDataLayout->setContentsMargins(6, 6, 6, 6);
+    userDataLayout->setSpacing(2);
     
     m_userDataSizeLabel = new QLabel(tr("Size: Unknown"), userDataGroup);
     m_userDataPathLabel = new QLabel(tr("Path: Unknown"), userDataGroup);
+    m_userDataPathLabel->setWordWrap(true);
     
     userDataLayout->addRow(tr("Size:"), m_userDataSizeLabel);
     userDataLayout->addRow(tr("Path:"), m_userDataPathLabel);
@@ -183,104 +216,42 @@ void FlatpakManagerTab::setupUi()
     
     // ---- Version Management Group ----
     QGroupBox* versionGroup = new QGroupBox(tr("Version Management"), rightPanel);
-    QVBoxLayout* versionLayout = new QVBoxLayout(versionGroup);
-    versionLayout->setContentsMargins(6, 10, 6, 6);
+    QHBoxLayout* versionLayout = new QHBoxLayout(versionGroup);
+    versionLayout->setContentsMargins(6, 6, 6, 6);
     versionLayout->setSpacing(4);
     
     m_versionsCombo = new QComboBox(versionGroup);
     m_changeVersionButton = new QPushButton(tr("Change Version"), versionGroup);
     m_changeVersionButton->setEnabled(false);
+    m_changeVersionButton->setMaximumHeight(24);
     
-    QHBoxLayout* versionButtonLayout = new QHBoxLayout();
-    versionButtonLayout->addWidget(m_versionsCombo);
-    versionButtonLayout->addWidget(m_changeVersionButton);
+    versionLayout->addWidget(m_versionsCombo);
+    versionLayout->addWidget(m_changeVersionButton);
     
-    versionLayout->addLayout(versionButtonLayout);
     rightLayout->addWidget(versionGroup);
-    
-    // ---- Action Buttons ----
-    QHBoxLayout* actionButtonsLayout = new QHBoxLayout();
-    actionButtonsLayout->setSpacing(4);
-    
-    m_manageUserDataButton = new QPushButton(tr("Manage User Data"), rightPanel);
-    m_uninstallButton = new QPushButton(tr("Uninstall"), rightPanel);
-    m_removeDataButton = new QPushButton(tr("Remove Data"), rightPanel);
-    m_createSnapshotButton = new QPushButton(tr("Create Snapshot"), rightPanel);
-    m_restoreSnapshotButton = new QPushButton(tr("Restore Snapshot"), rightPanel);
-    
-    actionButtonsLayout->addWidget(m_manageUserDataButton);
-    actionButtonsLayout->addWidget(m_uninstallButton);
-    actionButtonsLayout->addWidget(m_removeDataButton);
-    actionButtonsLayout->addWidget(m_createSnapshotButton);
-    actionButtonsLayout->addWidget(m_restoreSnapshotButton);
-    
-    rightLayout->addLayout(actionButtonsLayout);
     
     // ---- Remote Management Group ----
     QGroupBox* remoteGroup = new QGroupBox(tr("Remote Management"), rightPanel);
-    QVBoxLayout* remoteLayout = new QVBoxLayout(remoteGroup);
-    remoteLayout->setContentsMargins(6, 10, 6, 6);
+    QHBoxLayout* remoteLayout = new QHBoxLayout(remoteGroup);
+    remoteLayout->setContentsMargins(6, 6, 6, 6);
     remoteLayout->setSpacing(4);
     
     m_remotesCombo = new QComboBox(remoteGroup);
     m_addRemoteButton = new QPushButton(tr("Add Remote"), remoteGroup);
     m_removeRemoteButton = new QPushButton(tr("Remove Remote"), remoteGroup);
     
-    QHBoxLayout* remoteButtonLayout = new QHBoxLayout();
-    remoteButtonLayout->addWidget(m_remotesCombo);
-    remoteButtonLayout->addWidget(m_addRemoteButton);
-    remoteButtonLayout->addWidget(m_removeRemoteButton);
+    m_addRemoteButton->setMaximumHeight(24);
+    m_removeRemoteButton->setMaximumHeight(24);
     
-    remoteLayout->addLayout(remoteButtonLayout);
+    remoteLayout->addWidget(m_remotesCombo);
+    remoteLayout->addWidget(m_addRemoteButton);
+    remoteLayout->addWidget(m_removeRemoteButton);
+    
     rightLayout->addWidget(remoteGroup);
     
-    // ---- Batch Operations Group ----
-    QGroupBox* batchGroup = new QGroupBox(tr("Batch Operations"), rightPanel);
-    QVBoxLayout* batchLayout = new QVBoxLayout(batchGroup);
-    batchLayout->setContentsMargins(6, 10, 6, 6);
-    batchLayout->setSpacing(4);
-    
-    m_batchModeGroup = new QButtonGroup(batchGroup);
-    QRadioButton* batchUninstallRadio = new QRadioButton(tr("Batch Uninstall"), batchGroup);
-    QRadioButton* batchRemoveDataRadio = new QRadioButton(tr("Batch Remove Data"), batchGroup);
-    QRadioButton* batchCopyIdsRadio = new QRadioButton(tr("Copy IDs to Clipboard"), batchGroup);
-    
-    m_batchModeGroup->addButton(batchUninstallRadio, 0);
-    m_batchModeGroup->addButton(batchRemoveDataRadio, 1);
-    m_batchModeGroup->addButton(batchCopyIdsRadio, 2);
-    
-    batchLayout->addWidget(batchUninstallRadio);
-    batchLayout->addWidget(batchRemoveDataRadio);
-    batchLayout->addWidget(batchCopyIdsRadio);
-    
-    m_batchOperationButton = new QPushButton(tr("Execute Batch Operation"), batchGroup);
-    batchLayout->addWidget(m_batchOperationButton);
-    
-    rightLayout->addWidget(batchGroup);
-    
-    // ---- Orphaned Data Group ----
-    QGroupBox* orphanedGroup = new QGroupBox(tr("Orphaned Data"), rightPanel);
-    QVBoxLayout* orphanedLayout = new QVBoxLayout(orphanedGroup);
-    orphanedLayout->setContentsMargins(6, 10, 6, 6);
-    orphanedLayout->setSpacing(4);
-    
-    m_orphanedText = new QTextEdit(orphanedGroup);
-    m_orphanedText->setReadOnly(true);
-    m_orphanedText->setMinimumHeight(100);
-    m_orphanedText->setFrameShape(QFrame::NoFrame);
-    m_orphanedText->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    
-    m_scanOrphanedButton = new QPushButton(tr("Scan for Orphaned Data"), orphanedGroup);
-    
-    orphanedLayout->addWidget(m_orphanedText);
-    orphanedLayout->addWidget(m_scanOrphanedButton);
-    
-    rightLayout->addWidget(orphanedGroup);
-    rightLayout->addStretch(1);
-    
-    // Set up splitter proportions - make the right panel wider
-    m_splitter->setStretchFactor(0, 1);
-    m_splitter->setStretchFactor(1, 2);
+    // Set up splitter proportions - make the right panel narrower
+    m_splitter->setStretchFactor(0, 2);
+    m_splitter->setStretchFactor(1, 1);
     
     // Disable detail buttons initially - enable when a Flatpak is selected
     m_manageUserDataButton->setEnabled(false);
@@ -303,8 +274,6 @@ void FlatpakManagerTab::connectSignals()
     connect(m_restoreSnapshotButton, &QPushButton::clicked, this, &FlatpakManagerTab::onRestoreSnapshot);
     connect(m_addRemoteButton, &QPushButton::clicked, this, &FlatpakManagerTab::onAddRemote);
     connect(m_removeRemoteButton, &QPushButton::clicked, this, &FlatpakManagerTab::onRemoveRemote);
-    connect(m_batchOperationButton, &QPushButton::clicked, this, &FlatpakManagerTab::onBatchOperation);
-    connect(m_scanOrphanedButton, &QPushButton::clicked, this, &FlatpakManagerTab::scanForOrphanedData);
     connect(m_installNewButton, &QPushButton::clicked, this, &FlatpakManagerTab::onInstallNew);
 }
 
@@ -549,32 +518,25 @@ void FlatpakManagerTab::onRemoveRemote() {
     // Real implementation would remove the remote
 }
 
-void FlatpakManagerTab::onBatchOperation() {
-    // Get the selected batch operation
-    int operation = m_batchModeGroup->checkedId();
+void FlatpakManagerTab::onInstallNew() {
+    QString appId = QInputDialog::getText(this, tr("Install Flatpak"),
+                                         tr("Enter the Application ID to install:"),
+                                         QLineEdit::Normal,
+                                         "org.example.App");
     
-    switch (operation) {
-        case 0: // Batch uninstall
-            emit statusMessage(tr("Batch uninstall started"), 3000);
-            break;
-        case 1: // Batch remove data
-            emit statusMessage(tr("Batch data removal started"), 3000);
-            break;
-        case 2: // Batch copy IDs
-            emit statusMessage(tr("Application IDs copied to clipboard"), 3000);
-            break;
-        default:
-            break;
+    if (appId.isEmpty()) return;
+    
+    // Get remote
+    QString remote;
+    if (m_remotesCombo->count() > 0) {
+        remote = m_remotesCombo->currentText();
+    } else {
+        remote = "flathub";  // Default to flathub if no remotes are available
     }
+    
+    installFlatpak(appId, remote);
 }
 
-void FlatpakManagerTab::scanForOrphanedData() {
-    emit statusMessage(tr("Scanning for orphaned data..."), 3000);
-    // Real implementation would find orphaned data directories
-    m_orphanedText->setText(tr("No orphaned data found."));
-}
-
-// Helper methods
 void FlatpakManagerTab::updateFlatpakDetails(const QString& appId) {
     if (appId.isEmpty()) return;
     
@@ -597,9 +559,29 @@ void FlatpakManagerTab::updateFlatpakDetails(const QString& appId) {
     m_originLabel->setText(tr("Origin: %1").arg(QString::fromStdString(package.get_repository())));
     m_runtimeLabel->setText(tr("Runtime: %1").arg(QString::fromStdString(package.get_runtime())));
     
-    // Get additional information from flatpak info command
+    // Get size information using flatpak list
+    QProcess sizeProcess;
+    sizeProcess.start("flatpak", QStringList() << "list" << "--columns=size,application" << "--app");
+    sizeProcess.waitForFinished();
+    
+    QString size = "Unknown";
+    if (sizeProcess.exitCode() == 0) {
+        QString output = sizeProcess.readAllStandardOutput();
+        QStringList lines = output.split('\n');
+        
+        // Skip header line
+        for (int i = 1; i < lines.size(); i++) {
+            QStringList parts = lines[i].split('\t');
+            if (parts.size() >= 2 && parts[1].trimmed() == appId) {
+                size = parts[0].trimmed();
+                break;
+            }
+        }
+    }
+    
+    // Get additional information from flatpak info command with metadata
     QProcess process;
-    process.start("flatpak", QStringList() << "info" << appId);
+    process.start("flatpak", QStringList() << "info" << "--show-metadata" << appId);
     process.waitForFinished();
     
     if (process.exitCode() == 0) {
@@ -608,20 +590,34 @@ void FlatpakManagerTab::updateFlatpakDetails(const QString& appId) {
         
         QString branch;
         QString installationType;
-        QString size;
         QString permissionsText;
+        QString description;
         
         bool inPermissionsSection = false;
+        bool inMetadataSection = false;
+        
+        // Hardcoded info for common apps
+        if (appId == "com.discordapp.Discord") {
+            description = tr("All-in-one voice and text chat for gamers");
+        } else if (appId == "com.spotify.Client") {
+            description = tr("Online music streaming service");
+        } else if (appId == "com.vencord.Vesktop") {
+            description = tr("A cross-platform Discord client mod with Vencord built-in");
+        }
         
         for (const QString& line : lines) {
-            if (line.startsWith("Branch:")) {
+            if (line.startsWith("[Application]")) {
+                inMetadataSection = true;
+                continue;
+            } else if (line.startsWith("Branch:")) {
                 branch = line.mid(7).trimmed();
             } else if (line.startsWith("Installation:")) {
                 installationType = line.mid(13).trimmed();
-            } else if (line.startsWith("Size:")) {
-                size = line.mid(5).trimmed();
+            } else if (line.startsWith("description=") && description.isEmpty()) {
+                description = line.mid(12).trimmed();
             } else if (line.contains("Permissions:")) {
                 inPermissionsSection = true;
+                inMetadataSection = false;
                 continue;
             } else if (inPermissionsSection) {
                 if (line.trimmed().isEmpty()) {
@@ -636,6 +632,10 @@ void FlatpakManagerTab::updateFlatpakDetails(const QString& appId) {
         m_branchLabel->setText(tr("Branch: %1").arg(branch));
         m_installationLabel->setText(tr("Installation: %1").arg(installationType));
         m_sizeLabel->setText(tr("Size: %1").arg(size));
+        
+        if (!description.isEmpty()) {
+            m_descriptionLabel->setText(tr("Description: %1").arg(description));
+        }
         
         if (permissionsText.isEmpty()) {
             permissionsText = tr("No specific permissions information available");
@@ -726,26 +726,6 @@ void FlatpakManagerTab::installFlatpak(const QString& appId, const QString& remo
                              tr("Failed to install %1. Check the console for errors.").arg(appId));
         emit statusMessage(tr("Failed to install %1").arg(appId), 3000);
     }
-}
-
-// Add a method to handle adding a new Flatpak
-void FlatpakManagerTab::onInstallNew() {
-    QString appId = QInputDialog::getText(this, tr("Install Flatpak"),
-                                         tr("Enter the Application ID to install:"),
-                                         QLineEdit::Normal,
-                                         "org.example.App");
-    
-    if (appId.isEmpty()) return;
-    
-    // Get remote
-    QString remote;
-    if (m_remotesCombo->count() > 0) {
-        remote = m_remotesCombo->currentText();
-    } else {
-        remote = "flathub";  // Default to flathub if no remotes are available
-    }
-    
-    installFlatpak(appId, remote);
 }
 
 } // namespace gui

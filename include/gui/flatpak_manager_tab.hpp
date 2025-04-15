@@ -44,8 +44,6 @@ private slots:
     void onRestoreSnapshot();
     void onAddRemote();
     void onRemoveRemote();
-    void onBatchOperation();
-    void scanForOrphanedData();
 
 private:
     void setupUi();
@@ -72,6 +70,7 @@ private:
     QLabel* m_installationLabel = nullptr;
     QLabel* m_sizeLabel = nullptr;
     QLabel* m_runtimeLabel = nullptr;
+    QLabel* m_descriptionLabel = nullptr;
     QTextEdit* m_permissionsText = nullptr;
     
     // User data panel
