@@ -79,7 +79,7 @@ std::vector<FlatpakPackage> FlatpakManager::get_installed_packages() const
     }
     
     QProcess process;
-    process.start("flatpak", QStringList() << "list");
+    process.start("flatpak", QStringList() << "list" << "--columns=application,name,version,origin,installation,branch,arch,size");
     
     if (!process.waitForFinished(5000)) {
         m_last_error = "Timeout while getting installed Flatpak packages";
@@ -98,19 +98,39 @@ std::vector<FlatpakPackage> FlatpakManager::get_installed_packages() const
         if (line.trimmed().isEmpty()) continue;
         
         QStringList parts = line.split('\t');
-        if (parts.size() >= 4) {
-            std::string name = parts[0].trimmed().toStdString();
-            std::string app_id = name;
+        if (parts.size() >= 8) {
+            std::string app_id = parts[0].trimmed().toStdString();
+            std::string name = parts[1].trimmed().toStdString();
             std::string version = parts[2].trimmed().toStdString();
             std::string origin = parts[3].trimmed().toStdString();
+            std::string installation = parts[4].trimmed().toStdString();
+            std::string branch = parts[5].trimmed().toStdString();
+            std::string arch = parts[6].trimmed().toStdString();
+            std::string size = parts[7].trimmed().toStdString();
             
-            FlatpakPackage package(app_id, version);
+            FlatpakPackage package(name, version);
             package.set_app_id(app_id);
             package.set_repository(origin);
-            package.set_installation_type("system");
+            package.set_installation_type(installation);
+            package.set_branch(branch);
+            package.set_size(size);
             
-            // Get human-readable name and description
-            getAppNameAndDescription(package);
+            // Get runtime information using flatpak info
+            QString fullRef = QString::fromStdString(app_id);
+            
+            QProcess infoProcess;
+            infoProcess.start("flatpak", QStringList() << "info" << fullRef);
+            infoProcess.waitForFinished();
+            
+            QString infoOutput = infoProcess.readAllStandardOutput();
+            QStringList infoLines = infoOutput.split('\n');
+            
+            for (const QString& infoLine : infoLines) {
+                if (infoLine.startsWith("Runtime: ")) {
+                    package.set_runtime(infoLine.mid(9).trimmed().toStdString());
+                    break;
+                }
+            }
             
             packages.push_back(package);
         }

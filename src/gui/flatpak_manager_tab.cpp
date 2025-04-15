@@ -33,6 +33,8 @@
 #include <QRegularExpression>
 #include <QScrollArea>
 #include <QGridLayout>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 namespace pacmangui {
 namespace gui {
@@ -443,10 +445,10 @@ void FlatpakManagerTab::onFlatpakSelected(const QModelIndex& current, const QMod
     }
     
     // Get the app ID from the selected row
-    QModelIndex appIdIndex = m_listModel->index(current.row(), 1);
+    QModelIndex appIdIndex = m_listModel->index(current.row(), 1); // App ID column
     QString appId = m_listModel->data(appIdIndex).toString();
     
-    // Update Flatpak details (this would be implemented with more detail in a real app)
+    // Update Flatpak details
     updateFlatpakDetails(appId);
     
     // Enable action buttons
@@ -578,114 +580,65 @@ void FlatpakManagerTab::onInstallNew() {
 void FlatpakManagerTab::updateFlatpakDetails(const QString& appId) {
     if (appId.isEmpty()) return;
     
-    // Get all installed packages and find the one matching the app ID
-    std::vector<pacmangui::core::FlatpakPackage> packages = m_packageManager->get_installed_flatpak_packages();
+    qDebug() << "Updating details for Flatpak:" << appId;
+
+    auto packages = m_packageManager->get_installed_flatpak_packages();
+    qDebug() << "Found" << packages.size() << "installed Flatpak packages";
+
     auto it = std::find_if(packages.begin(), packages.end(),
         [&appId](const pacmangui::core::FlatpakPackage& pkg) {
             return pkg.get_app_id() == appId.toStdString();
         });
-    
-    if (it == packages.end()) {
-        return;
-    }
-    
-    const auto& package = *it;
-    
-    // Update basic information
-    m_nameLabel->setText(tr("Name: %1").arg(QString::fromStdString(package.get_name())));
-    m_versionLabel->setText(tr("Version: %1").arg(QString::fromStdString(package.get_version())));
-    m_originLabel->setText(tr("Origin: %1").arg(QString::fromStdString(package.get_repository())));
-    m_runtimeLabel->setText(tr("Runtime: %1").arg(QString::fromStdString(package.get_runtime())));
-    
-    // Get size information using flatpak list
-    QProcess sizeProcess;
-    sizeProcess.start("flatpak", QStringList() << "list" << "--columns=size,application" << "--app");
-    sizeProcess.waitForFinished();
-    
-    QString size = "Unknown";
-    if (sizeProcess.exitCode() == 0) {
-        QString output = sizeProcess.readAllStandardOutput();
-        QStringList lines = output.split('\n');
+
+    if (it != packages.end()) {
+        const pacmangui::core::FlatpakPackage& package = *it;
+        QString fullAppId = QString::fromStdString(package.get_app_id());
         
-        // Skip header line
-        for (int i = 1; i < lines.size(); i++) {
-            QStringList parts = lines[i].split('\t');
-            if (parts.size() >= 2 && parts[1].trimmed() == appId) {
-                size = parts[0].trimmed();
-                break;
-            }
+        // Update basic information
+        m_nameLabel->setText(QString::fromStdString(package.get_name()));
+        m_versionLabel->setText(QString::fromStdString(package.get_version()));
+        m_branchLabel->setText(QString::fromStdString(package.get_branch()));
+        m_originLabel->setText(QString::fromStdString(package.get_repository()));
+        m_installationLabel->setText(QString("Installation: %1").arg(package.get_installation_type()));
+        m_runtimeLabel->setText(QString::fromStdString(package.get_runtime()));
+        
+        // Format the size with proper units
+        QString size = QString::fromStdString(package.get_size());
+        if (!size.isEmpty()) {
+            m_sizeLabel->setText(size);
+        } else {
+            m_sizeLabel->setText(tr("Unknown"));
         }
-    }
-    
-    // Get additional information from flatpak info command with metadata
-    QProcess process;
-    process.start("flatpak", QStringList() << "info" << "--show-metadata" << appId);
-    process.waitForFinished();
-    
-    if (process.exitCode() == 0) {
+
+        // Get additional information from flatpak info
+        qDebug() << "Getting additional information from flatpak info for" << fullAppId;
+        QProcess process;
+        process.start("flatpak", QStringList() << "info" << fullAppId);
+        process.waitForFinished();
         QString output = process.readAllStandardOutput();
-        QStringList lines = output.split('\n');
+        QString error = process.readAllStandardError();
         
-        QString branch;
-        QString installationType;
-        QString permissionsText;
-        QString description;
-        
-        bool inPermissionsSection = false;
-        bool inMetadataSection = false;
-        
-        // Hardcoded info for common apps
-        if (appId == "com.discordapp.Discord") {
-            description = tr("All-in-one voice and text chat for gamers");
-        } else if (appId == "com.spotify.Client") {
-            description = tr("Online music streaming service");
-        } else if (appId == "com.vencord.Vesktop") {
-            description = tr("A cross-platform Discord client mod with Vencord built-in");
-        }
-        
-        for (const QString& line : lines) {
-            if (line.startsWith("[Application]")) {
-                inMetadataSection = true;
-                continue;
-            } else if (line.startsWith("Branch:")) {
-                branch = line.mid(7).trimmed();
-            } else if (line.startsWith("Installation:")) {
-                installationType = line.mid(13).trimmed();
-            } else if (line.startsWith("description=") && description.isEmpty()) {
-                description = line.mid(12).trimmed();
-            } else if (line.contains("Permissions:")) {
-                inPermissionsSection = true;
-                inMetadataSection = false;
-                continue;
-            } else if (inPermissionsSection) {
-                if (line.trimmed().isEmpty()) {
-                    inPermissionsSection = false;
-                } else {
-                    permissionsText += line.trimmed() + "\n";
+        if (!error.isEmpty()) {
+            qDebug() << "Error getting info:" << error;
+        } else {
+            // Parse info output for additional details
+            QStringList lines = output.split('\n');
+            for (const QString& line : lines) {
+                if (line.startsWith("Branch:")) {
+                    m_branchLabel->setText(line.mid(7).trimmed());
+                } else if (line.startsWith("Installation:")) {
+                    m_installationLabel->setText(line.trimmed());
+                } else if (line.startsWith("Runtime:")) {
+                    m_runtimeLabel->setText(line.mid(8).trimmed());
                 }
             }
         }
-        
-        // Update UI with additional information
-        m_branchLabel->setText(tr("Branch: %1").arg(branch));
-        m_installationLabel->setText(tr("Installation: %1").arg(installationType));
-        m_sizeLabel->setText(tr("Size: %1").arg(size));
-        
-        if (!description.isEmpty()) {
-            m_descriptionLabel->setText(tr("Description: %1").arg(description));
-        }
-        
-        if (permissionsText.isEmpty()) {
-            permissionsText = tr("No specific permissions information available");
-        }
-        m_permissionsText->setText(permissionsText);
+
+        // Update user data information
+        updateUserDataInfo(fullAppId);
+    } else {
+        qDebug() << "Package not found for app ID:" << appId;
     }
-    
-    // Update user data info
-    updateUserDataInfo(appId);
-    
-    // Update available versions
-    updateAvailableVersions(appId);
 }
 
 void FlatpakManagerTab::updateUserDataInfo(const QString& appId) {
@@ -707,16 +660,41 @@ void FlatpakManagerTab::updateAvailableVersions(const QString& appId) {
 }
 
 QString FlatpakManagerTab::calculateDirSize(const QString& path) {
-    // This would calculate the actual size of a directory
-    // For now, return a placeholder
-    Q_UNUSED(path);
+    if (path.isEmpty() || !QDir(path).exists()) {
+        return tr("Unknown");
+    }
+
+    QProcess process;
+    process.start("du", QStringList() << "-sh" << path);
+    process.waitForFinished();
+
+    if (process.exitCode() == 0) {
+        QString output = process.readAllStandardOutput();
+        // du output format is: "size    path"
+        return output.split('\t').first().trimmed();
+    }
+
     return tr("Unknown");
 }
 
 QString FlatpakManagerTab::getDataPath(const QString& appId) {
-    // This would get the actual data path for the Flatpak app
-    // For now, return a placeholder
-    return QDir::homePath() + "/.var/app/" + appId;
+    if (appId.isEmpty()) {
+        return tr("Unknown");
+    }
+
+    // Flatpak data is stored in ~/.var/app/<app-id> for user installations
+    QString userPath = QDir::homePath() + "/.var/app/" + appId;
+    if (QDir(userPath).exists()) {
+        return userPath;
+    }
+
+    // For system-wide installations, data is in /var/lib/flatpak/app/<app-id>
+    QString systemPath = "/var/lib/flatpak/app/" + appId;
+    if (QDir(systemPath).exists()) {
+        return systemPath;
+    }
+
+    return tr("Unknown");
 }
 
 QString FlatpakManagerTab::getCurrentAppId() const {

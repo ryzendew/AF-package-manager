@@ -75,10 +75,42 @@ public:
      */
     void set_installation_type(const std::string& type);
 
+    /**
+     * @brief Get the Flatpak branch
+     * @return Branch name
+     */
+    std::string get_branch() const;
+
+    /**
+     * @brief Set the Flatpak branch
+     * @param branch Branch name
+     */
+    void set_branch(const std::string& branch);
+
+    /**
+     * @brief Check if package is installed system-wide
+     * @return true if system-wide, false if user installation
+     */
+    bool is_system_wide() const;
+
+    /**
+     * @brief Get the installed size of the package
+     * @return Size in bytes
+     */
+    std::string get_size() const;
+
+    /**
+     * @brief Set the installed size of the package
+     * @param size Size in bytes
+     */
+    void set_size(const std::string& size);
+
 private:
     std::string m_app_id;              ///< Flatpak application ID
     std::string m_runtime;             ///< Flatpak runtime
     std::string m_installation_type;   ///< Flatpak installation type (system/user)
+    std::string m_branch;              ///< Flatpak branch
+    std::string m_size;                ///< Installed size
 };
 
 } // namespace core

@@ -49,5 +49,25 @@ void FlatpakPackage::set_installation_type(const std::string& type) {
     m_installation_type = type;
 }
 
+std::string FlatpakPackage::get_branch() const {
+    return m_branch;
+}
+
+void FlatpakPackage::set_branch(const std::string& branch) {
+    m_branch = branch;
+}
+
+bool FlatpakPackage::is_system_wide() const {
+    return m_installation_type == "system";
+}
+
+std::string FlatpakPackage::get_size() const {
+    return m_size;
+}
+
+void FlatpakPackage::set_size(const std::string& size) {
+    m_size = size;
+}
+
 } // namespace core
 } // namespace pacmangui 
