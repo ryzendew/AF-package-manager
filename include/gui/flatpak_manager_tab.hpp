@@ -80,7 +80,18 @@ private:
     QLabel* m_sizeLabel = nullptr;
     QLabel* m_runtimeLabel = nullptr;
     QLabel* m_descriptionLabel = nullptr;
-    QTextEdit* m_permissionsText = nullptr;
+    
+    // Permission widgets
+    QWidget* m_filesystemPermsWidget = nullptr;
+    QLabel* m_filesystemPermsText = nullptr;
+    QWidget* m_devicePermsWidget = nullptr;
+    QLabel* m_devicePermsText = nullptr;
+    QWidget* m_featurePermsWidget = nullptr;
+    QLabel* m_featurePermsText = nullptr;
+    QWidget* m_socketPermsWidget = nullptr;
+    QLabel* m_socketPermsText = nullptr;
+    QWidget* m_otherPermsWidget = nullptr;
+    QLabel* m_otherPermsText = nullptr;
     
     // Actions panel
     QPushButton* m_manageUserDataButton = nullptr;

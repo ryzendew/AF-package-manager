@@ -278,14 +278,105 @@ void FlatpakManagerTab::setupUi()
     QGroupBox* permissionsGroup = new QGroupBox(tr("Permissions"), rightPanel);
     permissionsGroup->setProperty("class", "details-group");
     QVBoxLayout* permissionsLayout = new QVBoxLayout(permissionsGroup);
+    permissionsLayout->setContentsMargins(12, 16, 12, 12);
+    permissionsLayout->setSpacing(8);
+
+    // Create a scroll area for permissions
+    QScrollArea* permissionsScroll = new QScrollArea(permissionsGroup);
+    permissionsScroll->setWidgetResizable(true);
+    permissionsScroll->setFrameShape(QFrame::NoFrame);
+    permissionsScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     
-    m_permissionsText = new QTextEdit(permissionsGroup);
-    m_permissionsText->setReadOnly(true);
-    m_permissionsText->setFrameShape(QFrame::NoFrame);
-    m_permissionsText->setMinimumHeight(100);
-    m_permissionsText->setProperty("class", "permissions-text");
-    permissionsLayout->addWidget(m_permissionsText);
+    QWidget* permissionsContainer = new QWidget(permissionsScroll);
+    QVBoxLayout* permissionsContainerLayout = new QVBoxLayout(permissionsContainer);
+    permissionsContainerLayout->setContentsMargins(0, 0, 0, 0);
+    permissionsContainerLayout->setSpacing(12);
+
+    // Create sections for different permission categories
+    m_filesystemPermsWidget = new QWidget(permissionsContainer);
+    m_filesystemPermsWidget->setProperty("class", "permission-section");
+    QVBoxLayout* filesystemLayout = new QVBoxLayout(m_filesystemPermsWidget);
+    filesystemLayout->setContentsMargins(0, 0, 0, 0);
+    filesystemLayout->setSpacing(4);
     
+    QLabel* filesystemTitle = new QLabel(tr("📁 Filesystem Access"), m_filesystemPermsWidget);
+    filesystemTitle->setProperty("class", "permission-category");
+    filesystemLayout->addWidget(filesystemTitle);
+    m_filesystemPermsText = new QLabel(m_filesystemPermsWidget);
+    m_filesystemPermsText->setWordWrap(true);
+    m_filesystemPermsText->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    m_filesystemPermsText->setProperty("class", "permission-content");
+    filesystemLayout->addWidget(m_filesystemPermsText);
+    permissionsContainerLayout->addWidget(m_filesystemPermsWidget);
+
+    m_devicePermsWidget = new QWidget(permissionsContainer);
+    m_devicePermsWidget->setProperty("class", "permission-section");
+    QVBoxLayout* deviceLayout = new QVBoxLayout(m_devicePermsWidget);
+    deviceLayout->setContentsMargins(0, 0, 0, 0);
+    deviceLayout->setSpacing(4);
+    
+    QLabel* deviceTitle = new QLabel(tr("🔌 Device Access"), m_devicePermsWidget);
+    deviceTitle->setProperty("class", "permission-category");
+    deviceLayout->addWidget(deviceTitle);
+    m_devicePermsText = new QLabel(m_devicePermsWidget);
+    m_devicePermsText->setWordWrap(true);
+    m_devicePermsText->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    m_devicePermsText->setProperty("class", "permission-content");
+    deviceLayout->addWidget(m_devicePermsText);
+    permissionsContainerLayout->addWidget(m_devicePermsWidget);
+
+    m_featurePermsWidget = new QWidget(permissionsContainer);
+    m_featurePermsWidget->setProperty("class", "permission-section");
+    QVBoxLayout* featureLayout = new QVBoxLayout(m_featurePermsWidget);
+    featureLayout->setContentsMargins(0, 0, 0, 0);
+    featureLayout->setSpacing(4);
+    
+    QLabel* featureTitle = new QLabel(tr("⚙️ Features & Session"), m_featurePermsWidget);
+    featureTitle->setProperty("class", "permission-category");
+    featureLayout->addWidget(featureTitle);
+    m_featurePermsText = new QLabel(m_featurePermsWidget);
+    m_featurePermsText->setWordWrap(true);
+    m_featurePermsText->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    m_featurePermsText->setProperty("class", "permission-content");
+    featureLayout->addWidget(m_featurePermsText);
+    permissionsContainerLayout->addWidget(m_featurePermsWidget);
+
+    m_socketPermsWidget = new QWidget(permissionsContainer);
+    m_socketPermsWidget->setProperty("class", "permission-section");
+    QVBoxLayout* socketLayout = new QVBoxLayout(m_socketPermsWidget);
+    socketLayout->setContentsMargins(0, 0, 0, 0);
+    socketLayout->setSpacing(4);
+    
+    QLabel* socketTitle = new QLabel(tr("🔗 Socket & Network"), m_socketPermsWidget);
+    socketTitle->setProperty("class", "permission-category");
+    socketLayout->addWidget(socketTitle);
+    m_socketPermsText = new QLabel(m_socketPermsWidget);
+    m_socketPermsText->setWordWrap(true);
+    m_socketPermsText->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    m_socketPermsText->setProperty("class", "permission-content");
+    socketLayout->addWidget(m_socketPermsText);
+    permissionsContainerLayout->addWidget(m_socketPermsWidget);
+
+    m_otherPermsWidget = new QWidget(permissionsContainer);
+    m_otherPermsWidget->setProperty("class", "permission-section");
+    QVBoxLayout* otherLayout = new QVBoxLayout(m_otherPermsWidget);
+    otherLayout->setContentsMargins(0, 0, 0, 0);
+    otherLayout->setSpacing(4);
+    
+    QLabel* otherTitle = new QLabel(tr("🔧 Other Permissions"), m_otherPermsWidget);
+    otherTitle->setProperty("class", "permission-category");
+    otherLayout->addWidget(otherTitle);
+    m_otherPermsText = new QLabel(m_otherPermsWidget);
+    m_otherPermsText->setWordWrap(true);
+    m_otherPermsText->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    m_otherPermsText->setProperty("class", "permission-content");
+    otherLayout->addWidget(m_otherPermsText);
+    permissionsContainerLayout->addWidget(m_otherPermsWidget);
+
+    permissionsContainerLayout->addStretch();
+    permissionsScroll->setWidget(permissionsContainer);
+    permissionsLayout->addWidget(permissionsScroll);
+
     rightLayout->addWidget(permissionsGroup);
     
     // Actions Group
@@ -337,7 +428,6 @@ void FlatpakManagerTab::setupUi()
     m_sizeLabel->setText(tr("Size"));
     m_runtimeLabel->setText(tr("Runtime"));
     m_descriptionLabel->setText(tr("Description"));
-    m_permissionsText->setText(tr("Permissions information will be displayed here."));
     
     // Disable detail buttons initially
     m_manageUserDataButton->setEnabled(false);
@@ -471,7 +561,6 @@ void FlatpakManagerTab::onFlatpakSelected(const QModelIndex& current, const QMod
         m_sizeLabel->clear();
         m_runtimeLabel->clear();
         m_descriptionLabel->clear();
-        m_permissionsText->clear();
         
         // Disable action buttons
         m_manageUserDataButton->setEnabled(false);
@@ -614,13 +703,105 @@ void FlatpakManagerTab::updateFlatpakDetails(const QString& appId)
     m_runtimeLabel->setText(QString::fromStdString(package.get_runtime()));
     m_descriptionLabel->setText(QString::fromStdString(package.get_description()));
     
+    // Clear all previous permissions first
+    m_filesystemPermsText->clear();
+    m_devicePermsText->clear();
+    m_featurePermsText->clear();
+    m_socketPermsText->clear();
+    m_otherPermsText->clear();
+    
+    // Hide all permission sections initially
+    m_filesystemPermsWidget->setVisible(false);
+    m_devicePermsWidget->setVisible(false);
+    m_featurePermsWidget->setVisible(false);
+    m_socketPermsWidget->setVisible(false);
+    m_otherPermsWidget->setVisible(false);
+    
     // Get permissions
     QProcess process;
-    process.start("flatpak", QStringList() << "info" << appId);
+    process.start("flatpak", QStringList() << "info" << "--show-permissions" << appId);
     process.waitForFinished();
     
     QString output = process.readAllStandardOutput();
-    m_permissionsText->setText(output);
+    qDebug() << "Flatpak permissions output:" << output;  // Debug output
+    
+    // Parse and categorize permissions
+    QStringList lines = output.split('\n');
+    QStringList filesystemPerms, devicePerms, featurePerms, socketPerms, otherPerms;
+    
+    bool inPermissions = false;
+    for (const QString& line : lines) {
+        QString trimmed = line.trimmed();
+        qDebug() << "Processing line:" << trimmed;  // Debug output
+        
+        if (trimmed.startsWith("Permissions:")) {
+            inPermissions = true;
+            continue;
+        }
+        
+        if (inPermissions) {
+            if (trimmed.isEmpty()) {
+                continue;
+            }
+            
+            QString perm = trimmed;
+            qDebug() << "Found permission:" << perm;  // Debug output
+            
+            if (perm.contains("filesystem=") || perm.contains("home") || perm.contains("host") || 
+                perm.contains("xdg-") || perm.contains("~/"))
+                filesystemPerms << "• " + perm;
+            else if (perm.contains("device=") || perm.contains("dri") || perm.contains("audio") || 
+                     perm.contains("video") || perm.contains("usb"))
+                devicePerms << "• " + perm;
+            else if (perm.contains("socket=") || perm.contains("network") || perm.contains("wayland") || 
+                     perm.contains("x11") || perm.contains("pulseaudio"))
+                socketPerms << "• " + perm;
+            else if (perm.contains("session") || perm.contains("feature") || perm.contains("system-") || 
+                     perm.contains("dbus"))
+                featurePerms << "• " + perm;
+            else
+                otherPerms << "• " + perm;
+        }
+    }
+    
+    // If no permissions found, show a message
+    if (filesystemPerms.isEmpty() && devicePerms.isEmpty() && 
+        featurePerms.isEmpty() && socketPerms.isEmpty() && otherPerms.isEmpty()) {
+        
+        m_filesystemPermsWidget->setVisible(true);
+        m_filesystemPermsText->setText(tr("No special permissions required"));
+        
+        m_devicePermsWidget->setVisible(false);
+        m_featurePermsWidget->setVisible(false);
+        m_socketPermsWidget->setVisible(false);
+        m_otherPermsWidget->setVisible(false);
+    } else {
+        // Update permission sections
+        if (!filesystemPerms.isEmpty()) {
+            m_filesystemPermsWidget->setVisible(true);
+            m_filesystemPermsText->setText(filesystemPerms.join('\n'));
+        }
+        
+        if (!devicePerms.isEmpty()) {
+            m_devicePermsWidget->setVisible(true);
+            m_devicePermsText->setText(devicePerms.join('\n'));
+        }
+        
+        if (!featurePerms.isEmpty()) {
+            m_featurePermsWidget->setVisible(true);
+            m_featurePermsText->setText(featurePerms.join('\n'));
+        }
+        
+        if (!socketPerms.isEmpty()) {
+            m_socketPermsWidget->setVisible(true);
+            m_socketPermsText->setText(socketPerms.join('\n'));
+        }
+        
+        if (!otherPerms.isEmpty()) {
+            m_otherPermsWidget->setVisible(true);
+            m_otherPermsText->setText(otherPerms.join('\n'));
+        }
+    }
     
     // Update user data info
     updateUserDataInfo(appId);

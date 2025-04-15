@@ -301,4 +301,54 @@ QMenu::item {
 QMenu::item:selected {
     background-color: #4a4a4a;
     color: white;
+}
+
+/* Permission section styling */
+QWidget[class="permission-section"] {
+    background-color: #252525;
+    border-radius: 6px;
+    padding: 8px;
+    margin: 4px 0px;
+}
+
+QLabel[class="permission-category"] {
+    font-weight: bold;
+    font-size: 13px;
+    color: #e0e0e0;
+    padding-bottom: 4px;
+    background-color: transparent;
+}
+
+QLabel[class="permission-content"] {
+    color: #b0b0b0;
+    font-size: 12px;
+    line-height: 1.4;
+    background-color: transparent;
+    padding-left: 8px;
+}
+
+QScrollArea {
+    border: none;
+    background-color: transparent;
+}
+
+QScrollArea > QWidget > QWidget {
+    background-color: transparent;
+}
+
+QGroupBox[class="details-group"] {
+    background-color: #1e1e1e;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 24px;
+}
+
+QGroupBox[class="details-group"]::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 0 8px;
+    color: #e0e0e0;
+    font-weight: bold;
+    font-size: 14px;
 } 
