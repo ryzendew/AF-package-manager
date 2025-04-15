@@ -47,6 +47,9 @@ private slots:
     void onInstallSelected();
     void onSearchCompleted();
 
+protected:
+    void resizeEvent(QResizeEvent* event) override;
+
 private:
     void setupUi();
     void connectSignals();

@@ -415,9 +415,10 @@ void FlatpakManagerTab::setupUi()
     
     rightLayout->addStretch();
     
-    // Set initial splitter sizes (40% left, 60% right)
-    m_splitter->setStretchFactor(0, 4);
-    m_splitter->setStretchFactor(1, 6);
+    // Set initial splitter sizes (75% left, 25% right)
+    QList<int> sizes;
+    sizes << 75 << 25;
+    m_splitter->setSizes(sizes);
     
     // Set initial values for the right panel
     m_nameLabel->setText(tr("Name"));
@@ -1016,6 +1017,17 @@ void FlatpakManagerTab::onSearchResultSelected(const QModelIndex& current, const
 {
     Q_UNUSED(previous);
     m_installSelectedButton->setEnabled(current.isValid());
+}
+
+void FlatpakManagerTab::resizeEvent(QResizeEvent* event)
+{
+    QWidget::resizeEvent(event);
+    
+    // Maintain 75/25 split
+    int totalWidth = m_splitter->width();
+    QList<int> sizes;
+    sizes << (totalWidth * 75) / 100 << (totalWidth * 25) / 100;
+    m_splitter->setSizes(sizes);
 }
 
 } // namespace gui
