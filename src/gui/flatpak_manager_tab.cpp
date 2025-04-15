@@ -131,6 +131,13 @@ void FlatpakManagerTab::setupUi()
     m_searchResultsView->setColumnWidth(3, 100);  // Remote
     m_searchResultsView->header()->setSectionResizeMode(4, QHeaderView::Stretch); // Description
     
+    // Set resize modes for better column behavior
+    m_searchResultsView->header()->setSectionResizeMode(0, QHeaderView::Interactive);  // Name - Allow manual resize
+    m_searchResultsView->header()->setSectionResizeMode(1, QHeaderView::Interactive);  // Application ID - Allow manual resize
+    m_searchResultsView->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents); // Version - Fit content
+    m_searchResultsView->header()->setSectionResizeMode(3, QHeaderView::ResizeToContents); // Remote - Fit content
+    m_searchResultsView->header()->setSectionResizeMode(4, QHeaderView::Stretch);  // Description - Fill remaining space
+    
     searchGroupLayout->addWidget(m_searchResultsView);
     
     // Install button for search results
@@ -1004,6 +1011,13 @@ void FlatpakManagerTab::onSearchCompleted()
         row << nameItem << appIdItem << versionItem << remoteItem << descItem;
         m_searchResultsModel->appendRow(row);
     }
+    
+    // Ensure column sizes are maintained
+    m_searchResultsView->setColumnWidth(0, 200);  // Name
+    m_searchResultsView->setColumnWidth(1, 250);  // Application ID
+    m_searchResultsView->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents); // Version
+    m_searchResultsView->header()->setSectionResizeMode(3, QHeaderView::ResizeToContents); // Remote
+    m_searchResultsView->header()->setSectionResizeMode(4, QHeaderView::Stretch); // Description
     
     // Update status
     if (results.empty()) {
