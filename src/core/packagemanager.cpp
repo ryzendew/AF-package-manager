@@ -127,9 +127,9 @@ bool PackageManager::initialize(const std::string& root_dir, const std::string& 
     return true;
 }
 
-std::vector<Package> PackageManager::get_installed_packages() const
+std::vector<pacmangui::core::Package> PackageManager::get_installed_packages() const
 {
-    std::vector<Package> packages;
+    std::vector<pacmangui::core::Package> packages;
     
     if (!m_handle || !m_repo_manager) {
         return packages;
@@ -141,9 +141,9 @@ std::vector<Package> PackageManager::get_installed_packages() const
     return packages;
 }
 
-std::vector<Package> PackageManager::get_available_packages() const
+std::vector<pacmangui::core::Package> PackageManager::get_available_packages() const
 {
-    std::vector<Package> packages;
+    std::vector<pacmangui::core::Package> packages;
     
     if (!m_handle || !m_repo_manager) {
         return packages;
@@ -159,9 +159,9 @@ std::vector<Package> PackageManager::get_available_packages() const
     return packages;
 }
 
-std::vector<Package> PackageManager::search_aur(const std::string& name) const
+std::vector<pacmangui::core::Package> PackageManager::search_aur(const std::string& name) const
 {
-    std::vector<Package> results;
+    std::vector<pacmangui::core::Package> results;
     
     if (name.empty()) {
         return results;
@@ -227,7 +227,7 @@ std::vector<Package> PackageManager::search_aur(const std::string& name) const
         std::string descriptionKey = "\"Description\":\"";
         
         while ((pos = jsonContent.find(packageNameKey, pos)) != std::string::npos) {
-            Package aurPackage;
+            pacmangui::core::Package aurPackage;
             
             // Extract package name
             size_t nameStart = pos + packageNameKey.length();
@@ -281,9 +281,9 @@ std::vector<Package> PackageManager::search_aur(const std::string& name) const
     return results;
 }
 
-std::vector<Package> PackageManager::search_by_name(const std::string& name) const
+std::vector<pacmangui::core::Package> PackageManager::search_by_name(const std::string& name) const
 {
-    std::vector<Package> results;
+    std::vector<pacmangui::core::Package> results;
     
     if (!m_handle || !m_repo_manager || name.empty()) {
         return results;
@@ -293,7 +293,7 @@ std::vector<Package> PackageManager::search_by_name(const std::string& name) con
     
     try {
         // First search in installed packages
-        std::vector<Package> installed_packages = get_installed_packages();
+        std::vector<pacmangui::core::Package> installed_packages = get_installed_packages();
         std::cout << "PackageManager: Searching through " << installed_packages.size() << " installed packages" << std::endl;
         
         // Convert search term to lowercase for case-insensitive matching
@@ -319,12 +319,12 @@ std::vector<Package> PackageManager::search_by_name(const std::string& name) con
         std::cout << "PackageManager: Searching through " << sync_dbs.size() << " repositories" << std::endl;
         
         int total_repo_packages = 0;
-        std::vector<Package> repo_results;
+        std::vector<pacmangui::core::Package> repo_results;
         
         // Search each repository explicitly
         for (const auto& repo : sync_dbs) {
             try {
-                std::vector<Package> repo_packages = repo.get_packages();
+                std::vector<pacmangui::core::Package> repo_packages = repo.get_packages();
                 total_repo_packages += repo_packages.size();
                 
                 for (const auto& pkg : repo_packages) {
@@ -374,10 +374,10 @@ std::vector<Package> PackageManager::search_by_name(const std::string& name) con
             std::cout << "PackageManager: AUR search is enabled, searching AUR packages" << std::endl;
             
             // Search AUR packages
-            std::vector<Package> aur_results = search_aur(name);
+            std::vector<pacmangui::core::Package> aur_results = search_aur(name);
             
             // Filter out duplicates (packages already in results)
-            std::vector<Package> filtered_aur_results;
+            std::vector<pacmangui::core::Package> filtered_aur_results;
             for (const auto& pkg : aur_results) {
                 bool already_added = false;
                 for (const auto& existing : results) {
@@ -408,10 +408,10 @@ std::vector<Package> PackageManager::search_by_name(const std::string& name) con
     return results;
 }
 
-Package PackageManager::get_package_details(const std::string& name) const
+pacmangui::core::Package PackageManager::get_package_details(const std::string& name) const
 {
     if (!m_handle || !m_repo_manager || name.empty()) {
-        return Package();
+        return pacmangui::core::Package();
     }
     
     return m_repo_manager->find_package(name);
@@ -605,44 +605,6 @@ bool PackageManager::sync_all(const std::string& password)
     return true;
 }
 
-bool PackageManager::install_aur_package(const std::string& package_name)
-{
-    if (package_name.empty()) {
-        set_last_error("Invalid package name");
-        return false;
-    }
-    
-    // Check if AUR is enabled in settings
-    QSettings settings("PacmanGUI", "PacmanGUI");
-    bool aurEnabled = settings.value("aur/enabled", false).toBool();
-    
-    if (!aurEnabled) {
-        set_last_error("AUR support is disabled in settings");
-        return false;
-    }
-    
-    // Get configured AUR helper
-    std::string aurHelper = settings.value("aur/helper", "yay").toString().toStdString();
-    if (aurHelper.empty()) {
-        set_last_error("No AUR helper configured");
-        return false;
-    }
-    
-    std::cout << "PackageManager: Installing AUR package: " << package_name << " using " << aurHelper << std::endl;
-    
-    // Execute the AUR helper command
-    std::string command = aurHelper + " -S --noconfirm " + package_name;
-    int result = system(command.c_str());
-    
-    if (result == 0) {
-        std::cout << "PackageManager: AUR Package installed successfully: " << package_name << std::endl;
-    return true;
-    } else {
-        set_last_error("Failed to install AUR package: " + package_name);
-        return false;
-    }
-}
-
 bool PackageManager::install_aur_package(const std::string& package_name, const std::string& password,
                                         const std::string& aur_helper)
 {
@@ -674,17 +636,53 @@ bool PackageManager::install_aur_package(const std::string& package_name, const 
     std::cout << "PackageManager: Installing AUR package with authentication: " 
              << package_name << " using " << aurHelper << std::endl;
     
-    // Execute the AUR helper command with sudo
-    std::string command = aurHelper + " -S --noconfirm " + package_name;
+    // Construct the appropriate command based on the AUR helper
+    std::string command;
+    if (aurHelper == "yay") {
+        command = "yay -S --noconfirm " + package_name;
+    } else if (aurHelper == "paru") {
+        command = "paru -S --noconfirm " + package_name;
+    } else {
+        // Generic format for other AUR helpers
+        command = aurHelper + " -S --noconfirm " + package_name;
+    }
+
+    // Create a temporary file to capture output
+    std::string temp_output_file = "/tmp/pacmangui_aur_install_output.txt";
+    command += " 2>&1 | tee " + temp_output_file;
+    
+    // Execute the command with password
     bool success = execute_with_sudo(command, password);
     
-    if (success) {
-        std::cout << "PackageManager: AUR Package installed successfully: " << package_name << std::endl;
-    return true;
-    } else {
-        set_last_error("Failed to install AUR package: " + package_name + ". Authentication may have failed.");
+    // Read and check the output for common error patterns
+    std::ifstream output_file(temp_output_file);
+    std::string line;
+    bool error_detected = false;
+    std::string error_message;
+    
+    while (std::getline(output_file, line)) {
+        // Check for common error patterns
+        if (line.find("error:") != std::string::npos || 
+            line.find("failed") != std::string::npos ||
+            line.find("Error:") != std::string::npos) {
+            error_detected = true;
+            error_message = line;
+            break;
+        }
+    }
+    output_file.close();
+    
+    // Clean up temporary file
+    std::remove(temp_output_file.c_str());
+    
+    if (!success || error_detected) {
+        std::string error = error_detected ? error_message : "Failed to install AUR package: " + package_name;
+        set_last_error(error);
         return false;
     }
+    
+    std::cout << "PackageManager: AUR Package installed successfully: " << package_name << std::endl;
+    return true;
 }
 
 bool PackageManager::is_package_installed(const std::string& package_name) const
@@ -694,14 +692,14 @@ bool PackageManager::is_package_installed(const std::string& package_name) const
     }
     
     Repository local_db = m_repo_manager->get_local_db();
-    Package pkg = local_db.find_package(package_name);
+    pacmangui::core::Package pkg = local_db.find_package(package_name);
     
     return !pkg.get_name().empty();
 }
 
-std::vector<Repository> PackageManager::get_repositories() const
+std::vector<pacmangui::core::Repository> PackageManager::get_repositories() const
 {
-    std::vector<Repository> repositories;
+    std::vector<pacmangui::core::Repository> repositories;
     
     if (!m_handle || !m_repo_manager) {
         return repositories;
@@ -808,7 +806,7 @@ bool PackageManager::register_sync_databases()
             int total_packages = 0;
             for (const auto& repo : sync_dbs) {
                 try {
-                    std::vector<Package> repo_packages = repo.get_packages();
+                    std::vector<pacmangui::core::Package> repo_packages = repo.get_packages();
                     int package_count = repo_packages.size();
                     total_packages += package_count;
                     std::cout << "PackageManager: Repository '" << repo.get_name() << "' has " 

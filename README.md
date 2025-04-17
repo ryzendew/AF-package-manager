@@ -28,6 +28,16 @@ A modern GUI frontend for the Arch Linux package manager (pacman) built with Qt6
 
 ## Installation and Usage
 
+
+## Basic Rules to Follow
+
+We don't remove things but we refactor them to reduce breaking functionality
+No nullptr
+Test building
+We make sure the GUI does not break and stays stable unless things must be added
+When adding third-party packages, add them via a submodule so GitHub can see it properly
+WE DON'T DO STUBS
+
 ### Building from Source
 
 1. Clone the repository:

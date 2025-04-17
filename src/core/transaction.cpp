@@ -51,9 +51,9 @@ std::vector<std::string> Transaction::get_targets() const
     return m_targets;
 }
 
-std::vector<Package> Transaction::get_packages() const
+std::vector<pacmangui::core::Package> Transaction::get_packages() const
 {
-    std::vector<Package> packages;
+    std::vector<pacmangui::core::Package> packages;
     
     if (!m_trans) {
         return packages;
@@ -156,9 +156,9 @@ void TransactionManager::release_transaction(Transaction* transaction)
     transaction->set_alpm_trans(nullptr);
 }
 
-std::vector<Package> TransactionManager::resolve_dependencies(Transaction* transaction)
+std::vector<pacmangui::core::Package> TransactionManager::resolve_dependencies(Transaction* transaction)
 {
-    std::vector<Package> dependencies;
+    std::vector<pacmangui::core::Package> dependencies;
     
     if (!transaction || !m_handle) {
         return dependencies;

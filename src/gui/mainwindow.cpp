@@ -105,6 +105,7 @@ MainWindow::MainWindow(QWidget* parent)
     setupSystemUpdateTab(); // Create the tab and its buttons before connecting signals
     setupMaintenanceTab();  // Create maintenance buttons before connecting them
     setupFlatpakSupport(); // Initialize Flatpak support
+    setupRepositoryTab();  // Create repository tab
     
     // Initialize Wayland support, if available and enabled
 #if defined(ENABLE_WAYLAND_SUPPORT) && ENABLE_WAYLAND_SUPPORT == 1
@@ -290,6 +291,23 @@ void MainWindow::setupUi() {
     m_tabWidget = new QTabWidget(m_centralWidget);
     qDebug() << "DEBUG: Creating tab widget";
     m_mainLayout->addWidget(m_tabWidget);
+    
+    // Create terminal output area
+    m_terminalOutput = new QTextEdit(m_centralWidget);
+    m_terminalOutput->setReadOnly(true);
+    m_terminalOutput->setMaximumHeight(150);
+    m_terminalOutput->setPlaceholderText(tr("Package installation logs will appear here..."));
+    m_terminalOutput->setStyleSheet(
+        "QTextEdit {"
+        "    background-color: #1e1e2e;"
+        "    color: #ffffff;"
+        "    border: 1px solid #3daee9;"
+        "    border-radius: 2px;"
+        "    padding: 2px;"
+        "    font-family: monospace;"
+        "}"
+    );
+    m_mainLayout->addWidget(m_terminalOutput);
     
     // Create Search tab
     m_searchTab = new QWidget();
@@ -541,7 +559,7 @@ void MainWindow::setupConnections() {
     qDebug() << "DEBUG: Connecting package action buttons";
     qDebug() << "DEBUG: m_installButton = " << (m_installButton ? "valid" : "NULL");
     if (m_installButton) {
-        connect(m_installButton, &QPushButton::clicked, this, &MainWindow::onInstallPackage);
+        connect(m_installButton, &QPushButton::clicked, this, &MainWindow::onInstallButtonClicked);
     }
     
     qDebug() << "DEBUG: m_updateButton = " << (m_updateButton ? "valid" : "NULL");
@@ -1087,8 +1105,10 @@ void MainWindow::performAsyncSearch(const QString& searchTerm) {
 // Add implementation for checkAurHelper
 void MainWindow::checkAurHelper() {
     // Simple check for common AUR helpers
-        QProcess process;
+    QProcess process;
     QStringList helpers = {"yay", "paru", "trizen", "aurman", "pamac"};
+    
+    m_terminalOutput->append(tr("Checking for AUR helpers..."));
     
     for (const QString& helper : helpers) {
         process.start("which", QStringList() << helper);
@@ -1096,18 +1116,24 @@ void MainWindow::checkAurHelper() {
         
         if (process.exitCode() == 0) {
             m_aurHelper = helper;
-            if (m_installAurButton)
+            if (m_installAurButton) {
                 m_installAurButton->setEnabled(true);
-            showStatusMessage(tr("Found AUR helper: %1").arg(helper), 3000);
-                return;
+                m_installAurButton->setToolTip(tr("Install selected packages from AUR using %1").arg(helper));
             }
+            showStatusMessage(tr("Found AUR helper: %1").arg(helper), 3000);
+            m_terminalOutput->append(tr("Found AUR helper: %1").arg(helper));
+            return;
+        }
     }
     
     // No AUR helper found
     m_aurHelper = "";
-    if (m_installAurButton)
+    if (m_installAurButton) {
         m_installAurButton->setEnabled(false);
+        m_installAurButton->setToolTip(tr("Install an AUR helper (yay, paru, etc.) to enable AUR support"));
+    }
     showStatusMessage(tr("No AUR helper found. AUR functions will be disabled."), 5000);
+    m_terminalOutput->append(tr("No AUR helper found. Please install one of: yay, paru, trizen, aurman, or pamac to enable AUR support."));
 }
 
 // Add implementation for onTabChanged
@@ -1165,130 +1191,48 @@ void MainWindow::onSearchClicked()
 }
 
 // Add implementation for onInstallPackage
-void MainWindow::onInstallPackage() {
-    // Get selected packages
-    QModelIndexList selected = m_packagesTable->selectionModel()->selectedRows();
-    if (selected.isEmpty()) {
+void MainWindow::onInstallPackage(const QStringList& packageNames, const QString& password) {
+    if (packageNames.isEmpty()) {
         showStatusMessage(tr("No packages selected for installation"), 3000);
         return;
     }
     
-    // Collect package names and separate Flatpak packages
-    QStringList packageNames;
-    QStringList flatpakPackages;
-    QStringList packageDetails;
-    
-    for (const QModelIndex& index : selected) {
-        QModelIndex nameIndex = m_packagesModel->index(index.row(), 1); // Name column
-        QModelIndex versionIndex = m_packagesModel->index(index.row(), 2); // Version column
-        QModelIndex repoIndex = m_packagesModel->index(index.row(), 3); // Repository column
-        
-        QString name = m_packagesModel->data(nameIndex).toString();
-        QString version = m_packagesModel->data(versionIndex).toString();
-        QString repo = m_packagesModel->data(repoIndex).toString();
-        
-        // Check if this is a Flatpak package
-        QVariant packageType = nameIndex.data(Qt::UserRole + 1);
-        bool isFlatpak = (packageType.toString() == "flatpak");
-        
-        // Get app ID for Flatpak packages
-        QString appId = nameIndex.data(Qt::UserRole).toString();
-        if (isFlatpak && appId.isEmpty()) {
-            // If no app ID is stored, use the name
-            appId = name;
-        }
-        
-        if (isFlatpak) {
-            flatpakPackages.append(appId);
-            packageDetails.append(tr("%1 (%2) [Flatpak]").arg(name).arg(version));
-        } else {
-            packageNames.append(name);
-            packageDetails.append(tr("%1 (%2) from %3").arg(name).arg(version).arg(repo));
-        }
-    }
-    
-    // Check if we have any packages to install
-    if (packageNames.isEmpty() && flatpakPackages.isEmpty()) {
-        showStatusMessage(tr("No valid packages selected for installation"), 3000);
-        return;
-    }
-    
-    // Confirm installation
-    QString message;
-    if (packageNames.size() + flatpakPackages.size() == 1) {
-        message = tr("Are you sure you want to install %1?\n\nThis operation will require your password for authentication.").arg(packageDetails.first());
-                } else {
-        message = tr("Are you sure you want to install the following %1 packages?\n\n%2\n\nThis operation will require your password for authentication.")
-            .arg(packageNames.size() + flatpakPackages.size())
-            .arg(packageDetails.join("\n"));
-    }
-    
-    QMessageBox::StandardButton reply = QMessageBox::question(
-            this,
-        tr("Confirm Installation"),
-        message,
-        QMessageBox::Yes|QMessageBox::No
-    );
-    
-    if (reply != QMessageBox::Yes) {
-                return;
-            }
-            
     // Show status message
     showStatusMessage(tr("Installing packages..."), 0);
     
-    // Install regular packages if any
-    if (!packageNames.isEmpty()) {
-        // Find available terminal emulator
-        QString terminal = findTerminalEmulator();
-        QStringList args;
-        QString packagesStr = packageNames.join(" ");
+    // Clear terminal output
+    m_terminalOutput->clear();
+    m_terminalOutput->append(tr("Starting package installation..."));
+    
+    // Install packages one by one
+    bool allSuccessful = true;
+    for (const QString& packageName : packageNames) {
+        m_terminalOutput->append(tr("Installing %1...").arg(packageName));
         
-        // Set up the command based on terminal type
-        if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
-            args << "-e" << QString("sudo pacman -S --noconfirm %1; read -p 'Press Enter to close'").arg(packagesStr);
-        } else if (terminal == "kitty" || terminal == "alacritty") {
-            args << "-e" << "sudo" << "pacman" << "-S" << "--noconfirm";
-            args.append(packageNames);
-                    } else {
-            // Default for xterm and others
-            args << "-e" << QString("sudo pacman -S --noconfirm %1 && echo 'Press ENTER to close this window' && read").arg(packagesStr);
+        // Install the package with password
+        bool success = m_packageManager.install_package(packageName.toStdString(), password.toStdString());
+        
+        if (!success) {
+            allSuccessful = false;
+            m_terminalOutput->append(tr("Error: Failed to install %1: %2")
+                .arg(packageName)
+                .arg(QString::fromStdString(m_packageManager.get_last_error())));
+        } else {
+            m_terminalOutput->append(tr("Successfully installed %1").arg(packageName));
         }
-        
-        // Run the command in the terminal
-        QProcess::startDetached(terminal, args);
     }
     
-    // Install Flatpak packages if any
-    if (!flatpakPackages.isEmpty()) {
-        // Find available terminal emulator
-        QString terminal = findTerminalEmulator();
-        QStringList args;
-        
-        // Build the command to install all Flatpak packages
-        QString flatpakInstallCmd = "flatpak install -y flathub " + flatpakPackages.join(" ");
-        
-        // Set up the command based on terminal type
-        if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
-            args << "-e" << QString("%1; read -p 'Press Enter to close'").arg(flatpakInstallCmd);
-        } else if (terminal == "kitty" || terminal == "alacritty") {
-            args << "-e" << "sh" << "-c" << QString("%1; read -p 'Press Enter to close'").arg(flatpakInstallCmd);
-                } else {
-            // Default for xterm and others
-            args << "-e" << QString("%1 && echo 'Press ENTER to close this window' && read").arg(flatpakInstallCmd);
-        }
-        
-        // Run the command in the terminal
-        QProcess::startDetached(terminal, args);
+    // Show final status message
+    if (allSuccessful) {
+        showStatusMessage(tr("Successfully installed all packages"), 3000);
+        m_terminalOutput->append(tr("All packages installed successfully."));
+    } else {
+        showStatusMessage(tr("Some packages failed to install"), 3000);
+        m_terminalOutput->append(tr("Some packages failed to install. See above for details."));
     }
     
-    // Schedule a refresh of installed packages after some time
-    QTimer::singleShot(10000, this, &MainWindow::refreshInstalledPackages);
-    
-    // Also refresh Flatpak list if we installed any Flatpak packages
-    if (!flatpakPackages.isEmpty()) {
-        QTimer::singleShot(10000, this, &MainWindow::refreshFlatpakList);
-    }
+    // Refresh installed packages list
+    refreshInstalledPackages();
 }
 
 // Add implementation for onRemovePackage
@@ -1318,27 +1262,19 @@ void MainWindow::onRemovePackage() {
     for (const QModelIndex& index : selected) {
         QModelIndex nameIndex = model->index(index.row(), 1); // Name column
         QModelIndex versionIndex = model->index(index.row(), 2); // Version column
+        QModelIndex repoIndex = model->index(index.row(), 3); // Repository column
         
         QString name = model->data(nameIndex).toString();
         QString version = model->data(versionIndex).toString();
+        QString repo = model->data(repoIndex).toString();
         
         // Check if this is a Flatpak package
-        QVariant packageType = nameIndex.data(Qt::UserRole + 1);
-        bool isFlatpak = (packageType.toString() == "flatpak");
-        
-        // Get app ID for Flatpak packages
-        QString appId = nameIndex.data(Qt::UserRole).toString();
-        if (isFlatpak && appId.isEmpty()) {
-            // If no app ID is stored, use the name
-            appId = name;
-        }
-        
-        if (isFlatpak) {
-            flatpakPackages.append(appId);
+        if (repo.toLower().contains("flatpak")) {
+            flatpakPackages.append(name);
             packageDetails.append(tr("%1 (%2) [Flatpak]").arg(name).arg(version));
         } else {
             packageNames.append(name);
-            packageDetails.append(tr("%1 (%2)").arg(name).arg(version));
+            packageDetails.append(tr("%1 (%2) from %3").arg(name).arg(version).arg(repo));
         }
     }
     
@@ -1369,60 +1305,90 @@ void MainWindow::onRemovePackage() {
         return;
     }
     
+    // Show password dialog
+    bool ok;
+    QString password = QInputDialog::getText(this, tr("Authentication Required"),
+                                           tr("Please enter your password:"),
+                                           QLineEdit::Password, "", &ok);
+    
+    if (!ok || password.isEmpty()) {
+        showStatusMessage(tr("Removal cancelled"), 3000);
+        return;
+    }
+    
+    // Clear terminal output
+    m_terminalOutput->clear();
+    m_terminalOutput->append(tr("Starting package removal..."));
+    
     // Show status message
     showStatusMessage(tr("Removing packages..."), 0);
     
     // Remove regular packages if any
     if (!packageNames.isEmpty()) {
-        // Find available terminal emulator
-        QString terminal = findTerminalEmulator();
-        QStringList args;
-        QString packagesStr = packageNames.join(" ");
+        m_terminalOutput->append(tr("\nRemoving system packages:"));
         
-        // Set up the command based on terminal type
-        if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
-            args << "-e" << QString("sudo pacman -R --noconfirm %1; read -p 'Press Enter to close'").arg(packagesStr);
-        } else if (terminal == "kitty" || terminal == "alacritty") {
-            args << "-e" << "sudo" << "pacman" << "-R" << "--noconfirm";
-            args.append(packageNames);
-        } else {
-            // Default for xterm and others
-            args << "-e" << QString("sudo pacman -R --noconfirm %1 && echo 'Press ENTER to close this window' && read").arg(packagesStr);
+        // Remove packages one by one
+        bool allSuccessful = true;
+        for (const QString& packageName : packageNames) {
+            m_terminalOutput->append(tr("Removing %1...").arg(packageName));
+            
+            // Remove the package with password
+            bool success = m_packageManager.remove_package(packageName.toStdString(), password.toStdString());
+            
+            if (!success) {
+                allSuccessful = false;
+                m_terminalOutput->append(tr("Error: Failed to remove %1: %2")
+                    .arg(packageName)
+                    .arg(QString::fromStdString(m_packageManager.get_last_error())));
+            } else {
+                m_terminalOutput->append(tr("Successfully removed %1").arg(packageName));
+            }
         }
         
-        // Run the command in the terminal
-        QProcess::startDetached(terminal, args);
+        // Show status for system packages
+        if (allSuccessful) {
+            m_terminalOutput->append(tr("All system packages removed successfully."));
+        } else {
+            m_terminalOutput->append(tr("Some system packages failed to remove. See above for details."));
+        }
     }
     
     // Remove Flatpak packages if any
     if (!flatpakPackages.isEmpty()) {
-        // Find available terminal emulator
-        QString terminal = findTerminalEmulator();
-        QStringList args;
+        m_terminalOutput->append(tr("\nRemoving Flatpak packages:"));
         
-        // Build the command to remove all Flatpak packages
-        QString flatpakRemoveCmd = "flatpak uninstall -y " + flatpakPackages.join(" ");
-        
-        // Set up the command based on terminal type
-        if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
-            args << "-e" << QString("%1; read -p 'Press Enter to close'").arg(flatpakRemoveCmd);
-        } else if (terminal == "kitty" || terminal == "alacritty") {
-            args << "-e" << "sh" << "-c" << QString("%1; read -p 'Press Enter to close'").arg(flatpakRemoveCmd);
-        } else {
-            // Default for xterm and others
-            args << "-e" << QString("%1 && echo 'Press ENTER to close this window' && read").arg(flatpakRemoveCmd);
+        // Remove packages one by one
+        bool allSuccessful = true;
+        for (const QString& packageName : flatpakPackages) {
+            m_terminalOutput->append(tr("Removing %1...").arg(packageName));
+            
+            // Remove the Flatpak package
+            bool success = m_packageManager.remove_flatpak_package(packageName.toStdString());
+            
+            if (!success) {
+                allSuccessful = false;
+                m_terminalOutput->append(tr("Error: Failed to remove %1: %2")
+                    .arg(packageName)
+                    .arg(QString::fromStdString(m_packageManager.get_last_error())));
+            } else {
+                m_terminalOutput->append(tr("Successfully removed %1").arg(packageName));
+            }
         }
         
-        // Run the command in the terminal
-        QProcess::startDetached(terminal, args);
+        // Show status for Flatpak packages
+        if (allSuccessful) {
+            m_terminalOutput->append(tr("All Flatpak packages removed successfully."));
+        } else {
+            m_terminalOutput->append(tr("Some Flatpak packages failed to remove. See above for details."));
+        }
     }
     
-    // Schedule a refresh of installed packages after some time
-    QTimer::singleShot(10000, this, &MainWindow::refreshInstalledPackages);
+    // Refresh installed packages list
+    refreshInstalledPackages();
     
     // Also refresh Flatpak list if we removed any Flatpak packages
     if (!flatpakPackages.isEmpty()) {
-        QTimer::singleShot(10000, this, &MainWindow::refreshFlatpakList);
+        refreshFlatpakList();
     }
 }
 
@@ -1466,7 +1432,152 @@ void MainWindow::onPackageItemChanged(QStandardItem* item) {
 
 // Add implementation for onInstallAurPackage
 void MainWindow::onInstallAurPackage() {
-    // Implement onInstallAurPackage
+    // Get selected packages
+    QModelIndexList selected = m_packagesTable->selectionModel()->selectedRows();
+    if (selected.isEmpty()) {
+        showStatusMessage(tr("No packages selected for AUR installation"), 3000);
+        return;
+    }
+    
+    // Collect package names
+    QStringList packageNames;
+    QStringList packageDetails;
+    
+    for (const QModelIndex& index : selected) {
+        QModelIndex nameIndex = m_packagesModel->index(index.row(), 1); // Name column
+        QModelIndex versionIndex = m_packagesModel->index(index.row(), 2); // Version column
+        QModelIndex repoIndex = m_packagesModel->index(index.row(), 3); // Repository column
+        
+        QString name = m_packagesModel->data(nameIndex).toString();
+        QString version = m_packagesModel->data(versionIndex).toString();
+        QString repo = m_packagesModel->data(repoIndex).toString();
+        
+        // Only add if it's an AUR package or from an AUR-related repository
+        if (repo.toLower() == "aur") {
+            packageNames.append(name);
+            packageDetails.append(tr("%1 (%2) from AUR").arg(name).arg(version));
+        }
+    }
+    
+    if (packageNames.isEmpty()) {
+        showStatusMessage(tr("No AUR packages selected"), 3000);
+        return;
+    }
+    
+    // Check if we have an AUR helper
+    if (m_aurHelper.isEmpty()) {
+        QMessageBox::warning(this, tr("AUR Helper Not Found"),
+                           tr("No AUR helper (yay, paru, etc.) was found. Please install one to enable AUR support."),
+                           QMessageBox::Ok);
+        return;
+    }
+    
+    // Confirm installation
+    QString message;
+    if (packageNames.size() == 1) {
+        message = tr("Are you sure you want to install %1 from AUR?\n\n"
+                    "AUR packages are user-produced content and may be harmful to your system.\n"
+                    "Make sure you trust the source.\n\n"
+                    "This operation will require your password for authentication.")
+                    .arg(packageDetails.first());
+    } else {
+        message = tr("Are you sure you want to install the following %1 packages from AUR?\n\n"
+                    "%2\n\n"
+                    "AUR packages are user-produced content and may be harmful to your system.\n"
+                    "Make sure you trust the source.\n\n"
+                    "This operation will require your password for authentication.")
+                    .arg(packageNames.size())
+                    .arg(packageDetails.join("\n"));
+    }
+    
+    QMessageBox::StandardButton reply = QMessageBox::question(
+        this, 
+        tr("Confirm AUR Installation"),
+        message,
+        QMessageBox::Yes|QMessageBox::No
+    );
+    
+    if (reply != QMessageBox::Yes) {
+        return;
+    }
+    
+    // Show password dialog
+    bool ok;
+    QString password = QInputDialog::getText(this, tr("Authentication Required"),
+                                           tr("Please enter your password:"),
+                                           QLineEdit::Password, "", &ok);
+    
+    if (!ok || password.isEmpty()) {
+        showStatusMessage(tr("Installation cancelled"), 3000);
+        return;
+    }
+    
+    // Clear terminal output
+    m_terminalOutput->clear();
+    m_terminalOutput->append(tr("Starting AUR package installation..."));
+    
+    // Show status message
+    showStatusMessage(tr("Installing AUR packages..."), 0);
+    
+    // Install packages one by one
+    bool allSuccessful = true;
+    for (const QString& packageName : packageNames) {
+        m_terminalOutput->append(tr("\nInstalling %1...").arg(packageName));
+        
+        // Install the AUR package with password
+        bool success = m_packageManager.install_aur_package(
+            packageName.toStdString(),
+            password.toStdString(),
+            m_aurHelper.toStdString()
+        );
+        
+        if (!success) {
+            allSuccessful = false;
+            QString error = QString::fromStdString(m_packageManager.get_last_error());
+            m_terminalOutput->append(tr("Error: Failed to install %1: %2")
+                .arg(packageName)
+                .arg(error));
+                
+            // If authentication failed, ask for password again
+            if (error.contains("Authentication", Qt::CaseInsensitive) || 
+                error.contains("password", Qt::CaseInsensitive)) {
+                bool ok;
+                password = QInputDialog::getText(this, tr("Authentication Failed"),
+                                               tr("Please enter your password again:"),
+                                               QLineEdit::Password, "", &ok);
+                
+                if (ok && !password.isEmpty()) {
+                    // Retry installation with new password
+                    m_terminalOutput->append(tr("Retrying installation with new password..."));
+                    success = m_packageManager.install_aur_package(
+                        packageName.toStdString(),
+                        password.toStdString(),
+                        m_aurHelper.toStdString()
+                    );
+                    
+                    if (success) {
+                        allSuccessful = true;
+                        m_terminalOutput->append(tr("Successfully installed %1").arg(packageName));
+                        continue;
+                    }
+                }
+            }
+        } else {
+            m_terminalOutput->append(tr("Successfully installed %1").arg(packageName));
+        }
+    }
+    
+    // Show final status message
+    if (allSuccessful) {
+        showStatusMessage(tr("Successfully installed all AUR packages"), 3000);
+        m_terminalOutput->append(tr("\nAll AUR packages installed successfully."));
+    } else {
+        showStatusMessage(tr("Some AUR packages failed to install"), 3000);
+        m_terminalOutput->append(tr("\nSome AUR packages failed to install. See above for details."));
+    }
+    
+    // Refresh installed packages list
+    refreshInstalledPackages();
 }
 
 // Add implementation for onUpdateAurPackages
@@ -1488,40 +1599,60 @@ void MainWindow::onSystemUpdate() {
         return;
     }
     
-    // Clear the update log
-    m_systemUpdateLogView->clear();
-    m_systemUpdateLogView->append(tr("Starting system update..."));
-    m_systemUpdateLogView->append(tr("Opening terminal to handle password prompt..."));
+    // Show password dialog
+    bool ok;
+    QString password = QInputDialog::getText(this, tr("Authentication Required"),
+                                           tr("Please enter your password:"),
+                                           QLineEdit::Password, "", &ok);
     
-    // Find available terminal emulator
-    QString terminal = findTerminalEmulator();
-    QStringList args;
-    
-    // Set up the command based on terminal type
-    if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
-        args << "-e" << "sudo pacman -Syu --noconfirm; read -p 'Press Enter to close'";
-    } else if (terminal == "kitty" || terminal == "alacritty") {
-        args << "-e" << "sudo" << "pacman" << "-Syu" << "--noconfirm";
-    } else {
-        // Default for xterm and others
-        args << "-e" << "sudo pacman -Syu --noconfirm && echo 'Press ENTER to close this window' && read";
+    if (!ok || password.isEmpty()) {
+        showStatusMessage(tr("Update cancelled"), 3000);
+        return;
     }
     
-    // Run the command in the terminal
-    QProcess::startDetached(terminal, args);
+    // Clear the update log and terminal output
+    m_systemUpdateLogView->clear();
+    m_terminalOutput->clear();
+    
+    m_systemUpdateLogView->append(tr("Starting system update..."));
+    m_terminalOutput->append(tr("Starting system update..."));
     
     // Show status message
     showStatusMessage(tr("Updating system packages..."), 0);
     
-    // Schedule a refresh after some time to update the UI with new package info
-    QTimer::singleShot(10000, this, &MainWindow::refreshInstalledPackages);
+    // Create a callback function to handle real-time output
+    auto outputCallback = [this](const QString& text) {
+        m_systemUpdateLogView->append(text);
+        m_terminalOutput->append(text);
+        QApplication::processEvents(); // Keep the UI responsive
+    };
+    
+    // Perform the system update with password and output callback
+    bool success = m_packageManager.update_system(password.toStdString(), 
+        [outputCallback](const std::string& text) {
+            outputCallback(QString::fromStdString(text));
+        }
+    );
+    
+    if (success) {
+        showStatusMessage(tr("System update completed successfully"), 3000);
+        m_systemUpdateLogView->append(tr("System update completed successfully."));
+        m_terminalOutput->append(tr("System update completed successfully."));
+    } else {
+        showStatusMessage(tr("System update failed"), 3000);
+        m_systemUpdateLogView->append(tr("Error: ") + QString::fromStdString(m_packageManager.get_last_error()));
+        m_terminalOutput->append(tr("Error: ") + QString::fromStdString(m_packageManager.get_last_error()));
+    }
+    
+    // Refresh installed packages list
+    refreshInstalledPackages();
 }
 
 // Add implementation for onCheckForUpdates
 void MainWindow::onCheckForUpdates() {
     // First, confirm with the user
     QMessageBox::StandardButton confirm = QMessageBox::question(
-            this, 
+        this, 
         tr("Confirm Check for Updates"), 
         tr("Are you sure you want to check for system updates?\n\nThis operation will sync the package database and may require your password for authentication."),
         QMessageBox::Yes | QMessageBox::No
@@ -1531,14 +1662,27 @@ void MainWindow::onCheckForUpdates() {
         return;
     }
     
+    // Show password dialog
+    bool ok;
+    QString password = QInputDialog::getText(this, tr("Authentication Required"),
+                                           tr("Please enter your password:"),
+                                           QLineEdit::Password, "", &ok);
+    
+    if (!ok || password.isEmpty()) {
+        showStatusMessage(tr("Update check cancelled"), 3000);
+        return;
+    }
+    
     // Show status message and update UI
     showStatusMessage(tr("Checking for updates..."), 0);
     m_systemUpdateInfoLabel->setText(tr("Checking for updates..."));
     
-    // Clear the log view
+    // Clear the log views
     m_systemUpdateLogView->clear();
+    m_terminalOutput->clear();
+    
     m_systemUpdateLogView->append(tr("Starting update check..."));
-    m_systemUpdateLogView->append(tr("Opening terminal to handle password prompt..."));
+    m_terminalOutput->append(tr("Starting update check..."));
     
     // Ensure we're using the correct tab for updates
     if (m_tabWidget->indexOf(m_systemUpdateTab) >= 0) {
@@ -1552,29 +1696,27 @@ void MainWindow::onCheckForUpdates() {
             QStringList() << tr("Name") << tr("Current Version") << tr("New Version") << tr("Repository"));
     }
     
-    // Find available terminal emulator
-    QString terminal = findTerminalEmulator();
-    QStringList args;
+    // Create a callback function to handle real-time output
+    auto outputCallback = [this](const QString& text) {
+        m_systemUpdateLogView->append(text);
+        m_terminalOutput->append(text);
+        QApplication::processEvents(); // Keep the UI responsive
+    };
     
-    // Set up the command based on terminal type
-    if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
-        args << "-e" << "sudo pacman -Sy; read -p 'Press Enter to close'";
-    } else if (terminal == "kitty" || terminal == "alacritty") {
-        args << "-e" << "sudo" << "pacman" << "-Sy";
-        } else {
-        // Default for xterm and others
-        args << "-e" << "sudo pacman -Sy && echo 'Press ENTER to close this window' && read";
+    // Sync the package database with password
+    bool syncSuccess = m_packageManager.sync_all(password.toStdString());
+    
+    if (!syncSuccess) {
+        showStatusMessage(tr("Failed to sync package database"), 3000);
+        outputCallback(tr("Error: Failed to sync package database"));
+        outputCallback(QString::fromStdString(m_packageManager.get_last_error()));
+        return;
     }
     
-    // Run the command in the terminal
-    QProcess::startDetached(terminal, args);
+    outputCallback(tr("Package database synchronized successfully."));
+    outputCallback(tr("Checking for available updates..."));
     
-    // Schedule a check for updates after some time
-    QTimer::singleShot(8000, this, &MainWindow::checkForUpdatesAfterSync);
-}
-
-// New method to check for updates after sync has completed
-void MainWindow::checkForUpdatesAfterSync() {
+    // Check for updates
     try {
         std::vector<std::pair<std::string, std::string>> updates = m_packageManager.check_updates();
         
@@ -1582,7 +1724,6 @@ void MainWindow::checkForUpdatesAfterSync() {
         for (const auto& update : updates) {
             QList<QStandardItem*> row;
             
-            // Get package details to find the repository and current version
             QString pkgName = QString::fromStdString(update.first);
             QString newVersion = QString::fromStdString(update.second);
             
@@ -1592,10 +1733,10 @@ void MainWindow::checkForUpdatesAfterSync() {
             
             // Find the package in the installed packages model
             for (int i = 0; i < m_installedModel->rowCount(); ++i) {
-                QString name = m_installedModel->item(i, 1)->text(); // Name column (was incorrectly 0)
+                QString name = m_installedModel->item(i, 1)->text();
                 if (name == pkgName) {
-                    currentVersion = m_installedModel->item(i, 2)->text(); // Version column (was incorrectly 1)
-                    repoName = m_installedModel->item(i, 3)->text(); // Repository column
+                    currentVersion = m_installedModel->item(i, 2)->text();
+                    repoName = m_installedModel->item(i, 3)->text();
                     break;
                 }
             }
@@ -1613,11 +1754,19 @@ void MainWindow::checkForUpdatesAfterSync() {
         if (updates.empty()) {
             m_systemUpdateInfoLabel->setText(tr("Your system is up to date."));
             showStatusMessage(tr("Your system is up to date"), 5000);
-            m_systemUpdateLogView->append(tr("No updates available."));
-    } else {
+            outputCallback(tr("No updates available."));
+        } else {
             m_systemUpdateInfoLabel->setText(tr("Found %1 updates available.").arg(updates.size()));
             showStatusMessage(tr("Found %1 updates").arg(updates.size()), 5000);
-            m_systemUpdateLogView->append(tr("Found %1 updates available.").arg(updates.size()));
+            outputCallback(tr("Found %1 updates available.").arg(updates.size()));
+            
+            // List the available updates in the log
+            outputCallback(tr("\nAvailable updates:"));
+            for (const auto& update : updates) {
+                QString pkgName = QString::fromStdString(update.first);
+                QString newVersion = QString::fromStdString(update.second);
+                outputCallback(tr("- %1 -> %2").arg(pkgName).arg(newVersion));
+            }
         }
         
         // Auto-size columns
@@ -1629,7 +1778,7 @@ void MainWindow::checkForUpdatesAfterSync() {
         // Handle any exceptions
         m_systemUpdateInfoLabel->setText(tr("Error checking for updates."));
         showStatusMessage(tr("Error checking for updates: %1").arg(e.what()), 5000);
-        m_systemUpdateLogView->append(tr("Error: %1").arg(e.what()));
+        outputCallback(tr("Error: %1").arg(e.what()));
     }
 }
 
@@ -2923,6 +3072,143 @@ void MainWindow::refreshFlatpakRemotes() {
     if (m_flatpakManagerTab) {
         m_flatpakManagerTab->refreshFlatpakRemotes();
     }
+}
+
+// Add a new function to handle terminal output
+void MainWindow::appendTerminalOutput(const QString& text) {
+    m_terminalOutput->append(text);
+    // Auto-scroll to bottom
+    QTextCursor cursor = m_terminalOutput->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    m_terminalOutput->setTextCursor(cursor);
+}
+
+// Add the new implementation for onInstallButtonClicked
+void MainWindow::onInstallButtonClicked() {
+    // Get selected packages
+    QModelIndexList selected = m_packagesTable->selectionModel()->selectedRows();
+    if (selected.isEmpty()) {
+        showStatusMessage(tr("No packages selected for installation"), 3000);
+        return;
+    }
+    
+    // Collect package names
+    QStringList packageNames;
+    QStringList packageDetails;
+    
+    for (const QModelIndex& index : selected) {
+        QModelIndex nameIndex = m_packagesModel->index(index.row(), 1); // Name column
+        QModelIndex versionIndex = m_packagesModel->index(index.row(), 2); // Version column
+        QModelIndex repoIndex = m_packagesModel->index(index.row(), 3); // Repository column
+        
+        QString name = m_packagesModel->data(nameIndex).toString();
+        QString version = m_packagesModel->data(versionIndex).toString();
+        QString repo = m_packagesModel->data(repoIndex).toString();
+        
+        packageNames.append(name);
+        packageDetails.append(tr("%1 (%2) from %3").arg(name).arg(version).arg(repo));
+    }
+    
+    // Confirm installation
+    QString message;
+    if (packageNames.size() == 1) {
+        message = tr("Are you sure you want to install %1?\n\nThis operation will require your password for authentication.").arg(packageDetails.first());
+    } else {
+        message = tr("Are you sure you want to install the following %1 packages?\n\n%2\n\nThis operation will require your password for authentication.")
+            .arg(packageNames.size())
+            .arg(packageDetails.join("\n"));
+    }
+    
+    QMessageBox::StandardButton reply = QMessageBox::question(
+        this, 
+        tr("Confirm Installation"),
+        message,
+        QMessageBox::Yes|QMessageBox::No
+    );
+    
+    if (reply != QMessageBox::Yes) {
+        return;
+    }
+    
+    // Show password dialog
+    bool ok;
+    QString password = QInputDialog::getText(this, tr("Authentication Required"),
+                                           tr("Please enter your password:"),
+                                           QLineEdit::Password, "", &ok);
+    
+    if (!ok || password.isEmpty()) {
+        showStatusMessage(tr("Installation cancelled"), 3000);
+        return;
+    }
+    
+    // Call the actual installation function
+    onInstallPackage(packageNames, password);
+}
+
+void MainWindow::setupRepositoryTab()
+{
+    // Create repository tab
+    m_repositoryTab = new QWidget(this);
+    m_tabWidget->addTab(m_repositoryTab, tr("Repositories"));
+    
+    // Create layout
+    QVBoxLayout* layout = new QVBoxLayout(m_repositoryTab);
+    
+    // Create repository table
+    m_repositoryTable = new QTreeView(m_repositoryTab);
+    m_repositoryTable->setAlternatingRowColors(true);
+    m_repositoryTable->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_repositoryTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    applyTableStyle(m_repositoryTable);
+    
+    // Create repository model
+    m_repositoryModel = new QStandardItemModel(0, 3, this);
+    m_repositoryModel->setHorizontalHeaderLabels(
+        QStringList() << tr("Name") << tr("Type") << tr("Packages"));
+    
+    // Set model for repository table
+    m_repositoryTable->setModel(m_repositoryModel);
+    
+    // Set column sizes
+    m_repositoryTable->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    m_repositoryTable->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+    m_repositoryTable->header()->setSectionResizeMode(2, QHeaderView::Stretch);
+    
+    // Add table to layout
+    layout->addWidget(m_repositoryTable);
+    
+    // Add refresh button
+    QPushButton* refreshButton = new QPushButton(tr("Refresh Repositories"), m_repositoryTab);
+    connect(refreshButton, &QPushButton::clicked, this, &MainWindow::refreshRepositories);
+    layout->addWidget(refreshButton);
+    
+    // Initial refresh
+    refreshRepositories();
+}
+
+void MainWindow::refreshRepositories()
+{
+    m_repositoryModel->clear();
+    m_repositoryModel->setHorizontalHeaderLabels({tr("Name"), tr("Type"), tr("Packages")});
+
+    std::vector<pacmangui::core::Repository> repositories = m_packageManager.get_repositories();
+    
+    for (const auto& repo : repositories) {
+        QList<QStandardItem*> row;
+        row << new QStandardItem(QString::fromStdString(repo.get_name()))
+            << new QStandardItem(repo.is_sync() ? tr("Sync") : tr("Local"));
+        
+        std::vector<pacmangui::core::Package> packages = repo.get_packages();
+        row << new QStandardItem(QString::number(packages.size()));
+        
+        m_repositoryModel->appendRow(row);
+    }
+    
+    m_repositoryTable->resizeColumnToContents(0);
+    m_repositoryTable->resizeColumnToContents(1);
+    m_repositoryTable->resizeColumnToContents(2);
+    
+    showStatusMessage(tr("Loaded %1 repositories").arg(repositories.size()), 3000);
 }
 } // namespace gui
 } // namespace pacmangui

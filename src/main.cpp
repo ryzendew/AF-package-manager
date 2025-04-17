@@ -55,7 +55,7 @@ void print_package_details(const Package& pkg) {
     std::cout << "Installed: " << (pkg.is_installed() ? "Yes" : "No") << "\n";
 }
 
-void print_package_list(const std::vector<Package>& packages) {
+void print_package_list(const std::vector<pacmangui::core::Package>& packages) {
     for (const auto& pkg : packages) {
         std::cout << pkg.get_name() << " (" << pkg.get_version() << "): " << pkg.get_description() << "\n";
     }
@@ -208,51 +208,37 @@ int main(int argc, char *argv[])
         return startCli(argc, argv);
     } else {
         // Check if running on Wayland and set appropriate flags
-#if defined(ENABLE_WAYLAND_SUPPORT) && ENABLE_WAYLAND_SUPPORT == 1
-        if (pacmangui::wayland::WaylandBackend::isWaylandAvailable()) {
-            qDebug() << "main.cpp: Running on Wayland, initializing Wayland support";
+#ifdef WAYLAND_ENABLED
+        if (pacmangui::wayland::WaylandBackend::initialize()) {
+            qDebug() << "main.cpp: Wayland backend initialized successfully";
             
-            // Initialize the Wayland components
-            if (pacmangui::wayland::WaylandBackend::initialize()) {
-                qDebug() << "main.cpp: Wayland backend initialized successfully";
-                
-                // Initialize Wayland protocols
-                if (pacmangui::wayland::WaylandProtocols::initialize()) {
-                    qDebug() << "main.cpp: Wayland protocols initialized successfully";
-                    
-                    // Display supported protocols
-                    QStringList availableProtocols = pacmangui::wayland::WaylandProtocols::getSupportedProtocols();
-                    qDebug() << "main.cpp: Available Wayland protocols:" << availableProtocols;
-                }
-                
-                // Initialize Wayland security features
-                if (pacmangui::wayland::WaylandSecurity::initialize()) {
-                    qDebug() << "main.cpp: Wayland security features initialized successfully";
-                    pacmangui::wayland::WaylandSecurity::enableSecurityFeatures(true);
-                }
-                
-                // Initialize Wayland optimizations
-                if (pacmangui::wayland::WaylandOptimization::initialize()) {
-                    qDebug() << "main.cpp: Wayland optimizations initialized successfully";
-                    pacmangui::wayland::WaylandOptimization::enableOptimizations(true);
-                }
-                
-                // Display Wayland info
-                QString displayInfo = pacmangui::wayland::WaylandBackend::getDisplayInfo();
-                if (!displayInfo.isEmpty()) {
-                    qDebug() << "main.cpp: Wayland display info:" << displayInfo;
-                }
-            } else {
-                qWarning() << "main.cpp: Failed to initialize Wayland backend";
+            // Initialize Wayland security features
+            if (pacmangui::wayland::WaylandSecurity::initialize()) {
+                qDebug() << "main.cpp: Wayland security features initialized successfully";
             }
+            
+            // Initialize Wayland protocols
+            if (pacmangui::wayland::WaylandProtocols::initialize()) {
+                qDebug() << "main.cpp: Wayland protocols initialized successfully";
+            }
+            
+            // Initialize Wayland optimizations
+            if (pacmangui::wayland::WaylandOptimization::initialize()) {
+                qDebug() << "main.cpp: Wayland optimizations initialized successfully";
+                pacmangui::wayland::WaylandOptimization::enableOptimizations(true);
+            }
+            
+            // Display Wayland info
+            QString displayInfo = pacmangui::wayland::WaylandBackend::getDisplayInfo();
+            if (!displayInfo.isEmpty()) {
+                qDebug() << "main.cpp: Wayland display info:" << displayInfo;
+            }
+        } else {
+            qWarning() << "main.cpp: Failed to initialize Wayland backend";
         }
 #else
         qDebug() << "main.cpp: Wayland support is disabled, skipping initialization";
 #endif
-        
-        // Enable High DPI scaling
-        QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-        QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
         
         // Set high DPI scale factor rounding policy to PassThrough for fractional scaling
         QGuiApplication::setHighDpiScaleFactorRoundingPolicy(

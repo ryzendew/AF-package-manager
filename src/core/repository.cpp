@@ -53,9 +53,9 @@ alpm_db_t* Repository::get_alpm_db() const
     return m_db;
 }
 
-std::vector<Package> Repository::get_packages() const
+std::vector<pacmangui::core::Package> Repository::get_packages() const
 {
-    std::vector<Package> packages;
+    std::vector<pacmangui::core::Package> packages;
     
     if (!m_db) {
         std::cerr << "Repository: No database available for " << m_name << std::endl;
@@ -88,7 +88,7 @@ std::vector<Package> Repository::get_packages() const
             continue;
         }
         
-        Package package;
+        pacmangui::core::Package package;
         package.set_name(name);
         package.set_version(version);
         package.set_repository(m_name);
@@ -117,15 +117,16 @@ std::vector<Package> Repository::get_packages() const
     return packages;
 }
 
-Package Repository::find_package(const std::string& name) const
+pacmangui::core::Package Repository::find_package(const std::string& name) const
 {
+    pacmangui::core::Package result;
     if (!m_db || name.empty()) {
-        return Package();
+        return result;
     }
     
     alpm_pkg_t* pkg = alpm_db_get_pkg(m_db, name.c_str());
     if (!pkg) {
-        return Package();
+        return result;
     }
     
     const char* pkg_name = alpm_pkg_get_name(pkg);
@@ -133,10 +134,9 @@ Package Repository::find_package(const std::string& name) const
     const char* pkg_desc = alpm_pkg_get_desc(pkg);
     
     if (!pkg_name || !pkg_version) {
-        return Package();
+        return result;
     }
     
-    Package result;
     result.set_name(pkg_name);
     result.set_version(pkg_version);
     result.set_repository(m_name);
@@ -235,10 +235,10 @@ std::vector<Repository> RepositoryManager::get_sync_dbs() const
     return m_sync_dbs;
 }
 
-Package RepositoryManager::find_package(const std::string& name) const
+pacmangui::core::Package RepositoryManager::find_package(const std::string& name) const
 {
     // First check in local database
-    Package pkg = m_local_db.find_package(name);
+    pacmangui::core::Package pkg = m_local_db.find_package(name);
     if (!pkg.get_name().empty()) {
         return pkg;
     }
@@ -251,20 +251,20 @@ Package RepositoryManager::find_package(const std::string& name) const
         }
     }
     
-    return Package();
+    return pacmangui::core::Package();
 }
 
-std::vector<Package> RepositoryManager::get_all_packages() const
+std::vector<pacmangui::core::Package> RepositoryManager::get_all_packages() const
 {
-    std::vector<Package> all_packages;
+    std::vector<pacmangui::core::Package> all_packages;
     
     // Get packages from local database
-    std::vector<Package> local_packages = m_local_db.get_packages();
+    std::vector<pacmangui::core::Package> local_packages = m_local_db.get_packages();
     all_packages.insert(all_packages.end(), local_packages.begin(), local_packages.end());
     
     // Get packages from sync databases
     for (const auto& repo : m_sync_dbs) {
-        std::vector<Package> repo_packages = repo.get_packages();
+        std::vector<pacmangui::core::Package> repo_packages = repo.get_packages();
         all_packages.insert(all_packages.end(), repo_packages.begin(), repo_packages.end());
     }
     

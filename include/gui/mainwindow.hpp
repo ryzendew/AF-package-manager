@@ -110,7 +110,8 @@ private slots:
     void onSearchClicked();
     
     // Package operations
-    void onInstallPackage();
+    void onInstallButtonClicked();
+    void onInstallPackage(const QStringList& packageNames, const QString& password);
     void onRemovePackage();
     void onUpdatePackage();
     void onSyncAll();
@@ -141,7 +142,6 @@ private slots:
     void onClearPackageLock();
     void onCheckIntegrityAllPackages();
     void onRefreshMirrorList();
-    void checkForUpdatesAfterSync();
     
     // Theme
     void toggleTheme();
@@ -171,6 +171,12 @@ private slots:
     void onSearchFlatpakPackages();
     void onToggleFlatpakSearch(bool enabled);
     void onFlatpakStatusMessage(const QString& message, int timeout);
+
+    /**
+     * @brief Append text to the terminal output area
+     * @param text The text to append
+     */
+    void appendTerminalOutput(const QString& text);
 
 private:
     void setupUi();
@@ -303,6 +309,7 @@ private:
     // Models for tables
     QStandardItemModel* m_packagesModel;
     QStandardItemModel* m_installedModel;
+    QStandardItemModel* m_repositoryModel;
     
     // Actions map for menu setup
     QMap<QString, QAction*> m_actions;
@@ -412,6 +419,16 @@ private:
 
     // Flatpak Management Tab
     FlatpakManagerTab* m_flatpakManagerTab;
+
+    // Terminal output
+    QTextEdit* m_terminalOutput;
+
+    // Repository tab
+    QWidget* m_repositoryTab;
+    QTreeView* m_repositoryTable;
+
+    void setupRepositoryTab();
+    void refreshRepositories();
 };
 
 } // namespace gui

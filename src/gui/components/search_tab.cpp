@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QtConcurrent/QtConcurrent>
 #include <QApplication>
+#include <QInputDialog>
 
 namespace pacmangui {
 namespace gui {
@@ -284,9 +285,9 @@ void SearchTab::onInstallButtonClicked()
     // Confirm installation
     QString message;
     if (packageNames.size() == 1) {
-        message = tr("Are you sure you want to install %1?").arg(packageDetails.first());
+        message = tr("Are you sure you want to install %1?\n\nThis operation will require your password for authentication.").arg(packageDetails.first());
     } else {
-        message = tr("Are you sure you want to install the following %1 packages?\n\n%2")
+        message = tr("Are you sure you want to install the following %1 packages?\n\n%2\n\nThis operation will require your password for authentication.")
             .arg(packageNames.size())
             .arg(packageDetails.join("\n"));
     }
@@ -301,9 +302,20 @@ void SearchTab::onInstallButtonClicked()
     if (reply != QMessageBox::Yes) {
         return;
     }
+
+    // Show password dialog
+    bool ok;
+    QString password = QInputDialog::getText(this, tr("Authentication Required"),
+                                           tr("Please enter your password:"),
+                                           QLineEdit::Password, "", &ok);
     
-    // Emit the signal for package installation
-    emit installPackageRequested(packageNames);
+    if (!ok || password.isEmpty()) {
+        emit statusMessageRequested(tr("Installation cancelled"), 3000);
+        return;
+    }
+    
+    // Emit the signal for package installation with password
+    emit installPackageRequested(packageNames, password);
 }
 
 void SearchTab::onUpdateButtonClicked()

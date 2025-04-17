@@ -2,8 +2,7 @@
 #include <alpm.h>
 #include <iostream>
 
-namespace pacmangui {
-namespace core {
+namespace pacmangui::core {
 
 Package::Package()
     : m_name("")
@@ -117,5 +116,4 @@ bool Package::operator!=(const Package& other) const
     return !(*this == other);
 }
 
-} // namespace core
-} // namespace pacmangui 
+} // namespace pacmangui::core 
