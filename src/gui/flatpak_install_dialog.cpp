@@ -21,11 +21,6 @@ FlatpakInstallDialog::FlatpakInstallDialog(const QString& appId, const QString& 
     m_outputEdit->setMinimumHeight(200);
     mainLayout->addWidget(m_outputEdit);
 
-    m_progressBar = new QProgressBar(this);
-    m_progressBar->setRange(0, 100);
-    m_progressBar->setValue(0);
-    mainLayout->addWidget(m_progressBar);
-
     QHBoxLayout* buttonLayout = new QHBoxLayout();
     buttonLayout->addStretch();
     m_cancelButton = new QPushButton(tr("Cancel"), this);
@@ -57,34 +52,10 @@ void FlatpakInstallDialog::onReadyRead() {
     m_outputEdit->moveCursor(QTextCursor::End);
     m_outputEdit->insertPlainText(output);
     m_outputEdit->moveCursor(QTextCursor::End);
-    parseProgress(output);
-}
-
-void FlatpakInstallDialog::parseProgress(const QString& output) {
-    // Try to find a percentage in the output (e.g., " 42%")
-    QRegularExpression percentRe("\\b(\\d{1,3})%\\b");
-    QRegularExpressionMatch match = percentRe.match(output);
-    if (match.hasMatch()) {
-        int percent = match.captured(1).toInt();
-        m_progressBar->setValue(qBound(0, percent, 100));
-    } else {
-        // Try to parse [xx/yy] style progress
-        QRegularExpression stepRe("\\[(\\d+)/(\\d+)\\]");
-        QRegularExpressionMatch stepMatch = stepRe.match(output);
-        if (stepMatch.hasMatch()) {
-            int current = stepMatch.captured(1).toInt();
-            int total = stepMatch.captured(2).toInt();
-            if (total > 0) {
-                int percent = (current * 100) / total;
-                m_progressBar->setValue(qBound(0, percent, 100));
-            }
-        }
-    }
 }
 
 void FlatpakInstallDialog::onProcessFinished(int exitCode, QProcess::ExitStatus status) {
     m_success = (exitCode == 0 && status == QProcess::NormalExit);
-    m_progressBar->setValue(m_success ? 100 : 0);
     m_cancelButton->setText(tr("Close"));
     m_cancelButton->setEnabled(true);
     emit installFinished(m_success);
