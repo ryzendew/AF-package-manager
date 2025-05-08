@@ -1,7 +1,0 @@
-/usr/bin/pacmangui
-/usr/share/applications/pacmangui.desktop
-/usr/share/pacmangui/styles/dark_colorful.qss
-/usr/share/pacmangui/styles/dynamic.qss
-/usr/share/pacmangui/styles/light.qss
-/usr/share/pacmangui/styles/light_colorful.qss
-/usr/share/pacmangui/styles/dark.qss
