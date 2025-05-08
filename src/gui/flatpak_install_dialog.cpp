@@ -3,6 +3,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTimer>
+#include <QRegularExpression>
 
 FlatpakInstallDialog::FlatpakInstallDialog(const QString& appId, const QString& remote, QWidget* parent)
     : QDialog(parent), m_process(new QProcess(this)), m_success(false)

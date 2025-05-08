@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 #include "gui/flatpak_manager_tab.hpp"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -40,6 +39,7 @@
 #include <QFutureWatcher>
 #include <QtConcurrent/QtConcurrent>
 #include <QCheckBox>
+#include "gui/flatpak_install_dialog.hpp"
 
 namespace pacmangui {
 namespace gui {
@@ -871,44 +871,17 @@ QString FlatpakManagerTab::getCurrentAppId() const
 }
 
 // Add a new method to install Flatpak packages
-=======
-#include "gui/flatpak_install_dialog.hpp"
-
->>>>>>> Stashed changes
 void FlatpakManagerTab::installFlatpak(const QString& appId, const QString& remote) {
     if (appId.isEmpty() || remote.isEmpty()) {
         QMessageBox::warning(this, tr("Installation Error"), 
                             tr("Application ID and remote are required for installation."));
         return;
     }
-<<<<<<< Updated upstream
-    
-=======
->>>>>>> Stashed changes
     // Confirm with the user
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, tr("Confirm Installation"),
                                  tr("Are you sure you want to install %1 from %2?").arg(appId).arg(remote),
                                  QMessageBox::Yes | QMessageBox::No);
-<<<<<<< Updated upstream
-    
-    if (reply != QMessageBox::Yes) {
-        return;
-    }
-    
-    // Show progress dialog
-    QProgressDialog progress(tr("Installing %1 from %2...").arg(appId).arg(remote), tr("Cancel"), 0, 0, this);
-    progress.setWindowModality(Qt::WindowModal);
-    progress.show();
-    QApplication::processEvents();
-    
-    // Perform the installation
-    bool success = m_packageManager->install_flatpak_package(appId.toStdString(), remote.toStdString());
-    
-    progress.close();
-    
-    if (success) {
-=======
     if (reply != QMessageBox::Yes) {
         return;
     }
@@ -916,13 +889,11 @@ void FlatpakManagerTab::installFlatpak(const QString& appId, const QString& remo
     FlatpakInstallDialog dlg(appId, remote, this);
     dlg.exec();
     if (dlg.wasSuccessful()) {
->>>>>>> Stashed changes
         emit statusMessage(tr("Successfully installed %1").arg(appId), 3000);
         refreshFlatpakList();
     } else {
         QMessageBox::critical(this, tr("Installation Failed"),
-<<<<<<< Updated upstream
-                             tr("Failed to install %1. Check the console for errors.").arg(appId));
+                             tr("Failed to install %1. Check the output for errors.").arg(appId));
         emit statusMessage(tr("Failed to install %1").arg(appId), 3000);
     }
 }
@@ -1166,9 +1137,3 @@ void FlatpakManagerTab::setShowUserApps(bool show) {
 
 } // namespace gui
 } // namespace pacmangui 
-=======
-                             tr("Failed to install %1. Check the output for errors.").arg(appId));
-        emit statusMessage(tr("Failed to install %1").arg(appId), 3000);
-    }
-} 
->>>>>>> Stashed changes

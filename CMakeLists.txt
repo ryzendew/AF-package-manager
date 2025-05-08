@@ -74,6 +74,7 @@ set(MOC_HEADERS
     include/gui/mainwindow.hpp
     include/gui/settingsdialog.hpp
     include/gui/flatpak_manager_tab.hpp
+    include/gui/flatpak_install_dialog.hpp
     ${WAYLAND_HEADERS}
 )
 
@@ -95,6 +96,7 @@ add_executable(pacmangui
     ${WAYLAND_SOURCES}
     ${MOC_HEADERS}
     ${RESOURCE_FILES}
+    src/gui/flatpak_install_dialog.cpp
 )
 
 # Link libraries
@@ -145,4 +147,4 @@ configure_file(
 
 add_custom_target(uninstall
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
-) 
+)
