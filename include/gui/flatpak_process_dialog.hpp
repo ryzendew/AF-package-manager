@@ -4,15 +4,16 @@
 #include <QTextEdit>
 #include <QPushButton>
 
-class FlatpakInstallDialog : public QDialog {
+class FlatpakProcessDialog : public QDialog {
     Q_OBJECT
 public:
-    FlatpakInstallDialog(const QString& appId, const QString& remote, QWidget* parent = nullptr);
-    ~FlatpakInstallDialog();
+    FlatpakProcessDialog(const QString& command, const QString& title, QWidget* parent = nullptr);
+    ~FlatpakProcessDialog();
     bool wasSuccessful() const;
+    void setSuccessString(const QString& str);
 
 signals:
-    void installFinished(bool success);
+    void processFinished(bool success);
 
 private slots:
     void onReadyRead();
@@ -24,4 +25,5 @@ private:
     QTextEdit* m_outputEdit;
     QPushButton* m_cancelButton;
     bool m_success;
+    QString m_successString;
 }; 

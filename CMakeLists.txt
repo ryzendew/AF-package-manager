@@ -74,7 +74,7 @@ set(MOC_HEADERS
     include/gui/mainwindow.hpp
     include/gui/settingsdialog.hpp
     include/gui/flatpak_manager_tab.hpp
-    include/gui/flatpak_install_dialog.hpp
+    include/gui/flatpak_process_dialog.hpp
     ${WAYLAND_HEADERS}
 )
 
@@ -96,7 +96,7 @@ add_executable(pacmangui
     ${WAYLAND_SOURCES}
     ${MOC_HEADERS}
     ${RESOURCE_FILES}
-    src/gui/flatpak_install_dialog.cpp
+    src/gui/flatpak_process_dialog.cpp
 )
 
 # Link libraries

@@ -39,7 +39,7 @@
 #include <QFutureWatcher>
 #include <QtConcurrent/QtConcurrent>
 #include <QCheckBox>
-#include "gui/flatpak_install_dialog.hpp"
+#include "gui/flatpak_process_dialog.hpp"
 
 namespace pacmangui {
 namespace gui {
@@ -620,36 +620,15 @@ void FlatpakManagerTab::onManageUserData() {
 void FlatpakManagerTab::onUninstall() {
     QString appId = getCurrentAppId();
     if (appId.isEmpty()) return;
+
+    // Get the remote from the current selection
+    QModelIndex current = m_listView->currentIndex();
+    if (!current.isValid()) return;
+    QModelIndex originIndex = m_listModel->index(current.row(), 3); // Origin/Remote column
+    QString remote = m_listModel->data(originIndex).toString();
     
-    // Confirm with the user
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, tr("Confirm Uninstall"),
-                                 tr("Are you sure you want to uninstall %1?").arg(appId),
-                                 QMessageBox::Yes | QMessageBox::No);
-    
-    if (reply != QMessageBox::Yes) {
-        return;
-    }
-    
-    // Show progress dialog
-    QProgressDialog progress(tr("Uninstalling %1...").arg(appId), tr("Cancel"), 0, 0, this);
-    progress.setWindowModality(Qt::WindowModal);
-    progress.show();
-    QApplication::processEvents();
-    
-    // Perform the uninstallation
-    bool success = m_packageManager->remove_flatpak_package(appId.toStdString());
-    
-    progress.close();
-    
-    if (success) {
-        emit statusMessage(tr("Successfully uninstalled %1").arg(appId), 3000);
-        refreshFlatpakList();
-    } else {
-        QMessageBox::critical(this, tr("Uninstall Failed"),
-                             tr("Failed to uninstall %1. Check the console for errors.").arg(appId));
-        emit statusMessage(tr("Failed to uninstall %1").arg(appId), 3000);
-    }
+    // Call the uninstallFlatpak method which handles the dialogs
+    uninstallFlatpak(appId, remote);
 }
 
 void FlatpakManagerTab::onRemoveUserData() {
@@ -885,8 +864,10 @@ void FlatpakManagerTab::installFlatpak(const QString& appId, const QString& remo
     if (reply != QMessageBox::Yes) {
         return;
     }
-    // Use the new FlatpakInstallDialog
-    FlatpakInstallDialog dlg(appId, remote, this);
+    QString cmd = QString("flatpak install -y %1 %2").arg(remote, appId);
+    QString title = tr("Installing %1 from %2...").arg(appId, remote);
+    FlatpakProcessDialog dlg(cmd, title, this);
+    dlg.setSuccessString("Installation complete.");
     dlg.exec();
     if (dlg.wasSuccessful()) {
         emit statusMessage(tr("Successfully installed %1").arg(appId), 3000);
@@ -1133,6 +1114,47 @@ void FlatpakManagerTab::setShowSystemApps(bool show) {
 void FlatpakManagerTab::setShowUserApps(bool show) {
     m_showUserApps = show;
     applySearchFilters(m_searchInput->text());
+}
+
+void FlatpakManagerTab::uninstallFlatpak(const QString& appId, const QString& remote) {
+    if (appId.isEmpty()) {
+        QMessageBox::warning(this, tr("Uninstall Error"),
+                            tr("Application ID is required for uninstallation."));
+        return;
+    }
+
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, tr("Confirm Uninstall"),
+                                 tr("Are you sure you want to uninstall %1? This cannot be undone.").arg(appId),
+                                 QMessageBox::Yes | QMessageBox::No);
+    if (reply != QMessageBox::Yes)
+        return;
+
+    QString cmd = QString("flatpak uninstall -y %1").arg(appId);
+    QString title = tr("Uninstalling %1...").arg(appId);
+    
+    FlatpakProcessDialog* dialog = new FlatpakProcessDialog(cmd, title, this);
+    dialog->setWindowModality(Qt::ApplicationModal);
+    dialog->setWindowTitle(tr("Uninstalling Application"));
+    connect(dialog, &FlatpakProcessDialog::processFinished, this, [this, dialog, appId](bool success) {
+        QMessageBox* completionDialog = new QMessageBox(this);
+        completionDialog->setWindowModality(Qt::ApplicationModal);
+        completionDialog->setWindowTitle(tr("Uninstallation Complete"));
+        if (success) {
+            completionDialog->setIcon(QMessageBox::Information);
+            completionDialog->setText(tr("Successfully uninstalled %1").arg(appId));
+        } else {
+            completionDialog->setIcon(QMessageBox::Warning);
+            completionDialog->setText(tr("Failed to uninstall %1").arg(appId));
+        }
+        completionDialog->setStandardButtons(QMessageBox::Close);
+        completionDialog->exec();
+        if (success) {
+            refreshFlatpakList();
+        }
+    });
+    dialog->exec();
+    dialog->deleteLater();
 }
 
 } // namespace gui

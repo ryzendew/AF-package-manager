@@ -339,13 +339,8 @@ bool FlatpakManager::remove_package(const std::string& app_id)
         }
     }
     
-    // Wait up to 5 minutes for completion
-    if (!process.waitForFinished(300000)) {
-        m_last_error = "Flatpak uninstallation timed out";
-        std::cerr << "ERROR: " << m_last_error << std::endl;
-        process.kill();
-        return false;
-    }
+    // Wait for completion without timeout
+    process.waitForFinished(-1);
     
     // Capture any remaining output
     QString output = process.readAll();

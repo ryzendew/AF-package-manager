@@ -36,6 +36,7 @@ public slots:
     void filterFlatpakList(const QString& filter);
     void onFlatpakSelected(const QModelIndex& current, const QModelIndex& previous);
     void installFlatpak(const QString& appId, const QString& remote);
+    void uninstallFlatpak(const QString& appId, const QString& remote);
     void setShowInstalledOnly(bool show);
     void setShowSystemApps(bool show);
     void setShowUserApps(bool show);
