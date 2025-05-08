@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/matt/AF-package-manager/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

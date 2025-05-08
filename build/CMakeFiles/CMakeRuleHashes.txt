@@ -1,0 +1,5 @@
+# Hashes of file build rules.
+c0f66206ef5ed6110998f8cb7f711330 CMakeFiles/pacmangui_autogen
+5c84c726a3bcbdaeecee735082a85597 CMakeFiles/uninstall
+d22eecb97f258116493553b18b3b781c pacmangui_autogen/3YJK5W5UP7/qrc_resources.cpp
+f7f3c14a8dd62872122007fda1735fa1 pacmangui_autogen/timestamp

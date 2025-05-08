@@ -38,6 +38,7 @@
 #include <QTimer>
 #include <QFutureWatcher>
 #include <QtConcurrent/QtConcurrent>
+#include <QCheckBox>
 
 namespace pacmangui {
 namespace gui {
@@ -46,12 +47,17 @@ FlatpakManagerTab::FlatpakManagerTab(QWidget* parent, core::PackageManager* pack
     : QWidget(parent)
     , m_packageManager(packageManager)
 {
+    qDebug() << "FlatpakManagerTab::constructor - start";
     setupUi();
+    qDebug() << "FlatpakManagerTab::constructor - after setupUi";
     connectSignals();
-    
+    qDebug() << "FlatpakManagerTab::constructor - after connectSignals";
     // Populate initial data
     refreshFlatpakList();
+    qDebug() << "FlatpakManagerTab::constructor - after refreshFlatpakList";
     refreshFlatpakRemotes();
+    qDebug() << "FlatpakManagerTab::constructor - after refreshFlatpakRemotes";
+    qDebug() << "FlatpakManagerTab::constructor - end";
 }
 
 FlatpakManagerTab::~FlatpakManagerTab()
@@ -61,6 +67,7 @@ FlatpakManagerTab::~FlatpakManagerTab()
 
 void FlatpakManagerTab::setupUi()
 {
+    qDebug() << "FlatpakManagerTab::setupUi - start";
     // Only setup if Flatpak is available
     if (!m_packageManager->is_flatpak_available()) {
         QVBoxLayout* layout = new QVBoxLayout(this);
@@ -69,46 +76,33 @@ void FlatpakManagerTab::setupUi()
         layout->addWidget(notAvailableLabel);
         return;
     }
-    
-    // Create the main layout
-    QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->setContentsMargins(8, 8, 8, 8);
-    mainLayout->setSpacing(0);
-    
-    // Create the splitter
+
+    // Create the main splitter
     m_splitter = new QSplitter(Qt::Horizontal, this);
-    m_splitter->setHandleWidth(1); // Thinner splitter handle
-    mainLayout->addWidget(m_splitter);
-    
+    m_splitter->setChildrenCollapsible(false);
+
     // ===== LEFT PANEL =====
-    QWidget* leftPanel = new QWidget(m_splitter);
+    QWidget* leftPanel = new QWidget(this);
     QVBoxLayout* leftLayout = new QVBoxLayout(leftPanel);
     leftLayout->setContentsMargins(0, 0, 0, 0);
     leftLayout->setSpacing(8);
-    
-    // Search section
-    QGroupBox* searchGroup = new QGroupBox(tr("Search Flatpak Packages"), leftPanel);
-    QVBoxLayout* searchGroupLayout = new QVBoxLayout(searchGroup);
-    searchGroupLayout->setContentsMargins(8, 16, 8, 8);
-    searchGroupLayout->setSpacing(8);
-    
-    // Search input and button
-    QHBoxLayout* searchLayout = new QHBoxLayout();
-    m_searchInput = new QLineEdit(searchGroup);
+
+    // Search bar section (always visible)
+    QHBoxLayout* searchBarLayout = new QHBoxLayout();
+    m_searchInput = new QLineEdit(this);
     m_searchInput->setPlaceholderText(tr("Search for Flatpak packages..."));
     m_searchInput->setMinimumHeight(32);
     m_searchInput->setProperty("class", "search-input");
-    
-    m_searchButton = new QPushButton(tr("Search"), searchGroup);
+    searchBarLayout->addWidget(m_searchInput);
+    m_searchButton = new QPushButton(tr("Search"), this);
     m_searchButton->setMinimumHeight(32);
     m_searchButton->setProperty("class", "primary-button");
-    
-    searchLayout->addWidget(m_searchInput);
-    searchLayout->addWidget(m_searchButton);
-    searchGroupLayout->addLayout(searchLayout);
-    
-    // Search results
-    m_searchResultsView = new QTreeView(searchGroup);
+    searchBarLayout->addWidget(m_searchButton);
+    leftLayout->addLayout(searchBarLayout);
+    qDebug() << "FlatpakManagerTab::setupUi - search bar created";
+
+    // Results table (always visible)
+    m_searchResultsView = new QTreeView(this);
     m_searchResultsView->setAlternatingRowColors(true);
     m_searchResultsView->setSelectionMode(QAbstractItemView::SingleSelection);
     m_searchResultsView->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -118,53 +112,46 @@ void FlatpakManagerTab::setupUi()
     m_searchResultsView->setMinimumHeight(200);
     m_searchResultsView->setProperty("class", "search-results");
     m_searchResultsView->setFrameShape(QFrame::NoFrame);
-    
     m_searchResultsModel = new QStandardItemModel(0, 5, this);
     m_searchResultsModel->setHorizontalHeaderLabels(
         QStringList() << tr("Name") << tr("Application ID") << tr("Version") << tr("Remote") << tr("Description"));
     m_searchResultsView->setModel(m_searchResultsModel);
-    
-    // Set column sizes for better readability
-    m_searchResultsView->setColumnWidth(0, 200);  // Name
-    m_searchResultsView->setColumnWidth(1, 250);  // Application ID
-    m_searchResultsView->setColumnWidth(2, 100);  // Version
-    m_searchResultsView->setColumnWidth(3, 100);  // Remote
-    m_searchResultsView->header()->setSectionResizeMode(4, QHeaderView::Stretch); // Description
-    
-    // Set resize modes for better column behavior
-    m_searchResultsView->header()->setSectionResizeMode(0, QHeaderView::Interactive);  // Name - Allow manual resize
-    m_searchResultsView->header()->setSectionResizeMode(1, QHeaderView::Interactive);  // Application ID - Allow manual resize
-    m_searchResultsView->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents); // Version - Fit content
-    m_searchResultsView->header()->setSectionResizeMode(3, QHeaderView::ResizeToContents); // Remote - Fit content
-    m_searchResultsView->header()->setSectionResizeMode(4, QHeaderView::Stretch);  // Description - Fill remaining space
-    
-    searchGroupLayout->addWidget(m_searchResultsView);
-    
+    m_searchResultsView->setColumnWidth(0, 200);
+    m_searchResultsView->setColumnWidth(1, 250);
+    m_searchResultsView->setColumnWidth(2, 100);
+    m_searchResultsView->setColumnWidth(3, 100);
+    m_searchResultsView->header()->setSectionResizeMode(4, QHeaderView::Stretch);
+    m_searchResultsView->header()->setSectionResizeMode(0, QHeaderView::Interactive);
+    m_searchResultsView->header()->setSectionResizeMode(1, QHeaderView::Interactive);
+    m_searchResultsView->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    m_searchResultsView->header()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
+    m_searchResultsView->header()->setSectionResizeMode(4, QHeaderView::Stretch);
+    leftLayout->addWidget(m_searchResultsView);
+    qDebug() << "FlatpakManagerTab::setupUi - search results view created";
+
     // Install button for search results
-    m_installSelectedButton = new QPushButton(tr("Install Selected"), searchGroup);
+    m_installSelectedButton = new QPushButton(tr("Install Selected"), this);
     m_installSelectedButton->setMinimumHeight(32);
     m_installSelectedButton->setProperty("class", "primary-button");
     m_installSelectedButton->setEnabled(false);
-    searchGroupLayout->addWidget(m_installSelectedButton);
-    
-    leftLayout->addWidget(searchGroup);
-    
+    leftLayout->addWidget(m_installSelectedButton);
+    qDebug() << "FlatpakManagerTab::setupUi - install button created";
+
     // Installed packages section
     QGroupBox* installedGroup = new QGroupBox(tr("Installed Packages"), leftPanel);
     QVBoxLayout* installedLayout = new QVBoxLayout(installedGroup);
     installedLayout->setContentsMargins(8, 16, 8, 8);
     installedLayout->setSpacing(8);
-    
+
     // Filter input for installed packages
     QHBoxLayout* filterLayout = new QHBoxLayout();
     m_filterInput = new QLineEdit(installedGroup);
     m_filterInput->setPlaceholderText(tr("Filter installed packages..."));
     m_filterInput->setMinimumHeight(32);
     m_filterInput->setProperty("class", "filter-input");
-    
     filterLayout->addWidget(m_filterInput);
     installedLayout->addLayout(filterLayout);
-    
+
     // Installed packages list
     m_listView = new QTreeView(installedGroup);
     m_listView->setAlternatingRowColors(true);
@@ -176,27 +163,23 @@ void FlatpakManagerTab::setupUi()
     m_listView->setMinimumHeight(300);
     m_listView->setProperty("class", "list-view");
     m_listView->setFrameShape(QFrame::NoFrame);
-    
     m_listModel = new QStandardItemModel(0, 4, this);
     m_listModel->setHorizontalHeaderLabels(
         QStringList() << tr("Name") << tr("Application ID") << tr("Version") << tr("Origin"));
     m_listView->setModel(m_listModel);
-    
     installedLayout->addWidget(m_listView);
-    
     leftLayout->addWidget(installedGroup);
-    
+
     // ===== RIGHT PANEL =====
     QScrollArea* scrollArea = new QScrollArea();
     scrollArea->setWidgetResizable(true);
     scrollArea->setFrameShape(QFrame::NoFrame);
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollArea->setProperty("class", "details-panel");
-    
+
     QWidget* rightPanel = new QWidget();
     scrollArea->setWidget(rightPanel);
-    m_splitter->addWidget(scrollArea);
-    
+
     QVBoxLayout* rightLayout = new QVBoxLayout(rightPanel);
     rightLayout->setContentsMargins(16, 16, 16, 16);
     rightLayout->setSpacing(16);
@@ -422,11 +405,18 @@ void FlatpakManagerTab::setupUi()
     
     rightLayout->addStretch();
     
-    // Set initial splitter sizes (75% left, 25% right)
-    QList<int> sizes;
-    sizes << 75 << 25;
-    m_splitter->setSizes(sizes);
-    
+    // Add panels to splitter
+    m_splitter->addWidget(leftPanel);
+    m_splitter->addWidget(scrollArea);
+    m_splitter->setStretchFactor(0, 3);
+    m_splitter->setStretchFactor(1, 2);
+
+    // Set the main layout
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(8, 8, 8, 8);
+    mainLayout->setSpacing(0);
+    mainLayout->addWidget(m_splitter);
+
     // Set initial values for the right panel
     m_nameLabel->setText(tr("Name"));
     m_versionLabel->setText(tr("Version"));
@@ -446,14 +436,26 @@ void FlatpakManagerTab::setupUi()
     
     // Show initial package details if available
     QTimer::singleShot(0, this, [this]() {
-        if (m_listModel->rowCount() > 0) {
-            m_listView->setCurrentIndex(m_listModel->index(0, 0));
+        qDebug() << "QTimer::singleShot - checking for initial selection";
+        if (m_listModel && m_listModel->rowCount() > 0) {
+            int row = 0;
+            qDebug() << "QTimer::singleShot - setting current index to row" << row;
+            QModelIndex idx = m_listModel->index(row, 0);
+            if (idx.isValid()) {
+                m_listView->setCurrentIndex(idx);
+            } else {
+                qDebug() << "QTimer::singleShot - index is not valid for row" << row;
+            }
+        } else {
+            qDebug() << "QTimer::singleShot - no rows in m_listModel or m_listModel is null";
         }
     });
+    qDebug() << "FlatpakManagerTab::setupUi - end";
 }
 
 void FlatpakManagerTab::connectSignals()
 {
+    qDebug() << "FlatpakManagerTab::connectSignals - start";
     connect(m_searchInput, &QLineEdit::textChanged, this, &FlatpakManagerTab::onSearchTextChanged);
     connect(m_searchButton, &QPushButton::clicked, this, &FlatpakManagerTab::onSearchButtonClicked);
     connect(m_searchResultsView->selectionModel(), &QItemSelectionModel::currentChanged,
@@ -468,10 +470,12 @@ void FlatpakManagerTab::connectSignals()
     connect(m_removeDataButton, &QPushButton::clicked, this, &FlatpakManagerTab::onRemoveUserData);
     connect(m_createSnapshotButton, &QPushButton::clicked, this, &FlatpakManagerTab::onCreateSnapshot);
     connect(m_restoreSnapshotButton, &QPushButton::clicked, this, &FlatpakManagerTab::onRestoreSnapshot);
+    qDebug() << "FlatpakManagerTab::connectSignals - end";
 }
 
 void FlatpakManagerTab::refreshFlatpakList()
 {
+    qDebug() << "FlatpakManagerTab::refreshFlatpakList - start";
     // Clear existing data
     m_listModel->clear();
     m_listModel->setHorizontalHeaderLabels(
@@ -507,10 +511,12 @@ void FlatpakManagerTab::refreshFlatpakList()
     
     // Update status
     emit statusMessage(tr("Loaded %1 Flatpak applications").arg(flatpaks.size()), 3000);
+    qDebug() << "FlatpakManagerTab::refreshFlatpakList - end";
 }
 
 void FlatpakManagerTab::refreshFlatpakRemotes()
 {
+    qDebug() << "FlatpakManagerTab::refreshFlatpakRemotes - start";
     // Run flatpak remotes command
     QProcess process;
     process.start("flatpak", QStringList() << "remotes");
@@ -521,6 +527,7 @@ void FlatpakManagerTab::refreshFlatpakRemotes()
     
     // Update status
     emit statusMessage(tr("Found %1 Flatpak remotes").arg(lines.size()), 3000);
+    qDebug() << "FlatpakManagerTab::refreshFlatpakRemotes - end";
 }
 
 // Implementation of filterFlatpakList
@@ -557,41 +564,47 @@ void FlatpakManagerTab::filterFlatpakList(const QString& filter) {
 // Implementation of onFlatpakSelected
 void FlatpakManagerTab::onFlatpakSelected(const QModelIndex& current, const QModelIndex& previous)
 {
-    Q_UNUSED(previous);
-    
-    if (!current.isValid()) {
-        // Clear details
-        m_nameLabel->clear();
-        m_versionLabel->clear();
-        m_branchLabel->clear();
-        m_originLabel->clear();
-        m_installationLabel->clear();
-        m_sizeLabel->clear();
-        m_runtimeLabel->clear();
-        m_descriptionLabel->clear();
-        
-        // Disable action buttons
-        m_manageUserDataButton->setEnabled(false);
-        m_uninstallButton->setEnabled(false);
-        m_removeDataButton->setEnabled(false);
-        m_createSnapshotButton->setEnabled(false);
-        m_restoreSnapshotButton->setEnabled(false);
+    qDebug() << "onFlatpakSelected - start";
+    if (m_selectingFlatpak) {
+        qDebug() << "onFlatpakSelected - guard active, skipping";
         return;
     }
-    
-    // Get the app ID from the selected row
-    QModelIndex nameIndex = m_listModel->index(current.row(), 1); // Application ID column
-    QString appId = m_listModel->data(nameIndex).toString();
-    
-    // Update the details panel
-    updateFlatpakDetails(appId);
-    
-    // Enable action buttons
-    m_manageUserDataButton->setEnabled(true);
-    m_uninstallButton->setEnabled(true);
-    m_removeDataButton->setEnabled(true);
-    m_createSnapshotButton->setEnabled(true);
-    m_restoreSnapshotButton->setEnabled(true);
+    m_selectingFlatpak = true;
+    Q_UNUSED(previous);
+    if (!current.isValid()) {
+        qDebug() << "onFlatpakSelected - current index is not valid";
+        if (m_nameLabel) m_nameLabel->clear();
+        if (m_versionLabel) m_versionLabel->clear();
+        if (m_branchLabel) m_branchLabel->clear();
+        if (m_originLabel) m_originLabel->clear();
+        if (m_installationLabel) m_installationLabel->clear();
+        if (m_sizeLabel) m_sizeLabel->clear();
+        if (m_runtimeLabel) m_runtimeLabel->clear();
+        if (m_descriptionLabel) m_descriptionLabel->clear();
+        if (m_manageUserDataButton) m_manageUserDataButton->setEnabled(false);
+        if (m_uninstallButton) m_uninstallButton->setEnabled(false);
+        if (m_removeDataButton) m_removeDataButton->setEnabled(false);
+        if (m_createSnapshotButton) m_createSnapshotButton->setEnabled(false);
+        if (m_restoreSnapshotButton) m_restoreSnapshotButton->setEnabled(false);
+        m_selectingFlatpak = false;
+        return;
+    }
+    qDebug() << "onFlatpakSelected - current index is valid, row:" << current.row();
+    QModelIndex nameIndex = m_listModel ? m_listModel->index(current.row(), 1) : QModelIndex();
+    QString appId = nameIndex.isValid() ? m_listModel->data(nameIndex).toString() : QString();
+    qDebug() << "onFlatpakSelected - appId:" << appId;
+    if (!appId.isEmpty()) {
+        updateFlatpakDetails(appId);
+    } else {
+        qDebug() << "onFlatpakSelected - appId is empty, skipping updateFlatpakDetails";
+    }
+    if (m_manageUserDataButton) m_manageUserDataButton->setEnabled(true);
+    if (m_uninstallButton) m_uninstallButton->setEnabled(true);
+    if (m_removeDataButton) m_removeDataButton->setEnabled(true);
+    if (m_createSnapshotButton) m_createSnapshotButton->setEnabled(true);
+    if (m_restoreSnapshotButton) m_restoreSnapshotButton->setEnabled(true);
+    m_selectingFlatpak = false;
+    qDebug() << "onFlatpakSelected - end";
 }
 
 // Stub implementations for all the other required methods
@@ -683,24 +696,24 @@ void FlatpakManagerTab::onInstallSelected()
 
 void FlatpakManagerTab::updateFlatpakDetails(const QString& appId)
 {
+    qDebug() << "updateFlatpakDetails - start for appId:" << appId;
     if (appId.isEmpty()) {
+        qDebug() << "updateFlatpakDetails - appId is empty, returning";
         return;
     }
-    
     // Get package details
     auto packages = m_packageManager->get_installed_flatpak_packages();
+    qDebug() << "updateFlatpakDetails - got" << packages.size() << "installed packages";
     auto it = std::find_if(packages.begin(), packages.end(),
         [&appId](const auto& pkg) {
             return QString::fromStdString(pkg.get_app_id()) == appId;
         });
-    
     if (it == packages.end()) {
-        qDebug() << "Package not found:" << appId;
+        qDebug() << "updateFlatpakDetails - package not found for appId:" << appId;
         return;
     }
-    
     const auto& package = *it;
-    
+    qDebug() << "updateFlatpakDetails - found package, updating labels";
     // Update labels with package information
     m_nameLabel->setText(QString::fromStdString(package.get_name()));
     m_versionLabel->setText(QString::fromStdString(package.get_version()));
@@ -710,51 +723,41 @@ void FlatpakManagerTab::updateFlatpakDetails(const QString& appId)
     m_sizeLabel->setText(QString::fromStdString(package.get_size()));
     m_runtimeLabel->setText(QString::fromStdString(package.get_runtime()));
     m_descriptionLabel->setText(QString::fromStdString(package.get_description()));
-    
     // Clear all previous permissions first
     m_filesystemPermsText->clear();
     m_devicePermsText->clear();
     m_featurePermsText->clear();
     m_socketPermsText->clear();
     m_otherPermsText->clear();
-    
     // Hide all permission sections initially
     m_filesystemPermsWidget->setVisible(false);
     m_devicePermsWidget->setVisible(false);
     m_featurePermsWidget->setVisible(false);
     m_socketPermsWidget->setVisible(false);
     m_otherPermsWidget->setVisible(false);
-    
     // Get permissions
     QProcess process;
     process.start("flatpak", QStringList() << "info" << "--show-permissions" << appId);
     process.waitForFinished();
-    
     QString output = process.readAllStandardOutput();
-    qDebug() << "Flatpak permissions output:" << output;  // Debug output
-    
+    qDebug() << "Flatpak permissions output:" << output;
     // Parse and categorize permissions
     QStringList lines = output.split('\n');
     QStringList filesystemPerms, devicePerms, featurePerms, socketPerms, otherPerms;
-    
     bool inPermissions = false;
     for (const QString& line : lines) {
         QString trimmed = line.trimmed();
-        qDebug() << "Processing line:" << trimmed;  // Debug output
-        
+        qDebug() << "Processing line:" << trimmed;
         if (trimmed.startsWith("Permissions:")) {
             inPermissions = true;
             continue;
         }
-        
         if (inPermissions) {
             if (trimmed.isEmpty()) {
                 continue;
             }
-            
             QString perm = trimmed;
-            qDebug() << "Found permission:" << perm;  // Debug output
-            
+            qDebug() << "Found permission:" << perm;
             if (perm.contains("filesystem=") || perm.contains("home") || perm.contains("host") || 
                 perm.contains("xdg-") || perm.contains("~/"))
                 filesystemPerms << "• " + perm;
@@ -771,57 +774,52 @@ void FlatpakManagerTab::updateFlatpakDetails(const QString& appId)
                 otherPerms << "• " + perm;
         }
     }
-    
     // If no permissions found, show a message
     if (filesystemPerms.isEmpty() && devicePerms.isEmpty() && 
         featurePerms.isEmpty() && socketPerms.isEmpty() && otherPerms.isEmpty()) {
-        
         m_filesystemPermsWidget->setVisible(true);
         m_filesystemPermsText->setText(tr("No special permissions required"));
-        
         m_devicePermsWidget->setVisible(false);
         m_featurePermsWidget->setVisible(false);
         m_socketPermsWidget->setVisible(false);
         m_otherPermsWidget->setVisible(false);
     } else {
-        // Update permission sections
         if (!filesystemPerms.isEmpty()) {
             m_filesystemPermsWidget->setVisible(true);
             m_filesystemPermsText->setText(filesystemPerms.join('\n'));
         }
-        
         if (!devicePerms.isEmpty()) {
             m_devicePermsWidget->setVisible(true);
             m_devicePermsText->setText(devicePerms.join('\n'));
         }
-        
         if (!featurePerms.isEmpty()) {
             m_featurePermsWidget->setVisible(true);
             m_featurePermsText->setText(featurePerms.join('\n'));
         }
-        
         if (!socketPerms.isEmpty()) {
             m_socketPermsWidget->setVisible(true);
             m_socketPermsText->setText(socketPerms.join('\n'));
         }
-        
         if (!otherPerms.isEmpty()) {
             m_otherPermsWidget->setVisible(true);
             m_otherPermsText->setText(otherPerms.join('\n'));
         }
     }
-    
     // Update user data info
     updateUserDataInfo(appId);
+    qDebug() << "updateFlatpakDetails - end for appId:" << appId;
 }
 
 void FlatpakManagerTab::updateUserDataInfo(const QString& appId)
 {
+    qDebug() << "updateUserDataInfo - start for appId:" << appId;
     QString dataPath = getDataPath(appId);
+    qDebug() << "updateUserDataInfo - dataPath:" << dataPath;
     QString dataSize = calculateDirSize(dataPath);
-    
+    qDebug() << "updateUserDataInfo - dataSize:" << dataSize;
     // Update status
     emit statusMessage(tr("User data size: %1").arg(dataSize), 3000);
+    qDebug() << "updateUserDataInfo - end for appId:" << appId;
 }
 
 QString FlatpakManagerTab::calculateDirSize(const QString& path) {
@@ -919,7 +917,7 @@ void FlatpakManagerTab::onSearchTextChanged(const QString& text)
     if (text.length() >= 2) {
         QTimer::singleShot(500, this, [this, text]() {
             if (m_searchInput->text() == text) {
-                performAsyncSearch(text);
+                applySearchFilters(text);
             }
         });
     } else {
@@ -938,11 +936,80 @@ void FlatpakManagerTab::onSearchButtonClicked()
         return;
     }
     
-    performAsyncSearch(searchText);
+    applySearchFilters(searchText);
 }
 
-void FlatpakManagerTab::performAsyncSearch(const QString& searchTerm)
-{
+void FlatpakManagerTab::applySearchFilters(const QString& searchTerm) {
+    m_currentFilter = searchTerm;
+    performAsyncSearch(searchTerm);
+}
+
+void FlatpakManagerTab::clearSearchCache() {
+    m_searchCache.clear();
+}
+
+void FlatpakManagerTab::addToSearchCache(const QString& searchTerm, const std::vector<pacmangui::core::FlatpakPackage>& results) {
+    // Remove old entries
+    QDateTime now = QDateTime::currentDateTime();
+    m_searchCache.erase(
+        std::remove_if(m_searchCache.begin(), m_searchCache.end(),
+            [now](const SearchCacheEntry& entry) {
+                return entry.timestamp.msecsTo(now) > CACHE_TIMEOUT_MS;
+            }
+        ),
+        m_searchCache.end()
+    );
+
+    // Add new entry
+    SearchCacheEntry entry;
+    entry.searchTerm = searchTerm;
+    entry.results = results;
+    entry.timestamp = now;
+    m_searchCache.prepend(entry);
+
+    // Limit cache size
+    if (m_searchCache.size() > MAX_CACHE_SIZE) {
+        m_searchCache.removeLast();
+    }
+}
+
+bool FlatpakManagerTab::getFromSearchCache(const QString& searchTerm, std::vector<pacmangui::core::FlatpakPackage>& results) {
+    QDateTime now = QDateTime::currentDateTime();
+    for (auto it = m_searchCache.begin(); it != m_searchCache.end(); ++it) {
+        if (it->searchTerm == searchTerm && it->timestamp.msecsTo(now) <= CACHE_TIMEOUT_MS) {
+            results = it->results;
+            return true;
+        }
+    }
+    return false;
+}
+
+void FlatpakManagerTab::filterResults(std::vector<pacmangui::core::FlatpakPackage>& results) {
+    results.erase(
+        std::remove_if(results.begin(), results.end(),
+            [this](const pacmangui::core::FlatpakPackage& package) {
+                // Filter by installation status
+                if (m_showInstalledOnly && !package.is_installed()) {
+                    return true;
+                }
+
+                // Filter by system/user apps
+                bool isSystemApp = package.get_repository() == "system";
+                if (isSystemApp && !m_showSystemApps) {
+                    return true;
+                }
+                if (!isSystemApp && !m_showUserApps) {
+                    return true;
+                }
+
+                return false;
+            }
+        ),
+        results.end()
+    );
+}
+
+void FlatpakManagerTab::performAsyncSearch(const QString& searchTerm) {
     // Clear previous results
     m_searchResultsModel->clear();
     m_searchResultsModel->setHorizontalHeaderLabels(
@@ -950,6 +1017,17 @@ void FlatpakManagerTab::performAsyncSearch(const QString& searchTerm)
     
     // Show searching status
     emit statusMessage(tr("Searching for Flatpak packages matching '%1'...").arg(searchTerm), 0);
+    
+    // Check cache first
+    std::vector<pacmangui::core::FlatpakPackage> cachedResults;
+    if (getFromSearchCache(searchTerm, cachedResults)) {
+        // Apply filters to cached results
+        filterResults(cachedResults);
+        
+        // Update UI with filtered results
+        updateSearchResults(cachedResults);
+        return;
+    }
     
     // Create a new watcher if needed
     if (!m_searchWatcher) {
@@ -966,48 +1044,50 @@ void FlatpakManagerTab::performAsyncSearch(const QString& searchTerm)
     m_searchWatcher->setFuture(future);
 }
 
-void FlatpakManagerTab::onSearchCompleted()
-{
+void FlatpakManagerTab::onSearchCompleted() {
     auto results = m_searchWatcher->result();
     
+    // Cache the results
+    addToSearchCache(m_searchInput->text(), results);
+    
+    // Apply filters
+    filterResults(results);
+    
+    // Update UI with filtered results
+    updateSearchResults(results);
+}
+
+void FlatpakManagerTab::updateSearchResults(const std::vector<pacmangui::core::FlatpakPackage>& results) {
     // Clear previous results
     m_searchResultsModel->clear();
     m_searchResultsModel->setHorizontalHeaderLabels(
         QStringList() << tr("Name") << tr("Application ID") << tr("Version") << tr("Remote") << tr("Description"));
-    
+
+    qDebug() << "Updating search results model with" << results.size() << "results.";
     // Update the search results model
     for (const auto& package : results) {
         QList<QStandardItem*> row;
-        
         // Get a more user-friendly name
         QString displayName = QString::fromStdString(package.get_name());
         if (displayName.isEmpty() || displayName == QString::fromStdString(package.get_app_id())) {
-            // If name is empty or same as app_id, try to make app_id more readable
             QString appId = QString::fromStdString(package.get_app_id());
             QStringList parts = appId.split(".");
             if (parts.size() >= 3) {
                 displayName = parts.last();
-                // Capitalize first letter and convert remaining dots to spaces
                 displayName[0] = displayName[0].toUpper();
                 displayName.replace(".", " ");
             }
         }
-        
         QStandardItem* nameItem = new QStandardItem(displayName);
         QStandardItem* appIdItem = new QStandardItem(QString::fromStdString(package.get_app_id()));
         QStandardItem* versionItem = new QStandardItem(QString::fromStdString(package.get_version()));
         QStandardItem* remoteItem = new QStandardItem(QString::fromStdString(package.get_repository()));
         QStandardItem* descItem = new QStandardItem(QString::fromStdString(package.get_description()));
-        
-        // Store the app ID and remote for installation
         nameItem->setData(QString::fromStdString(package.get_app_id()), Qt::UserRole);
         nameItem->setData(QString::fromStdString(package.get_repository()), Qt::UserRole + 1);
-        
-        // Set tooltips for better UX
         nameItem->setToolTip(displayName);
         appIdItem->setToolTip(QString::fromStdString(package.get_app_id()));
         descItem->setToolTip(QString::fromStdString(package.get_description()));
-        
         row << nameItem << appIdItem << versionItem << remoteItem << descItem;
         m_searchResultsModel->appendRow(row);
     }
@@ -1035,13 +1115,34 @@ void FlatpakManagerTab::onSearchResultSelected(const QModelIndex& current, const
 
 void FlatpakManagerTab::resizeEvent(QResizeEvent* event)
 {
+    qDebug() << "FlatpakManagerTab::resizeEvent - start";
     QWidget::resizeEvent(event);
-    
     // Maintain 75/25 split
-    int totalWidth = m_splitter->width();
-    QList<int> sizes;
-    sizes << (totalWidth * 75) / 100 << (totalWidth * 25) / 100;
-    m_splitter->setSizes(sizes);
+    if (m_splitter) {
+        int totalWidth = m_splitter->width();
+        QList<int> sizes;
+        sizes << (totalWidth * 75) / 100 << (totalWidth * 25) / 100;
+        m_splitter->setSizes(sizes);
+        qDebug() << "FlatpakManagerTab::resizeEvent - splitter resized to" << sizes;
+    } else {
+        qDebug() << "FlatpakManagerTab::resizeEvent - m_splitter is null, skipping resize logic";
+    }
+    qDebug() << "FlatpakManagerTab::resizeEvent - end";
+}
+
+void FlatpakManagerTab::setShowInstalledOnly(bool show) {
+    m_showInstalledOnly = show;
+    applySearchFilters(m_searchInput->text());
+}
+
+void FlatpakManagerTab::setShowSystemApps(bool show) {
+    m_showSystemApps = show;
+    applySearchFilters(m_searchInput->text());
+}
+
+void FlatpakManagerTab::setShowUserApps(bool show) {
+    m_showUserApps = show;
+    applySearchFilters(m_searchInput->text());
 }
 
 } // namespace gui

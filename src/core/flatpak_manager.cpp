@@ -10,9 +10,67 @@
 #include <set>
 #include <tuple>
 #include <unordered_map>
+#include <algorithm>
 
 namespace pacmangui {
 namespace core {
+
+namespace {
+    // Calculate Levenshtein distance for fuzzy matching
+    int levenshteinDistance(const std::string& s1, const std::string& s2) {
+        const size_t len1 = s1.size();
+        const size_t len2 = s2.size();
+        std::vector<std::vector<int>> d(len1 + 1, std::vector<int>(len2 + 1));
+        
+        for (size_t i = 0; i <= len1; ++i) d[i][0] = i;
+        for (size_t j = 0; j <= len2; ++j) d[0][j] = j;
+        
+        for (size_t i = 1; i <= len1; ++i) {
+            for (size_t j = 1; j <= len2; ++j) {
+                d[i][j] = std::min({
+                    d[i-1][j] + 1,
+                    d[i][j-1] + 1,
+                    d[i-1][j-1] + (s1[i-1] == s2[j-1] ? 0 : 1)
+                });
+            }
+        }
+        return d[len1][len2];
+    }
+    
+    // Calculate search score for ranking
+    double calculateSearchScore(const std::string& search_term, const std::string& app_id, 
+                              const std::string& name, const std::string& description) {
+        double score = 0.0;
+        std::string lowercase_search = search_term;
+        std::transform(lowercase_search.begin(), lowercase_search.end(), lowercase_search.begin(), ::tolower);
+        
+        std::string lowercase_app_id = app_id;
+        std::transform(lowercase_app_id.begin(), lowercase_app_id.end(), lowercase_app_id.begin(), ::tolower);
+        
+        std::string lowercase_name = name;
+        std::transform(lowercase_name.begin(), lowercase_name.end(), lowercase_name.begin(), ::tolower);
+        
+        std::string lowercase_desc = description;
+        std::transform(lowercase_desc.begin(), lowercase_desc.end(), lowercase_desc.begin(), ::tolower);
+        
+        // Exact matches get highest score
+        if (lowercase_app_id.find(lowercase_search) != std::string::npos) score += 100.0;
+        if (lowercase_name.find(lowercase_search) != std::string::npos) score += 80.0;
+        if (app_id.find(lowercase_search) != std::string::npos) score += 100.0;
+        if (name.find(lowercase_search) != std::string::npos) score += 80.0;
+        if (description.find(lowercase_search) != std::string::npos) score += 40.0;
+        
+        // Fuzzy matches get partial scores
+        double fuzzy_score = 0.0;
+        int distance = levenshteinDistance(lowercase_search, name);
+        if (distance <= 3) {
+            fuzzy_score = (3 - distance) * 20.0;
+        }
+        score += fuzzy_score;
+        
+        return score;
+    }
+}
 
 FlatpakManager::FlatpakManager()
     : m_is_available(false), m_last_error("")
@@ -142,164 +200,51 @@ std::vector<FlatpakPackage> FlatpakManager::get_installed_packages() const
 
 std::vector<std::shared_ptr<FlatpakPackage>> FlatpakManager::search_by_name(const std::string& name) const {
     std::vector<std::shared_ptr<FlatpakPackage>> packages;
-    
     if (!m_is_available) {
         qDebug() << "Flatpak is not available";
         return packages;
     }
-    
-    qDebug() << "FlatpakManager: Searching for Flatpak packages matching" << QString::fromStdString(name);
-    
-    // Lowercase the search term for case-insensitive matching
-    std::string lowercase_name = name;
-    std::transform(lowercase_name.begin(), lowercase_name.end(), lowercase_name.begin(), ::tolower);
-    
-    // Known popular applications with their app IDs for direct lookup
-    const std::unordered_map<std::string, std::vector<std::string>> known_apps = {
-        {"discord", {"com.discordapp.Discord", "io.github.spacingbat3.webcord"}},
-        {"vencord", {"com.vencord.Vesktop"}},
-        {"vesktop", {"com.vencord.Vesktop"}},
-        {"spotify", {"com.spotify.Client"}},
-        {"signal", {"org.signal.Signal"}},
-        {"telegram", {"org.telegram.desktop"}},
-        {"vscodium", {"com.vscodium.codium"}},
-        {"firefox", {"org.mozilla.firefox"}},
-        {"chrome", {"com.google.Chrome"}},
-        {"brave", {"com.brave.Browser"}}
-    };
-    
-    // Always try the direct lookup first
-    bool found_known_app = false;
-    
-    // Check if the search term matches any known apps
-    for (const auto& [keyword, app_ids] : known_apps) {
-        if (lowercase_name.find(keyword) != std::string::npos) {
-            found_known_app = true;
-            qDebug() << "FlatpakManager: Found keyword match for" << QString::fromStdString(keyword);
-            
-            for (const auto& app_id : app_ids) {
-                qDebug() << "FlatpakManager: Checking for known app" << QString::fromStdString(app_id);
-                
-                // Create package regardless of whether we can verify it exists
-                auto package = std::make_shared<FlatpakPackage>(app_id, "latest");
-                package->set_app_id(app_id);
-                package->set_name(app_id); // Default name is app_id until we get metadata
-                package->set_description("Flatpak application");
-                
-                // Try to get more information if possible
-                QProcess process;
-                process.start("flatpak", QStringList() << "info" << QString::fromStdString(app_id));
-                
-                // Set a shorter timeout - we don't want to block the search
-                bool processFinished = process.waitForFinished(1000);
-                if (!processFinished) {
-                    qDebug() << "FlatpakManager: Timeout checking for" << QString::fromStdString(app_id);
-                    process.kill();
-                } else if (process.exitCode() == 0) {
-                    qDebug() << "FlatpakManager: App exists:" << QString::fromStdString(app_id);
-                    // Get detailed information
-                    getAppNameAndDescription(*package);
-                }
-                
-                // Only add if we haven't already added this app ID
-                bool already_exists = false;
-                for (const auto& existing : packages) {
-                    if (existing->get_app_id() == app_id) {
-                        already_exists = true;
-                        break;
-                    }
-                }
-                
-                if (!already_exists) {
-                    qDebug() << "FlatpakManager: Adding known app to results:" << QString::fromStdString(app_id);
-                    packages.push_back(package);
-                }
-            }
+    qDebug() << "FlatpakManager: Running flatpak search with columns for" << QString::fromStdString(name);
+    QProcess process;
+    process.start("flatpak", QStringList() << "search"
+                                            << "--columns=name,description,application,version,branch,remotes"
+                                            << QString::fromStdString(name));
+    if (!process.waitForFinished(10000)) {
+        qDebug() << "FlatpakManager: Timeout during flatpak search for" << QString::fromStdString(name);
+        process.kill();
+        return packages;
+    }
+    QString output = process.readAllStandardOutput();
+    qDebug() << "Raw flatpak search output:\n" << output;
+    QStringList lines = output.split('\n');
+    for (int i = 0; i < lines.size(); ++i) {
+        qDebug() << "[Flatpak Search Output] Line" << i << ":" << lines[i];
+    }
+    int startLine = 0;
+    if (!lines.isEmpty() && lines[0].contains("Application ID")) {
+        startLine = 1;
+    }
+    int parsed_count = 0;
+    for (int i = startLine; i < lines.size(); i++) {
+        const QString& line = lines[i];
+        if (line.trimmed().isEmpty()) continue;
+        QStringList parts = line.split('\t');
+        if (parts.size() >= 1) {
+            std::string name_str = parts.value(0).trimmed().toStdString();
+            std::string description = parts.value(1).trimmed().toStdString();
+            std::string app_id = parts.value(2).trimmed().toStdString();
+            auto package = std::make_shared<FlatpakPackage>(name_str, "");
+            package->set_app_id(app_id);
+            package->set_name(name_str);
+            package->set_description(description);
+            if (parts.size() > 3) package->set_version(parts.value(3).trimmed().toStdString());
+            if (parts.size() > 4) package->set_branch(parts.value(4).trimmed().toStdString());
+            if (parts.size() > 5) package->set_repository(parts.value(5).trimmed().toStdString());
+            packages.push_back(package);
+            parsed_count++;
         }
     }
-    
-    // If the search term is substantial enough, also do a general search
-    if (name.length() >= 3) {
-        qDebug() << "FlatpakManager: Performing general search for" << QString::fromStdString(name);
-        QProcess process;
-        process.start("flatpak", QStringList() << "search" << QString::fromStdString(name));
-        
-        // Set a reasonable timeout
-        if (!process.waitForFinished(5000)) {
-            qDebug() << "FlatpakManager: Timeout during general search for" << QString::fromStdString(name);
-            process.kill();
-        } else {
-            // Read and parse the output
-            QString output = process.readAllStandardOutput();
-            QStringList lines = output.split('\n');
-            
-            qDebug() << "FlatpakManager: General search returned" << lines.size() << "lines of output";
-            
-            // Skip the header line if it exists
-            int startLine = 0;
-            if (!lines.isEmpty() && lines[0].contains("Application ID")) {
-                startLine = 1;
-            }
-            
-            // Parse the search results
-            for (int i = startLine; i < lines.size(); i++) {
-                const QString& line = lines[i];
-                if (line.trimmed().isEmpty()) continue;
-                
-                // Split by tabs or multiple spaces
-                QStringList parts = line.split(QRegularExpression("\\s{2,}"));
-                if (parts.size() >= 2) {
-                    std::string app_id = parts[0].trimmed().toStdString();
-                    std::string description = parts.size() > 1 ? parts[1].trimmed().toStdString() : "";
-                    
-                    auto package = std::make_shared<FlatpakPackage>(app_id, "latest");
-                    package->set_app_id(app_id);
-                    package->set_name(app_id); // Default name is app_id until we get metadata
-                    package->set_description(description);
-                    
-                    // Only add if we haven't already added this app ID
-                    bool already_exists = false;
-                    for (const auto& existing : packages) {
-                        if (existing->get_app_id() == app_id) {
-                            already_exists = true;
-                            break;
-                        }
-                    }
-                    
-                    if (!already_exists) {
-                        qDebug() << "FlatpakManager: Adding result from general search:" << QString::fromStdString(app_id);
-                        packages.push_back(package);
-                    }
-                }
-            }
-        }
-    }
-    
-    // As a last resort for short search terms or known apps, hard-code common popular apps
-    if (packages.empty() && (name.length() <= 3 || found_known_app)) {
-        if (lowercase_name == "discord" || lowercase_name.find("discord") != std::string::npos) {
-            qDebug() << "FlatpakManager: Adding hard-coded Discord app";
-            auto discord = std::make_shared<FlatpakPackage>("com.discordapp.Discord", "latest");
-            discord->set_app_id("com.discordapp.Discord");
-            discord->set_name("Discord");
-            discord->set_description("All-in-one voice and text chat for gamers");
-            packages.push_back(discord);
-        }
-        
-        if (lowercase_name == "vencord" || lowercase_name.find("vencord") != std::string::npos || 
-            lowercase_name == "vesktop" || lowercase_name.find("vesktop") != std::string::npos) {
-            qDebug() << "FlatpakManager: Adding hard-coded Vencord app";
-            auto vencord = std::make_shared<FlatpakPackage>("com.vencord.Vesktop", "latest");
-            vencord->set_app_id("com.vencord.Vesktop");
-            vencord->set_name("Vesktop");
-            vencord->set_description("A cross-platform Discord client mod with Vencord built-in");
-            packages.push_back(vencord);
-        }
-    }
-    
-    qDebug() << "FlatpakManager: Found" << packages.size() << "flatpak packages matching" 
-             << QString::fromStdString(name);
-    
+    qDebug() << "Parsed" << parsed_count << "flatpak search results.";
     return packages;
 }
 

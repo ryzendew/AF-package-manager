@@ -105,12 +105,25 @@ public:
      */
     void set_size(const std::string& size);
 
+    /**
+     * @brief Get the search score for this package
+     * @return double The search score
+     */
+    double get_search_score() const { return m_search_score; }
+
+    /**
+     * @brief Set the search score for this package
+     * @param score The search score to set
+     */
+    void set_search_score(double score) { m_search_score = score; }
+
 private:
     std::string m_app_id;              ///< Flatpak application ID
     std::string m_runtime;             ///< Flatpak runtime
     std::string m_installation_type;   ///< Flatpak installation type (system/user)
     std::string m_branch;              ///< Flatpak branch
     std::string m_size;                ///< Installed size
+    double m_search_score = 0.0;  ///< Search score for ranking results
 };
 
 } // namespace core
