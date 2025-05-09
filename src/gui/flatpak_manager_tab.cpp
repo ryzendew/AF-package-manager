@@ -612,9 +612,12 @@ void FlatpakManagerTab::onFlatpakSelected(const QModelIndex& current, const QMod
 void FlatpakManagerTab::onManageUserData() {
     QString appId = getCurrentAppId();
     if (appId.isEmpty()) return;
-    
-    emit statusMessage(tr("Managing user data for %1").arg(appId), 3000);
-    // Real implementation would open a file manager to the user data location
+    QString dataPath = getDataPath(appId);
+    if (dataPath == "Unknown") {
+        QMessageBox::information(this, tr("User Data"), tr("No user data found for %1.").arg(appId));
+        return;
+    }
+    QDesktopServices::openUrl(QUrl::fromLocalFile(dataPath));
 }
 
 void FlatpakManagerTab::onUninstall() {
@@ -634,25 +637,58 @@ void FlatpakManagerTab::onUninstall() {
 void FlatpakManagerTab::onRemoveUserData() {
     QString appId = getCurrentAppId();
     if (appId.isEmpty()) return;
-    
-    emit statusMessage(tr("Removing user data for %1").arg(appId), 3000);
-    // Real implementation would confirm with the user and then remove the data
+    QString dataPath = getDataPath(appId);
+    if (dataPath == "Unknown") {
+        QMessageBox::information(this, tr("Remove Data"), tr("No user data found for %1.").arg(appId));
+        return;
+    }
+    auto reply = QMessageBox::question(this, tr("Remove User Data"),
+        tr("Are you sure you want to delete all user data for %1? This cannot be undone.").arg(appId),
+        QMessageBox::Yes | QMessageBox::No);
+    if (reply != QMessageBox::Yes) return;
+    QDir dir(dataPath);
+    if (dir.removeRecursively()) {
+        QMessageBox::information(this, tr("Remove Data"), tr("User data for %1 has been deleted.").arg(appId));
+    } else {
+        QMessageBox::warning(this, tr("Remove Data"), tr("Failed to delete user data for %1.").arg(appId));
+    }
 }
 
 void FlatpakManagerTab::onCreateSnapshot() {
     QString appId = getCurrentAppId();
     if (appId.isEmpty()) return;
-    
-    emit statusMessage(tr("Creating snapshot for %1").arg(appId), 3000);
-    // Real implementation would create a backup of the user data
+    QString dataPath = getDataPath(appId);
+    if (dataPath == "Unknown") {
+        QMessageBox::information(this, tr("Create Snapshot"), tr("No user data found for %1.").arg(appId));
+        return;
+    }
+    QString baseDir = QFileDialog::getExistingDirectory(this, tr("Select Directory to Save Snapshot"));
+    if (baseDir.isEmpty()) return;
+    QString backupDir = baseDir + "/" + appId + "_" + QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss");
+    QDir().mkpath(backupDir);
+    QProcess::execute("cp", QStringList() << "-r" << dataPath << backupDir);
+    QMessageBox::information(this, tr("Create Snapshot"), tr("Snapshot created at %1").arg(backupDir));
 }
 
 void FlatpakManagerTab::onRestoreSnapshot() {
     QString appId = getCurrentAppId();
     if (appId.isEmpty()) return;
-    
-    emit statusMessage(tr("Restoring snapshot for %1").arg(appId), 3000);
-    // Real implementation would let the user select a snapshot to restore
+    QString backupDir = QFileDialog::getExistingDirectory(this, tr("Select Snapshot to Restore"));
+    if (backupDir.isEmpty()) return;
+    QString dataPath = getDataPath(appId);
+    if (dataPath == "Unknown") {
+        QMessageBox::warning(this, tr("Restore Snapshot"), tr("No user data directory found for %1.").arg(appId));
+        return;
+    }
+    // Ensure the data directory exists
+    QDir().mkpath(dataPath);
+    // Copy contents of snapshot to data directory
+    int result = QProcess::execute("cp", QStringList() << "-r" << backupDir + "/." << dataPath + "/");
+    if (result == 0) {
+        QMessageBox::information(this, tr("Restore Snapshot"), tr("Snapshot restored from %1").arg(backupDir));
+    } else {
+        QMessageBox::warning(this, tr("Restore Snapshot"), tr("Failed to restore snapshot from %1").arg(backupDir));
+    }
 }
 
 void FlatpakManagerTab::onInstallSelected()
