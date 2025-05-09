@@ -344,19 +344,24 @@ void SettingsDialog::loadSettings()
 void SettingsDialog::detectAurHelpers() {
     // Check for common AUR helpers to determine if AUR support should be allowed
     bool anyHelperFound = false;
+    QStringList availableHelpers;
     
     // Check for common AUR helpers
-    QStringList helpers = {"yay", "paru", "pikaur", "trizen", "pacaur"};
+    QStringList helpers = {"yay", "paru", "pikaur", "trizen", "pacaur", "aurman", "pamac"};
+    
+    std::cout << "SettingsDialog: Checking for AUR helpers..." << std::endl;
     
     for (const QString& helper : helpers) {
         if (checkHelperExists(helper)) {
             anyHelperFound = true;
-            break;
+            availableHelpers.append(helper);
+            std::cout << "SettingsDialog: Found AUR helper: " << helper.toStdString() << std::endl;
         }
     }
     
     // If no AUR helpers found, disable AUR support
     if (!anyHelperFound) {
+        std::cout << "SettingsDialog: No AUR helpers found" << std::endl;
         m_enableAurCheckbox->setChecked(false);
         m_enableAurCheckbox->setEnabled(false);
         
@@ -364,8 +369,13 @@ void SettingsDialog::detectAurHelpers() {
         QLabel* helperInstallLabel = m_aurTab->findChild<QLabel*>("helperInstallLabel");
         if (!helperInstallLabel) {
             helperInstallLabel = new QLabel(
-                "No AUR helpers found. Please install yay, paru, pikaur, trizen, or pacaur "
-                "to enable AUR support.", m_aurTab);
+                "No AUR helpers found. Please install one of the following:\n"
+                "- yay: git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si\n"
+                "- paru: git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si\n"
+                "- pikaur: git clone https://aur.archlinux.org/pikaur.git && cd pikaur && makepkg -si\n"
+                "- trizen: git clone https://aur.archlinux.org/trizen.git && cd trizen && makepkg -si\n"
+                "- pacaur: git clone https://aur.archlinux.org/pacaur.git && cd pacaur && makepkg -si", 
+                m_aurTab);
             helperInstallLabel->setObjectName("helperInstallLabel");
             helperInstallLabel->setWordWrap(true);
             helperInstallLabel->setStyleSheet("color: red;");
@@ -376,12 +386,44 @@ void SettingsDialog::detectAurHelpers() {
             }
         }
     } else {
+        std::cout << "SettingsDialog: Found " << availableHelpers.size() << " AUR helpers" << std::endl;
         m_enableAurCheckbox->setEnabled(true);
         
         // Remove warning label if it exists
         QLabel* helperInstallLabel = m_aurTab->findChild<QLabel*>("helperInstallLabel");
         if (helperInstallLabel) {
             helperInstallLabel->deleteLater();
+        }
+        
+        // Add helper selection dropdown if not already present
+        QComboBox* helperComboBox = m_aurTab->findChild<QComboBox*>("aurHelperComboBox");
+        if (!helperComboBox) {
+            QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(m_aurTab->layout());
+            if (layout) {
+                QHBoxLayout* helperLayout = new QHBoxLayout();
+                QLabel* helperLabel = new QLabel(tr("AUR Helper:"), m_aurTab);
+                helperComboBox = new QComboBox(m_aurTab);
+                helperComboBox->setObjectName("aurHelperComboBox");
+                
+                // Add available helpers to the combo box
+                for (const QString& helper : availableHelpers) {
+                    helperComboBox->addItem(helper);
+                }
+                
+                // Set the current helper from settings
+                QSettings settings("PacmanGUI", "PacmanGUI");
+                QString currentHelper = settings.value("aur/helper", "yay").toString();
+                int index = helperComboBox->findText(currentHelper);
+                if (index >= 0) {
+                    helperComboBox->setCurrentIndex(index);
+                }
+                
+                helperLayout->addWidget(helperLabel);
+                helperLayout->addWidget(helperComboBox);
+                helperLayout->addStretch();
+                
+                layout->addLayout(helperLayout);
+            }
         }
     }
 }

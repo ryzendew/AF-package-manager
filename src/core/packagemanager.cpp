@@ -26,6 +26,8 @@ bool execute_with_sudo(const std::string& command) {
 
 // Helper function to execute commands with sudo and password
 bool execute_with_sudo(const std::string& command, const std::string& password) {
+    std::cout << "PackageManager: Preparing to execute command with sudo" << std::endl;
+    
     // Use expect-like behavior to handle sudo password prompt more reliably
     std::string quoted_password = "'";
     for (char c : password) {
@@ -43,11 +45,35 @@ bool execute_with_sudo(const std::string& command, const std::string& password) 
     // 3. Ensures the password isn't visible in process listings
     std::string full_cmd = "script -qec 'echo " + quoted_password + " | sudo -S " + command + "' /dev/null";
     
-    std::cout << "Executing sudo command with password authentication" << std::endl;
+    std::cout << "PackageManager: Executing sudo command with password authentication" << std::endl;
+    
+    // Create a temporary file to capture output
+    std::string temp_output_file = "/tmp/pacmangui_sudo_output.txt";
+    full_cmd += " 2>&1 | tee " + temp_output_file;
     
     // Execute the command
     int result = system(full_cmd.c_str());
-    return result == 0;
+    
+    // Read and log the output
+    std::ifstream output_file(temp_output_file);
+    if (output_file.is_open()) {
+        std::string line;
+        while (std::getline(output_file, line)) {
+            std::cout << "PackageManager: Sudo output: " << line << std::endl;
+        }
+        output_file.close();
+    }
+    
+    // Clean up the temporary file
+    std::remove(temp_output_file.c_str());
+    
+    if (result == 0) {
+        std::cout << "PackageManager: Sudo command executed successfully" << std::endl;
+        return true;
+    } else {
+        std::cerr << "PackageManager: Sudo command failed with exit code: " << result << std::endl;
+        return false;
+    }
 }
 
 // ALPM error callback - updated to match alpm_cb_log signature
@@ -605,44 +631,6 @@ bool PackageManager::sync_all(const std::string& password)
     return true;
 }
 
-bool PackageManager::install_aur_package(const std::string& package_name)
-{
-    if (package_name.empty()) {
-        set_last_error("Invalid package name");
-        return false;
-    }
-    
-    // Check if AUR is enabled in settings
-    QSettings settings("PacmanGUI", "PacmanGUI");
-    bool aurEnabled = settings.value("aur/enabled", false).toBool();
-    
-    if (!aurEnabled) {
-        set_last_error("AUR support is disabled in settings");
-        return false;
-    }
-    
-    // Get configured AUR helper
-    std::string aurHelper = settings.value("aur/helper", "yay").toString().toStdString();
-    if (aurHelper.empty()) {
-        set_last_error("No AUR helper configured");
-        return false;
-    }
-    
-    std::cout << "PackageManager: Installing AUR package: " << package_name << " using " << aurHelper << std::endl;
-    
-    // Execute the AUR helper command
-    std::string command = aurHelper + " -S --noconfirm " + package_name;
-    int result = system(command.c_str());
-    
-    if (result == 0) {
-        std::cout << "PackageManager: AUR Package installed successfully: " << package_name << std::endl;
-    return true;
-    } else {
-        set_last_error("Failed to install AUR package: " + package_name);
-        return false;
-    }
-}
-
 bool PackageManager::install_aur_package(const std::string& package_name, const std::string& password,
                                         const std::string& aur_helper)
 {
@@ -651,11 +639,14 @@ bool PackageManager::install_aur_package(const std::string& package_name, const 
         return false;
     }
     
+    std::cout << "PackageManager: Starting authenticated AUR package installation for: " << package_name << std::endl;
+    
     // Check if AUR is enabled in settings
     QSettings settings("PacmanGUI", "PacmanGUI");
     bool aurEnabled = settings.value("aur/enabled", false).toBool();
     
     if (!aurEnabled) {
+        std::cerr << "PackageManager: AUR support is disabled in settings" << std::endl;
         set_last_error("AUR support is disabled in settings");
         return false;
     }
@@ -667,22 +658,83 @@ bool PackageManager::install_aur_package(const std::string& package_name, const 
     }
     
     if (aurHelper.empty()) {
+        std::cerr << "PackageManager: No AUR helper configured" << std::endl;
         set_last_error("No AUR helper configured");
         return false;
     }
     
-    std::cout << "PackageManager: Installing AUR package with authentication: " 
-             << package_name << " using " << aurHelper << std::endl;
+    std::cout << "PackageManager: Using AUR helper: " << aurHelper << std::endl;
     
-    // Execute the AUR helper command with sudo
-    std::string command = aurHelper + " -S --noconfirm " + package_name;
+    // Check if the AUR helper exists
+    std::string which_cmd = "which " + aurHelper;
+    FILE* which_pipe = popen(which_cmd.c_str(), "r");
+    if (!which_pipe) {
+        std::cerr << "PackageManager: Failed to check if AUR helper exists" << std::endl;
+        set_last_error("Failed to verify AUR helper installation");
+        return false;
+    }
+    
+    char buffer[256];
+    if (!fgets(buffer, sizeof(buffer), which_pipe)) {
+        std::cerr << "PackageManager: AUR helper not found in PATH: " << aurHelper << std::endl;
+        set_last_error("AUR helper not found: " + aurHelper);
+        pclose(which_pipe);
+        return false;
+    }
+    pclose(which_pipe);
+    
+    std::cout << "PackageManager: AUR helper found at: " << buffer;
+    
+    // Construct the appropriate command based on the helper
+    std::string command;
+    if (aurHelper == "yay") {
+        command = "yay -S --noconfirm --needed " + package_name;
+    } else if (aurHelper == "paru") {
+        command = "paru -S --noconfirm --needed " + package_name;
+    } else if (aurHelper == "pikaur") {
+        command = "pikaur -S --noconfirm --needed " + package_name;
+    } else if (aurHelper == "trizen") {
+        command = "trizen -S --noconfirm --needed " + package_name;
+    } else if (aurHelper == "pacaur") {
+        command = "pacaur -S --noconfirm --needed " + package_name;
+    } else if (aurHelper == "aurman") {
+        command = "aurman -S --noconfirm --needed " + package_name;
+    } else if (aurHelper == "pamac") {
+        command = "pamac build --no-confirm " + package_name;
+    } else {
+        // Generic format for other helpers
+        command = aurHelper + " -S --noconfirm --needed " + package_name;
+    }
+    
+    std::cout << "PackageManager: Executing authenticated command: " << command << std::endl;
+    
+    // Create a temporary file to capture output
+    std::string temp_output_file = "/tmp/pacmangui_aur_install_auth_output.txt";
+    command += " 2>&1 | tee " + temp_output_file;
+    
+    // Execute the command with sudo
     bool success = execute_with_sudo(command, password);
+    
+    // Read and log the output
+    std::ifstream output_file(temp_output_file);
+    if (output_file.is_open()) {
+        std::string line;
+        while (std::getline(output_file, line)) {
+            std::cout << "PackageManager: AUR output: " << line << std::endl;
+        }
+        output_file.close();
+    }
+    
+    // Clean up the temporary file
+    std::remove(temp_output_file.c_str());
     
     if (success) {
         std::cout << "PackageManager: AUR Package installed successfully: " << package_name << std::endl;
     return true;
     } else {
-        set_last_error("Failed to install AUR package: " + package_name + ". Authentication may have failed.");
+        std::string error_msg = "Failed to install AUR package: " + package_name + ". Authentication may have failed.";
+        std::cerr << "PackageManager: " << error_msg << std::endl;
+        set_last_error(error_msg);
         return false;
     }
 }
@@ -1009,8 +1061,14 @@ std::vector<std::pair<std::string, std::string>> PackageManager::check_aur_updat
         update_check_cmd = "yay -Qua";
     } else if (helper == "paru") {
         update_check_cmd = "paru -Qua";
+    } else if (helper == "pikaur") {
+        update_check_cmd = "pikaur -Qua";
+    } else if (helper == "trizen") {
+        update_check_cmd = "trizen -Qua";
+    } else if (helper == "pacaur") {
+        update_check_cmd = "pacaur -Qua";
     } else {
-        // Generic format that should work with most helpers
+        // Generic format for other helpers
         update_check_cmd = helper + " -Qua";
     }
     
@@ -1054,53 +1112,6 @@ std::vector<std::pair<std::string, std::string>> PackageManager::check_aur_updat
     return updates;
 }
 
-bool PackageManager::update_aur_packages(const std::string& aur_helper)
-{
-    // Check if AUR is enabled in settings
-    QSettings settings("PacmanGUI", "PacmanGUI");
-    bool aurEnabled = settings.value("aur/enabled", false).toBool();
-    
-    if (!aurEnabled) {
-        set_last_error("AUR support is disabled in settings");
-        return false;
-    }
-    
-    // Get the AUR helper to use
-    std::string helper = aur_helper;
-    if (helper.empty()) {
-        helper = settings.value("aur/helper", "yay").toString().toStdString();
-    }
-    
-    if (helper.empty()) {
-        set_last_error("No AUR helper configured");
-        return false;
-    }
-    
-    std::cout << "PackageManager: Updating AUR packages using " << helper << std::endl;
-    
-    // Different command formats based on helper
-    std::string update_cmd;
-    if (helper == "yay") {
-        update_cmd = "yay -Sua --noconfirm";
-    } else if (helper == "paru") {
-        update_cmd = "paru -Sua --noconfirm";
-    } else {
-        // Generic format that should work with most helpers
-        update_cmd = helper + " -Sua --noconfirm";
-    }
-    
-    // Run the AUR helper to update packages
-    int result = system(update_cmd.c_str());
-    
-    if (result == 0) {
-        std::cout << "PackageManager: AUR packages updated successfully" << std::endl;
-        return true;
-    } else {
-        set_last_error("Failed to update AUR packages using " + helper);
-        return false;
-    }
-}
-
 bool PackageManager::update_aur_packages(const std::string& password, 
                                        const std::string& aur_helper,
                                        std::function<void(const std::string&)> output_callback)
@@ -1142,12 +1153,22 @@ bool PackageManager::update_aur_packages(const std::string& password,
     // Different command formats based on helper
     std::string update_cmd;
     if (helper == "yay") {
-        update_cmd = "yay -Sua --noconfirm";
+        update_cmd = "yay -Sua --noconfirm --needed";
     } else if (helper == "paru") {
-        update_cmd = "paru -Sua --noconfirm";
+        update_cmd = "paru -Sua --noconfirm --needed";
+    } else if (helper == "pikaur") {
+        update_cmd = "pikaur -Sua --noconfirm --needed";
+    } else if (helper == "trizen") {
+        update_cmd = "trizen -Sua --noconfirm --needed";
+    } else if (helper == "pacaur") {
+        update_cmd = "pacaur -Sua --noconfirm --needed";
+    } else if (helper == "aurman") {
+        update_cmd = "aurman -Sua --noconfirm --needed";
+    } else if (helper == "pamac") {
+        update_cmd = "pamac upgrade --aur --no-confirm";
     } else {
-        // Generic format that should work with most helpers
-        update_cmd = helper + " -Sua --noconfirm";
+        // Generic format for other helpers
+        update_cmd = helper + " -Sua --noconfirm --needed";
     }
     
     // Add output redirection
@@ -1211,14 +1232,58 @@ bool PackageManager::update_aur_packages(const std::string& password,
     }
 }
 
-bool PackageManager::execute_with_sudo(const std::string& command, const std::string& password)
-{
-    // Call the free function
-    return ::pacmangui::core::execute_with_sudo(command, password);
+bool PackageManager::execute_with_sudo(const std::string& command, const std::string& password) {
+    std::cout << "PackageManager: Preparing to execute command with sudo" << std::endl;
+    
+    // Use expect-like behavior to handle sudo password prompt more reliably
+    std::string quoted_password = "'";
+    for (char c : password) {
+        if (c == '\'') {
+            quoted_password += "'\\''"; // Escape single quotes in the password
+        } else {
+            quoted_password += c;
+        }
+    }
+    quoted_password += "'";
+    
+    // Create a command that:
+    // 1. Uses 'script' to simulate a terminal (sudo sometimes requires a TTY)
+    // 2. Pipes the password directly to sudo
+    // 3. Ensures the password isn't visible in process listings
+    std::string full_cmd = "script -qec 'echo " + quoted_password + " | sudo -S " + command + "' /dev/null";
+    
+    std::cout << "PackageManager: Executing sudo command with password authentication" << std::endl;
+    
+    // Create a temporary file to capture output
+    std::string temp_output_file = "/tmp/pacmangui_sudo_output.txt";
+    full_cmd += " 2>&1 | tee " + temp_output_file;
+    
+    // Execute the command
+    int result = system(full_cmd.c_str());
+    
+    // Read and log the output
+    std::ifstream output_file(temp_output_file);
+    if (output_file.is_open()) {
+        std::string line;
+        while (std::getline(output_file, line)) {
+            std::cout << "PackageManager: Sudo output: " << line << std::endl;
+        }
+        output_file.close();
+    }
+    
+    // Clean up the temporary file
+    std::remove(temp_output_file.c_str());
+    
+    if (result == 0) {
+        std::cout << "PackageManager: Sudo command executed successfully" << std::endl;
+        return true;
+    } else {
+        std::cerr << "PackageManager: Sudo command failed with exit code: " << result << std::endl;
+        return false;
+    }
 }
 
-bool PackageManager::execute_with_sudo(const std::string& command)
-{
+bool PackageManager::execute_with_sudo(const std::string& command) {
     // Call the free function
     return ::pacmangui::core::execute_with_sudo(command);
 }

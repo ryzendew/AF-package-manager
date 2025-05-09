@@ -34,6 +34,8 @@
 #include <QScrollBar>
 #include <QFutureWatcher>
 #include <QProgressDialog>
+#include <QPlainTextEdit>
+#include <QSortFilterProxyModel>
 #include "core/packagemanager.hpp"
 #include "core/flatpak_package.hpp"
 #include "gui/flatpak_manager_tab.hpp"
@@ -76,6 +78,8 @@ public:
      * @brief Destructor
      */
     ~MainWindow();
+
+    void appendTerminalOutput(const QString& text);
 
 protected:
     /**
@@ -245,6 +249,7 @@ private:
     QHBoxLayout* m_installedActionsLayout;
     QPushButton* m_updateInstalledButton;
     QPushButton* m_removeInstalledButton;
+    QPushButton* m_refreshInstalledButton;
     
     // System update components (removing duplicates)
     QVBoxLayout* m_systemUpdateLayout;
@@ -406,12 +411,18 @@ private:
     
     // Flatpak UI elements
     QCheckBox* m_flatpakSearchCheckbox;
-    QPushButton* m_installFlatpakButton;
     QPushButton* m_removeFlatpakButton;
     bool m_flatpakSearchEnabled;
 
     // Flatpak Management Tab
     FlatpakManagerTab* m_flatpakManagerTab;
+
+    QPlainTextEdit* m_terminalWidget;
+
+    QLineEdit* m_installedSearchInput;
+    QPushButton* m_installedSearchButton;
+    QSortFilterProxyModel* m_installedProxyModel;
+    void filterInstalledPackages(const QString& term);
 };
 
 } // namespace gui

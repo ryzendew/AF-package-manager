@@ -16,6 +16,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui)
 find_package(Qt6 OPTIONAL_COMPONENTS WaylandClient)
 find_package(ALPM REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(QTERMWIDGET6 REQUIRED IMPORTED_TARGET qtermwidget6)
 
 # Wayland support detection
 set(ENABLE_WAYLAND_SUPPORT OFF)
@@ -33,7 +35,10 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gui
     ${CMAKE_CURRENT_SOURCE_DIR}/include/wayland
     ${ALPM_INCLUDE_DIRS}
+    ${QTERMWIDGET6_INCLUDE_DIRS}
 )
+
+link_directories(${QTERMWIDGET6_LIBRARY_DIRS})
 
 # Source files - core components
 set(CORE_SOURCES
@@ -51,6 +56,9 @@ set(GUI_SOURCES
     src/gui/settingsdialog.cpp
     src/gui/util.cpp
     src/gui/flatpak_manager_tab.cpp
+    src/gui/flatpak_process_dialog.cpp
+    src/gui/install_progress_dialog.cpp
+    src/gui/password_prompt_dialog.cpp
 )
 
 # Source files - Wayland components
@@ -74,7 +82,10 @@ set(MOC_HEADERS
     include/gui/mainwindow.hpp
     include/gui/settingsdialog.hpp
     include/gui/flatpak_manager_tab.hpp
+    include/gui/util.hpp
     include/gui/flatpak_process_dialog.hpp
+    include/gui/install_progress_dialog.hpp
+    include/gui/password_prompt_dialog.hpp
     ${WAYLAND_HEADERS}
 )
 
@@ -96,7 +107,6 @@ add_executable(pacmangui
     ${WAYLAND_SOURCES}
     ${MOC_HEADERS}
     ${RESOURCE_FILES}
-    src/gui/flatpak_process_dialog.cpp
 )
 
 # Link libraries
@@ -105,6 +115,7 @@ target_link_libraries(pacmangui PRIVATE
     Qt6::Widgets
     Qt6::Gui
     ALPM::ALPM
+    PkgConfig::QTERMWIDGET6
 )
 
 # Add WaylandClient if available

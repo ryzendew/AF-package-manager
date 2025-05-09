@@ -5,6 +5,8 @@
 #include "wayland/wayland_protocols.hpp"
 #include "wayland/wayland_security.hpp"
 #include "wayland/wayland_optimization.hpp"
+#include "gui/install_progress_dialog.hpp"
+#include "gui/password_prompt_dialog.hpp"
 
 #include <QMenuBar>
 #include <QStatusBar>
@@ -39,6 +41,7 @@
 #include <QSizePolicy>
 #include <QSpacerItem>
 #include <QCheckBox>
+#include <QSortFilterProxyModel>
 
 #include <iostream>
 #include <functional>
@@ -65,7 +68,6 @@ MainWindow::MainWindow(QWidget* parent)
     m_installedFlatpakModel(nullptr),
     m_flatpakSearchWatcher(nullptr),
     m_flatpakSearchCheckbox(nullptr),
-    m_installFlatpakButton(nullptr),
     m_removeFlatpakButton(nullptr),
     m_flatpakSearchEnabled(false)
 {
@@ -358,14 +360,23 @@ void MainWindow::setupUi() {
     m_installedLayout->setContentsMargins(10, 10, 10, 10);
     m_installedLayout->setSpacing(10);
     
+    // Add search bar to Installed tab
+    QHBoxLayout* installedSearchLayout = new QHBoxLayout();
+    m_installedSearchInput = new QLineEdit(m_installedTab);
+    m_installedSearchInput->setPlaceholderText(tr("Search installed packages..."));
+    m_installedSearchButton = new QPushButton(tr("Search"), m_installedTab);
+    installedSearchLayout->addWidget(m_installedSearchInput);
+    installedSearchLayout->addWidget(m_installedSearchButton);
+    m_installedLayout->addLayout(installedSearchLayout);
+    
     // Create installed packages actions layout
     qDebug() << "DEBUG: Creating installed packages action buttons";
     m_installedActionsLayout = new QHBoxLayout();
     m_removeInstalledButton = new QPushButton(tr("Remove"), m_installedTab);
-    
+    m_refreshInstalledButton = new QPushButton(tr("Refresh"), m_installedTab);
     m_installedActionsLayout->addWidget(m_removeInstalledButton);
+    m_installedActionsLayout->addWidget(m_refreshInstalledButton);
     m_installedActionsLayout->addStretch();
-    
     m_installedLayout->addLayout(m_installedActionsLayout);
     
     // Create installed packages table
@@ -375,22 +386,23 @@ void MainWindow::setupUi() {
     m_installedTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
     m_installedTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     applyTableStyle(m_installedTable);
-    
-    // Set model for installed packages table
-    m_installedTable->setModel(m_installedModel);
-    
-    // Set column sizes for installed packages table
-    m_installedTable->header()->setSectionResizeMode(0, QHeaderView::Fixed); // Checkbox column - fixed width
-    m_installedTable->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents); // Name column - resize to contents
-    m_installedTable->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents); // Version column - resize to contents
-    m_installedTable->header()->setSectionResizeMode(3, QHeaderView::ResizeToContents); // Repository column - resize to contents
-    m_installedTable->header()->setSectionResizeMode(4, QHeaderView::Stretch); // Description column - stretch
-    
-    // Set minimum sizes - special handling for checkbox column
-    m_installedTable->header()->setMinimumSectionSize(2); // Allow extremely small sections
-    m_installedTable->setColumnWidth(0, 30); // Checkbox column - wider for better visibility
-    
     m_installedLayout->addWidget(m_installedTable);
+    
+    // Set up proxy model for installed packages search (after table and model are constructed)
+    m_installedProxyModel = new QSortFilterProxyModel(this);
+    m_installedProxyModel->setSourceModel(m_installedModel);
+    m_installedProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    m_installedProxyModel->setFilterKeyColumn(-1); // All columns
+    m_installedTable->setModel(m_installedProxyModel);
+    
+    connect(m_installedSearchButton, &QPushButton::clicked, this, [this]() {
+        QString term = m_installedSearchInput->text().trimmed();
+        m_installedProxyModel->setFilterFixedString(term);
+    });
+    connect(m_installedSearchInput, &QLineEdit::returnPressed, this, [this]() {
+        QString term = m_installedSearchInput->text().trimmed();
+        m_installedProxyModel->setFilterFixedString(term);
+    });
     
     // Add tab
     qDebug() << "DEBUG: Adding installed packages tab to main tab widget";
@@ -970,22 +982,18 @@ void MainWindow::refreshInstalledPackages() {
     qDebug() << "Refreshing installed packages";
     m_installedModel->clear();
     m_installedModel->setHorizontalHeaderLabels(QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
-
     std::vector<pacmangui::core::Package> installedPackages = m_packageManager.get_installed_packages();
+    qDebug() << "Loaded" << installedPackages.size() << "installed packages from backend.";
     for (const auto& pkg : installedPackages) {
         QList<QStandardItem*> row;
-        
-        // Add checkbox item
         QStandardItem* checkItem = new QStandardItem();
         checkItem->setCheckable(true);
         checkItem->setCheckState(Qt::Unchecked);
         checkItem->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
-        
         QStandardItem* nameItem = new QStandardItem(QString::fromStdString(pkg.get_name()));
         QStandardItem* versionItem = new QStandardItem(QString::fromStdString(pkg.get_version()));
         QStandardItem* repoItem = new QStandardItem(QString::fromStdString(pkg.get_repository()));
         QStandardItem* descItem = new QStandardItem(QString::fromStdString(pkg.get_description()));
-        
         row << checkItem << nameItem << versionItem << repoItem << descItem;
         m_installedModel->appendRow(row);
     }
@@ -1166,126 +1174,124 @@ void MainWindow::onSearchClicked()
 
 // Add implementation for onInstallPackage
 void MainWindow::onInstallPackage() {
-    // Get selected packages
+    qDebug() << "onInstallPackage called";
     QModelIndexList selected = m_packagesTable->selectionModel()->selectedRows();
     if (selected.isEmpty()) {
         showStatusMessage(tr("No packages selected for installation"), 3000);
         return;
     }
-    
-    // Collect package names and separate Flatpak packages
-    QStringList packageNames;
+    QStringList repoPackages;
+    QStringList aurPackages;
     QStringList flatpakPackages;
     QStringList packageDetails;
-    
     for (const QModelIndex& index : selected) {
-        QModelIndex nameIndex = m_packagesModel->index(index.row(), 1); // Name column
-        QModelIndex versionIndex = m_packagesModel->index(index.row(), 2); // Version column
-        QModelIndex repoIndex = m_packagesModel->index(index.row(), 3); // Repository column
-        
+        QModelIndex nameIndex = m_packagesModel->index(index.row(), 1);
+        QModelIndex versionIndex = m_packagesModel->index(index.row(), 2);
+        QModelIndex repoIndex = m_packagesModel->index(index.row(), 3);
         QString name = m_packagesModel->data(nameIndex).toString();
         QString version = m_packagesModel->data(versionIndex).toString();
         QString repo = m_packagesModel->data(repoIndex).toString();
-        
-        // Check if this is a Flatpak package
         QVariant packageType = nameIndex.data(Qt::UserRole + 1);
         bool isFlatpak = (packageType.toString() == "flatpak");
-        
-        // Get app ID for Flatpak packages
         QString appId = nameIndex.data(Qt::UserRole).toString();
-        if (isFlatpak && appId.isEmpty()) {
-            // If no app ID is stored, use the name
-            appId = name;
-        }
-        
+        if (isFlatpak && appId.isEmpty()) appId = name;
         if (isFlatpak) {
             flatpakPackages.append(appId);
             packageDetails.append(tr("%1 (%2) [Flatpak]").arg(name).arg(version));
+        } else if (repo.trimmed().toLower() == "aur") {
+            aurPackages.append(name);
+            packageDetails.append(tr("%1 (%2) [AUR]").arg(name).arg(version));
         } else {
-            packageNames.append(name);
+            repoPackages.append(name);
             packageDetails.append(tr("%1 (%2) from %3").arg(name).arg(version).arg(repo));
         }
     }
-    
-    // Check if we have any packages to install
-    if (packageNames.isEmpty() && flatpakPackages.isEmpty()) {
+    if (repoPackages.isEmpty() && aurPackages.isEmpty() && flatpakPackages.isEmpty()) {
         showStatusMessage(tr("No valid packages selected for installation"), 3000);
         return;
     }
-    
-    // Confirm installation
     QString message;
-    if (packageNames.size() + flatpakPackages.size() == 1) {
+    int totalCount = repoPackages.size() + aurPackages.size() + flatpakPackages.size();
+    if (totalCount == 1) {
         message = tr("Are you sure you want to install %1?\n\nThis operation will require your password for authentication.").arg(packageDetails.first());
-                } else {
+    } else {
         message = tr("Are you sure you want to install the following %1 packages?\n\n%2\n\nThis operation will require your password for authentication.")
-            .arg(packageNames.size() + flatpakPackages.size())
+            .arg(totalCount)
             .arg(packageDetails.join("\n"));
     }
-    
     QMessageBox::StandardButton reply = QMessageBox::question(
-            this,
+        this,
         tr("Confirm Installation"),
         message,
         QMessageBox::Yes|QMessageBox::No
     );
-    
-    if (reply != QMessageBox::Yes) {
-                return;
-            }
-            
-    // Show status message
+    if (reply != QMessageBox::Yes) return;
     showStatusMessage(tr("Installing packages..."), 0);
-    
-    // Install regular packages if any
-    if (!packageNames.isEmpty()) {
-        // Find available terminal emulator
+    // Prompt for password if repo or AUR packages are selected
+    QString password;
+    if (!repoPackages.isEmpty() || !aurPackages.isEmpty()) {
+        pacmangui::gui::PasswordPromptDialog pwdDlg(this);
+        if (pwdDlg.exec() != QDialog::Accepted) {
+            showStatusMessage(tr("Installation canceled (no password provided)"), 3000);
+            return;
+        }
+        password = pwdDlg.getPassword();
+        if (password.isEmpty()) {
+            showStatusMessage(tr("Installation canceled (empty password)"), 3000);
+            return;
+        }
+    }
+    // Install repo packages
+    if (!repoPackages.isEmpty()) {
+        qDebug() << "Installing repo packages:" << repoPackages;
+        pacmangui::gui::InstallProgressDialog dlg(tr("Installing: %1").arg(repoPackages.join(", ")), this);
+        QStringList args;
+        args << "-S" << "--noconfirm";
+        for (const QString& pkg : repoPackages) args << pkg;
+        QString command = QString("echo '%1' | pkexec --disable-internal-agent pacman %2").arg(password, args.join(" "));
+        qDebug() << "Repo install command:" << command;
+        dlg.startInstallProcess("/bin/sh", QStringList() << "-c" << command);
+        dlg.exec();
+        qDebug() << "Repo install dialog finished, success:" << dlg.wasSuccessful();
+        if (dlg.wasSuccessful()) {
+            showStatusMessage(tr("Package(s) installed successfully"), 3000);
+        } else {
+            showStatusMessage(tr("Package installation failed. See details."), 5000);
+        }
+    }
+    // Install AUR packages
+    if (!aurPackages.isEmpty()) {
+        qDebug() << "Installing AUR packages:" << aurPackages;
+        QSettings settings("PacmanGUI", "PacmanGUI");
+        QString aurHelper = settings.value("aur/helper", "yay").toString();
         QString terminal = findTerminalEmulator();
         QStringList args;
-        QString packagesStr = packageNames.join(" ");
-        
-        // Set up the command based on terminal type
-        if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
-            args << "-e" << QString("sudo pacman -S --noconfirm %1; read -p 'Press Enter to close'").arg(packagesStr);
-        } else if (terminal == "kitty" || terminal == "alacritty") {
-            args << "-e" << "sudo" << "pacman" << "-S" << "--noconfirm";
-            args.append(packageNames);
-                    } else {
-            // Default for xterm and others
-            args << "-e" << QString("sudo pacman -S --noconfirm %1 && echo 'Press ENTER to close this window' && read").arg(packagesStr);
-        }
-        
-        // Run the command in the terminal
+        QString aurCmd = aurHelper + " -S --noconfirm " + aurPackages.join(" ");
+        qDebug() << "AUR helper:" << aurHelper << "aurCmd:" << aurCmd;
+        args << "-e" << "sh" << "-c" << aurCmd;
         QProcess::startDetached(terminal, args);
+        showStatusMessage(tr("AUR install command launched in terminal."), 3000);
+        // Schedule a refresh of installed packages after 15 seconds
+        QTimer::singleShot(15000, this, &MainWindow::refreshInstalledPackages);
     }
-    
-    // Install Flatpak packages if any
+    // Install Flatpak packages
     if (!flatpakPackages.isEmpty()) {
-        // Find available terminal emulator
-        QString terminal = findTerminalEmulator();
+        qDebug() << "Installing Flatpak packages:" << flatpakPackages;
+        pacmangui::gui::InstallProgressDialog dlg(tr("Installing Flatpak: %1").arg(flatpakPackages.join(", ")), this);
         QStringList args;
-        
-        // Build the command to install all Flatpak packages
-        QString flatpakInstallCmd = "flatpak install -y flathub " + flatpakPackages.join(" ");
-        
-        // Set up the command based on terminal type
-        if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
-            args << "-e" << QString("%1; read -p 'Press Enter to close'").arg(flatpakInstallCmd);
-        } else if (terminal == "kitty" || terminal == "alacritty") {
-            args << "-e" << "sh" << "-c" << QString("%1; read -p 'Press Enter to close'").arg(flatpakInstallCmd);
-                } else {
-            // Default for xterm and others
-            args << "-e" << QString("%1 && echo 'Press ENTER to close this window' && read").arg(flatpakInstallCmd);
+        args << "install" << "-y" << "flathub";
+        for (const QString& pkg : flatpakPackages) args << pkg;
+        qDebug() << "Flatpak install args:" << args;
+        dlg.startInstallProcess("flatpak", args);
+        dlg.exec();
+        qDebug() << "Flatpak install dialog finished, success:" << dlg.wasSuccessful();
+        if (dlg.wasSuccessful()) {
+            showStatusMessage(tr("Flatpak package(s) installed successfully"), 3000);
+        } else {
+            showStatusMessage(tr("Flatpak installation failed. See details."), 5000);
         }
-        
-        // Run the command in the terminal
-        QProcess::startDetached(terminal, args);
     }
-    
-    // Schedule a refresh of installed packages after some time
     QTimer::singleShot(10000, this, &MainWindow::refreshInstalledPackages);
-    
-    // Also refresh Flatpak list if we installed any Flatpak packages
     if (!flatpakPackages.isEmpty()) {
         QTimer::singleShot(10000, this, &MainWindow::refreshFlatpakList);
     }
@@ -1293,22 +1299,21 @@ void MainWindow::onInstallPackage() {
 
 // Add implementation for onRemovePackage
 void MainWindow::onRemovePackage() {
-    // Get selected packages
+    qDebug() << "onRemovePackage called";
     QModelIndexList selected;
-    
-    // Get selection from the active tab
-    if (m_tabWidget->currentIndex() == 0) { // Search tab
+    if (m_tabWidget->currentIndex() == 0) {
         selected = m_packagesTable->selectionModel()->selectedRows();
-    } else if (m_tabWidget->currentIndex() == 1) { // Installed tab
-        selected = m_installedTable->selectionModel()->selectedRows();
+    } else if (m_tabWidget->currentIndex() == 1) {
+        QModelIndexList proxySelected = m_installedTable->selectionModel()->selectedRows();
+        for (const QModelIndex& proxyIndex : proxySelected) {
+            QModelIndex sourceIndex = m_installedProxyModel->mapToSource(proxyIndex);
+            selected.append(sourceIndex);
+        }
     }
-    
     if (selected.isEmpty()) {
         showStatusMessage(tr("No packages selected for removal"), 3000);
         return;
     }
-    
-    // Collect package names
     QStringList packageNames;
     QStringList flatpakPackages;
     QStringList packageDetails;
@@ -1374,24 +1379,46 @@ void MainWindow::onRemovePackage() {
     
     // Remove regular packages if any
     if (!packageNames.isEmpty()) {
-        // Find available terminal emulator
+        qDebug() << "Removing packages:" << packageNames;
+        QProgressDialog progress(tr("Removing packages..."), tr("Cancel"), 0, 0, this);
+        progress.setWindowModality(Qt::WindowModal);
+        progress.setMinimumDuration(0);
+        progress.setValue(0);
+        progress.show();
         QString terminal = findTerminalEmulator();
         QStringList args;
         QString packagesStr = packageNames.join(" ");
-        
-        // Set up the command based on terminal type
-        if (terminal == "konsole" || terminal == "gnome-terminal" || terminal == "xfce4-terminal" || terminal == "mate-terminal") {
-            args << "-e" << QString("sudo pacman -R --noconfirm %1; read -p 'Press Enter to close'").arg(packagesStr);
-        } else if (terminal == "kitty" || terminal == "alacritty") {
-            args << "-e" << "sudo" << "pacman" << "-R" << "--noconfirm";
-            args.append(packageNames);
-        } else {
-            // Default for xterm and others
-            args << "-e" << QString("sudo pacman -R --noconfirm %1 && echo 'Press ENTER to close this window' && read").arg(packagesStr);
+        // Use -Rs for safe removal of package and orphans, and pkexec for privilege
+        QString command = QString("pkexec pacman -Rs --noconfirm %1; echo 'Press ENTER to close'; read").arg(packagesStr);
+        qDebug() << "Remove command:" << command << "Terminal:" << terminal << "Args:" << args;
+        args.clear();
+        args << "-e" << "sh" << "-c" << command;
+        QProcess process;
+        process.start(terminal, args);
+        bool success = process.waitForStarted(5000);
+        qDebug() << "Process started:" << success;
+        if (success) {
+            while (process.state() != QProcess::NotRunning) {
+                if (progress.wasCanceled()) {
+                    process.kill();
+                    showStatusMessage(tr("Removal canceled by user"), 3000);
+                    progress.close();
+                    return;
+                }
+                process.waitForFinished(100);
+                QApplication::processEvents();
+            }
         }
-        
-        // Run the command in the terminal
-        QProcess::startDetached(terminal, args);
+        progress.close();
+        int exitCode = process.exitCode();
+        qDebug() << "Process exit code:" << exitCode;
+        if (exitCode == 0) {
+            QMessageBox::information(this, tr("Removal Complete"), tr("Selected package(s) were removed successfully."));
+            showStatusMessage(tr("Package(s) removed successfully"), 3000);
+        } else {
+            QMessageBox::warning(this, tr("Removal Failed"), tr("Failed to remove selected package(s)."));
+            showStatusMessage(tr("Failed to remove package(s)"), 3000);
+        }
     }
     
     // Remove Flatpak packages if any
@@ -2408,28 +2435,32 @@ QString MainWindow::findTerminalEmulator() {
     QStringList terminals = {
         "konsole",
         "gnome-terminal",
+        "xfce4-terminal",
+        "mate-terminal",
+        "lxterminal",
         "xterm",
         "terminator",
         "kitty",
         "alacritty",
-        "xfce4-terminal",
-        "mate-terminal",
-        "lxterminal"
+        "urxvt",
+        "tilix",
+        "st",
+        "ptyxis",
+        "ghostty"
     };
-    
     for (const QString& terminal : terminals) {
-        // Check if the terminal is available in the path
         QProcess which;
         which.start("which", QStringList() << terminal);
         which.waitForFinished();
-        
         if (which.exitCode() == 0) {
+            qDebug() << "Found terminal emulator:" << terminal;
             return terminal;
         }
     }
-    
-    // If no terminal is found, return a default
-    return "xterm";
+    qWarning() << "No supported terminal emulator found!";
+    QMessageBox::critical(nullptr, tr("No Terminal Found"),
+        tr("No supported terminal emulator was found on your system. Please install one of the following: %1").arg(terminals.join(", ")));
+    return QString();
 }
 
 // At the end of the file, add the Flatpak methods implementation
@@ -2446,22 +2477,12 @@ void MainWindow::setupFlatpakSupport()
     if (flatpakAvailable) {
         qDebug() << "DEBUG: Flatpak is available on this system";
         
-        // Create Flatpak install button
-        m_installFlatpakButton = new QPushButton(tr("Install (Flatpak)"), m_searchTab);
-        m_installFlatpakButton->setEnabled(false);
-        m_packageActionsLayout->addWidget(m_installFlatpakButton);
-        
-        // Connect signal for installation
-        connect(m_installFlatpakButton, &QPushButton::clicked, this, &MainWindow::onInstallFlatpakPackage);
-        
-        // Also add Flatpak removal for installed packages tab
+        // Only keep Remove (Flatpak) button for installed tab
         m_removeFlatpakButton = new QPushButton(tr("Remove (Flatpak)"), m_installedTab);
         m_removeFlatpakButton->setEnabled(false);
         m_installedActionsLayout->addWidget(m_removeFlatpakButton);
-        
-        // Connect signal for removal
         connect(m_removeFlatpakButton, &QPushButton::clicked, this, &MainWindow::onRemoveFlatpakPackage);
-     
+        
         // Load settings to check if Flatpak is enabled
         QSettings settings("PacmanGUI", "PacmanGUI");
         m_flatpakSearchEnabled = settings.value("flatpak/enabled", false).toBool();
@@ -2494,10 +2515,7 @@ void MainWindow::onToggleFlatpakSearch(bool enabled)
         m_flatpakModel->setHorizontalHeaderLabels(
             QStringList() << tr("") << tr("Name") << tr("Version") << tr("Repository") << tr("Description"));
         
-        // Disable Flatpak install button
-        if (m_installFlatpakButton) {
-            m_installFlatpakButton->setEnabled(false);
-        }
+        // No need to disable a removed button
     }
 }
 
@@ -2923,6 +2941,19 @@ void MainWindow::refreshFlatpakRemotes() {
     if (m_flatpakManagerTab) {
         m_flatpakManagerTab->refreshFlatpakRemotes();
     }
+}
+
+void MainWindow::appendTerminalOutput(const QString& text) {
+    if (m_terminalWidget) {
+        m_terminalWidget->appendPlainText(text);
+        m_terminalWidget->verticalScrollBar()->setValue(m_terminalWidget->verticalScrollBar()->maximum());
+    }
+}
+
+// Add this function to filter installed packages
+void MainWindow::filterInstalledPackages(const QString& term) {
+    qDebug() << "Filtering installed packages with term:" << term;
+    m_installedProxyModel->setFilterFixedString(term);
 }
 } // namespace gui
 } // namespace pacmangui
